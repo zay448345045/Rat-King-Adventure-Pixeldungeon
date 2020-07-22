@@ -54,7 +54,7 @@ public class GhostChicken extends AbyssalMob {
 	@Override
 	protected boolean act() {
 		boolean act = super.act();
-		if (HT >= 15){
+		if (HT > 15){
 			HP = HT = 15;
 		}
 		return act;
