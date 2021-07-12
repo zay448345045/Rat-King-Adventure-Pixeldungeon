@@ -35,10 +35,12 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
+import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
@@ -621,6 +623,20 @@ public enum Talent {
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 				}
 				enemy.buff(FollowupStrikeTracker.class).detach();
+			}
+		}
+
+		if (hero.buff(Endure.EndureTracker.class) != null
+				&& hero.hasTalent(Talent.DEMONSHADER)){
+			enemy.damage(Random.NormalIntRange(1 + (hero.pointsInTalent(Talent.DEMONSHADER)-1)*2, 8 + (hero.pointsInTalent(Talent.DEMONSHADER)-1)*5), new Burning());
+			enemy.sprite.emitter().burst(FlameParticle.FACTORY, Random.Int(2, 4 + hero.pointsInTalent(DEMONSHADER)));
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			if (hero.buff(Berserk.class) != null){
+				hero.buff(Berserk.class).damage(Math.round(dmg / hero.buff(Berserk.class).damageMult() * (hero.pointsInTalent(Talent.DEMONSHADER)*0.25f)));
+				SpellSprite.show(hero, SpellSprite.BERSERK);
+			}
+			if (hero.buff(Combo.class) != null){
+				hero.buff(Combo.class).addTime(hero.pointsInTalent(Talent.DEMONSHADER) * 2);
 			}
 		}
 

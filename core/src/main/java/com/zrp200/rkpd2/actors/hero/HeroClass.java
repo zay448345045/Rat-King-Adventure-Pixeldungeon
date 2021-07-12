@@ -37,10 +37,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
-import com.zrp200.rkpd2.items.BrokenSeal;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.KingsCrown;
-import com.zrp200.rkpd2.items.Waterskin;
+import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
@@ -116,6 +113,8 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 		new KingsCrown().collect();
 		new ScrollOfPetrification().identify().collect();
+		new TengusMask().collect();
+		hero.lvl = 30;
 
 		switch (this) {
 			case WARRIOR:

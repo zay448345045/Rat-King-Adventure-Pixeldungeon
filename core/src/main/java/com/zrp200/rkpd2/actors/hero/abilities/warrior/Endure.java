@@ -115,6 +115,8 @@ public class Endure extends ArmorAbility {
 			return damage;
 		}
 
+
+
 		public void endEnduring(){
 			if (!enduring){
 				return;

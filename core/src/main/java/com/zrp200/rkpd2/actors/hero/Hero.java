@@ -1167,17 +1167,6 @@ public class Hero extends Char {
 			buff(Talent.SpiritBladesTracker.class).detach();
 		}
 
-		if (buff(Endure.EndureTracker.class) != null
-			&& hasTalent(Talent.DEMONSHADER)){
-				enemy.damage(Random.NormalIntRange(1 + (pointsInTalent(Talent.DEMONSHADER)-1)*2, 8 + (pointsInTalent(Talent.DEMONSHADER)-1)*5), new Burning());
-				if (berserk != null){
-					berserk.damage(Math.round(damage / berserk.damageMult() * (pointsInTalent(Talent.DEMONSHADER)*0.25f)));
-				}
-				if (buff(Combo.class) != null){
-					buff(Combo.class).addTime(pointsInTalent(Talent.DEMONSHADER) * 2);
-				}
-		}
-
 		damage = Talent.onAttackProc( this, enemy, damage );
 		
 		switch (subClass) {
