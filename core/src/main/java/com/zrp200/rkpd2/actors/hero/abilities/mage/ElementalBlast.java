@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.mage;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -29,19 +35,7 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.Freezing;
-import com.zrp200.rkpd2.actors.buffs.Amok;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.actors.buffs.Corrosion;
-import com.zrp200.rkpd2.actors.buffs.Frost;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.Light;
-import com.zrp200.rkpd2.actors.buffs.Paralysis;
-import com.zrp200.rkpd2.actors.buffs.Recharging;
-import com.zrp200.rkpd2.actors.buffs.Roots;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -49,24 +43,9 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
-import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
-import com.zrp200.rkpd2.items.wands.Wand;
-import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
-import com.zrp200.rkpd2.items.wands.WandOfCorrosion;
-import com.zrp200.rkpd2.items.wands.WandOfCorruption;
-import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
-import com.zrp200.rkpd2.items.wands.WandOfFireblast;
-import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
-import com.zrp200.rkpd2.items.wands.WandOfFrost;
-import com.zrp200.rkpd2.items.wands.WandOfLightning;
-import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
-import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
-import com.zrp200.rkpd2.items.wands.WandOfPrismaticLight;
-import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
-import com.zrp200.rkpd2.items.wands.WandOfTransfusion;
-import com.zrp200.rkpd2.items.wands.WandOfWarding;
+import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -75,12 +54,6 @@ import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.HashMap;
 
@@ -146,7 +119,8 @@ public class ElementalBlast extends ArmorAbility {
 			return;
 		}
 
-		int aoeSize = /*4*/5 + hero.pointsInTalent(Talent.BLAST_RADIUS);
+		int aoeSize = /*4*/5 + hero.pointsInTalent(Talent.BLAST_RADIUS)  *
+				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2 : 1);
 
 		int projectileProps = Ballistica.STOP_SOLID | Ballistica.STOP_TARGET;
 
@@ -176,7 +150,9 @@ public class ElementalBlast extends ArmorAbility {
 			);
 		}
 
-		final float effectMulti = 1f + (0.15f*hero.pointsInTalent(Talent.ELEMENTAL_POWER))*1.5f;
+		final float effectMulti = (1f + (0.15f*hero.pointsInTalent(Talent.ELEMENTAL_POWER))*1.5f) *
+				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2f : 1f);
+		final int miscEffectMulti = (hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2 : 1);
 
 		//cast a ray 2/3 the way, and do effects
 		Class<? extends Wand> finalWandCls = wandCls == WandOfFirebolt.class ? WandOfFireblast.class : wandCls;
@@ -197,7 +173,7 @@ public class ElementalBlast extends ArmorAbility {
 							//*** Wand of Lightning ***
 							if (finalWandCls == WandOfLightning.class){
 								if (Dungeon.level.water[cell]){
-									GameScene.add( Blob.seed( cell, 4, Electricity.class ) );
+									GameScene.add( Blob.seed( cell, 4 * miscEffectMulti, Electricity.class ) );
 								}
 
 							//*** Wand of Fireblast ***
@@ -210,7 +186,7 @@ public class ElementalBlast extends ArmorAbility {
 									freeze.clear(cell);
 								}
 								if (Dungeon.level.flamable[cell]){
-									GameScene.add( Blob.seed( cell, 4, Fire.class ) );
+									GameScene.add( Blob.seed( cell, 4 * miscEffectMulti, Fire.class ) );
 								}
 
 							//*** Wand of Frost ***
@@ -393,7 +369,7 @@ public class ElementalBlast extends ArmorAbility {
 
 						charsHit = Math.min(5, charsHit);
 						if (charsHit > 0 && hero.hasTalent(Talent.REACTIVE_BARRIER)){
-							Buff.affect(hero, Barrier.class).setShield(charsHit*/*2*/3*hero.pointsInTalent(Talent.REACTIVE_BARRIER));
+							Buff.affect(hero, Barrier.class).setShield(charsHit*/*2*/3*hero.pointsInTalent(Talent.REACTIVE_BARRIER)*miscEffectMulti);
 						}
 
 						hero.spendAndNext(Actor.TICK);
@@ -431,6 +407,6 @@ public class ElementalBlast extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.EMPOWERED_STRIKE_II, Talent.HEROIC_ENERGY};
 	}
 }
