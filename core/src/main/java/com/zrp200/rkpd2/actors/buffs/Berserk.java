@@ -119,7 +119,7 @@ public class Berserk extends Buff {
 		return true;
 	}
 
-	private float damageMult() {
+	public float damageMult() {
 		return Math.min(1.5f,1+power/2f);
 	}
 	public int damageFactor(int dmg){

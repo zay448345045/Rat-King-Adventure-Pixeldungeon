@@ -526,7 +526,9 @@ public class Hero extends Char {
 		if (berserk != null) dmg = berserk.damageFactor(dmg);
 
 		Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
-		if (endure != null) dmg = endure.damageFactor(dmg);
+		if (endure != null) {
+			dmg = endure.damageFactor(dmg);
+		}
 
 		return buff( Fury.class ) != null ? (int)(dmg * 1.5f) : dmg;
 	}
@@ -1163,6 +1165,17 @@ public class Hero extends Char {
 			SpiritBow bow = belongings.getItem(SpiritBow.class);
 			if (bow != null) damage = bow.proc( this, enemy, damage );
 			buff(Talent.SpiritBladesTracker.class).detach();
+		}
+
+		if (buff(Endure.EndureTracker.class) != null
+			&& hasTalent(Talent.DEMONSHADER)){
+				enemy.damage(Random.NormalIntRange(1 + (pointsInTalent(Talent.DEMONSHADER)-1)*2, 8 + (pointsInTalent(Talent.DEMONSHADER)-1)*5), new Burning());
+				if (berserk != null){
+					berserk.damage(Math.round(damage / berserk.damageMult() * (pointsInTalent(Talent.DEMONSHADER)*0.25f)));
+				}
+				if (buff(Combo.class) != null){
+					buff(Combo.class).addTime(pointsInTalent(Talent.DEMONSHADER) * 2);
+				}
 		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
