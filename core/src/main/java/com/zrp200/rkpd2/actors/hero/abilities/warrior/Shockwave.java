@@ -21,14 +21,14 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.warrior;
 
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Combo;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -40,10 +40,6 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class Shockwave extends ArmorAbility {
 
@@ -127,6 +123,9 @@ public class Shockwave extends ArmorAbility {
 									} else {
 										Buff.affect(ch, Cripple.class, 5f);
 									}
+									if (hero.hasTalent(Talent.COCKATRIOCIOUS)){
+										Buff.affect(ch, Petrified.class, 2 + (hero.pointsInTalent(Talent.COCKATRIOCIOUS)-1)*1.5f);
+									}
 								}
 
 							}
@@ -141,6 +140,6 @@ public class Shockwave extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.COCKATRIOCIOUS, Talent.HEROIC_ENERGY};
 	}
 }

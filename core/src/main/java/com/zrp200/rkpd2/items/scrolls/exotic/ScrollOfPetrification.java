@@ -21,15 +21,16 @@
 
 package com.zrp200.rkpd2.items.scrolls.exotic;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.buffs.Petrified;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfPetrification extends ExoticScroll {
 	
@@ -44,7 +45,7 @@ public class ScrollOfPetrification extends ExoticScroll {
 		
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]) {
-				Buff.affect( mob, Paralysis.class, Paralysis.DURATION );
+				Buff.affect( mob, Petrified.class, Paralysis.DURATION );
 			}
 		}
 
