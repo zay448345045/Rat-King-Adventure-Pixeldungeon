@@ -44,6 +44,7 @@ import static com.zrp200.rkpd2.Dungeon.hero;
 public class DeathMark extends ArmorAbility {
 
 	public static float damageMultiplier() {
+		if (hero.hasTalent(Talent.CATACLYSMIC_ENERGY)) return 1f;
 		return hero.heroClass == HeroClass.ROGUE ? 5/3f : 1.25f;
 	}
 
@@ -84,7 +85,8 @@ public class DeathMark extends ArmorAbility {
 		}
 
 		if (ch != null){
-			Buff.affect(ch, DeathMarkTracker.class, 5f).setInitialHP(ch.HP);
+			Buff.affect(ch, DeathMarkTracker.class, 5f + hero.pointsInTalent(Talent.CATACLYSMIC_ENERGY)
+			 + (hero.hasTalent(Talent.CATACLYSMIC_ENERGY) ? 1 : 0)).setInitialHP(ch.HP);
 		}
 
 		armor.charge -= chargeUse( hero );
@@ -133,7 +135,7 @@ public class DeathMark extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.CATACLYSMIC_ENERGY, Talent.HEROIC_ENERGY};
 	}
 
 	public static class DeathMarkTracker extends FlavourBuff {

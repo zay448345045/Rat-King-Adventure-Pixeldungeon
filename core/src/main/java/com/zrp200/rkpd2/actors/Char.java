@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
+import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -69,6 +70,8 @@ import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public abstract class Char extends Actor {
 	
@@ -115,6 +118,11 @@ public abstract class Char extends Actor {
 		//throw any items that are on top of an immovable char
 		if (properties().contains(Property.IMMOVABLE)){
 			throwItems();
+		}
+		if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
+			if (hero.hasTalent(Talent.CATACLYSMIC_ENERGY)){
+				new Bomb().explode(pos);
+			}
 		}
 		return false;
 	}
