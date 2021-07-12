@@ -28,12 +28,17 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.SnipersMark;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
+import com.zrp200.rkpd2.items.rings.RingOfSharpshooting;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
@@ -120,7 +125,49 @@ public class SpectralBlades extends ArmorAbility {
 					if (hero.hasTalent(Talent.SPIRIT_BLADES)){
 						Buff.affect(hero, Talent.SpiritBladesTracker.class, 0f);
 					}
-					hero.attack( ch, dmgMulti, 0, accmulti );
+					int dmgBonus = 0;
+					if (hero.belongings.weapon instanceof MeleeWeapon &&
+							hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 2){
+						dmgBonus = Random.NormalIntRange(
+								((MeleeWeapon) hero.belongings.weapon).min(RingOfSharpshooting.levelDamageBonus(hero)),
+								((MeleeWeapon) hero.belongings.weapon).max(RingOfSharpshooting.levelDamageBonus(hero))
+						);
+					}
+					hero.attack( ch, dmgMulti, dmgBonus, accmulti );
+					if (hero.hasTalent(Talent.SPECTRAL_SHOT)) {
+						if (hero.subClass == HeroSubClass.SNIPER) {
+							Actor.add(new Actor() {
+
+								{
+									actPriority = VFX_PRIO;
+								}
+
+								@Override
+								protected boolean act() {
+									if (enemy.isAlive() || hero.hasTalent(Talent.MULTISHOT)) {
+										int level = 0;
+										SnipersMark mark = Buff.affect(hero, SnipersMark.class);
+										mark.set(enemy.id(), level);
+										if (!enemy.isAlive()) mark.remove(enemy.id()); // this lets it trigger ranger
+									}
+									Actor.remove(this);
+									return true;
+								}
+							});
+						}
+						if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 1){
+							SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+							if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
+								bow = (SpiritBow) Dungeon.hero.belongings.weapon;
+							}
+							if (bow != null && hero.subClass == HeroSubClass.SNIPER){
+								SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
+								if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
+								spiritArrow.cast(hero, ch.pos);
+//								hero.spend(-hero.cooldown());
+							}
+						}
+					}
 					callbacks.remove( this );
 					if (callbacks.isEmpty()) {
 						Invisibility.dispel();
@@ -165,6 +212,6 @@ public class SpectralBlades extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.SPECTRAL_SHOT, Talent.HEROIC_ENERGY};
 	}
 }
