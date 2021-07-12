@@ -21,13 +21,12 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.huntress;
 
+import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Electricity;
-import com.zrp200.rkpd2.actors.blobs.Freezing;
-import com.zrp200.rkpd2.actors.buffs.Bleeding;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.BlobImmunity;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -39,17 +38,15 @@ import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.ShaftParticle;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
+import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.BatSprite;
+import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.TextureFilm;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -124,7 +121,7 @@ public class SpiritHawk extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.BEAK_OF_POWER, Talent.HEROIC_ENERGY};
 	}
 
 	private static HawkAlly getHawk(){
@@ -150,6 +147,15 @@ public class SpiritHawk extends ArmorAbility {
 			attacksAutomatically = false;
 
 			immunities.addAll(new BlobImmunity().immunities());
+		}
+
+		@Override
+		public float attackDelay() {
+			if (buff(Talent.LethalMomentumTracker.class) != null){
+				buff(Talent.LethalMomentumTracker.class).detach();
+				return 0;
+			}
+			return super.attackDelay();
 		}
 
 		@Override
@@ -180,8 +186,56 @@ public class SpiritHawk extends ArmorAbility {
 			if (Dungeon.hero.hasTalent(Talent.GO_FOR_THE_EYES)) {
 				Buff.prolong( enemy, Blindness.class, 1 + Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES) );
 			}
+			if (Dungeon.hero.hasTalent(Talent.BEAK_OF_POWER)){
+				Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
+						Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER)*5).charID = enemy.id();
+				if (Random.Int(5) < Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER)){
+					SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+					if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
+						bow = (SpiritBow) Dungeon.hero.belongings.weapon;
+					}
+					if (bow != null) damage = bow.proc( this, enemy, damage );
+				}
+			}
 
 			return damage;
+		}
+
+		@Override
+		public boolean canAttack(Char enemy) {
+			if (Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER) > 3){
+				Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
+				return attack.collisionPos == enemy.pos;
+			}
+			return super.canAttack(enemy);
+		}
+
+		protected boolean doAttack( Char enemy ) {
+			if (Dungeon.level.adjacent(pos, enemy.pos)){
+				return super.doAttack( enemy );
+			} else if (Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER) > 3) {
+
+				if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+						((MissileSprite) sprite.parent.recycle(MissileSprite.class)).
+								reset(sprite,
+										enemy.sprite,
+										new SpiritBow().knockArrow(),
+										new Callback() {
+											@Override
+											public void call() {
+												attack(enemy,
+														1,
+														0, 1);
+												spend(attackDelay());
+												next();
+											}
+										});
+					return false;
+				} else {
+					return super.doAttack(enemy);
+				}
+			}
+			return super.doAttack(enemy);
 		}
 
 		@Override

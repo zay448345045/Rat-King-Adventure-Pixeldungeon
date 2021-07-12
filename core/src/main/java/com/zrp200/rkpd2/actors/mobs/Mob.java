@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
+import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Surprise;
@@ -665,6 +666,12 @@ public abstract class Mob extends Char {
 				Buff.affect(Dungeon.hero, Talent.LethalMomentumTracker.class, 1f);
 		}
 
+		if (cause instanceof SpiritHawk.HawkAlly &&
+			Dungeon.hero.hasTalent(Talent.BEAK_OF_POWER) &&
+				Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER)){
+			Buff.affect((Char) cause, Talent.LethalMomentumTracker.class, 1f);
+		}
+
 		if (Dungeon.hero.isAlive() && !Dungeon.level.heroFOV[pos]) {
 			GLog.i( Messages.get(this, "died") );
 		}
@@ -837,8 +844,9 @@ public abstract class Mob extends Char {
 
 				float enemyStealth = enemy.stealth();
 
-				if (enemy instanceof Hero){
-					int points = ((Hero)enemy).pointsInTalent(Talent.SILENT_STEPS,Talent.PURSUIT);
+				if (enemy instanceof Hero || enemy instanceof SpiritHawk.HawkAlly){
+					int points = Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS,Talent.PURSUIT);
+					if (enemy instanceof SpiritHawk.HawkAlly) points = Dungeon.hero.pointsInTalent(Talent.BEAK_OF_POWER);
 					if (points > 0 && Dungeon.level.distance(pos, enemy.pos) >= 4 - points) {
 						enemyStealth = Float.POSITIVE_INFINITY;
 					}

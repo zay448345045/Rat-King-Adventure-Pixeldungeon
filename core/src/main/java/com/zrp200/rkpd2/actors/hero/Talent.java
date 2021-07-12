@@ -139,7 +139,7 @@ public enum Talent {
 	//Natures Power T4
 	GROWING_POWER(116, 4), NATURES_WRATH(117, 4), WILD_MOMENTUM(118, 4), PRIMAL_AWAKENING(155, 4),
 	//Spirit Hawk T4
-	EAGLE_EYE(119, 4), GO_FOR_THE_EYES(120, 4), SWIFT_SPIRIT(121, 4),
+	EAGLE_EYE(119, 4), GO_FOR_THE_EYES(120, 4), SWIFT_SPIRIT(121, 4), BEAK_OF_POWER(156, 4),
 	//universal T4
 	HEROIC_ENERGY(26, 4) {
 		// this is why wrath doesn't have any talents...
