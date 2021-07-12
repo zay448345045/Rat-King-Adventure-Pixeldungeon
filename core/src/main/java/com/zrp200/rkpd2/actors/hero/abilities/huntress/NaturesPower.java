@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.huntress;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -33,7 +34,6 @@ import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.audio.Sample;
 
 public class NaturesPower extends ArmorAbility {
 
@@ -59,7 +59,7 @@ public class NaturesPower extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.GROWING_POWER, Talent.NATURES_WRATH, Talent.WILD_MOMENTUM, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.GROWING_POWER, Talent.NATURES_WRATH, Talent.WILD_MOMENTUM, Talent.PRIMAL_AWAKENING, Talent.HEROIC_ENERGY};
 	}
 
 	public static class naturesPowerTracker extends FlavourBuff{

@@ -32,10 +32,12 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Surprise;
 import com.zrp200.rkpd2.effects.Wound;
+import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Gold;
@@ -52,6 +54,7 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Swiftthistle;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -627,6 +630,19 @@ public abstract class Mob extends Char {
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 				}
 				Dungeon.hero.earnExp(exp, getClass());
+			}
+
+			if (Random.Int(12) < Dungeon.hero.pointsInTalent(Talent.PRIMAL_AWAKENING)
+				&& Dungeon.hero.buff(NaturesPower.naturesPowerTracker.class) != null){
+				GnollTrickster gnoll = new GnollTrickster();
+				gnoll.alignment = Alignment.ALLY;
+				gnoll.state = gnoll.HUNTING;
+				gnoll.HP = gnoll.HT = 50;
+				gnoll.pos = pos;
+				CellEmitter.center(pos).burst(LeafParticle.GENERAL, 25);
+				Sample.INSTANCE.play(Assets.Sounds.BADGE);
+				Dungeon.level.pressCell(gnoll.pos);
+				GameScene.add(gnoll);
 			}
 		}
 	}

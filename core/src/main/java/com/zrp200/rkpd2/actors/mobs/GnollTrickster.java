@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -35,8 +37,6 @@ import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.GnollTricksterSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class GnollTrickster extends Gnoll {
 
@@ -60,8 +60,28 @@ public class GnollTrickster extends Gnoll {
 	private int combo = 0;
 
 	@Override
+	public int damageRoll() {
+		if (alignment == Alignment.ALLY){
+			return Random.NormalIntRange( 8 + Math.max(0, (Dungeon.depth-25)*2/5),
+					16 + Math.max(0, (Dungeon.depth-25)*5/5) );
+		}
+		return super.damageRoll();
+	}
+
+	@Override
 	public int attackSkill( Char target ) {
+		if (alignment == Alignment.ALLY){
+			return (int) (Dungeon.hero.attackSkill(target) * 0.75f);
+		}
 		return 16;
+	}
+
+	@Override
+	public int defenseSkill(Char enemy) {
+		if (alignment == Alignment.ALLY){
+			return (int) (Dungeon.hero.defenseSkill(enemy) * 0.75f);
+		}
+		return super.defenseSkill(enemy);
 	}
 
 	@Override
@@ -104,31 +124,37 @@ public class GnollTrickster extends Gnoll {
 	
 	@Override
 	protected Item createLoot() {
-		MissileWeapon drop = (MissileWeapon)super.createLoot();
-		//half quantity, rounded up
-		drop.quantity((drop.quantity()+1)/2);
-		return drop;
+		if (alignment != Alignment.ALLY){
+			MissileWeapon drop = (MissileWeapon)super.createLoot();
+			//half quantity, rounded up
+			drop.quantity((drop.quantity()+1)/2);
+			return drop;
+		}
+		return null;
 	}
 	
 	@Override
 	public void die( Object cause ) {
 		super.die( cause );
-
-		Ghost.Quest.process();
+		if (alignment != Alignment.ALLY)
+			Ghost.Quest.process();
 	}
 
 	private static final String COMBO = "combo";
+	private static final String RAT_ALLY = "ally";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
 		bundle.put(COMBO, combo);
+		if (alignment == Alignment.ALLY) bundle.put(RAT_ALLY, true);
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		combo = bundle.getInt( COMBO );
+		if (bundle.contains(RAT_ALLY)) alignment = Alignment.ALLY;
 	}
 
 }
