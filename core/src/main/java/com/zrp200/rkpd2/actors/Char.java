@@ -544,6 +544,9 @@ public abstract class Char extends Actor {
 		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
 			dmg *= 2;
 		}
+		if (buff(Petrified.class) != null){
+			dmg *= 0.5f;
+		}
 		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
 			dmg *= DeathMark.damageMultiplier();
 		}
