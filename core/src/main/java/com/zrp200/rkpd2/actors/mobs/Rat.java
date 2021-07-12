@@ -66,7 +66,7 @@ public class Rat extends Mob {
 
 	// technically this behavior could be generalized to all mobs, but this is not the mod to do that.
 	protected float[] // this change lets me use fractional values....
-			damageRange = {1,9},
+			damageRange = {1,4},
 			armorRange  = {0,1};
 
 	@Override
