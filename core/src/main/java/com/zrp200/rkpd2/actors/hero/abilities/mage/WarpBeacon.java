@@ -21,6 +21,13 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.mage;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -44,13 +51,6 @@ import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -116,6 +116,10 @@ public class WarpBeacon extends ArmorAbility {
 
 							Invisibility.dispel();
 							ScrollOfTeleportation.appear(hero, tracker.pos);
+							if (hero.hasTalent(Talent.CHRONO_SCREW)){
+								Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(1
+										+ 1.5f*(hero.pointsInTalent(Talent.CHRONO_SCREW)-1));
+							}
 
 							if (existing != null && existing != hero){
 								//if (hero.hasTalent(Talent.TELEFRAG)){
@@ -151,6 +155,7 @@ public class WarpBeacon extends ArmorAbility {
 										toPush.pos = candidates.get(0);
 										Dungeon.level.occupyCell(toPush);
 										hero.next();
+
 									}
 								}
 							}
@@ -248,6 +253,6 @@ public class WarpBeacon extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.CHRONO_SCREW, Talent.HEROIC_ENERGY};
 	}
 }
