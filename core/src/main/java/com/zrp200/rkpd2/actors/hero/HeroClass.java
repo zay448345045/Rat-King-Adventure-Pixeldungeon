@@ -39,6 +39,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
@@ -112,6 +113,7 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
+		new KingsCrown().collect();
 
 		switch (this) {
 			case WARRIOR:

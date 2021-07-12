@@ -21,14 +21,14 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.warrior;
 
+import com.watabou.noosa.Camera;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.Vulnerable;
-import com.zrp200.rkpd2.actors.buffs.Weakness;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -37,10 +37,6 @@ import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.Camera;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class HeroicLeap extends ArmorAbility {
 
@@ -93,6 +89,9 @@ public class HeroicLeap extends ArmorAbility {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						Char mob = Actor.findChar(hero.pos + i);
 						if (mob != null && mob != hero && mob.alignment != Char.Alignment.ALLY) {
+							if (hero.hasTalent(Talent.ALICE_GAMBIT)){
+								Buff.affect(mob, TimedShrink.class, hero.pointsInTalent(Talent.ALICE_GAMBIT)*2.5f);
+							}
 							if (hero.canHaveTalent(Talent.BODY_SLAM)){
 								int damage = hero.drRoll();
 								damage = Math.round(damage*0.25f*hero.shiftedPoints(Talent.BODY_SLAM));
@@ -133,6 +132,6 @@ public class HeroicLeap extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.ALICE_GAMBIT, Talent.HEROIC_ENERGY};
 	}
 }
