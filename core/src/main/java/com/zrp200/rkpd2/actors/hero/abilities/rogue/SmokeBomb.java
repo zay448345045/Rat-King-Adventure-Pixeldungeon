@@ -21,10 +21,15 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.rogue;
 
+import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Haste;
@@ -44,10 +49,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class SmokeBomb extends ArmorAbility {
 
@@ -66,33 +67,60 @@ public class SmokeBomb extends ArmorAbility {
 		}
 	}
 
+	public static boolean isValidTarget(Hero hero, int target) {
+		PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid,null), 6 + hero.pointsInTalent(Talent.QUANTUM_POSITION)*3);
+
+		if ( PathFinder.distance[target] == Integer.MAX_VALUE ||
+				!Dungeon.level.heroFOV[target] ||
+				Actor.findChar( target ) != null) {
+
+			GLog.w( Messages.get(SmokeBomb.class, "fov") );
+			return false;
+		}
+		return true;
+	}
+
+	public static void blindAdjacentMobs(Hero hero) {
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+			if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
+				Buff.prolong(mob, Blindness.class, Blindness.DURATION / 2f);
+				if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
+				mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
+				if (hero.hasTalent(Talent.RAT_AGE)) {
+					GameScene.add(Blob.seed(mob.pos, 80, Inferno.class));
+					if (hero.pointsInTalent(Talent.RAT_AGE) > 1){
+						GameScene.add(Blob.seed(mob.pos, 80, Blizzard.class));
+					}
+					if (hero.pointsInTalent(Talent.RAT_AGE) > 2){
+						GameScene.add(Blob.seed(mob.pos, 80, ConfusionGas.class));
+					}
+					if (hero.pointsInTalent(Talent.RAT_AGE) > 3){
+						GameScene.add(Blob.seed(mob.pos, 80, Regrowth.class));
+					}
+				}
+			}
+		}
+	}
+	public static void throwSmokeBomb(Hero hero, int target) {
+		CellEmitter.get( hero.pos ).burst( Speck.factory( Speck.WOOL ), 10 );
+		ScrollOfTeleportation.appear( hero, target );
+		Sample.INSTANCE.play( Assets.Sounds.PUFF );
+		Dungeon.level.occupyCell( hero );
+		Dungeon.observe();
+		GameScene.updateFog();
+	}
+
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target != null) {
-
-			PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid,null), 8);
-
-			if ( PathFinder.distance[target] == Integer.MAX_VALUE ||
-					!Dungeon.level.heroFOV[target] ||
-					Actor.findChar( target ) != null) {
-
-				GLog.w( Messages.get(this, "fov") );
-				return;
-			}
-
+			if(!isValidTarget(hero, target)) return;
 			armor.charge -= chargeUse(hero);
 			Item.updateQuickslot();
 
 			boolean shadowStepping = hero.invisible > 0 && hero.hasTalent(Talent.SHADOW_STEP);
 
 			if (!shadowStepping) {
-				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-					if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
-						Buff.prolong(mob, Blindness.class, Blindness.DURATION / 2f);
-						if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
-						mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
-					}
-				}
+				blindAdjacentMobs(hero);
 
 				if (hero.hasTalent(Talent.BODY_REPLACEMENT)) {
 					for (Char ch : Actor.chars()){
@@ -113,13 +141,7 @@ public class SmokeBomb extends ArmorAbility {
 				}
 			}
 
-			CellEmitter.get( hero.pos ).burst( Speck.factory( Speck.WOOL ), 10 );
-			ScrollOfTeleportation.appear( hero, target );
-			Sample.INSTANCE.play( Assets.Sounds.PUFF );
-			Dungeon.level.occupyCell( hero );
-			Dungeon.observe();
-			GameScene.updateFog();
-
+			throwSmokeBomb(hero, target);
 			if (!shadowStepping) {
 				hero.spendAndNext(Actor.TICK);
 			} else {

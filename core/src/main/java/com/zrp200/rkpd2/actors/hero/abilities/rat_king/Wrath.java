@@ -1,15 +1,12 @@
 package com.zrp200.rkpd2.actors.hero.abilities.rat_king;
 
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
-import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -21,15 +18,11 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.armor.HuntressArmor;
 import com.zrp200.rkpd2.items.armor.MageArmor;
-import com.zrp200.rkpd2.items.armor.RogueArmor;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
-import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.HashMap;
@@ -61,12 +54,7 @@ public class Wrath extends ArmorAbility {
         boolean[] stages = new boolean[3]; // jump/molten/blades
 
         if( stages[0] = target != hero.pos ) {
-            PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid, null), 6 + hero.pointsInTalent(Talent.QUANTUM_POSITION)*3);
-            if (PathFinder.distance[target] == Integer.MAX_VALUE ||
-                    !Dungeon.level.heroFOV[target]) {
-                GLog.w(Messages.get(RogueArmor.class, "fov"));
-                return;
-            }
+            if( !SmokeBomb.isValidTarget(hero, target) ) return;
 
             if (Actor.findChar(target) != null) { // use heroic leap mechanics instead.
                 Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET);
@@ -77,36 +65,10 @@ public class Wrath extends ArmorAbility {
                 }
             }
 
-            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if (Dungeon.level.adjacent(mob.pos, hero.pos) && mob.alignment != Char.Alignment.ALLY) {
-                    Buff.prolong(mob, Blindness.class, Blindness.DURATION / 2f);
-                    if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
-                    mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
-                    if (hero.hasTalent(Talent.RAT_AGE)) {
-                        GameScene.add(Blob.seed(mob.pos, 80, Inferno.class));
-                        if (hero.pointsInTalent(Talent.RAT_AGE) > 1){
-                            GameScene.add(Blob.seed(mob.pos, 80, Blizzard.class));
-                        }
-                        if (hero.pointsInTalent(Talent.RAT_AGE) > 2){
-                            GameScene.add(Blob.seed(mob.pos, 80, ConfusionGas.class));
-                        }
-                        if (hero.pointsInTalent(Talent.RAT_AGE) > 3){
-                            GameScene.add(Blob.seed(mob.pos, 80, Regrowth.class));
-                        }
-                    }
-                }
-            }
-
-
-            CellEmitter.get(hero.pos).burst(Speck.factory(Speck.WOOL), 10);
-            hero.sprite.turnTo(hero.pos, target); // jump from warrior leap
-            ScrollOfTeleportation.appear(hero, target);
-            hero.move(target); // impact from warrior leap.
-            Sample.INSTANCE.play(Assets.Sounds.PUFF);
-            Dungeon.level.occupyCell(hero);
-            // at least do warrior vfx now.
-            Dungeon.observe();
-            GameScene.updateFog();
+            SmokeBomb.blindAdjacentMobs(hero);
+            hero.sprite.turnTo(hero.pos, target);
+            SmokeBomb.throwSmokeBomb(hero, target);
+            hero.move(target);
             CellEmitter.center(hero.pos).burst(Speck.factory(Speck.DUST), 10);
             Camera.main.shake(2, 0.5f);
         }
