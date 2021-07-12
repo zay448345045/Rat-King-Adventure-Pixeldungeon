@@ -21,32 +21,24 @@
 
 package com.zrp200.rkpd2.items.wands;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Blob;
-import com.zrp200.rkpd2.actors.blobs.ConfusionGas;
-import com.zrp200.rkpd2.actors.blobs.Fire;
-import com.zrp200.rkpd2.actors.blobs.ParalyticGas;
-import com.zrp200.rkpd2.actors.blobs.Regrowth;
-import com.zrp200.rkpd2.actors.blobs.ToxicGas;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Frost;
-import com.zrp200.rkpd2.actors.buffs.Recharging;
+import com.zrp200.rkpd2.actors.blobs.*;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
-import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Flare;
-import com.zrp200.rkpd2.effects.MagicMissile;
-import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
@@ -69,17 +61,14 @@ import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 //helper class to contain all the cursed wand zapping logic, so the main wand class doesn't get huge.
 public class CursedWand {
+
+	public static int eldritchLevel = 0;
 
 	private static float COMMON_CHANCE = 0.6f;
 	private static float UNCOMMON_CHANCE = 0.3f;
@@ -109,7 +98,17 @@ public class CursedWand {
 	}
 
 	public static boolean cursedEffect(final Item origin, final Char user, final int targetPos){
-		switch (Random.chances(new float[]{COMMON_CHANCE, UNCOMMON_CHANCE, RARE_CHANCE, VERY_RARE_CHANCE})){
+
+		float[] chances = {COMMON_CHANCE, UNCOMMON_CHANCE, RARE_CHANCE, VERY_RARE_CHANCE};
+
+		if (eldritchLevel > 1){
+			chances[0] = 0.52f;
+			chances[1] = 0.36f;
+			chances[2] = 0.108f;
+			chances[3] = 0.012f;
+		}
+
+		switch (Random.chances(chances)){
 			case 0: default:
 				return commonEffect(origin, user, targetPos);
 			case 1:
@@ -128,24 +127,30 @@ public class CursedWand {
 			case 0: default:
 				Char target = Actor.findChar(targetPos);
 				if (Random.Int(2) == 0) {
-					if (target != null) Buff.affect(target, Burning.class).reignite(target);
-					Buff.affect(user, Frost.class, Frost.DURATION);
+					if (target != null) Buff.affect(target, Burning.class).reignite(target,
+							Burning.DURATION + eldritchLevel > 1 ? 5 : 0);
+					float duration = Frost.DURATION;
+					if (eldritchLevel > 0) duration /= 2;
+					Buff.affect(user, Frost.class, duration);
 				} else {
-					Buff.affect(user, Burning.class).reignite(user);
-					if (target != null) Buff.affect(target, Frost.class, Frost.DURATION);
+					float duration = Burning.DURATION;
+					if (eldritchLevel > 0) duration /= 2;
+					Buff.affect(user, Burning.class).reignite(user, duration);
+					if (target != null) Buff.affect(target, Frost.class,
+							Frost.DURATION + eldritchLevel > 1 ? 5 : 0);
 				}
 				tryForWandProc(target, origin);
 				return true;
 
 			//spawns some regrowth
 			case 1:
-				GameScene.add( Blob.seed(targetPos, 30, Regrowth.class));
+				GameScene.add( Blob.seed(targetPos, 30 + eldritchLevel > 1 ? 10 : 0, Regrowth.class));
 				tryForWandProc(Actor.findChar(targetPos), origin);
 				return true;
 
 			//random teleportation
 			case 2:
-				if(Random.Int(2) == 0) {
+				if(Random.Int(2 + eldritchLevel > 0 ? 2 : 0) == 0) {
 					if (user != null && !user.properties().contains(Char.Property.IMMOVABLE)) {
 						ScrollOfTeleportation.teleportChar(user);
 					} else {
@@ -166,15 +171,18 @@ public class CursedWand {
 			case 3:
 				Sample.INSTANCE.play( Assets.Sounds.GAS );
 				tryForWandProc(Actor.findChar(targetPos), origin);
+				if (eldritchLevel > 0){
+					Buff.affect(user, BlobImmunity.class, 5f);
+				}
 				switch (Random.Int(3)) {
 					case 0: default:
-						GameScene.add( Blob.seed( targetPos, 800, ConfusionGas.class ) );
+						GameScene.add( Blob.seed( targetPos, 800 + eldritchLevel > 1 ? 100 : 0, ConfusionGas.class ) );
 						return true;
 					case 1:
-						GameScene.add( Blob.seed( targetPos, 500, ToxicGas.class ) );
+						GameScene.add( Blob.seed( targetPos, 500 + eldritchLevel > 1 ? 80 : 0, ToxicGas.class ) );
 						return true;
 					case 2:
-						GameScene.add( Blob.seed( targetPos, 200, ParalyticGas.class ) );
+						GameScene.add( Blob.seed( targetPos, 200 + eldritchLevel > 1 ? 50 : 0, ParalyticGas.class ) );
 						return true;
 				}
 		}
@@ -204,10 +212,10 @@ public class CursedWand {
 			case 1:
 				final Char target = Actor.findChar( targetPos );
 				if (target != null) {
-					int damage = Dungeon.depth * 2;
+					int damage = Dungeon.depth * 2 + eldritchLevel > 1 ? Dungeon.depth : 0;
 					Char toHeal, toDamage;
 
-					if (Random.Int(2) == 0){
+					if (Random.Int(2 + eldritchLevel) == 0){
 						toHeal = user;
 						toDamage = target;
 					} else {
@@ -247,7 +255,7 @@ public class CursedWand {
 			//shock and recharge
 			case 3:
 				new ShockingTrap().set( user.pos ).activate();
-				Buff.prolong(user, Recharging.class, Recharging.DURATION);
+				Buff.prolong(user, Recharging.class, Recharging.DURATION + eldritchLevel > 1 ? 10 : 0);
 				ScrollOfRecharging.charge(user);
 				SpellSprite.show(user, SpellSprite.CHARGE);
 				return true;
@@ -283,7 +291,7 @@ public class CursedWand {
 
 			//curses!
 			case 1:
-				if (user instanceof Hero) {
+				if (user instanceof Hero && eldritchLevel < 1) {
 					CursingTrap.curse( (Hero) user );
 				} else {
 					return cursedEffect(origin, user, targetPos);
@@ -329,10 +337,14 @@ public class CursedWand {
 			//great forest fire!
 			case 0: default:
 				for (int i = 0; i < Dungeon.level.length(); i++){
-					GameScene.add( Blob.seed(i, 15, Regrowth.class));
+					int amount = 15;
+					if (eldritchLevel > 0) amount /= 3;
+					GameScene.add( Blob.seed(i, amount, Regrowth.class));
 				}
 				do {
-					GameScene.add(Blob.seed(Dungeon.level.randomDestination(null), 10, Fire.class));
+					int amount = 10;
+					if (eldritchLevel > 0) amount /= 3;
+					GameScene.add(Blob.seed(Dungeon.level.randomDestination(null), amount, Fire.class));
 				} while (Random.Int(5) != 0);
 				new Flare(8, 32).color(0xFFFF66, true).show(user.sprite, 2f);
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
@@ -415,7 +427,7 @@ public class CursedWand {
 			//random transmogrification
 			case 3:
 				//skips this effect if there is no item to transmogrify
-				if (origin == null || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin)){
+				if (origin == null || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin) || eldritchLevel > 1){
 					return cursedEffect(origin, user, targetPos);
 				}
 				origin.detach(Dungeon.hero.belongings.backpack);

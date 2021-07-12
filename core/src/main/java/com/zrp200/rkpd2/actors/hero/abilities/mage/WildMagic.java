@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.mage;
 
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -31,12 +33,11 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
+import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -74,6 +75,7 @@ public class WildMagic extends ArmorAbility {
 		}
 
 		int maxWands = 4 + Dungeon.hero.pointsInTalent(Talent.FIRE_EVERYTHING);
+		if (hero.hasTalent(Talent.ELDRITCH_BLESSING)) maxWands += 2 + hero.pointsInTalent(Talent.ELDRITCH_BLESSING)/2;
 
 		if (wands.size() < maxWands){
 			ArrayList<Wand> dupes = new ArrayList<>(wands);
@@ -117,31 +119,37 @@ public class WildMagic extends ArmorAbility {
 		Ballistica aim = new Ballistica(hero.pos, target, cur.collisionProperties(target));
 
 		hero.sprite.zap(target);
-		cur.fx(aim, new Callback() {
+		Callback wildMagicCallback = new Callback() {
 			@Override
 			public void call() {
 				cur.onZap(aim);
-				cur.partialCharge -= (float)Math.pow(0.563f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
-				if (cur.partialCharge < 0){
+				cur.partialCharge -= (float) Math.pow(0.563f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
+				if (cur.partialCharge < 0) {
 					cur.partialCharge++;
 					cur.curCharges--;
 				}
-				if (!wands.isEmpty()){
+				if (!wands.isEmpty()) {
 					zapWand(wands, hero, target);
 				} else {
-					if (hero.buff(WildMagicTracker.class) != null){
+					if (hero.buff(WildMagicTracker.class) != null) {
 						hero.buff(WildMagicTracker.class).detach();
 					}
 					Item.updateQuickslot();
 					Invisibility.dispel();
+					CursedWand.eldritchLevel = 0;
 					hero.spendAndNext(Actor.TICK);
 				}
 			}
-		});
+		};
+		if (hero.hasTalent(Talent.ELDRITCH_BLESSING)){
+			CursedWand.eldritchLevel = hero.pointsInTalent(Talent.ELDRITCH_BLESSING)-1;
+			CursedWand.cursedZap(cur, hero, aim, wildMagicCallback);
+		}
+		cur.fx(aim, wildMagicCallback);
 	}
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.ELDRITCH_BLESSING, Talent.HEROIC_ENERGY};
 	}
 }

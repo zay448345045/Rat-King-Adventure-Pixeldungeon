@@ -47,7 +47,7 @@ import java.util.ArrayList;
 
 public class Burning extends Buff implements Hero.Doom {
 	
-	private static final float DURATION = 8f;
+	public static final float DURATION = 8f;
 	
 	private float left;
 	
