@@ -30,10 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.*;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Haste;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -139,6 +136,15 @@ public class SmokeBomb extends ArmorAbility {
 					Buff.affect(hero, Haste.class, duration);
 					Buff.affect(hero, Invisibility.class, duration);
 				}
+
+				if (hero.hasTalent(Talent.FRIGID_TOUCH)){
+					for (int i = 0; i < Dungeon.level.length(); i++){
+						if (Dungeon.level.insideMap(i) && Dungeon.level.heroFOV[i]){
+							GameScene.add(Blob.seed(i, 2 + (hero.pointsInTalent(Talent.FRIGID_TOUCH)-1)*2, FrostFire.class));
+							Buff.affect(hero, FrostImbue.class,2 + (hero.pointsInTalent(Talent.FRIGID_TOUCH)-1)*2 );
+						}
+					}
+				}
 			}
 
 			throwSmokeBomb(hero, target);
@@ -166,6 +172,10 @@ public class SmokeBomb extends ArmorAbility {
 			alignment = Alignment.ALLY;
 
 			HP = HT = 20*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT);
+		}
+
+		{
+			immunities.add(FrostFire.class);
 		}
 
 		@Override
