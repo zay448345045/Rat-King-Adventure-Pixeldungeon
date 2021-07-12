@@ -139,11 +139,11 @@ public class SmokeBomb extends ArmorAbility {
 
 				if (hero.hasTalent(Talent.FRIGID_TOUCH)){
 					for (int i = 0; i < Dungeon.level.length(); i++){
-						if (Dungeon.level.insideMap(i) && Dungeon.level.heroFOV[i]){
+						if (Dungeon.level.insideMap(i) && Dungeon.level.heroFOV[i] && !Dungeon.level.solid[i]){
 							GameScene.add(Blob.seed(i, 2 + (hero.pointsInTalent(Talent.FRIGID_TOUCH)-1)*2, FrostFire.class));
-							Buff.affect(hero, FrostImbue.class,2 + (hero.pointsInTalent(Talent.FRIGID_TOUCH)-1)*2 );
 						}
 					}
+					Buff.affect(hero, FrostImbue.class,1 + (hero.pointsInTalent(Talent.FRIGID_TOUCH)-1)*2 );
 				}
 			}
 
