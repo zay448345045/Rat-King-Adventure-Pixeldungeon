@@ -303,6 +303,10 @@ public class Hero extends Char {
 		return sum;
 	}
 
+	public float byTalent(Talent t1, float f1, Talent t2, float f2) {
+		return Math.max(f1*pointsInTalent(t1), f2*pointsInTalent(t2));
+	}
+
 	/** shifts [shifted] so that +0 becomes +1 */
 	public int shiftedPoints( Talent shifted ) {
 		int points = pointsInTalent(shifted);
@@ -548,7 +552,7 @@ public class Hero extends Char {
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
 		if (natStrength != null){
-			speed *= (2f + 0.25f*shiftedPoints(Talent.GROWING_POWER));
+			speed *= (2f + /*0.25f*/.33f*pointsInTalent(Talent.GROWING_POWER));
 		}
 
 		return speed;
@@ -1142,7 +1146,7 @@ public class Hero extends Char {
 					if(staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
 						staff.procBM();
 					}
-					if(staff == wep || Random.Int(3) < pointsInTalent())
+					if(staff == wep || Random.Int(3) < pointsInTalent(Talent.SORCERY))
 						if (buff(Talent.EmpoweredStrikeTracker.class) != null) {
 							buff(Talent.EmpoweredStrikeTracker.class).detach();
 							damage = Math.round(damage * (1f + Math.max(

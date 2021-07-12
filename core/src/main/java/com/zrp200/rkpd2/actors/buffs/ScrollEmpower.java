@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
 
@@ -36,10 +36,9 @@ public class ScrollEmpower extends Buff {
 	}
 
 	public static int boost() {
-		return Math.max(
-				hero.pointsInTalent(Talent.EMPOWERING_SCROLLS)*2,
-				hero.pointsInTalent(Talent.RK_BATTLEMAGE)
-		);
+		return (int)hero.byTalent(
+				Talent.EMPOWERING_SCROLLS, 2,
+				Talent.RK_BATTLEMAGE, 1);
 	}
 
 
@@ -66,7 +65,7 @@ public class ScrollEmpower extends Buff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", boost());
+		return Messages.get(this, "desc", hero.heroClass.title(), boost());
 	}
 
 }

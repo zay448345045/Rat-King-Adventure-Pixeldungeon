@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -31,10 +35,6 @@ import com.zrp200.rkpd2.items.BrokenSeal.WarriorShield;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.utils.GLog;
 
 public class Berserk extends Buff {
@@ -75,8 +75,10 @@ public class Berserk extends Buff {
 		return target instanceof Hero && ((Hero)target).subClass == HeroSubClass.BERSERKER;
 	}
 
+	public static float STAMINA_REDUCTION = 1/3f;
 	private static float levelRecoverStart() {
-		return LEVEL_RECOVER_START-Dungeon.hero.pointsInTalent(Talent.BERSERKING_STAMINA,Talent.RK_BERSERKER)/3f;
+		return LEVEL_RECOVER_START - STAMINA_REDUCTION
+				* Dungeon.hero.shiftedPoints(Talent.BERSERKING_STAMINA,Talent.RK_BERSERKER);
 	}
 
 	protected float maxBerserkDuration() {
@@ -156,7 +158,9 @@ public class Berserk extends Buff {
 
 	public void damage(int damage){
 		if (state == State.RECOVERING && !berserker()) return;
-		float maxPower = 1f + 0.15f*((Hero)target).shiftedPoints(Talent.ENDLESS_RAGE,Talent.RK_BERSERKER);
+		float maxPower = 1f + ((Hero)target).byTalent(
+				Talent.ENDLESS_RAGE, 0.2f,
+				Talent.RK_BERSERKER, 0.15f);
 		power = Math.min(maxPower*recovered(), power + rageFactor(damage)*recovered() );
 		BuffIndicator.refreshHero(); //show new power immediately
 	}

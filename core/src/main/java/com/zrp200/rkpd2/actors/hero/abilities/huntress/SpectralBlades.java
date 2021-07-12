@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.huntress;
 
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -29,6 +31,7 @@ import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
@@ -37,7 +40,6 @@ import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Callback;
 
 import java.util.HashSet;
 
@@ -66,7 +68,8 @@ public class SpectralBlades extends ArmorAbility {
 		Ballistica b = new Ballistica(hero.pos, target, Ballistica.WONT_STOP);
 		final HashSet<Char> targets = new HashSet<>();
 
-		Char enemy = findChar(b, hero, 2*hero.shiftedPoints(Talent.PROJECTING_BLADES), targets);
+		int wallPenetration = 1+2*hero.pointsInTalent(Talent.PROJECTING_BLADES);
+		Char enemy = findChar(b, hero, wallPenetration, targets);
 
 		if (enemy == null){
 			GLog.w(Messages.get(this, "no_target"));
@@ -76,14 +79,18 @@ public class SpectralBlades extends ArmorAbility {
 		targets.add(enemy);
 
 		if (hero.canHaveTalent(Talent.FAN_OF_BLADES)){
-			ConeAOE cone = new ConeAOE(b, 30*hero.shiftedPoints(Talent.FAN_OF_BLADES));
+			int degrees = Math.max(30, 45*hero.pointsInTalent(Talent.FAN_OF_BLADES));
+			ConeAOE cone = new ConeAOE(b, degrees);
 			for (Ballistica ray : cone.rays){
-				Char toAdd = findChar(ray, hero, 2*hero.shiftedPoints(Talent.PROJECTING_BLADES), targets);
+				// 1/3/5/7/9 up from 0/2/4/6/8
+				Char toAdd = findChar(ray, hero, wallPenetration, targets);
 				if (toAdd != null && hero.fieldOfView[toAdd.pos]){
 					targets.add(toAdd);
 				}
 			}
-			while (targets.size() > 1 + hero.shiftedPoints(Talent.FAN_OF_BLADES)){
+			// 1/2-3/4/5-6/7, up from 0/1/2/3/4
+			int additionalTargets = Random.round( .5f*( 3*hero.shiftedPoints(Talent.FAN_OF_BLADES) - 1 ) );
+			while (targets.size() > 1 + additionalTargets){
 				Char furthest = null;
 				for (Char ch : targets){
 					if (furthest == null){
@@ -108,9 +115,9 @@ public class SpectralBlades extends ArmorAbility {
 			Callback callback = new Callback() {
 				@Override
 				public void call() {
-					float dmgMulti = ch == enemy ? 1f : 0.75f;
-					float accmulti = 1f + 0.25f*hero.shiftedPoints(Talent.PROJECTING_BLADES);
-					if (hero.canHaveTalent(Talent.SPIRIT_BLADES)){
+					float dmgMulti = ch == enemy ? 1f : 0.5f;
+					float accmulti = 1 + 1/3f*hero.shiftedPoints(Talent.PROJECTING_BLADES);
+					if (hero.hasTalent(Talent.SPIRIT_BLADES)){
 						Buff.affect(hero, Talent.SpiritBladesTracker.class, 0f);
 					}
 					hero.attack( ch, dmgMulti, 0, accmulti );
@@ -140,7 +147,7 @@ public class SpectralBlades extends ArmorAbility {
 			if (ch != null){
 				if (ch == hero || existingTargets.contains(ch)){
 					continue;
-				} else if (ch.alignment != Char.Alignment.ALLY){
+				} else if (ch.alignment != Char.Alignment.ALLY && !(ch instanceof NPC)){
 					return ch;
 				} else {
 					return null;

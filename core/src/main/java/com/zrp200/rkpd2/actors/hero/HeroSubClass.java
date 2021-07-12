@@ -21,10 +21,9 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -32,6 +31,7 @@ import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -47,6 +47,19 @@ public enum HeroSubClass {
 		@Override public int getBonus(Item item) {
 			// mage boost now also applies to staff...
 			return item instanceof MagesStaff ? 2 : 0;
+		}
+
+		@Override public String desc() {
+			//Include the staff effect description in the battlemage's desc if possible
+			String desc = super.desc();
+			if (Game.scene() instanceof GameScene){
+				MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+				if (staff != null && staff.wandClass() != null){
+					desc += "\n\n" + Messages.get(staff.wandClass(), "bmage_desc", Messages.titleCase(title()));
+					desc = desc.replaceAll("_", "");
+				}
+			}
+			return desc;
 		}
 	},
 
@@ -84,20 +97,7 @@ public enum HeroSubClass {
 	}
 
 	public String desc() {
-		//Include the staff effect description in the battlemage's desc if possible
-		if (this == BATTLEMAGE){
-			String desc = Messages.get(this, name() + "_desc");
-			if (Game.scene() instanceof GameScene){
-				MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
-				if (staff != null && staff.wandClass() != null){
-					desc += "\n\n" + Messages.get(staff.wandClass(), "bmage_desc");
-					desc = desc.replaceAll("_", "");
-				}
-			}
-			return desc;
-		} else {
-			return Messages.get(this, name() + "_desc");
-		}
+		return Messages.get(this, name() + "_desc");
 	}
 
 	//FIXME shouldn't hardcode these, probably want to just have a BuffIcon class
