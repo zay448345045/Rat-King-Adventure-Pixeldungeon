@@ -101,6 +101,13 @@ public class ElementalBlast extends ArmorAbility {
 
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+		castElementalBlast(hero);
+		armor.charge -= chargeUse(hero);
+		armor.updateQuickslot();
+
+	}
+
+	public static void castElementalBlast(Hero hero) {
 		Ballistica aim;
 		//Basically the direction of the aim only matters if it goes outside the map
 		//So we just ensure it won't do that.
@@ -119,7 +126,7 @@ public class ElementalBlast extends ArmorAbility {
 			return;
 		}
 
-		int aoeSize = /*4*/5 + hero.pointsInTalent(Talent.BLAST_RADIUS)  *
+		int aoeSize = /*4*/(5 + hero.pointsInTalent(Talent.BLAST_RADIUS, Talent.AVALON_POWER_UP))  *
 				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2 : 1);
 
 		int projectileProps = Ballistica.STOP_SOLID | Ballistica.STOP_TARGET;
@@ -381,11 +388,7 @@ public class ElementalBlast extends ArmorAbility {
 		Invisibility.dispel();
 		hero.busy();
 
-		armor.charge -= chargeUse(hero);
-		armor.updateQuickslot();
-
 		Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
-
 	}
 
 	@Override

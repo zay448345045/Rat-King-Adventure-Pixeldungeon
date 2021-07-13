@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Roots;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -45,6 +46,10 @@ public class MageArmor extends ClassArmor {
 	// legacy functionality used by RatKingArmor.java
 	public static boolean doMoltenEarth() {
 		boolean success = false;
+
+		if (Dungeon.hero.hasTalent(Talent.AVALON_POWER_UP))
+			ElementalBlast.castElementalBlast(Dungeon.hero);
+
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 			if (Dungeon.level.heroFOV[mob.pos]
 					&& mob.alignment != Char.Alignment.ALLY && Dungeon.level.distance(Dungeon.hero.pos, mob.pos) <= 6 + Dungeon.hero.pointsInTalent(Talent.QUANTUM_POSITION)*3) {

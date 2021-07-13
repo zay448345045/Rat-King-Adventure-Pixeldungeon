@@ -95,6 +95,10 @@ public class SmokeBomb extends ArmorAbility {
 						GameScene.add(Blob.seed(mob.pos, 80, Regrowth.class));
 					}
 				}
+				if (hero.hasTalent(Talent.QUANTUM_POSITION)){
+					Buff.affect(mob, Vertigo.class, 3*hero.pointsInTalent(Talent.QUANTUM_POSITION));
+					Buff.affect(mob, Terror.class, 3*hero.pointsInTalent(Talent.QUANTUM_POSITION)).object = hero.id();
+				}
 			}
 		}
 	}

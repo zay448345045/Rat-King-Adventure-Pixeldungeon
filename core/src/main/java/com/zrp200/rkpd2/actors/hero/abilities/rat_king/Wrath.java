@@ -4,6 +4,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -11,20 +12,27 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.Rat;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.armor.HuntressArmor;
 import com.zrp200.rkpd2.items.armor.MageArmor;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.utils.GLog;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +51,7 @@ public class Wrath extends ArmorAbility {
 
     @Override
     public Talent[] talents() { return new Talent[]{
-            Talent.AURIC_TESLA, Talent.QUANTUM_POSITION, Talent.RAT_AGE, Talent.HEROIC_ENERGY}; }
+            Talent.AURIC_TESLA, Talent.QUANTUM_POSITION, Talent.RAT_AGE, Talent.AVALON_POWER_UP, Talent.HEROIC_ENERGY}; }
 
     private static final float JUMP_DELAY=2f;
 
@@ -89,6 +97,20 @@ public class Wrath extends ArmorAbility {
                     mob.damage(damage, hero);
                     Buff.prolong(mob, Paralysis.class, hero.pointsInTalent(Talent.AURIC_TESLA)+2);
                 }
+                if (hero.hasTalent(Talent.AVALON_POWER_UP)) {
+                    Ballistica trajectory = new Ballistica(mob.pos, mob.pos + i, Ballistica.MAGIC_BOLT);
+                    int strength = 1 + hero.pointsInTalent(Talent.AVALON_POWER_UP)*2;
+                    WandOfBlastWave.throwChar(mob, trajectory, strength, true);
+                }
+                if (hero.hasTalent(Talent.RAT_AGE)){
+                        Buff.prolong(mob, TimedShrink.class, 1 + hero.pointsInTalent(Talent.RAT_AGE));
+                        int scalingStr = hero.STR()-10;
+                        int damage = Random.NormalIntRange(scalingStr + hero.pointsInTalent(Talent.RAT_AGE) - 1,
+                                (3 + hero.pointsInTalent(Talent.RAT_AGE) - 1)*scalingStr);
+                        damage -= mob.drRoll();
+
+                        mob.damage(damage, hero);
+                }
             }
         }
         // huntress
@@ -101,6 +123,18 @@ public class Wrath extends ArmorAbility {
                     @Override
                     public void call() {
                         hero.attack( targets.get( this ) );
+                        if (Dungeon.hero.hasTalent(Talent.AVALON_POWER_UP)) {
+                            SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+                            if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow) {
+                                bow = (SpiritBow) Dungeon.hero.belongings.weapon;
+                            }
+                            if (bow != null && Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.AVALON_POWER_UP)) {
+                                SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
+                                spiritArrow.forceSkipDelay = true;
+                                spiritArrow.cast(hero, targets.get( this ).pos);
+//								hero.spend(-hero.cooldown());
+                            }
+                        }
                         Invisibility.dispel();
                         targets.remove( this );
                         if (targets.isEmpty()) finish(armor, hero, stages);
@@ -152,6 +186,31 @@ public class Wrath extends ArmorAbility {
                         Buff.affect(hero, BlobImmunity.class, 9f);
                     }
                 }
+
+                ArrayList<Integer> spawnPoints = new ArrayList<>();
+
+                for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                    int p = hero.pos + PathFinder.NEIGHBOURS8[i];
+                    if (Actor.findChar( p ) == null && Dungeon.level.passable[p]) {
+                        spawnPoints.add( p );
+                    }
+                }
+
+                int ratsToSpawn = 1;
+
+                while (ratsToSpawn > 0 && spawnPoints.size() > 0) {
+                    int index = Random.index( spawnPoints );
+
+                    Rat rat = Random.Int(10) == 0 ? new Ratmogrify.SummonedAlbino() : new Ratmogrify.SummonedRat();
+                    rat.alignment = Char.Alignment.ALLY;
+                    rat.state = rat.HUNTING;
+                    GameScene.add( rat );
+                    ScrollOfTeleportation.appear( rat, spawnPoints.get( index ) );
+
+                    spawnPoints.remove( index );
+                    ratsToSpawn--;
+                }
+
                 remove(this);
                 return true;
             }
