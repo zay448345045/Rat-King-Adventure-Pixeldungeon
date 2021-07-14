@@ -432,8 +432,11 @@ public abstract class Wand extends Item {
 
 		if (curUser.buff(Talent.MysticalUpgradeWandTracker.class) == null)
 			curUser.spendAndNext( TIME_TO_ZAP );
-		else
+		else {
 			Buff.detach(curUser, Talent.MysticalUpgradeWandTracker.class);
+			Buff.detach(curUser, Talent.MysticalUpgradeMissileTracker.class);
+			curUser.ready();
+		}
 	}
 	
 	@Override

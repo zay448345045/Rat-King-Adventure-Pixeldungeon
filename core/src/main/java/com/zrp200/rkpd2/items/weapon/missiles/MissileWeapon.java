@@ -233,11 +233,15 @@ abstract public class MissileWeapon extends Weapon {
 	
 	@Override
 	public float castDelay(Char user, int dst) {
+		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 1){
+			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeWandTracker.class, 1f);
+		}
 		if(user.buff(Talent.LethalMomentumTracker.class) != null) {
 			Buff.detach(user, Talent.LethalMomentumTracker.class);
 			return 0;
 		}
 		if(user.buff(Talent.MysticalUpgradeMissileTracker.class) != null) {
+			Buff.detach(user, Talent.MysticalUpgradeWandTracker.class);
 			Buff.detach(user, Talent.MysticalUpgradeMissileTracker.class);
 			return 0;
 		}
@@ -268,9 +272,6 @@ abstract public class MissileWeapon extends Weapon {
 				}
 			}
 			Dungeon.level.drop( this, cell ).sprite.drop();
-		}
-		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 1){
-			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeWandTracker.class, 1f);
 		}
 	}
 	
