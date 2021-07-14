@@ -51,7 +51,6 @@ import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
 import com.zrp200.rkpd2.items.scrolls.*;
-import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPetrification;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -112,7 +111,6 @@ public enum HeroClass {
 
 		new ScrollOfIdentify().identify();
 		new KingsCrown().collect();
-		new ScrollOfPetrification().identify().collect();
 		new TengusMask().collect();
 		hero.lvl = 30;
 

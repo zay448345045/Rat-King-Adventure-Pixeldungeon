@@ -147,7 +147,7 @@ public class Berserk extends Buff {
 	}
 
 	private float rageFactor(int damage) {
-		Hero hero = (Hero)target;
+		Hero hero = Dungeon.hero;
 		float weight = 0.1f*hero.pointsInTalent(Talent.ENRAGED_CATALYST,Talent.ONE_MAN_ARMY,Talent.ENDLESS_RAGE);
 		return damage/(weight*target.HP+(1-weight)*target.HT)/3f;
 	}
@@ -158,7 +158,7 @@ public class Berserk extends Buff {
 
 	public void damage(int damage){
 		if (state == State.RECOVERING && !berserker()) return;
-		float maxPower = 1f + ((Hero)target).byTalent(
+		float maxPower = 1f + Dungeon.hero.byTalent(
 				Talent.ENDLESS_RAGE, 0.2f,
 				Talent.RK_BERSERKER, 0.15f);
 		power = Math.min(maxPower*recovered(), power + rageFactor(damage)*recovered() );

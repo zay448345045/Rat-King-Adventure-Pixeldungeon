@@ -9,6 +9,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Adrenaline;
+import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -124,9 +125,21 @@ public class Ratmogrify extends ArmorAbility {
 
 	}
 
+	public static boolean drratedonActive(Char rat){
+		return Dungeon.hero.pointsInTalent(Talent.DRRATEDON) > 0
+				&& rat.alignment == Char.Alignment.ALLY
+				&& (rat instanceof Ratmogrify.TransmogRat || rat instanceof Rat);
+	}
+
+	public static int drratedonEffect(Char rat){
+		if (drratedonActive(rat))
+			return Dungeon.hero.pointsInTalent(Talent.DRRATEDON);
+		return 0;
+	}
+
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{ Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.HEROIC_ENERGY};
+		return new Talent[]{ Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.DRRATEDON, Talent.HEROIC_ENERGY};
 	}
 
 	public static class TransmogRat extends Mob {
@@ -176,10 +189,26 @@ public class Ratmogrify extends ArmorAbility {
 		@Override
 		public int damageRoll() {
 			int damage = original.damageRoll();
+			Berserk berserk = buff(Berserk.class);
+			if (berserk != null && drratedonEffect(this) > 2) damage = berserk.damageFactor(damage);
 			if (!allied && Dungeon.hero.hasTalent(Talent.RATSISTANCE)){
 				damage = Math.round(damage * (1f - .15f*Dungeon.hero.pointsInTalent(Talent.RATSISTANCE)));
 			}
 			return damage;
+		}
+
+		@Override
+		public int defenseProc(Char enemy, int damage) {
+			if (damage > 0 && drratedonEffect(this) > 2){
+				Berserk berserk = Buff.affect(this, Berserk.class);
+				berserk.damage(damage);
+			}
+			return super.defenseProc(enemy, damage);
+		}
+
+		@Override
+		public int attackProc(Char enemy, int damage) {
+			return super.attackProc(enemy, damage);
 		}
 
 		@Override

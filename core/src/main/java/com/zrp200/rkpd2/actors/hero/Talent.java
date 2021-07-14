@@ -172,7 +172,7 @@ public enum Talent {
 	},
 
 	//Ratmogrify T4
-	RATSISTANCE(124, 4), RATLOMACY(125, 4), RATFORCEMENTS(126, 4),
+	RATSISTANCE(124, 4), RATLOMACY(125, 4), RATFORCEMENTS(126, 4), DRRATEDON(123, 4),
 	// TODO add unique icons, really bad now.
 	ROYAL_PRIVILEGE(32), // food related talents, uses empowering icon
 	ROYAL_INTUITION(97), // intuition-related talents, uses survivalist's icon

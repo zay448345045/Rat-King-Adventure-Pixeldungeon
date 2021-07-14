@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
@@ -1071,6 +1072,9 @@ public abstract class Level implements Bundlable {
 			int viewDist = c.viewDistance;
 			if (c instanceof Hero){
 				viewDist *= ((Hero)c).getViewDistanceModifier();
+			}
+			if (Ratmogrify.drratedonActive(c)){
+				viewDist *= Dungeon.hero.getViewDistanceModifier();
 			}
 			
 			ShadowCaster.castShadow( cx, cy, fieldOfView, blocking, viewDist );

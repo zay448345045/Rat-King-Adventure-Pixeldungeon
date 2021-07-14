@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.Elemental;
@@ -52,6 +53,7 @@ import com.zrp200.rkpd2.items.wands.WandOfFireblast;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
 import com.zrp200.rkpd2.items.wands.WandOfLightning;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blocking;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
@@ -82,7 +84,7 @@ public abstract class Char extends Actor {
 	public int HT;
 	public int HP;
 	
-	protected float baseSpeed	= 1;
+	public float baseSpeed	= 1;
 	protected PathFinder.Path path;
 
 	public int paralysed	    = 0;
@@ -327,6 +329,9 @@ public abstract class Char extends Actor {
 			if (enemy.buff(Shrink.class) != null || enemy.buff(TimedShrink.class) != null) dmg *= 1.4f;
 
 			int effectiveDamage = enemy.defenseProc( this, dmg );
+			if (Ratmogrify.drratedonActive(this)){
+				dr = 0;
+			}
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
 			
 			if ( enemy.buff( Vulnerable.class ) != null){
@@ -480,6 +485,22 @@ public abstract class Char extends Actor {
 		if ( buff(Weakness.class) != null ){
 			damage *= 0.67f;
 		}
+		if (Ratmogrify.drratedonEffect(this) > 3){
+			SoulMark.process(enemy, 3,1, true);
+		}
+		if (Ratmogrify.drratedonActive(this)){
+			if (Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.RK_SNIPER)
+					|| Dungeon.hero.hasTalent(Talent.SHARED_ENCHANTMENT) && Random.Int(4) <= Dungeon.hero.pointsInTalent(Talent.SHARED_ENCHANTMENT))
+				{
+					SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+					if (bow == null && hero.belongings.weapon instanceof SpiritBow){
+						bow = (SpiritBow) hero.belongings.weapon;
+					}
+					if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
+						damage = bow.enchantment.proc(bow, this, enemy, damage);
+					}
+				}
+		}
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
@@ -497,12 +518,21 @@ public abstract class Char extends Actor {
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
+		if (Ratmogrify.drratedonEffect(this) > 1) {
+			speed *= 3f;
+			Momentum momentum = Dungeon.hero.buff(Momentum.class);
+			if (momentum != null){
+				speed *= momentum.speedMultiplier();
+			}
+		}
+
 		return speed;
 	}
 
 	public float attackDelay() {
 		float delay = TICK;
 		if(buff(Adrenaline.class) != null) delay /= 1.5f;
+		if (Ratmogrify.drratedonEffect(this) > 1) delay /= 1.33f;
 		return delay;
 	}
 
