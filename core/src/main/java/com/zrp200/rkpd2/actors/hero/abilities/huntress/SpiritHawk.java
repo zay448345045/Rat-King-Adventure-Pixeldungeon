@@ -143,7 +143,7 @@ public class SpiritHawk extends ArmorAbility {
 			defenseSkill = 50;
 
 			flying = true;
-			viewDistance = (int)GameMath.gate(6, 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE), 8);
+			viewDistance = (int)GameMath.gate(6, 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE, Talent.SHADOWSPEC_SLICE), 8);
 			baseSpeed = 2f + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)/2f;
 			attacksAutomatically = false;
 
@@ -169,7 +169,7 @@ public class SpiritHawk extends ArmorAbility {
 
 		@Override
 		public int defenseSkill(Char enemy) {
-			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)){
+			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)){
 				dodgesUsed++;
 				return Char.INFINITE_EVASION;
 			}
@@ -184,8 +184,8 @@ public class SpiritHawk extends ArmorAbility {
 		@Override
 		public int attackProc(Char enemy, int damage) {
 			damage = super.attackProc( enemy, damage );
-			if (Dungeon.hero.hasTalent(Talent.GO_FOR_THE_EYES)) {
-				Buff.prolong( enemy, Blindness.class, 1 + Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES) );
+			if (Dungeon.hero.hasTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE)) {
+				Buff.prolong( enemy, Blindness.class, 1 + Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE) );
 			}
 			if (Dungeon.hero.hasTalent(Talent.BEAK_OF_POWER)){
 				Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
@@ -246,7 +246,7 @@ public class SpiritHawk extends ArmorAbility {
 				return true;
 			}
 			viewDistance = (int)GameMath.gate(6, 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE), 8);
-			baseSpeed = 2f + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)/2f;
+			baseSpeed = 2f + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)/2f;
 			boolean result = super.act();
 			Dungeon.level.updateFieldOfView( this, fieldOfView );
 			GameScene.updateFog(pos, viewDistance+(int)Math.ceil(speed()));
@@ -292,8 +292,8 @@ public class SpiritHawk extends ArmorAbility {
 			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
 				message = Messages.get(this, "desc_rat", (int)timeRemaining);
 			}
-			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)){
-				message += "\n" + Messages.get(this, "desc_dodges", (Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT) - dodgesUsed));
+			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)){
+				message += "\n" + Messages.get(this, "desc_dodges", (Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN) - dodgesUsed));
 			}
 			return message;
 		}

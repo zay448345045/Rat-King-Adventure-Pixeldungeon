@@ -168,7 +168,7 @@ public class MusRexIra extends ArmorAbility {
                 }
             }
 
-            int maxWands = 4 + Dungeon.hero.pointsInTalent(Talent.FIRE_EVERYTHING);
+            int maxWands = 4 + Dungeon.hero.pointsInTalent(Talent.FIRE_EVERYTHING, Talent.ASTRAL_CHARGE);
             if (hero.hasTalent(Talent.ELDRITCH_BLESSING)) maxWands += 2 + hero.pointsInTalent(Talent.ELDRITCH_BLESSING)/2;
 
             if (wands.size() < maxWands){
@@ -197,7 +197,7 @@ public class MusRexIra extends ArmorAbility {
 
                 Buff.affect(hero, WildMagic.WildMagicTracker.class, 0f);
 
-                armor.charge -= chargeUse(hero);
+                armor.charge -= chargeUse(hero)*2;
 
                 WildMagic.zapWand(wands, hero, target);
             }
