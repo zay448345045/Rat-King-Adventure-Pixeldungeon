@@ -113,7 +113,7 @@ public class WildMagic extends ArmorAbility {
 
 	public static class WildMagicTracker extends FlavourBuff{};
 
-	private void zapWand( ArrayList<Wand> wands, Hero hero, int target){
+	public static void zapWand(ArrayList<Wand> wands, Hero hero, int target){
 		Wand cur = wands.remove(0);
 
 		Ballistica aim = new Ballistica(hero.pos, target, cur.collisionProperties(target));

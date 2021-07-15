@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.actors.buffs.BlobImmunity;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
@@ -124,7 +125,7 @@ public class SpiritHawk extends ArmorAbility {
 		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.BEAK_OF_POWER, Talent.HEROIC_ENERGY};
 	}
 
-	private static HawkAlly getHawk(){
+	public static HawkAlly getHawk(){
 		for (Char ch : Actor.chars()){
 			if (ch instanceof HawkAlly){
 				return (HawkAlly) ch;
@@ -278,8 +279,19 @@ public class SpiritHawk extends ArmorAbility {
 		}
 
 		@Override
+		public String name() {
+			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+				return Messages.get(this, "name_rat");
+			}
+			return super.name();
+		}
+
+		@Override
 		public String description() {
 			String message = Messages.get(this, "desc", (int)timeRemaining);
+			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+				message = Messages.get(this, "desc_rat", (int)timeRemaining);
+			}
 			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT)){
 				message += "\n" + Messages.get(this, "desc_dodges", (Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT) - dodgesUsed));
 			}
@@ -310,6 +322,9 @@ public class SpiritHawk extends ArmorAbility {
 			super();
 
 			texture( Assets.Sprites.SPIRIT_HAWK );
+			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+				texture(Assets.Sprites.ROYAL_OWL);
+			}
 
 			TextureFilm frames = new TextureFilm( texture, 15, 15 );
 

@@ -163,7 +163,7 @@ public class DeathMark extends ArmorAbility {
 			return Messages.get(this, "desc", dispTurns(visualcooldown()));
 		}
 
-		private void setInitialHP( int hp ){
+		public void setInitialHP(int hp){
 			if (initialHP < hp){
 				initialHP = hp;
 			}

@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.ShadowClone;
@@ -238,6 +239,9 @@ public enum HeroClass {
 		Dungeon.quickslot.setSlot(0, bow);
 		Dungeon.quickslot.setSlot(1, cloak);
 		Dungeon.quickslot.setSlot(2, staff);
+		Generator.random(Generator.Category.WAND).identify().collect();
+		Generator.random(Generator.Category.WAND).identify().collect();
+		Generator.random(Generator.Category.WAND).identify().collect();
 		hero.HP = hero.HT = 8;
 	}
 
@@ -264,7 +268,7 @@ public enum HeroClass {
 			case HUNTRESS:
 				return new ArmorAbility[]{new SpectralBlades(), new NaturesPower(), new SpiritHawk()};
 			case RAT_KING:
-				return new ArmorAbility[]{new Wrath(), new Ratmogrify()/*, new OmniAbility()*/};
+				return new ArmorAbility[]{new Wrath(), new Ratmogrify(), new MusRexIra()/*, new OmniAbility()*/};
 		}
 	}
 

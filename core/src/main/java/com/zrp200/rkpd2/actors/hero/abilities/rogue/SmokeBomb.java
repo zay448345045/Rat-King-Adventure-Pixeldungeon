@@ -175,7 +175,7 @@ public class SmokeBomb extends ArmorAbility {
 
 			alignment = Alignment.ALLY;
 
-			HP = HT = 20*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT);
+			HP = HT = 20*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE);
 		}
 
 		{
@@ -184,8 +184,8 @@ public class SmokeBomb extends ArmorAbility {
 
 		@Override
 		public int drRoll() {
-			return Random.NormalIntRange(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT),
-					5*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT));
+			return Random.NormalIntRange(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE),
+					5*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE));
 		}
 
 	}

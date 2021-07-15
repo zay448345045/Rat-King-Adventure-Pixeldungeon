@@ -21,21 +21,22 @@
 
 package com.zrp200.rkpd2.items.armor;
 
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.windows.WndChooseAbility;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.LockedFloor;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.windows.WndChooseAbility;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -176,7 +177,9 @@ abstract public class ClassArmor extends Armor {
 				usesTargeting = false;
 				GLog.w( Messages.get(this, "not_equipped") );
 			} else {
-				if (charge < hero.armorAbility.chargeUse(hero)) {
+				float chargeUse = hero.armorAbility.chargeUse(hero);
+				if (hero.armorAbility instanceof MusRexIra) chargeUse*=2;
+				if (charge < chargeUse) {
 					/*usesTargeting = false;
 					GLog.w( Messages.get(this, "low_charge") );*/
 					GLog.n("Rat King: I don't have time for this nonsense! I have a kingdom to run! CLASS ARMOR SUPERCHAARGE!!");

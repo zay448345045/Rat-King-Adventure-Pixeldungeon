@@ -309,7 +309,8 @@ public class SpiritBow extends Weapon {
 					@Override
 					protected boolean act() {
 
-						if (Random.Int(10) < ((Hero)attacker).pointsInTalent(Talent.NATURES_WRATH)){
+						if (Random.Int( ((Hero)attacker).hasTalent(Talent.NATURES_WRATH) ? 10 : 12)
+								< ((Hero)attacker).pointsInTalent(Talent.NATURES_WRATH, Talent.SILVA_RANGE)){
 							Plant plant = (Plant) Reflection.newInstance(Random.element(harmfulPlants));
 							plant.pos = defender.pos;
 							plant.activate( defender.isAlive() ? defender : null );
@@ -318,7 +319,10 @@ public class SpiritBow extends Weapon {
 						if (!defender.isAlive()){
 							NaturesPower.naturesPowerTracker tracker = attacker.buff(NaturesPower.naturesPowerTracker.class);
 							if (tracker != null){
-								tracker.extend(((Hero) attacker).shiftedPoints(Talent.WILD_MOMENTUM));
+								if (Dungeon.hero.canHaveTalent(Talent.WILD_MOMENTUM))
+									tracker.extend(((Hero) attacker).shiftedPoints(Talent.WILD_MOMENTUM));
+								else
+									tracker.extend(((Hero) attacker).pointsInTalent(Talent.SILVA_RANGE));
 							}
 						}
 
@@ -354,7 +358,9 @@ public class SpiritBow extends Weapon {
 			float speed = SpiritBow.this.speedMultiplier(owner);
 			if (owner.buff(NaturesPower.naturesPowerTracker.class) != null){
 				// +33% speed to ~~+50%~~ +56% speed, depending on talent points
-				speed += ((/*8*/6 + ((Hero)owner).pointsInTalent(Talent.GROWING_POWER)) / /*24*/18f);
+				speed += ((Dungeon.hero.canHaveTalent(Talent.GROWING_POWER) ? 6 : 8
+						+ ((Hero)owner).pointsInTalent(Talent.GROWING_POWER)) /
+						(Dungeon.hero.canHaveTalent(Talent.GROWING_POWER) ? 18f : 24f));
 			}
 			return speed;
 		}

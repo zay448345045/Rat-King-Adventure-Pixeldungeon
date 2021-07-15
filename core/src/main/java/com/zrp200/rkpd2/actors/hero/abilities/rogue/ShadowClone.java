@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
@@ -50,6 +51,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.MobSprite;
+import com.zrp200.rkpd2.sprites.RatKingHeroSprite;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -128,7 +130,7 @@ public class ShadowClone extends ArmorAbility {
 		return new Talent[]{Talent.SHADOW_BLADE, Talent.CLONED_ARMOR, Talent.PERFECT_COPY, Talent.DAR_MAGIC, Talent.HEROIC_ENERGY};
 	}
 
-	private static ShadowAlly getShadowAlly(){
+	public static ShadowAlly getShadowAlly(){
 		for (Char ch : Actor.chars()){
 			if (ch instanceof ShadowAlly){
 				return (ShadowAlly) ch;
@@ -152,7 +154,11 @@ public class ShadowClone extends ArmorAbility {
 		public ShadowAlly( int heroLevel ){
 			super();
 			int hpBonus = 20 + 5*heroLevel;
+			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+				hpBonus = 8 + 2*heroLevel;
+			}
 			hpBonus = Math.round(0.1f * Dungeon.hero.shiftedPoints(Talent.PERFECT_COPY) * hpBonus);
+			hpBonus = Math.round(0.1f * Dungeon.hero.pointsInTalent(Talent.BLOODFLARE_SKIN) * hpBonus);
 			if (hpBonus > 0){
 				HT += hpBonus;
 				HP += hpBonus;
@@ -162,7 +168,7 @@ public class ShadowClone extends ArmorAbility {
 
 		@Override
 		public boolean canAttack(Char enemy) {
-			if (Dungeon.hero.pointsInTalent(Talent.DAR_MAGIC) > 0){
+			if (Dungeon.hero.pointsInTalent(Talent.DAR_MAGIC) > 0 || Dungeon.hero.pointsInTalent(Talent.SILVA_RANGE) > 0){
 				Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
 				return attack.collisionPos == enemy.pos;
 			}
@@ -184,7 +190,8 @@ public class ShadowClone extends ArmorAbility {
 											@Override
 											public void call() {
 												attack(enemy,
-														0.25f * Dungeon.hero.pointsInTalent(Talent.DAR_MAGIC),
+														Dungeon.hero.byTalent(Talent.DAR_MAGIC, 0.25f,
+																				Talent.SILVA_RANGE, 0.125f),
 														0, 1);
 												spend(attackDelay());
 												next();
@@ -272,7 +279,10 @@ public class ShadowClone extends ArmorAbility {
 			int damage = Random.NormalIntRange(10, 20);
 			int heroDamage = Dungeon.hero.damageRoll();
 			heroDamage /= Dungeon.hero.attackDelay(); //normalize hero damage based on atk speed
-			heroDamage = Math.round(0.0625f * Dungeon.hero.shiftedPoints(Talent.SHADOW_BLADE) * heroDamage);
+			if (Dungeon.hero.canHaveTalent(Talent.SHADOW_BLADE))
+				heroDamage = Math.round(0.0625f * Dungeon.hero.shiftedPoints(Talent.SHADOW_BLADE) * heroDamage);
+			else
+				heroDamage = Math.round(0.0625f * Dungeon.hero.pointsInTalent(Talent.SHADOWSPEC_SLICE) * heroDamage);
 			if (heroDamage > 0){
 				damage += heroDamage;
 			}
@@ -286,8 +296,11 @@ public class ShadowClone extends ArmorAbility {
 		public int attackProc( Char enemy, int damage ) {
 			damage = super.attackProc( enemy, damage );
 			// shifted to actually work.
-			if (Random.Int(/*4*/5) < Dungeon.hero.shiftedPoints(Talent.SHADOW_BLADE)
-					&& Dungeon.hero.belongings.weapon != null){
+			if ((Dungeon.hero.canHaveTalent(Talent.SHADOWSPEC_SLICE) &&
+					(Random.Int(4) < Dungeon.hero.pointsInTalent(Talent.SHADOWSPEC_SLICE)
+							&& Dungeon.hero.belongings.weapon != null)) ||
+					(Random.Int(/*4*/5) < Dungeon.hero.shiftedPoints(Talent.SHADOW_BLADE)
+					&& Dungeon.hero.belongings.weapon != null)){
 				return Dungeon.hero.belongings.weapon.proc( this, enemy, damage );
 			} else {
 				return damage;
@@ -298,7 +311,10 @@ public class ShadowClone extends ArmorAbility {
 		public int drRoll() {
 			int dr = super.drRoll();
 			int heroRoll = Dungeon.hero.drRoll();
-			heroRoll = Math.round(0.125f * Dungeon.hero.shiftedPoints(Talent.CLONED_ARMOR) * heroRoll);
+			if (Dungeon.hero.canHaveTalent(Talent.CLONED_ARMOR))
+				heroRoll = Math.round(0.125f * Dungeon.hero.shiftedPoints(Talent.CLONED_ARMOR) * heroRoll);
+			else
+				heroRoll = Math.round(0.125f * Dungeon.hero.pointsInTalent(Talent.SHADOWSPEC_SLICE) * heroRoll);
 			if (heroRoll > 0){
 				dr += heroRoll;
 			}
@@ -321,7 +337,9 @@ public class ShadowClone extends ArmorAbility {
 		public boolean canInteract(Char c) {
 			if (super.canInteract(c)){
 				return true;
-			} else if (Dungeon.level.distance(pos, c.pos) <= Dungeon.hero.shiftedPoints(Talent.PERFECT_COPY)) {
+			} else if (Dungeon.level.distance(pos, c.pos) <= Math.max(
+					Dungeon.hero.shiftedPoints(Talent.PERFECT_COPY),
+					Dungeon.hero.pointsInTalent(Talent.ASTRAL_CHARGE))) {
 				return true;
 			} else {
 				return false;
@@ -359,7 +377,7 @@ public class ShadowClone extends ArmorAbility {
 			return true;
 		}
 
-		private static void appear( Char ch, int pos ) {
+		public static void appear(Char ch, int pos) {
 
 			ch.sprite.interruptMotion();
 
@@ -373,6 +391,14 @@ public class ShadowClone extends ArmorAbility {
 			if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
 				ch.sprite.emitter().burst(SmokeParticle.FACTORY, 10);
 			}
+		}
+
+		@Override
+		public String description() {
+			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+				return Messages.get(this, "desc_rat");
+			}
+			return super.description();
 		}
 
 		private static final String DEF_SKILL = "def_skill";
@@ -398,20 +424,43 @@ public class ShadowClone extends ArmorAbility {
 			super();
 
 			texture( Dungeon.hero.heroClass.spritesheet() );
+			TextureFilm film;
+			if (Dungeon.hero.sprite instanceof RatKingHeroSprite){
+				film = new TextureFilm( HeroSprite.tiers(Assets.Sprites.RAT_KING_HERO, 17), 0, 16, 17 );
+				idle = new Animation( 2, true );
+				idle.frames( film, 0, 0, 0, 1 );
 
-			TextureFilm film = new TextureFilm( ((HeroSprite)Dungeon.hero.sprite).tiers(), 6, 12, 15 );
+				run = new Animation( 10, true );
+				run.frames( film, 6, 7, 8, 9, 10 );
 
-			idle = new Animation( 1, true );
-			idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
+				attack = new Animation( 15, false );
+				attack.frames( film, 2, 3, 4, 5, 0 );
 
-			run = new Animation( 20, true );
-			run.frames( film, 2, 3, 4, 5, 6, 7 );
+				die = new Animation( 10, false );
+				die.frames( film, 11,12,13,14 );
 
-			die = new Animation( 20, false );
-			die.frames( film, 0 );
+				zap = attack.clone();
 
-			attack = new Animation( 15, false );
-			attack.frames( film, 13, 14, 15, 0 );
+				operate = new Animation( 8, false );
+				operate.frames( film, 2,6,2,6);
+
+			}
+			else {
+				film = new TextureFilm(((HeroSprite) Dungeon.hero.sprite).tiers(), 6, 12, 15);
+
+
+				idle = new Animation(1, true);
+				idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);
+
+				run = new Animation(20, true);
+				run.frames(film, 2, 3, 4, 5, 6, 7);
+
+				die = new Animation(20, false);
+				die.frames(film, 0);
+
+				attack = new Animation(15, false);
+				attack.frames(film, 13, 14, 15, 0);
+			}
 
 			idle();
 			resetColor();

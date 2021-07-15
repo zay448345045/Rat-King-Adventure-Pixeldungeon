@@ -219,8 +219,8 @@ public class WarpBeacon extends ArmorAbility {
 
 	public static class WarpBeaconTracker extends Buff {
 
-		int pos;
-		int depth;
+		public int pos;
+		public int depth;
 
 		Emitter e;
 
