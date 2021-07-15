@@ -20,7 +20,6 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
-import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.ShadowClone;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
@@ -201,29 +200,6 @@ public class MusRexIra extends ArmorAbility {
                 armor.charge -= chargeUse(hero);
 
                 WildMagic.zapWand(wands, hero, target);
-            }
-
-            Char ch = Actor.findChar(target);
-
-            if (ch.alignment != Char.Alignment.ENEMY){
-                GLog.w(Messages.get(DeathMark.class, "ally_target"));
-                return;
-            }
-
-            Buff.affect(ch, DeathMark.DeathMarkTracker.class, 5f + hero.pointsInTalent(Talent.CATACLYSMIC_ENERGY)
-                    + (hero.hasTalent(Talent.CATACLYSMIC_ENERGY) ? 1 : 0)).setInitialHP(ch.HP);
-
-            armor.charge -= chargeUse( hero );
-            hero.sprite.zap(target);
-
-            hero.next();
-
-            if (hero.buff(DeathMark.DoubleMarkTracker.class) == null) {
-                if (hero.hasTalent(Talent.DOUBLE_MARK)) {
-                    Buff.affect(hero, DeathMark.DoubleMarkTracker.class, 0.01f);
-                }
-            } else {
-                hero.buff(DeathMark.DoubleMarkTracker.class).detach();
             }
         } else {
             //set or tp to beacon
