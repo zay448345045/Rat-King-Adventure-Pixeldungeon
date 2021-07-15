@@ -22,6 +22,8 @@
 package com.zrp200.rkpd2.plants;
 
 import com.badlogic.gdx.utils.Array;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
@@ -30,7 +32,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barkskin;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -42,12 +43,6 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -68,9 +63,9 @@ public abstract class Plant implements Bundlable {
 			((Hero) ch).interrupt();
 		}
 
-		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.hasTalent(Talent.NATURES_AID,Talent.NOBLE_CAUSE)){
+		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.hasTalent(Talent.NOBLE_CAUSE)){
 			// 3/5 turns based on talent points spent
-			Buff.affect(Dungeon.hero, Barkskin.class).set((Dungeon.hero.hasTalent(Talent.NATURES_AID)?3:2), 1 + 2*(Dungeon.hero.pointsInTalent(Talent.NATURES_AID,Talent.NOBLE_CAUSE)));
+			Buff.affect(Dungeon.hero, Barkskin.class).set((2), 1 + 2*(Dungeon.hero.pointsInTalent(Talent.NOBLE_CAUSE)));
 		}
 
 		wither();

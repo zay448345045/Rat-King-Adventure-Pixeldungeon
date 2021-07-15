@@ -80,9 +80,9 @@ public enum Talent {
 	//Warrior T3
 	HOLD_FAST(9, 3), STRONGMAN(10, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), BERSERKING_STAMINA(12, 3), ENRAGED_CATALYST(13, 3), ONE_MAN_ARMY(7,3),
+	ENDLESS_RAGE(11, 3), BERSERKING_STAMINA(12, 3), ENRAGED_CATALYST(13, 3), ONE_MAN_ARMY(139,3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(98,3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(140,3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4), ALICE_GAMBIT(145, 4),
 	//Shockwave T4
@@ -97,9 +97,9 @@ public enum Talent {
 	//Mage T3
 	EMPOWERING_SCROLLS(41, 3), ALLY_WARP(42, 3),
 	//Battlemage T3
-	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(38,3),
+	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(141,3),
 	//Warlock T3
-	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), WARLOCKS_TOUCH (135, 3),
+	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), WARLOCKS_TOUCH (142, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), EMPOWERED_STRIKE_II(148, 4),
 	//Wild Magic T4
@@ -114,9 +114,9 @@ public enum Talent {
 	//Rogue T3
 	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3),
 	//Assassin T3
-	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(7,3),
+	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(144,3),
 	//Freerunner T3
-	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(136,3), // TODO implement icon for fast recovery
+	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(143,3), // TODO implement icon for fast recovery
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4), FRIGID_TOUCH(151, 4),
 	//Death Mark T4
@@ -133,7 +133,7 @@ public enum Talent {
 	//Sniper T3
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(137,3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3), NATURES_BETTER_AID(102,3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3), NATURES_BETTER_AID(138,3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4), SPECTRAL_SHOT(154, 4),
 	//Natures Power T4
@@ -173,18 +173,17 @@ public enum Talent {
 
 	//Ratmogrify T4
 	RATSISTANCE(124, 4), RATLOMACY(125, 4), RATFORCEMENTS(126, 4), DRRATEDON(123, 4),
-	// TODO add unique icons, really bad now.
-	ROYAL_PRIVILEGE(32), // food related talents, uses empowering icon
+	ROYAL_PRIVILEGE(32), // food related talents
 	ROYAL_INTUITION(97), // intuition-related talents, uses survivalist's icon
-	KINGS_WISDOM(34), // on-id + combat talents, uses tested hypothesis
-	NOBLE_CAUSE(67), // other ones. uses iron will
-	ROYAL_MEAL(100), //// all on-eat talents for tier 2. uses arcane meal
-	RESTORATION(5), // all upgrade/potion of healing talents, uses restored willpower icon
-	POWER_WITHIN(72), // runic (3), wand preservation (3), rogue's foresight (5), rejuvenating steps (3), uses foresight.
-	KINGS_VISION(103), // improvised projectiles (4), arcane vision(4), wide search(3), heightened senses(4), uses heightened senses
-	PURSUIT(98), // durable projectiles (5),silent steps(4),lethal momentum (3),shield battery(5), uses FUS
+	KINGS_WISDOM(130), // on-id + combat talents
+	NOBLE_CAUSE(131), // other ones. uses iron will
+	ROYAL_MEAL(100), //// all on-eat talents for tier 2
+	RESTORATION(133), // all upgrade/potion of healing talents
+	POWER_WITHIN(134), // runic (3), wand preservation (3), rogue's foresight (5), rejuvenating steps (3)
+	KINGS_VISION(135), // improvised projectiles (4), arcane vision(4), wide search(3), heightened senses(4)
+	PURSUIT(136), // durable projectiles (5),silent steps(4),lethal momentum (3),shield battery(5)
 	// Rat King T3
-	RK_BERSERKER(11,3), RK_GLADIATOR(16,3), RK_BATTLEMAGE(43,3), RK_WARLOCK(47,3), RK_ASSASSIN(75,3), RK_FREERUNNER(78,3), RK_SNIPER(109,3), RK_WARDEN(102,3),
+	RK_BERSERKER(27,3), RK_GLADIATOR(28,3), RK_BATTLEMAGE(29,3), RK_WARLOCK(30,3), RK_ASSASSIN(157,3), RK_FREERUNNER(31,3), RK_SNIPER(158,3), RK_WARDEN(159,3),
 	// Wrath T4
 	AURIC_TESLA(92, 4), QUANTUM_POSITION(93, 4), RAT_AGE(94, 4), AVALON_POWER_UP(95, 4),
 	// Mus Rex Ira T4
