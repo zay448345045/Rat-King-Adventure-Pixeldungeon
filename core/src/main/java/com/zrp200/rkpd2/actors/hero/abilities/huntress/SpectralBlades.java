@@ -164,6 +164,7 @@ public class SpectralBlades extends ArmorAbility {
 								SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
 								if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
 								spiritArrow.cast(hero, ch.pos);
+								hero.ready();
 //								hero.spend(-hero.cooldown());
 							}
 						}

@@ -390,6 +390,7 @@ public class SpiritBow extends Weapon {
 						&& Unstable.getRandomEnchant(SpiritBow.this) instanceof Explosive))
 							&& new Explosive().tryProc(curUser, SpiritBow.this.buffedLvl()))
 					new Bomb().explode(cell);
+				curUser.ready();
 			}
 		}
 
