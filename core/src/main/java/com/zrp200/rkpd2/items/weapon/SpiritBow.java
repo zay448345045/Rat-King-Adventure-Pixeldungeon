@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.buffs.Roots;
@@ -198,6 +199,9 @@ public class SpiritBow extends Weapon {
 		public int proc(Char attacker, Char defender, int damage) {
 			if (Dungeon.hero.hasTalent(Talent.RESTORED_NATURE)){
 				Buff.affect(defender, Roots.class, Dungeon.hero.pointsInTalent(Talent.RESTORED_NATURE) + baseDelay(attacker));
+			}
+			if (Dungeon.hero.hasTalent(Talent.NATURES_AID)){
+				Buff.affect(attacker, Barrier.class).incShield(2 + Dungeon.hero.pointsInTalent(Talent.NATURES_AID)*2);
 			}
 			return super.proc(attacker, defender, damage);
 		}
