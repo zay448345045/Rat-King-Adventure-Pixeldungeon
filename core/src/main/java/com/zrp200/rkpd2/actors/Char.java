@@ -332,6 +332,9 @@ public abstract class Char extends Actor {
 			if (Ratmogrify.drratedonActive(this)){
 				dr = 0;
 			}
+			if (enemy.buff(GodSlayerBurning.class) != null){
+				dr = 0;
+			}
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
 			
 			if ( enemy.buff( Vulnerable.class ) != null){

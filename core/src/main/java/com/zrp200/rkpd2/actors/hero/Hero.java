@@ -98,6 +98,8 @@ public class Hero extends Char {
 		actPriority = HERO_PRIO;
 		
 		alignment = Alignment.ALLY;
+
+		resistances.add(GodSlayerBurning.class);
 	}
 	
 	public static final int MAX_LEVEL = 30;

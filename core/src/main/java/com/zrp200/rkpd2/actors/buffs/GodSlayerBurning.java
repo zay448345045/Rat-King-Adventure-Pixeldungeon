@@ -21,15 +21,13 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
-import com.zrp200.rkpd2.actors.blobs.Fire;
+import com.zrp200.rkpd2.actors.blobs.GodSlayerFire;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Thief;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Heap;
@@ -46,36 +44,18 @@ import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
 
-public class Burning extends Buff implements Hero.Doom {
+public class GodSlayerBurning extends Burning {
 	
 	public static final float DURATION = 8f;
 	
-	public float left;
-	
 	//for tracking burning of hero items
 	private int burnIncrement = 0;
-	
-	private static final String LEFT	= "left";
-	private static final String BURN	= "burnIncrement";
+
 
 	{
 		type = buffType.NEGATIVE;
 		actPriority = BUFF_PRIO - 1;
 		announced = true;
-	}
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-		bundle.put( BURN, burnIncrement );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle(bundle);
-		left = bundle.getFloat( LEFT );
-		burnIncrement = bundle.getInt( BURN );
 	}
 
 	@Override
@@ -90,8 +70,7 @@ public class Burning extends Buff implements Hero.Doom {
 		
 		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
-			damage *= (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.125f);
+			int damage = Random.NormalIntRange( 2, 4 + Dungeon.depth/4 );
 
 			Buff.detach( target, Chill.class);
 
@@ -117,12 +96,6 @@ public class Burning extends Buff implements Hero.Doom {
 					if (!burnable.isEmpty()){
 						Item toBurn = Random.element(burnable).detach(hero.belongings.backpack);
 						GLog.w( Messages.get(this, "burnsup", Messages.capitalize(toBurn.toString())) );
-						if (toBurn instanceof MysteryMeat || toBurn instanceof FrozenCarpaccio){
-							ChargrilledMeat steak = new ChargrilledMeat();
-							if (!steak.collect( hero.belongings.backpack )) {
-								Dungeon.level.drop( steak, hero.pos ).sprite.drop();
-							}
-						}
 						Heap.burnFX( hero.pos );
 					}
 				}
@@ -150,15 +123,14 @@ public class Burning extends Buff implements Hero.Doom {
 			detach();
 		}
 		
-		if (Dungeon.level.flamable[target.pos] && Blob.volumeAt(target.pos, Fire.class) == 0) {
-			GameScene.add( Blob.seed( target.pos, 4, Fire.class ) );
+		if (Dungeon.level.flamable[target.pos] && Blob.volumeAt(target.pos, GodSlayerFire.class) == 0) {
+			GameScene.add( Blob.seed( target.pos, 4, GodSlayerFire.class ) );
 		}
 		
-		spend( TICK );
-		left -= TICK;
+		spend( TICK/3 );
+		left -= TICK/3;
 		
-		if (left <= 0 ||
-			(Dungeon.level.water[target.pos] && !target.flying)) {
+		if (left <= 0) {
 			
 			detach();
 		}
@@ -176,7 +148,7 @@ public class Burning extends Buff implements Hero.Doom {
 	
 	@Override
 	public int icon() {
-		return BuffIndicator.FIRE;
+		return BuffIndicator.SACRIFICE;
 	}
 
 	@Override
@@ -186,8 +158,8 @@ public class Burning extends Buff implements Hero.Doom {
 
 	@Override
 	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.BURNING);
-		else target.sprite.remove(CharSprite.State.BURNING);
+		if (on) target.sprite.add(CharSprite.State.GODBURNING);
+		else target.sprite.remove(CharSprite.State.GODBURNING);
 	}
 
 	@Override

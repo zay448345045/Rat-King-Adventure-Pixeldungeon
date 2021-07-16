@@ -35,6 +35,8 @@ import com.zrp200.rkpd2.scenes.GameScene;
 
 public class Fire extends Blob {
 
+	protected static Class<? extends Burning> fireClass = Burning.class;
+
 	@Override
 	protected void evolve() {
 
@@ -98,8 +100,8 @@ public class Fire extends Blob {
 	
 	public static void burn( int pos ) {
 		Char ch = Actor.findChar( pos );
-		if (ch != null && !ch.isImmune(Fire.class)) {
-			Buff.affect( ch, Burning.class ).reignite( ch );
+		if (ch != null && !ch.isImmune(fireClass)) {
+			Buff.affect( ch, fireClass ).reignite( ch );
 		}
 		
 		Heap heap = Dungeon.level.heaps.get( pos );

@@ -203,6 +203,13 @@ public class SpiritBow extends Weapon {
 			if (Dungeon.hero.hasTalent(Talent.NATURES_AID)){
 				Buff.affect(attacker, Barrier.class).incShield(2 + Dungeon.hero.pointsInTalent(Talent.NATURES_AID)*2);
 			}
+			// TODO: make god slayer inferno an enchantment
+//			if (Dungeon.hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE)
+//					&& Dungeon.hero.belongings.armor instanceof ScoutArmor
+//					&& Random.Float() < (1 + Dungeon.hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE))/
+//					(10f + (Dungeon.hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE)-1)*2)){
+//				Buff.affect(defender, GodSlayerBurning.class).reignite(defender, Random.IntRange(2, 3));
+//			}
 			return super.proc(attacker, defender, damage);
 		}
 	}

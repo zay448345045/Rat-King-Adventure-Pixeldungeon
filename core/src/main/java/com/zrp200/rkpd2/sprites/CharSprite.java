@@ -41,10 +41,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.Phantom;
 import com.zrp200.rkpd2.effects.*;
-import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.FrostfireParticle;
-import com.zrp200.rkpd2.effects.particles.ShadowParticle;
-import com.zrp200.rkpd2.effects.particles.SnowParticle;
+import com.zrp200.rkpd2.effects.particles.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -77,7 +74,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED
+		BURNING, GODBURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED
 	}
 	private int stunStates = 0;
 
@@ -369,6 +366,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					Sample.INSTANCE.play( Assets.Sounds.BURNING );
 				}
 				break;
+			case GODBURNING:
+				burning = emitter();
+				burning.pour( GodfireParticle.FACTORY, 0.02f );
+				if (visible) {
+					Sample.INSTANCE.play( Assets.Sounds.BURNING );
+				}
+				break;
 			case SPIRIT:
 				spirit = emitter();
 				spirit.pour(MagicMissile.ForceParticle.FACTORY, 0.06f );
@@ -448,6 +452,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public void remove( State state ) {
 		switch (state) {
 			case BURNING:
+			case GODBURNING:
 				if (burning != null) {
 					burning.on = false;
 					burning = null;
