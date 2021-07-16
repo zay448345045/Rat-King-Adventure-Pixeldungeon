@@ -230,7 +230,8 @@ public class CloakOfShadows extends Artifact {
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
-					if(((Hero)target).heroClass == HeroClass.ROGUE) turnsToCharge /= ROGUE_BOOST;
+					if(((Hero)target).heroClass == HeroClass.ROGUE
+						&& !((Hero) target).hasTalent(Talent.EFFICIENT_SHADOWS)) turnsToCharge /= ROGUE_BOOST;
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
@@ -276,9 +277,15 @@ public class CloakOfShadows extends Artifact {
 			return BuffIndicator.INVISIBLE;
 		}
 
+		public float stealthDuration(){
+			return 4f +
+					(Dungeon.hero.hasTalent(Talent.EFFICIENT_SHADOWS) ? 1f : 0) +
+						Dungeon.hero.pointsInTalent(Talent.EFFICIENT_SHADOWS);
+		}
+
 		@Override
 		public float iconFadePercent() {
-			return (4f - turnsToCost) / 4f;
+			return (stealthDuration() - turnsToCost) / stealthDuration();
 		}
 
 		@Override
@@ -352,7 +359,7 @@ public class CloakOfShadows extends Artifact {
 						GLog.p(Messages.get(this, "levelup"));
 						
 					}
-					turnsToCost = 4;
+					turnsToCost = (int) stealthDuration();
 				}
 				updateQuickslot();
 			}

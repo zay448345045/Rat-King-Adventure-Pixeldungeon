@@ -10,6 +10,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.items.Heap;
@@ -28,12 +29,12 @@ public class WandOfFirebolt extends DamageWand {
 
     @Override
     public int min(int lvl) {
-        return lvl;
+        return (int) (lvl * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f));
     }
 
     @Override
     public int max(int lvl) {
-        return 9+6*lvl;
+        return (int) ((9+6*lvl) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f));
     }
 
     @Override
@@ -81,7 +82,8 @@ public class WandOfFirebolt extends DamageWand {
             if (Random.Int( 2 ) == 0) {
                 Buff.affect( defender, Burning.class ).reignite( defender );
             }
-            if(!defender.isImmune(getClass())) defender.damage( Random.Int( 1, level+2 ), this);
+            if(!defender.isImmune(getClass())) defender.damage(
+                    (int) (Random.Int( 1, level+2 ) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f)), this);
 
             defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
 
