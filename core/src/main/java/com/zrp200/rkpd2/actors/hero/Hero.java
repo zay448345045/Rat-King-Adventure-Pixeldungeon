@@ -529,6 +529,12 @@ public class Hero extends Char {
 		if (endure != null) {
 			dmg = endure.damageFactor(dmg);
 		}
+		if (buff(Talent.BigRushTracker.class) != null){
+			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
+			if (shield != null && shield.maxShield() > 0){
+				dmg += pointsInTalent(Talent.BIG_RUSH)/3f*shield.maxShield();
+			}
+		}
 
 		return buff( Fury.class ) != null ? (int)(dmg * 1.5f) : dmg;
 	}
@@ -1389,7 +1395,9 @@ public class Hero extends Char {
 			else if (path.getLast() != target)
 				newPath = true;
 			else {
-				if (!Dungeon.level.passable[path.get(0)] || Actor.findChar(path.get(0)) != null) {
+				if (!Dungeon.level.passable[path.get(0)]) {
+					newPath = true;
+				} else if (Actor.findChar(path.get(0)) != null) {
 					newPath = true;
 				}
 			}
@@ -1405,7 +1413,7 @@ public class Hero extends Char {
 					passable[i] = p[i] && (v[i] || m[i]);
 				}
 
-				PathFinder.Path newpath = Dungeon.findPath(this, target, passable, fieldOfView, true);
+				PathFinder.Path newpath = Dungeon.findPath(this, target, passable, fieldOfView, !hasTalent(Talent.BIG_RUSH));
 				if (newpath != null && path != null && newpath.size() > 2*path.size()){
 					path = null;
 				} else {
@@ -1425,12 +1433,29 @@ public class Hero extends Char {
 			}
 
 			float speed = speed();
+			if (hasTalent(Talent.BIG_RUSH)){
+				for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+					if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]
+							&& mob.pos == step) {
+						Buff.affect(this, Talent.BigRushTracker.class, 0f);
+						enemy = mob;
+						if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy )) {
+							CellEmitter.center(pos).burst(Speck.factory(Speck.DUST), 10);
+							Camera.main.shake(2, 0.5f);
+							sprite.attack( enemy.pos );
+//								spend(attackDelay());
+							return false;
+						}
+					}
+				}
+			}
 			
 			sprite.move(pos, step);
 			move(step);
 
 			spend( 1 / speed );
 			justMoved = true;
+
 			
 			search(false);
 
