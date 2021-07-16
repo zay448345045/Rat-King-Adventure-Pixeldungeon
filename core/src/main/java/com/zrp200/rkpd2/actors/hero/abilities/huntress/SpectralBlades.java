@@ -155,19 +155,6 @@ public class SpectralBlades extends ArmorAbility {
 								}
 							});
 						}
-						if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 1){
-							SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-							if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
-								bow = (SpiritBow) Dungeon.hero.belongings.weapon;
-							}
-							if (bow != null && hero.subClass == HeroSubClass.SNIPER){
-								SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
-								if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
-								spiritArrow.cast(hero, ch.pos);
-								hero.ready();
-//								hero.spend(-hero.cooldown());
-							}
-						}
 					}
 					callbacks.remove( this );
 					if (callbacks.isEmpty()) {
@@ -181,6 +168,20 @@ public class SpectralBlades extends ArmorAbility {
 			m.reset( hero.sprite, ch.pos, proto, callback );
 			m.hardlight(0.6f, 1f, 1f);
 			m.alpha(0.8f);
+			if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 1){
+				SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+				if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
+					bow = (SpiritBow) Dungeon.hero.belongings.weapon;
+				}
+				if (bow != null && hero.subClass == HeroSubClass.SNIPER){
+					SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
+					if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
+					spiritArrow.forceSkipDelay = true;
+					spiritArrow.doNotDelay = true;
+					spiritArrow.cast(hero, ch.pos);
+//								hero.spend(-hero.cooldown());
+				}
+			}
 
 			callbacks.add( callback );
 		}

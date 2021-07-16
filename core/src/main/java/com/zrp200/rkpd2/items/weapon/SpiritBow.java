@@ -271,6 +271,7 @@ public class SpiritBow extends Weapon {
 
 		public boolean sniperSpecial = false;
 		public float sniperSpecialBonusDamage = 0f;
+		public boolean doNotDelay = false;
 
 		@Override
 		public int damageRoll(Char owner) {
@@ -444,7 +445,7 @@ public class SpiritBow extends Weapon {
 										}
 										
 										if (last) {
-											if(--shotCount <= 0) user.spendAndNext(castDelay(user, dst));
+											if(--shotCount <= 0 && !doNotDelay) user.spendAndNext(castDelay(user, dst));
 											flurryCount = -1;
 										}
 									}
@@ -472,7 +473,8 @@ public class SpiritBow extends Weapon {
 						Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class);
 					}
 				}
-				forceSkipDelay = sniperSpecial && --shotCount > 0;
+				if (!doNotDelay)
+					forceSkipDelay = sniperSpecial && --shotCount > 0;
 				super.cast(user, dst);
 			}
 		}

@@ -119,27 +119,28 @@ public class Wrath extends ArmorAbility {
             if (Dungeon.level.distance(hero.pos, mob.pos) <= 6 + hero.pointsInTalent(Talent.QUANTUM_POSITION)*3
                     && Dungeon.level.heroFOV[mob.pos]
                     && mob.alignment == Char.Alignment.ENEMY) {
+
                 Callback callback = new Callback() {
                     @Override
                     public void call() {
                         hero.attack( targets.get( this ) );
-                        if (Dungeon.hero.hasTalent(Talent.AVALON_POWER_UP)) {
-                            SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-                            if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow) {
-                                bow = (SpiritBow) Dungeon.hero.belongings.weapon;
-                            }
-                            if (bow != null && Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.AVALON_POWER_UP)) {
-                                SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
-                                spiritArrow.forceSkipDelay = true;
-                                spiritArrow.cast(hero, targets.get( this ).pos);
-//								hero.spend(-hero.cooldown());
-                            }
-                        }
                         Invisibility.dispel();
                         targets.remove( this );
                         if (targets.isEmpty()) finish(armor, hero, stages);
                     }
                 };
+                if (Dungeon.hero.hasTalent(Talent.AVALON_POWER_UP)) {
+                    SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+                    if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow) {
+                        bow = (SpiritBow) Dungeon.hero.belongings.weapon;
+                    }
+                    if (bow != null && Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.AVALON_POWER_UP)) {
+                        SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
+                        spiritArrow.forceSkipDelay = true;
+                        spiritArrow.cast(hero, mob.pos);
+//								hero.spend(-hero.cooldown());
+                    }
+                }
                 targets.put( callback, mob );
             }
         }
