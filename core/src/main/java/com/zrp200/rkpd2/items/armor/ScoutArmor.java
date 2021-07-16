@@ -28,6 +28,7 @@ public class ScoutArmor extends Armor {
         image = ItemSpriteSheet.ARMOR_SCOUT;
 
         bones = false;
+        unique = true;
 
         usesTargeting = true;
     }
