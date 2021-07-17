@@ -21,11 +21,13 @@
 
 package com.zrp200.rkpd2.plants;
 
+import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -35,7 +37,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Game;
 
 public class Fadeleaf extends Plant {
 	
@@ -51,7 +52,7 @@ public class Fadeleaf extends Plant {
 			
 			((Hero)ch).curAction = null;
 
-			if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING){
+			if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).hasTalent(Talent.RK_WARDEN)){
 				
 				if (Dungeon.bossLevel()) {
 					GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );

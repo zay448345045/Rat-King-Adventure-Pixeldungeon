@@ -172,7 +172,7 @@ public class MagesStaff extends MeleeWeapon {
 		int reach = super.reachFactor(owner);
 		if (owner instanceof Hero
 				&& wand instanceof WandOfDisintegration
-				&& ((Hero)owner).subClass == HeroSubClass.KING) {
+				&& ((Hero)owner).hasTalent(Talent.RK_BATTLEMAGE)) {
 			reach++;
 		}
 		return reach;
@@ -329,7 +329,7 @@ public class MagesStaff extends MeleeWeapon {
 			if (!cursed || !cursedKnown)    info += " " + wand.statsDesc();
 			else                            info += " " + Messages.get(this, "cursed_wand");
 
-			if (Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE || Dungeon.hero.subClass == HeroSubClass.KING){
+			if (Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE || Dungeon.hero.hasTalent(Talent.RK_BATTLEMAGE)){
 				info += "\n\n" + Messages.get(wand, "bmage_desc", Messages.titleCase(Dungeon.hero.subClass.title()));
 			}
 		}

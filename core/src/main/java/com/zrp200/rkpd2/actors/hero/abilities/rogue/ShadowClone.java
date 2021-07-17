@@ -154,9 +154,6 @@ public class ShadowClone extends ArmorAbility {
 		public ShadowAlly( int heroLevel ){
 			super();
 			int hpBonus = 20 + 5*heroLevel;
-			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
-				hpBonus = 8 + 2*heroLevel;
-			}
 			hpBonus = Math.round(0.1f * Dungeon.hero.shiftedPoints(Talent.PERFECT_COPY) * hpBonus);
 			hpBonus = Math.round(0.1f * Dungeon.hero.pointsInTalent(Talent.BLOODFLARE_SKIN) * hpBonus);
 			if (hpBonus > 0){

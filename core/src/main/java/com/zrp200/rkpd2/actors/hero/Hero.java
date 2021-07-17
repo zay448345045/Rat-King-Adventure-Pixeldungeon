@@ -165,9 +165,6 @@ public class Hero extends Char {
 		int curHT = HT;
 		
 		HT = 20 + 5*(lvl-1) + HTBoost;
-		if (heroClass != null && heroClass == HeroClass.RAT_KING){
-			HT = 8 + 2*(lvl-1) + HTBoost;
-		}
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
@@ -192,10 +189,10 @@ public class Hero extends Char {
 		}
 
 		// TODO buff for warrior
-		if (hasTalent(Talent.STRONGMAN,Talent.RK_GLADIATOR)){ // note that you need to have points in this.
+		if (hasTalent(Talent.STRONGMAN,Talent.RK_BERSERKER)){ // note that you need to have points in this.
 			float boost = Math.max(
 					0.05f + 0.08f*pointsInTalent(Talent.STRONGMAN), // get it? ~1.5x. Very, very slightly worse than v0.0.1
-					0.03f + 0.05f*pointsInTalent(Talent.RK_GLADIATOR)
+					0.03f + 0.05f*pointsInTalent(Talent.RK_BERSERKER)
 			);
 			STR = (int)Math.floor(STR * (1 + boost));
 		}
@@ -414,7 +411,7 @@ public class Hero extends Char {
 		belongings.weapon = belongings.stashedWeapon;
 		belongings.stashedWeapon = null;
 
-		if (hit && (subClass == HeroSubClass.GLADIATOR || subClass == HeroSubClass.KING)){
+		if (hit && (subClass == HeroSubClass.GLADIATOR || hasTalent(Talent.RK_GLADIATOR))){
 			Buff.affect( this, Combo.class ).hit( enemy );
 		}
 
@@ -1150,23 +1147,22 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.weapon;
 
 		// subclass logic here
-		switch(subClass) {
-			case KING: case BATTLEMAGE:
-				MagesStaff staff = belongings.getItem(MagesStaff.class);
-				if(staff != null && (staff == wep || hasTalent(Talent.SORCERY))){
-					if(staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
-						staff.procBM();
-					}
-					if(staff == wep || Random.Int(3) < pointsInTalent(Talent.SORCERY))
-						if (buff(Talent.EmpoweredStrikeTracker.class) != null) {
-							buff(Talent.EmpoweredStrikeTracker.class).detach();
-							damage = Math.round(damage * (1f + Math.max(
-									Dungeon.hero.pointsInTalent(Talent.EMPOWERED_STRIKE)/3f,
-									Dungeon.hero.pointsInTalent(Talent.RK_BATTLEMAGE)/4f)));
-						}
-						staff.procWand(enemy, damage);
-					}
-		}
+        if (subClass == HeroSubClass.BATTLEMAGE || hasTalent(Talent.RK_BATTLEMAGE)) {
+            MagesStaff staff = belongings.getItem(MagesStaff.class);
+            if (staff != null && (staff == wep || hasTalent(Talent.SORCERY))) {
+                if (staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
+                    staff.procBM();
+                }
+                if (staff == wep || Random.Int(3) < pointsInTalent(Talent.SORCERY))
+                    if (buff(Talent.EmpoweredStrikeTracker.class) != null) {
+                        buff(Talent.EmpoweredStrikeTracker.class).detach();
+                        damage = Math.round(damage * (1f + Math.max(
+                                Dungeon.hero.pointsInTalent(Talent.EMPOWERED_STRIKE) / 3f,
+                                Dungeon.hero.pointsInTalent(Talent.RK_BATTLEMAGE) / 4f)));
+                    }
+                staff.procWand(enemy, damage);
+            }
+        }
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
 		if (buff(Talent.SpiritBladesTracker.class) != null
@@ -1177,32 +1173,29 @@ public class Hero extends Char {
 		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
-		
-		switch (subClass) {
-			case SNIPER: case KING:
-			if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
-				Actor.add(new Actor() {
-					
-					{
-						actPriority = VFX_PRIO;
-					}
-					
-					@Override
-					protected boolean act() {
-						if (enemy.isAlive() || hasTalent(Talent.MULTISHOT)) {
-							int level = hasTalent(Talent.RK_SNIPER) || canHaveTalent(Talent.SHARED_UPGRADES) ? wep.buffedLvl() : 0;
-							SnipersMark mark = Buff.affect(Hero.this, SnipersMark.class);
-							mark.set(enemy.id(), level);
-							if(!enemy.isAlive()) mark.remove(enemy.id()); // this lets it trigger ranger
-						}
-						Actor.remove(this);
-						return true;
-					}
-				});
-			}
-			break;
-		default:
-		}
+
+        if (subClass == HeroSubClass.SNIPER || hasTalent(Talent.RK_SNIPER)) {
+            if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
+                Actor.add(new Actor() {
+
+                    {
+                        actPriority = VFX_PRIO;
+                    }
+
+                    @Override
+                    protected boolean act() {
+                        if (enemy.isAlive() || hasTalent(Talent.MULTISHOT)) {
+                            int level = hasTalent(Talent.RK_SNIPER) || canHaveTalent(Talent.SHARED_UPGRADES) ? wep.buffedLvl() : 0;
+                            SnipersMark mark = Buff.affect(Hero.this, SnipersMark.class);
+                            mark.set(enemy.id(), level);
+                            if (!enemy.isAlive()) mark.remove(enemy.id()); // this lets it trigger ranger
+                        }
+                        Actor.remove(this);
+                        return true;
+                    }
+                });
+            }
+        }
 		
 		return damage;
 	}
@@ -1210,7 +1203,7 @@ public class Hero extends Char {
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
-		if (damage > 0 && (subClass == HeroSubClass.BERSERKER || subClass == HeroSubClass.KING)){
+		if (damage > 0 && (subClass == HeroSubClass.BERSERKER || hasTalent(Talent.RK_BERSERKER))){
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
@@ -1430,7 +1423,7 @@ public class Hero extends Char {
 
 		if (step != -1) {
 
-			if (subClass == HeroSubClass.FREERUNNER || subClass == HeroSubClass.KING){
+			if (subClass == HeroSubClass.FREERUNNER || hasTalent(Talent.RK_FREERUNNER)){
 				Buff.affect(this, Momentum.class).gainStack();
 			}
 
@@ -1864,7 +1857,7 @@ public class Hero extends Char {
 		Invisibility.dispel();
 		spend( attackDelay() );
 
-		if (subClass == HeroSubClass.GLADIATOR || subClass == HeroSubClass.KING){
+		if (subClass == HeroSubClass.GLADIATOR || hasTalent(Talent.RK_GLADIATOR)){
 			Combo combo = Buff.affect( this, Combo.class );
 			if(hit) combo.hit(enemy);
 			else 	combo.miss();

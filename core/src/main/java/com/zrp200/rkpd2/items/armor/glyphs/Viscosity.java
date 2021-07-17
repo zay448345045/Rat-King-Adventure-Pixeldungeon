@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
@@ -37,7 +38,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
 
 public class Viscosity extends Glyph {
 	
@@ -58,7 +58,7 @@ public class Viscosity extends Glyph {
 		//account for huntress armor piercing
 		if (attacker instanceof Hero
 				&& ((Hero) attacker).belongings.weapon instanceof MissileWeapon
-				&& (((Hero) attacker).subClass == HeroSubClass.SNIPER || ((Hero)attacker).subClass == HeroSubClass.KING)
+				&& (((Hero) attacker).subClass == HeroSubClass.SNIPER || ((Hero)attacker).hasTalent(Talent.RK_SNIPER))
 				&& !Dungeon.level.adjacent(attacker.pos, defender.pos)){
 			realDamage = damage;
 		}

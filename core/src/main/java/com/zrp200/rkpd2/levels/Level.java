@@ -1057,7 +1057,7 @@ public abstract class Level implements Bundlable {
 		if (sighted) {
 			boolean[] blocking;
 			
-			if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero)c).subClass == HeroSubClass.KING))
+			if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero)c).hasTalent(Talent.RK_WARDEN)))
 				|| c instanceof YogFist.SoiledFist) {
 				blocking = Dungeon.level.losBlocking.clone();
 				for (int i = 0; i < blocking.length; i++){

@@ -294,7 +294,7 @@ public class CloakOfShadows extends Artifact {
 				target.invisible++;
 				if (target instanceof Hero
 						&& (((Hero) target).subClass == HeroSubClass.ASSASSIN
-						|| ((Hero)target).subClass == HeroSubClass.KING)) {
+						|| ((Hero)target).hasTalent(Talent.RK_ASSASSIN))) {
 					Buff.affect(target, Preparation.class);
 				}
 				return true;

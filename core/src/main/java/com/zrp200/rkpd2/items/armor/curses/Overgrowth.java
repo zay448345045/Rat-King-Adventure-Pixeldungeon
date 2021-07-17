@@ -21,9 +21,11 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Generator;
@@ -31,7 +33,6 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.plants.Starflower;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 public class Overgrowth extends Armor.Glyph {
 	
@@ -51,7 +52,7 @@ public class Overgrowth extends Armor.Glyph {
 			
 			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
 			if (defender instanceof Hero && ((Hero) defender).subClass == HeroSubClass.WARDEN
-					|| ((Hero)defender).subClass == HeroSubClass.KING){
+					|| ((Hero)defender).hasTalent(Talent.RK_WARDEN)){
 				HeroSubClass subclass = ((Hero)defender).subClass;
 				((Hero) defender).subClass = HeroSubClass.NONE;
 				p.activate( defender );

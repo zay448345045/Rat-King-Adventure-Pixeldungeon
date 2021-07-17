@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.actors.buffs.Levitation;
 import com.zrp200.rkpd2.actors.buffs.Vertigo;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Stormvine extends Plant {
@@ -40,7 +41,7 @@ public class Stormvine extends Plant {
 	public void activate( Char ch ) {
 
 		if (ch != null) {
-			if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING)){
+			if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).hasTalent(Talent.RK_WARDEN))){
 				Buff.affect(ch, Levitation.class, Levitation.DURATION/2f);
 			} else {
 				Buff.affect(ch, Vertigo.class, Vertigo.DURATION);

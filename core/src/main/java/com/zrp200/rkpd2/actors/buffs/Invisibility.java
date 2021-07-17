@@ -25,6 +25,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.messages.Messages;
@@ -47,7 +48,7 @@ public class Invisibility extends FlavourBuff {
 			target.invisible++;
 			if (target instanceof Hero
 					&& (((Hero) target).subClass == HeroSubClass.ASSASSIN
-						|| ((Hero)target).subClass == HeroSubClass.KING)) {
+						|| ((Hero)target).hasTalent(Talent.RK_ASSASSIN))) {
 				Buff.affect(target, Preparation.class);
 			}
 			return true;

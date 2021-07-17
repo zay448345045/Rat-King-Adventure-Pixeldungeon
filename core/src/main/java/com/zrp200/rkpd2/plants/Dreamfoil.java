@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.MagicalSleep;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.messages.Messages;
@@ -50,7 +51,7 @@ public class Dreamfoil extends Plant {
 				GLog.i( Messages.get(this, "refreshed") );
 				PotionOfHealing.cure(ch);
 
-				if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING){
+			if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).hasTalent(Talent.RK_WARDEN)){
 					Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
 				}
 				

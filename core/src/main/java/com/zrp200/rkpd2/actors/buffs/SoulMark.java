@@ -45,7 +45,7 @@ public class SoulMark extends FlavourBuff {
 	public static void process(Char defender, int level, int chargesUsed, boolean delay) {
 		//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
 		if (defender != Dungeon.hero
-				&& (Dungeon.hero.subClass == HeroSubClass.WARLOCK || Dungeon.hero.subClass == HeroSubClass.KING)
+				&& (Dungeon.hero.subClass == HeroSubClass.WARLOCK || Dungeon.hero.hasTalent(Talent.RK_WARLOCK))
 				&& Random.Float() > (Math.pow(0.92f, (level * chargesUsed) + 1) - 0.07f)) {
 			DelayedMark mark = affect(defender,DelayedMark.class);
 			mark.duration = DURATION+level;
