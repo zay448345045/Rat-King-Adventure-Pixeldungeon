@@ -451,6 +451,12 @@ public abstract class Char extends Actor {
 		}
 		
 		float defRoll = Random.Float( defStat );
+		if (defender == hero && hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE) && accMulti == 2f) {
+			defRoll *= 2;
+		}
+		else if (defender == hero && hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE) > 1 && !Dungeon.level.adjacent(attacker.pos, defender.pos)){
+			defRoll *= 1.5f;
+		}
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
 		if (defender.buff(Shrink.class)!= null || defender.buff(TimedShrink.class)!= null) defRoll *= 0.8f;
