@@ -21,17 +21,6 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.effects.particles.BloodParticle;
-import com.zrp200.rkpd2.effects.particles.CorrosionParticle;
-import com.zrp200.rkpd2.effects.particles.ElmoParticle;
-import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.LeafParticle;
-import com.zrp200.rkpd2.effects.particles.PurpleParticle;
-import com.zrp200.rkpd2.effects.particles.RainbowParticle;
-import com.zrp200.rkpd2.effects.particles.ShadowParticle;
-import com.zrp200.rkpd2.effects.particles.SparkParticle;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Visual;
@@ -83,6 +72,7 @@ public class MagicMissile extends Emitter {
 	public static final int ELMO            = 21;
 	public static final int INVISI          = 22;
 	public static final int ABYSS           = 23;
+	public static final int RANDOM          = 24;
 
 	public static final int MAGIC_MISS_CONE = 100;
 	public static final int FROST_CONE      = 101;
@@ -97,6 +87,7 @@ public class MagicMissile extends Emitter {
 	public static final int PURPLE_CONE     = 111;
 	public static final int SPARK_CONE      = 112;
 	public static final int BLOOD_CONE      = 113;
+	public static final int RANDOM_CONE    = 114;
 		public void reset( int type, int from, int to, Callback callback ) {
 		reset( type,
 				DungeonTilemap.raisedTileCenterToWorld( from ),
@@ -273,6 +264,10 @@ public class MagicMissile extends Emitter {
 			case ABYSS:
 				size( 9 );
 				pour( YogParticle.FACTORY, 0.04f );
+				break;
+			case RANDOM_CONE:
+				size( 20);
+				pour( ElmoParticle.FACTORY, 0.03f);
 				break;
 		}
 

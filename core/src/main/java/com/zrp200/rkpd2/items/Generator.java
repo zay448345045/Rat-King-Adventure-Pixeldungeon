@@ -189,8 +189,9 @@ public class Generator {
 					WandOfTransfusion.class,
 					WandOfCorruption.class,
 					WandOfRegrowth.class,
-					WandOfFirebolt.class};
-			WAND.probs = new float[]{ 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 2 };
+					WandOfFirebolt.class,
+					WandOfUnstable.class};
+			WAND.probs = new float[]{ 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 1 };
 			
 			//see generator.randomWeapon
 			WEAPON.classes = new Class<?>[]{};
@@ -239,9 +240,10 @@ public class Generator {
 					Glaive.class,
 					Greataxe.class,
 					Greatshield.class,
-					Gauntlet.class
+					Gauntlet.class,
+					RoyalBrand.class
 			};
-			WEP_T5.probs = new float[]{ 6, 5, 5, 4, 4, 4 };
+			WEP_T5.probs = new float[]{ 9, 7, 7, 6, 6, 6, 1 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{

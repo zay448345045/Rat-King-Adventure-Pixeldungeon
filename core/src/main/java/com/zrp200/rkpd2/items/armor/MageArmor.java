@@ -26,8 +26,6 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Roots;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -64,7 +62,6 @@ public class MageArmor extends ClassArmor {
 					if (staff != null) staff.wand().onHit(staff, Dungeon.hero, mob, staff.damageRoll(Dungeon.hero));
 					if (bow != null) bow.proc( Dungeon.hero, mob, bow.damageRoll(Dungeon.hero) );
 				}
-				Buff.prolong( mob, Roots.class, Roots.DURATION );
 			}
 		}
 		return success;
