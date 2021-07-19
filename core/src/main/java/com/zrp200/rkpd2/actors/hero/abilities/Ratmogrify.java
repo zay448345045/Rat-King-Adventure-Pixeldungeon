@@ -255,7 +255,12 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*3;
-			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
+		}
+
+		@Override
+		protected boolean act() {
+			if (drratedonEffect(this) > 4 && ChampionEnemy.isChampion(this)) ChampionEnemy.rollForChampionInstantly(this);
+			return super.act();
 		}
 
 		@Override public int attackSkill(Char target) {
@@ -272,7 +277,12 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*6;
-			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
+		}
+
+		@Override
+		protected boolean act() {
+			if (drratedonEffect(this) > 4 && ChampionEnemy.isChampion(this)) ChampionEnemy.rollForChampionInstantly(this);
+			return super.act();
 		}
 
 		@Override public int attackSkill(Char target) {

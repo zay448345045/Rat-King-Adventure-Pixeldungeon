@@ -101,6 +101,14 @@ public abstract class ChampionEnemy extends Buff {
 		immunities.add(Corruption.class);
 	}
 
+	public static boolean isChampion(Mob m){
+		boolean isChamp = false;
+		for (ChampionEnemy buff : m.buffs(ChampionEnemy.class)){
+			isChamp = true;
+		}
+		return !isChamp;
+	}
+
 	public static void rollForChampion(Mob m){
 		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 8;
 
