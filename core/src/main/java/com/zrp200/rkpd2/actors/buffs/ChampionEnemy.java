@@ -275,16 +275,18 @@ public abstract class ChampionEnemy extends Buff {
 				if (candidates.size() > 0) {
 
 					Mob clone = (Mob) Reflection.newInstance(target.getClass());
-					clone.HP = target.HP/ 2;
-					clone.pos = Random.element( candidates );
-					clone.state = clone.HUNTING;
+					if (target.HP > 0) {
+						clone.HP = target.HP / 2;
+						clone.pos = Random.element(candidates);
+						clone.state = clone.HUNTING;
 
-					Dungeon.level.occupyCell(clone);
+						Dungeon.level.occupyCell(clone);
 
-					GameScene.add( clone, 1f );
-					Actor.addDelayed( new Pushing( clone, target.pos, clone.pos ), -1 );
+						GameScene.add(clone, 1f);
+						Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
 
-					target.HP -= clone.HP;
+						target.HP -= clone.HP;
+					}
 				}
 			}
 			return 1f;
