@@ -238,11 +238,13 @@ public abstract class Mob extends Char {
 		if ( newEnemy ) {
 
 			HashSet<Char> enemies = new HashSet<>();
+			Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
 
 			//if the mob is amoked...
 			if ( buff(Amok.class) != null) {
+
 				//try to find an enemy mob to attack first.
-				for (Mob mob : Dungeon.level.mobs)
+				for (Mob mob : mobs)
 					if (mob.alignment == Alignment.ENEMY && mob != this
 							&& canSee(mob.pos) && mob.invisible <= 0) {
 						enemies.add(mob);
@@ -250,7 +252,7 @@ public abstract class Mob extends Char {
 				
 				if (enemies.isEmpty()) {
 					//try to find ally mobs to attack second.
-					for (Mob mob : Dungeon.level.mobs)
+					for (Mob mob : mobs)
 						if (mob.alignment == Alignment.ALLY && mob != this
 								&& canSee(mob.pos) && mob.invisible <= 0) {
 							enemies.add(mob);
@@ -267,7 +269,7 @@ public abstract class Mob extends Char {
 			//if the mob is an ally...
 			} else if ( alignment == Alignment.ALLY ) {
 				//look for hostile mobs to attack
-				for (Mob mob : Dungeon.level.mobs)
+				for (Mob mob : mobs)
 					if (mob.alignment == Alignment.ENEMY && canSee(mob.pos)
 							&& mob.invisible <= 0 && !mob.isInvulnerable(getClass()))
 						//intelligent allies do not target mobs which are passive, wandering, or asleep
@@ -279,7 +281,7 @@ public abstract class Mob extends Char {
 			//if the mob is an enemy...
 			} else if (alignment == Alignment.ENEMY) {
 				//look for ally mobs to attack
-				for (Mob mob : Dungeon.level.mobs)
+				for (Mob mob : mobs)
 					if (mob.alignment == Alignment.ALLY && canSee(mob.pos) && mob.invisible <= 0 && !mob.isInvulnerable(getClass()))
 						enemies.add(mob);
 

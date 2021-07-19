@@ -125,12 +125,13 @@ public class LostSpirit extends AbyssalMob implements Callback {
         if ( newEnemy ) {
 
             HashSet<Char> enemies = new HashSet<>();
+            Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
 
             if (Dungeon.level.adjacent(pos, Dungeon.hero.pos)) {
                 return Dungeon.hero;
             }
             //look for ally mobs to attack, ignoring the soul flame
-            for (Mob mob :  Dungeon.level.mobs.toArray(new Mob[0]))
+            for (Mob mob : mobs)
                 if (mob.alignment == Alignment.ENEMY && canSee(mob.pos) && mob != this && mob.buff(ChampionEnemy.class) == null)
                     enemies.add(mob);
 
