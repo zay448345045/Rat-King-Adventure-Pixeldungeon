@@ -8,11 +8,9 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Adrenaline;
-import com.zrp200.rkpd2.actors.buffs.Berserk;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Albino;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -53,7 +51,7 @@ public class Ratmogrify extends ArmorAbility {
 			GLog.w(Messages.get(this, "no_target"));
 			return;
 		} else if (ch == hero){
-			if (!hero.hasTalent(Talent.RATFORCEMENTS)){
+			if (!(hero.hasTalent(Talent.RATFORCEMENTS) || hero.heroClass == HeroClass.RAT_KING)){
 				GLog.w(Messages.get(this, "self_target"));
 				return;
 			} else {
@@ -66,7 +64,7 @@ public class Ratmogrify extends ArmorAbility {
 					}
 				}
 
-				int ratsToSpawn = hero.pointsInTalent(Talent.RATFORCEMENTS);
+				int ratsToSpawn = hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATFORCEMENTS);
 
 				while (ratsToSpawn > 0 && spawnPoints.size() > 0) {
 					int index = Random.index( spawnPoints );
@@ -86,15 +84,15 @@ public class Ratmogrify extends ArmorAbility {
 			GLog.w(Messages.get(this, "cant_transform"));
 			return;
 		} else if (ch instanceof TransmogRat){
-			if (((TransmogRat) ch).allied || !hero.hasTalent(Talent.RATLOMACY)){
+			if (((TransmogRat) ch).allied || !(hero.hasTalent(Talent.RATLOMACY) || hero.heroClass == HeroClass.RAT_KING)){
 				GLog.w(Messages.get(this, "cant_transform"));
 				return;
 			} else {
 				((TransmogRat) ch).makeAlly();
 				ch.sprite.emitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
-				if (hero.pointsInTalent(Talent.RATLOMACY) > 1){
-					Buff.affect(ch, Adrenaline.class, /*2*/4*(hero.pointsInTalent(Talent.RATLOMACY)-1));
+				if (hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATLOMACY) > 1){
+					Buff.affect(ch, Adrenaline.class, /*2*/4*(hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATLOMACY)-1));
 				}
 			}
 		} else if (Char.hasProp(ch, Char.Property.MINIBOSS) || Char.hasProp(ch, Char.Property.BOSS)){
@@ -126,14 +124,14 @@ public class Ratmogrify extends ArmorAbility {
 	}
 
 	public static boolean drratedonActive(Char rat){
-		return Dungeon.hero.pointsInTalent(Talent.DRRATEDON) > 0
+		return (Dungeon.hero.pointsInTalent(Talent.DRRATEDON) > 0 || Dungeon.hero.heroClass == HeroClass.RAT_KING)
 				&& rat.alignment == Char.Alignment.ALLY
 				&& (rat instanceof Ratmogrify.TransmogRat || rat instanceof Rat);
 	}
 
 	public static int drratedonEffect(Char rat){
 		if (drratedonActive(rat))
-			return Dungeon.hero.pointsInTalent(Talent.DRRATEDON);
+			return Dungeon.hero.pointsInTalentWithInnate(HeroClass.RAT_KING, Talent.DRRATEDON);
 		return 0;
 	}
 
@@ -176,6 +174,7 @@ public class Ratmogrify extends ArmorAbility {
 		public void makeAlly() {
 			allied = true;
 			alignment = Alignment.ALLY;
+			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
 		}
 
 		public int attackSkill(Char target) {
@@ -191,8 +190,8 @@ public class Ratmogrify extends ArmorAbility {
 			int damage = original.damageRoll();
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null && drratedonEffect(this) > 2) damage = berserk.damageFactor(damage);
-			if (!allied && Dungeon.hero.hasTalent(Talent.RATSISTANCE)){
-				damage = Math.round(damage * (1f - .15f*Dungeon.hero.pointsInTalent(Talent.RATSISTANCE)));
+			if (!allied && (Dungeon.hero.hasTalent(Talent.RATSISTANCE) || Dungeon.hero.heroClass == HeroClass.RAT_KING)){
+				damage = Math.round(damage * (1f - .15f*Dungeon.hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATSISTANCE)));
 			}
 			return damage;
 		}
@@ -256,6 +255,7 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*3;
+			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
 		}
 
 		@Override public int attackSkill(Char target) {
@@ -272,6 +272,7 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*6;
+			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
 		}
 
 		@Override public int attackSkill(Char target) {
