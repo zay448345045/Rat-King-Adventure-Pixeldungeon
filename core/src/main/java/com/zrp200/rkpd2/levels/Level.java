@@ -449,9 +449,10 @@ public abstract class Level implements Bundlable {
 			ChampionEnemy.rollForChampion(m);
 		}
 		if (Dungeon.depth > 25 && Dungeon.bossLevel()){
-			int bossAmount = Random.Int(2, 3 + 2*(Dungeon.depth - 25)/5);
+			int bossAmount = Random.Int(3, 5 + 2*(Dungeon.depth - 25)/5);
 			Class[] bosses = new Class[]{AbyssalNightmare.class, Dragon.class, LostSpirit.class};
 			for (int i = 0; i < bossAmount; i++){
+				mobsToSpawn.remove(0);
 				mobsToSpawn.add(Random.element(bosses));
 			}
 		}
