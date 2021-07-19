@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.levels;
 
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
@@ -35,18 +34,14 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.effects.Ripple;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.painters.SewerPainter;
-import com.zrp200.rkpd2.levels.traps.AlarmTrap;
-import com.zrp200.rkpd2.levels.traps.ChillingTrap;
-import com.zrp200.rkpd2.levels.traps.ConfusionTrap;
-import com.zrp200.rkpd2.levels.traps.FlockTrap;
-import com.zrp200.rkpd2.levels.traps.OozeTrap;
-import com.zrp200.rkpd2.levels.traps.ShockingTrap;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
-import com.zrp200.rkpd2.levels.traps.TeleportationTrap;
-import com.zrp200.rkpd2.levels.traps.ToxicTrap;
-import com.zrp200.rkpd2.levels.traps.WornDartTrap;
+import com.zrp200.rkpd2.levels.rooms.Room;
+import com.zrp200.rkpd2.levels.rooms.secret.RatKingRoom;
+import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
+
+import java.util.ArrayList;
 
 public class SewerLevel extends RegularLevel {
 
@@ -61,7 +56,15 @@ public class SewerLevel extends RegularLevel {
 		//4 to 6, average 5
 		return 4+Random.chances(new float[]{1, 3, 1});
 	}
-	
+
+	@Override
+	protected ArrayList<Room> initRooms() {
+
+		ArrayList<Room> rooms = super.initRooms();
+		rooms.add(new RatKingRoom());
+		return rooms;
+	}
+
 	@Override
 	protected int specialRooms(boolean forceMax) {
 		if (forceMax) return 2;

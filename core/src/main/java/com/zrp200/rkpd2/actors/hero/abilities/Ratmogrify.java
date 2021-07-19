@@ -174,7 +174,7 @@ public class Ratmogrify extends ArmorAbility {
 		public void makeAlly() {
 			allied = true;
 			alignment = Alignment.ALLY;
-			if (drratedonEffect(this) > 4) ChampionEnemy.rollForChampionInstantly(this);
+			if (drratedonEffect(this) > 4 && ChampionEnemy.isChampion(this)) ChampionEnemy.rollForChampionInstantly(this);
 		}
 
 		public int attackSkill(Char target) {
