@@ -350,6 +350,7 @@ public abstract class ChampionEnemy extends Buff {
 			clone.HP = clone.HT = Math.round(clone.HT * 2.5f);
 			clone.pos = target.pos;
 			clone.state = clone.HUNTING;
+			clone.alignment = target.alignment;
 
 			Dungeon.level.occupyCell(clone);
 			GameScene.add( clone );
