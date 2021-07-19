@@ -60,6 +60,11 @@ public class RingOfWealth extends Ring {
 	@Override
 	protected float multiplier() { return 1.20f; }
 
+	@Override
+	protected float cap() {
+		return Float.MAX_VALUE;
+	}
+
 	private static final String TRIES_TO_DROP = "tries_to_drop";
 	private static final String DROPS_TO_RARE = "drops_to_rare";
 
