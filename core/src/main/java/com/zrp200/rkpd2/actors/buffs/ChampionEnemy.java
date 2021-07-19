@@ -318,7 +318,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public void detach() {
 			for (int i : PathFinder.NEIGHBOURS4){
-				if (!Dungeon.level.solid[target.pos+i]){
+				if (!Dungeon.level.solid[target.pos+i] && Dungeon.level.insideMap(target.pos+i)){
 					new Bomb().explode(target.pos+i);
 				}
 			}
