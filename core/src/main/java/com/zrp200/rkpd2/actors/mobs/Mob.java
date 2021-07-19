@@ -351,6 +351,9 @@ public abstract class Mob extends Char {
 			if (buff.canAttackWithExtraReach( enemy )){
 				return true;
 			}
+			if (buff.getClass() == ChampionEnemy.Paladin.class){
+				return false;
+			}
 		}
 		return super.canAttack(enemy);
 	}
@@ -358,6 +361,10 @@ public abstract class Mob extends Char {
 	protected boolean getCloser( int target ) {
 		
 		if (rooted || target == pos) {
+			return false;
+		}
+
+		if (buff(ChampionEnemy.Paladin.class) != null){
 			return false;
 		}
 
@@ -581,6 +588,10 @@ public abstract class Mob extends Char {
 
 		SoulMark soulMark = buff(SoulMark.class);
 		if(soulMark != null) soulMark.proc(enemy,this,damage);
+
+		if (buff(ChampionEnemy.Reflective.class) != null){
+			enemy.damage((int) (damage*0.5f), this);
+		}
 
 		return damage;
 	}

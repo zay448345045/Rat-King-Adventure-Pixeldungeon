@@ -110,56 +110,18 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	public static void rollForChampion(Mob m){
-		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 8;
+		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 4;
 
 		Dungeon.mobsToChampion--;
 
 		if (Dungeon.mobsToChampion <= 0){
-			switch (Random.Int(12)) {
-				case 0:
-				default:
-					Buff.affect(m, Blazing.class);
-					break;
-				case 1:
-					Buff.affect(m, Projecting.class);
-					break;
-				case 2:
-					Buff.affect(m, AntiMagic.class);
-					break;
-				case 3:
-					Buff.affect(m, Giant.class);
-					break;
-				case 4:
-					Buff.affect(m, Blessed.class);
-					break;
-				case 5:
-					Buff.affect(m, Growing.class);
-					break;
-				case 6:
-					Buff.affect(m, Cursed.class);
-					break;
-				case 7:
-					Buff.affect(m, Splintering.class);
-					break;
-				case 8:
-					Buff.affect(m, Stone.class);
-					break;
-				case 9:
-					Buff.affect(m, Flowing.class);
-					break;
-				case 10:
-					Buff.affect(m, Voodoo.class);
-					break;
-				case 11:
-					Buff.affect(m, Explosive.class);
-					break;
-			}
+			makeChampion(m);
 			m.state = m.WANDERING;
 		}
 	}
 
-	public static void rollForChampionInstantly(Mob m){
-		switch (Random.Int(12)) {
+	private static void makeChampion(Mob m) {
+		switch (Random.Int(15)) {
 			case 0:
 			default:
 				Buff.affect(m, Blazing.class);
@@ -197,7 +159,20 @@ public abstract class ChampionEnemy extends Buff {
 			case 11:
 				Buff.affect(m, Explosive.class);
 				break;
+			case 12:
+				Buff.affect(m, Swiftness.class);
+				break;
+			case 13:
+				Buff.affect(m, Reflective.class);
+				break;
+			case 14:
+				Buff.affect(m, Paladin.class);
+				break;
 		}
+	}
+
+	public static void rollForChampionInstantly(Mob m){
+			makeChampion(m);
 			m.state = m.WANDERING;
 	}
 
@@ -229,6 +204,23 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			immunities.add(Burning.class);
+		}
+	}
+
+	public static class Paladin extends ChampionEnemy {
+		{
+			color = 0xfff2aa;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			target.viewDistance = 8;
+			return super.attachTo(target);
+		}
+
+		@Override
+		public float damageTakenFactor() {
+			return 0.5f;
 		}
 	}
 
@@ -336,6 +328,12 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static class Reflective extends ChampionEnemy {
+		{
+			color = 0x981a47;
+		}
+	}
+
 	public static class Voodoo extends ChampionEnemy {
 
 		{
@@ -409,6 +407,19 @@ public abstract class ChampionEnemy extends Buff {
 
 				return PathFinder.distance[target.pos] <= 2;
 			}
+		}
+	}
+
+	public static class Swiftness extends ChampionEnemy {
+		{
+			color = 0x2900ff;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			Buff.affect(target, Shrink.class);
+			Buff.affect(target, Adrenaline.class, 1000);
+			return super.attachTo(target);
 		}
 	}
 
