@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.scenes;
 
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.*;
-import com.zrp200.rkpd2.Challenges;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -57,36 +56,6 @@ import com.zrp200.rkpd2.levels.rooms.secret.SecretRoom;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.sprites.DiscardedItemSprite;
-import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.RatKingHeroSprite;
-import com.zrp200.rkpd2.tiles.CustomTilemap;
-import com.zrp200.rkpd2.tiles.DungeonTerrainTilemap;
-import com.zrp200.rkpd2.tiles.DungeonTileSheet;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.zrp200.rkpd2.tiles.DungeonWallsTilemap;
-import com.zrp200.rkpd2.tiles.FogOfWar;
-import com.zrp200.rkpd2.tiles.GridTileMap;
-import com.zrp200.rkpd2.tiles.RaisedTerrainTilemap;
-import com.zrp200.rkpd2.tiles.TerrainFeaturesTilemap;
-import com.zrp200.rkpd2.tiles.WallBlockingTilemap;
-import com.zrp200.rkpd2.ui.ActionIndicator;
-import com.zrp200.rkpd2.ui.AttackIndicator;
-import com.zrp200.rkpd2.ui.Banner;
-import com.zrp200.rkpd2.ui.BusyIndicator;
-import com.zrp200.rkpd2.ui.CharHealthIndicator;
-import com.zrp200.rkpd2.ui.GameLog;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.LootIndicator;
-import com.zrp200.rkpd2.ui.QuickSlotButton;
-import com.zrp200.rkpd2.ui.ResumeIndicator;
-import com.zrp200.rkpd2.ui.StatusPane;
-import com.zrp200.rkpd2.ui.TargetHealthIndicator;
-import com.zrp200.rkpd2.ui.Toast;
-import com.zrp200.rkpd2.ui.Toolbar;
-import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.sprites.*;
 import com.zrp200.rkpd2.tiles.*;
 import com.zrp200.rkpd2.ui.*;
@@ -449,7 +418,7 @@ public class GameScene extends PixelScene {
 						}
 					}
 				}
-				int points = Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT,Talent.POWER_WITHIN);
+				int points = Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN);
 				if (points > 0
 						&& Dungeon.level instanceof RegularLevel){
 					int reqSecrets = Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
@@ -458,9 +427,8 @@ public class GameScene extends PixelScene {
 					}
 					//50%/75% chance for power within
 					//60/90% chance for
-					float chance = Math.max(
-							.30f*(1+Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT)),
-							.25f*(1+Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN)));
+					float chance =
+							.25f*(1+Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN));
 					if (reqSecrets <= 0 && Random.Float() < chance){
 						GLog.p(Messages.get(this, "secret_hint"));
 					}

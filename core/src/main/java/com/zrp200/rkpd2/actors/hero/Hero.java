@@ -466,6 +466,11 @@ public class Hero extends Char {
 			evasion = belongings.armor.evasionFactor(this, evasion);
 		}
 
+		if (pointsInTalent(Talent.ROGUES_FORESIGHT) > 0){
+			int hunger = buff(Hunger.class).hunger();
+			evasion *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*(Hunger.STARVING - hunger);
+		}
+
 		return Math.round(evasion);
 	}
 
@@ -556,6 +561,10 @@ public class Hero extends Char {
 			speed *= momentum.speedMultiplier();
 		} else {
 			((HeroSprite)sprite).sprint( 1f );
+		}
+		if (pointsInTalent(Talent.ROGUES_FORESIGHT) > 0){
+			int hunger = buff(Hunger.class).hunger();
+			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*(Hunger.STARVING - hunger);
 		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
