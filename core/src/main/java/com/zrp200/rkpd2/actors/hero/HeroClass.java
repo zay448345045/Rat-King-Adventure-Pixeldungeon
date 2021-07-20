@@ -57,10 +57,7 @@ import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
-import com.zrp200.rkpd2.items.weapon.melee.Dagger;
-import com.zrp200.rkpd2.items.weapon.melee.Gloves;
-import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
-import com.zrp200.rkpd2.items.weapon.melee.WornShortsword;
+import com.zrp200.rkpd2.items.weapon.melee.*;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.messages.Messages;
@@ -111,6 +108,8 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
+		hero.STR = 20;
+		new ConstructWand().identify().collect();
 
 		new ScrollOfIdentify().identify();
 

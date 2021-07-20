@@ -21,15 +21,14 @@
 
 package com.zrp200.rkpd2.actors;
 
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.SparseArray;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.SparseArray;
 
 import java.util.HashSet;
 
@@ -37,7 +36,7 @@ public abstract class Actor implements Bundlable {
 	
 	public static final float TICK	= 1f;
 
-	private float time;
+	public float time;
 
 	private int id = 0;
 
@@ -56,7 +55,7 @@ public abstract class Actor implements Bundlable {
 
 	protected abstract boolean act();
 	
-	protected void spend( float time ) {
+	public void spend(float time) {
 		this.time += time;
 		//if time is very close to a whole number, round to a whole number to fix errors
 		float ex = Math.abs(this.time % 1f);

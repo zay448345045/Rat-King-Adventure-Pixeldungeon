@@ -246,9 +246,13 @@ public class Generator {
 			};
 			WEP_T5.probs = new float[]{ 9, 7, 7, 6, 6, 6 };
 			WEP_T6.classes = new Class<?>[]{
+					AluminumSword.class,
+					NuclearHatchet.class,
+					RunicBladeMkII.class,
+					ConstructWand.class,
 					RoyalBrand.class
 			};
-			WEP_T6.probs = new float[]{ 10 };
+			WEP_T6.probs = new float[]{ 9, 7, 6, 6, 3 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
@@ -297,12 +301,12 @@ public class Generator {
 			};
 			MIS_T5.probs = new float[]{ 6, 5, 4 };
 			MIS_T6.classes = new Class<?>[]{
-					SteelAxe.class,
-					HomingBoomerang.class,
+					RedKunai.class,
 					PhantomSpear.class,
-					RedKunai.class
+					HomingBoomerang.class,
+					SteelAxe.class,
 			};
-			MIS_T6.probs = new float[]{ 6, 6, 6, 6 };
+			MIS_T6.probs = new float[]{ 9, 8, 7, 3 };
 			
 			FOOD.classes = new Class<?>[]{
 					Food.class,
@@ -348,9 +352,9 @@ public class Generator {
 			{0, 75, 20,  4,  1, 0},
 			{0, 25, 50, 20,  5, 0},
 			{0,  0, 40, 50, 10, 0},
-			{0,  0, 20, 39, 39, 2},
-			{0,  0,  0, 18, 80, 2},
-			{0,  0,  0,  0,  9, 1}
+			{0,  0, 20, 39, 40, 1},
+			{0,  0,  0, 17, 80, 3},
+			{0,  0,  0,  0,  19, 1}
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();

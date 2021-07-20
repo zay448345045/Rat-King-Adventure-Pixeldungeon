@@ -262,6 +262,10 @@ public class ItemSpriteSheet {
 	public static final int GREATSHIELD     = WEP_TIER5+4;
 	public static final int GAUNTLETS       = WEP_TIER5+5;
 	public static final int ROYAL_SWORD     = WEP_TIER5+6;
+	public static final int NUCLEAR_HATCHET = WEP_TIER5+7;
+	public static final int ALUMINUM_SWORD  = WEP_TIER5+8;
+	public static final int RUNIC_BLADE_MK2 = WEP_TIER5+9;
+	public static final int CONSTRUCT_WAND  = WEP_TIER5+10;
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
 		assignItemRect(WAR_HAMMER,  16, 16);
@@ -270,6 +274,10 @@ public class ItemSpriteSheet {
 		assignItemRect(GREATSHIELD, 12, 16);
 		assignItemRect(GAUNTLETS,   13, 15);
 		assignItemRect(ROYAL_SWORD, 14, 14);
+		assignItemRect(NUCLEAR_HATCHET,12, 15);
+		assignItemRect(ALUMINUM_SWORD,  16, 16);
+		assignItemRect(RUNIC_BLADE_MK2,     14, 14);
+		assignItemRect(CONSTRUCT_WAND, 16, 16);
 	}
 
 	                                                                                    //8 free slots

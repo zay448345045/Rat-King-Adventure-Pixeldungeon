@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
+import com.zrp200.rkpd2.items.weapon.melee.RunicBladeMkII;
 import com.zrp200.rkpd2.items.weapon.missiles.*;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
@@ -88,6 +89,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
 		ANGULAR_SPEEDS.put(PhantomSpear.class,  0);
+		ANGULAR_SPEEDS.put(RunicBladeMkII.RunicMissile.class, 0);
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);

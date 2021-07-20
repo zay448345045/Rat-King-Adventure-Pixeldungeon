@@ -61,6 +61,7 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.Flail;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+import com.zrp200.rkpd2.items.weapon.melee.NuclearHatchet;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.journal.Notes;
 import com.zrp200.rkpd2.levels.Level;
@@ -727,6 +728,9 @@ public class Hero extends Char {
 			Buff.affect(this, Barkskin.class).set(
 					Barkskin.getGrassDuration(this),
 					Dungeon.hero.hasTalent(Talent.BARKSKIN) ? 2 : 1);
+		}
+		if (belongings.weapon instanceof NuclearHatchet){
+			Buff.affect(this, ToxicImbue.class).set(1.1f);
 		}
 		
 		return actResult;
