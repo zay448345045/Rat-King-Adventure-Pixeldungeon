@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -31,6 +32,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
+import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
@@ -104,6 +106,9 @@ public class KingsCrown extends Item {
 
 			ClassArmor classArmor = ClassArmor.upgrade(hero, armor);
 			if (hero.belongings.armor == armor) {
+				if (hero.belongings.armor instanceof ScoutArmor){
+					Dungeon.level.drop(hero.belongings.armor, hero.pos);
+				}
 
 				hero.belongings.armor = classArmor;
 				((HeroSprite) hero.sprite).updateArmor();

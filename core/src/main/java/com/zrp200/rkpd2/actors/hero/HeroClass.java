@@ -38,7 +38,9 @@ import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
-import com.zrp200.rkpd2.items.*;
+import com.zrp200.rkpd2.items.BrokenSeal;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
@@ -55,7 +57,10 @@ import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
-import com.zrp200.rkpd2.items.weapon.melee.*;
+import com.zrp200.rkpd2.items.weapon.melee.Dagger;
+import com.zrp200.rkpd2.items.weapon.melee.Gloves;
+import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+import com.zrp200.rkpd2.items.weapon.melee.WornShortsword;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.messages.Messages;
@@ -106,8 +111,6 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
-		hero.STR = 20;
-		new ConstructWand().identify().collect();
 
 		new ScrollOfIdentify().identify();
 
@@ -165,9 +168,7 @@ public enum HeroClass {
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
-		hero.lvl = 30;
-		new KingsCrown().collect();
-		new TengusMask().collect();
+
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
