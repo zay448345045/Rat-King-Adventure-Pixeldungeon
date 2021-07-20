@@ -53,8 +53,11 @@ public class HeroicLeap extends ArmorAbility {
 	public float chargeUse( Hero hero ) {
 		float chargeUse = super.chargeUse(hero);
 		if (hero.buff(DoubleJumpTracker.class) != null){
-			//reduced charge use by 24%/42%/56%/67%/75%
-			chargeUse *= Math.pow(0.76, hero.shiftedPoints(Talent.DOUBLE_JUMP));
+			chargeUse -= chargeUse*0.5f*(Math.min(2, hero.pointsInTalent(Talent.DOUBLE_JUMP)));
+		}
+		if (hero.buff(TripleJumpTracker.class) != null){
+			//reduced charge use by 24%/42%
+			chargeUse *= Math.pow(0.76, hero.shiftedPoints(Talent.DOUBLE_JUMP)-3);
 		}
 		return chargeUse;
 	}
@@ -116,19 +119,26 @@ public class HeroicLeap extends ArmorAbility {
 					Invisibility.dispel();
 					hero.spendAndNext(Actor.TICK);
 
+
 					if (hero.buff(DoubleJumpTracker.class) != null){
 						hero.buff(DoubleJumpTracker.class).detach();
-					} else {
-						if (hero.canHaveTalent(Talent.DOUBLE_JUMP)) {
-							Buff.affect(hero, DoubleJumpTracker.class, 5);
+						if (hero.pointsInTalent(Talent.DOUBLE_JUMP) > 2){
+							Buff.affect(hero, TripleJumpTracker.class, 5);
 						}
+					} else
+						if (hero.canHaveTalent(Talent.DOUBLE_JUMP) && hero.buff(TripleJumpTracker.class) == null) {
+							Buff.affect(hero, DoubleJumpTracker.class, 5);
+						} else if (hero.buff(TripleJumpTracker.class) != null){
+						hero.buff(TripleJumpTracker.class).detach();
 					}
+
 				}
 			});
 		}
 	}
 
 	public static class DoubleJumpTracker extends FlavourBuff{};
+	public static class TripleJumpTracker extends FlavourBuff{};
 
 	@Override
 	public Talent[] talents() {

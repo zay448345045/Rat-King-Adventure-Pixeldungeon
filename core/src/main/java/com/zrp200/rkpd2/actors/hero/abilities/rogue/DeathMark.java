@@ -61,9 +61,11 @@ public class DeathMark extends ArmorAbility {
 	public float chargeUse( Hero hero ) {
 		float chargeUse = super.chargeUse(hero);
 		if (hero.buff(DoubleMarkTracker.class) != null){
-			// FIXME should this really be level shifted? Leaving this in right now because I don't know what else to do with it, but it's pretty confusing.
-			//reduced charge use by 33%/55%/70%/80/86%
-			chargeUse *= Math.pow(0.67, hero.shiftedPoints(Talent.DOUBLE_MARK));
+			chargeUse -= chargeUse*0.5f*(Math.min(2, hero.pointsInTalent(Talent.DOUBLE_MARK)));
+		}
+		if (hero.buff(TripleMarkTracker.class) != null){
+			//reduced charge use by 33%/55%
+			chargeUse *= Math.pow(0.67, Dungeon.hero.pointsInTalent(Talent.DOUBLE_MARK)-3);
 		}
 		return chargeUse;
 	}
@@ -97,9 +99,14 @@ public class DeathMark extends ArmorAbility {
 
 		if (hero.buff(DoubleMarkTracker.class) != null){
 			hero.buff(DoubleMarkTracker.class).detach();
-		} else if (hero.hasTalent(Talent.DOUBLE_MARK)) {
+			if (hero.pointsInTalent(Talent.DOUBLE_MARK) > 2){
+				Buff.affect(hero, TripleMarkTracker.class, 0.01f);
+			}
+		} else if (hero.hasTalent(Talent.DOUBLE_MARK) && hero.buff(TripleMarkTracker.class) == null) {
 			Buff.affect(hero, DoubleMarkTracker.class, 0.01f);
-		}
+		} else if (hero.buff(TripleMarkTracker.class) != null)
+			hero.buff(TripleMarkTracker.class).detach();
+
 
 	}
 
@@ -132,6 +139,7 @@ public class DeathMark extends ArmorAbility {
 	}
 
 	public static class DoubleMarkTracker extends FlavourBuff{};
+	public static class TripleMarkTracker extends FlavourBuff{};
 
 	@Override
 	public Talent[] talents() {

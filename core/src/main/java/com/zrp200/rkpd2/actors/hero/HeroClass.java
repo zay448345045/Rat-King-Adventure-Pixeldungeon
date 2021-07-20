@@ -38,9 +38,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
-import com.zrp200.rkpd2.items.BrokenSeal;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.Waterskin;
+import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
@@ -167,6 +165,9 @@ public enum HeroClass {
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
+		hero.lvl = 30;
+		new KingsCrown().collect();
+		new TengusMask().collect();
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();
