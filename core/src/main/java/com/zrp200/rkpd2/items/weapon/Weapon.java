@@ -70,7 +70,9 @@ abstract public class Weapon extends KindOfWeapon {
 		}
 
 		public int damageFactor(int dmg){
-			return Math.round(dmg * damageFactor);
+			int damage = Math.round(dmg * damageFactor);
+			damage *= 1f + 0.08f*(Dungeon.hero.pointsInTalent(Talent.HEROIC_ENERGY));
+			return dmg;
 		}
 
 		public float delayFactor(float dly){
