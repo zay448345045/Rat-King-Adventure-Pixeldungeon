@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class HoldFast extends Buff {
 
@@ -65,9 +65,13 @@ public class HoldFast extends Buff {
 		return Math.max(3*Dungeon.hero.pointsInTalent(Talent.HOLD_FAST), 2*Dungeon.hero.pointsInTalent(Talent.RK_BERSERKER));
 	}
 
+	public static int minArmor(){
+		return Dungeon.hero.pointsInTalent(Talent.HOLD_FAST);
+	}
+
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", Dungeon.hero.heroClass.title(), armor());
+		return Messages.get(this, "desc", Dungeon.hero.heroClass.title(), minArmor(), armor());
 	}
 
 

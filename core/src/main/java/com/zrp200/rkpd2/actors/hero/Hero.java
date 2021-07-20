@@ -515,7 +515,7 @@ public class Hero extends Char {
 		}
 
 		if (buff(HoldFast.class) != null){
-			dr += Random.NormalIntRange(0, HoldFast.armor());
+			dr += Random.NormalIntRange(HoldFast.minArmor(), HoldFast.armor());
 		}
 
 		return dr;
