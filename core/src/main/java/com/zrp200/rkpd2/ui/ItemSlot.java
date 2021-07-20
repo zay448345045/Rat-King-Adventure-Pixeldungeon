@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Button;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
@@ -31,9 +34,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Button;
 
 public class ItemSlot extends Button {
 
@@ -76,6 +76,9 @@ public class ItemSlot extends Button {
 	};
 	public static final Item REMAINS = new Item() {
 		public int image() { return ItemSpriteSheet.REMAINS; }
+	};
+	public static final Item EBONY_CHEST = new Item() {
+		public int image() { return ItemSpriteSheet.EBONY_CHEST; }
 	};
 	
 	public ItemSlot() {

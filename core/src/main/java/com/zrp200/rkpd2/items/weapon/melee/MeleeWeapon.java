@@ -21,16 +21,14 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
-import com.watabou.utils.Random;
 
 public class MeleeWeapon extends Weapon {
-	
-	public int tier;
 
 	@Override
 	public int min(int lvl) {

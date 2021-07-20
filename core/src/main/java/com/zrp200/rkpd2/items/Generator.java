@@ -260,7 +260,8 @@ public class Generator {
 					LeatherArmor.class,
 					MailArmor.class,
 					ScaleArmor.class,
-					PlateArmor.class };
+					PlateArmor.class,
+					PlateArmor.class};
 			ARMOR.probs = new float[]{ 0, 0, 0, 0, 0 };
 			
 			//see Generator.randomMissile

@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -43,10 +46,6 @@ import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,7 +62,8 @@ public class Heap implements Bundlable {
 		CRYSTAL_CHEST,
 		TOMB,
 		SKELETON,
-		REMAINS
+		REMAINS,
+		EBONY_CHEST
 	}
 	public Type type = Type.HEAP;
 	
@@ -350,7 +350,7 @@ public class Heap implements Bundlable {
 			case FOR_SALE:
 				Item i = peek();
 				return Messages.get(this, "for_sale", Shopkeeper.sellPrice(i), i.toString());
-			case CHEST:
+			case CHEST: case EBONY_CHEST:
 				return Messages.get(this, "chest");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest");
@@ -369,7 +369,7 @@ public class Heap implements Bundlable {
 
 	public String info(){
 		switch(type){
-			case CHEST:
+			case CHEST: case EBONY_CHEST:
 				return Messages.get(this, "chest_desc");
 			case LOCKED_CHEST:
 				return Messages.get(this, "locked_chest_desc");

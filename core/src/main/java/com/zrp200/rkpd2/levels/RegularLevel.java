@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.keys.GoldenKey;
+import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.builders.Builder;
 import com.zrp200.rkpd2.levels.builders.FigureEightBuilder;
@@ -315,7 +316,7 @@ public abstract class RegularLevel extends Level {
 	protected void createItems() {
 		
 		// drops 3/4/5 items 60%/30%/10% of the time
-		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
+		int nItems = 8 + Random.chances(new float[]{6, 3, 1});
 
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
@@ -369,6 +370,10 @@ public abstract class RegularLevel extends Level {
 				}
 			} else {
 				Heap dropped = drop( toDrop, cell );
+
+				if (toDrop instanceof Weapon && ((Weapon) toDrop).tier == 6){
+					type = Heap.Type.EBONY_CHEST;
+				}
 				dropped.type = type;
 				if (type == Heap.Type.SKELETON){
 					dropped.setHauntedIfCursed();
