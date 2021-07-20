@@ -53,6 +53,7 @@ public class Generator {
 		WEP_T3	( 0,    MeleeWeapon.class),
 		WEP_T4	( 0,    MeleeWeapon.class),
 		WEP_T5	( 0,    MeleeWeapon.class),
+		WEP_T6  ( 0,     MeleeWeapon.class),
 		
 		ARMOR	( 3,    Armor.class ),
 		
@@ -62,6 +63,7 @@ public class Generator {
 		MIS_T3  ( 0,    MissileWeapon.class ),
 		MIS_T4  ( 0,    MissileWeapon.class ),
 		MIS_T5  ( 0,    MissileWeapon.class ),
+		MIS_T6  ( 0,    MissileWeapon.class ),
 		
 		WAND	( 2,    Wand.class ),
 		RING	( 1,    Ring.class ),
@@ -240,10 +242,13 @@ public class Generator {
 					Glaive.class,
 					Greataxe.class,
 					Greatshield.class,
-					Gauntlet.class,
+					Gauntlet.class
+			};
+			WEP_T5.probs = new float[]{ 9, 7, 7, 6, 6, 6 };
+			WEP_T6.classes = new Class<?>[]{
 					RoyalBrand.class
 			};
-			WEP_T5.probs = new float[]{ 9, 7, 7, 6, 6, 6, 1 };
+			WEP_T6.probs = new float[]{ 10 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
@@ -291,6 +296,10 @@ public class Generator {
 					ForceCube.class
 			};
 			MIS_T5.probs = new float[]{ 6, 5, 4 };
+			MIS_T6.classes = new Class<?>[]{
+					SteelAxe.class
+			};
+			MIS_T6.probs = new float[]{ 6 };
 			
 			FOOD.classes = new Class<?>[]{
 					Food.class,
@@ -333,12 +342,12 @@ public class Generator {
 	}
 
 	private static final float[][] floorSetTierProbs = new float[][] {
-			{0, 75, 20,  4,  1},
-			{0, 25, 50, 20,  5},
-			{0,  0, 40, 50, 10},
-			{0,  0, 20, 40, 40},
-			{0,  0,  0, 20, 80},
-			{0, 1, 1, 1, 1}
+			{0, 75, 20,  4,  1, 0},
+			{0, 25, 50, 20,  5, 0},
+			{0,  0, 40, 50, 10, 0},
+			{0,  0, 20, 39, 39, 2},
+			{0,  0,  0, 18, 80, 2},
+			{0,  0,  0,  0,  9, 1}
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();
@@ -424,7 +433,8 @@ public class Generator {
 			Category.WEP_T2,
 			Category.WEP_T3,
 			Category.WEP_T4,
-			Category.WEP_T5
+			Category.WEP_T5,
+			Category.WEP_T6
 	};
 
 	public static MeleeWeapon randomWeapon(){
@@ -446,7 +456,8 @@ public class Generator {
 			Category.MIS_T2,
 			Category.MIS_T3,
 			Category.MIS_T4,
-			Category.MIS_T5
+			Category.MIS_T5,
+			Category.MIS_T6
 	};
 	
 	public static MissileWeapon randomMissile(){
