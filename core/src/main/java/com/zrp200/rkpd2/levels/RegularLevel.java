@@ -21,12 +21,13 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
@@ -53,16 +54,7 @@ import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.EntranceRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.ExitRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.StandardRoom;
-import com.zrp200.rkpd2.levels.traps.BlazingTrap;
-import com.zrp200.rkpd2.levels.traps.BurningTrap;
-import com.zrp200.rkpd2.levels.traps.ChillingTrap;
-import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
-import com.zrp200.rkpd2.levels.traps.ExplosiveTrap;
-import com.zrp200.rkpd2.levels.traps.FrostTrap;
-import com.zrp200.rkpd2.levels.traps.Trap;
-import com.zrp200.rkpd2.levels.traps.WornDartTrap;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.levels.traps.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -192,6 +184,9 @@ public abstract class RegularLevel extends Level {
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
+		}
+		if (Dungeon.bossLevel() && Dungeon.depth > 25){
+			mobs *= 3;
 		}
 		return mobs;
 	}

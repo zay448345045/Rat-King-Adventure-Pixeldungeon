@@ -40,7 +40,9 @@ import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
-import com.zrp200.rkpd2.actors.mobs.*;
+import com.zrp200.rkpd2.actors.mobs.Bestiary;
+import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.YogFist;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
 import com.zrp200.rkpd2.effects.particles.FlowParticle;
 import com.zrp200.rkpd2.effects.particles.WindParticle;
@@ -448,14 +450,14 @@ public abstract class Level implements Bundlable {
 		if (Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
 			ChampionEnemy.rollForChampion(m);
 		}
-		if (Dungeon.depth > 25 && Dungeon.bossLevel()){
-			int bossAmount = Random.Int(3, 5 + 2*(Dungeon.depth - 25)/5);
-			Class[] bosses = new Class[]{AbyssalNightmare.class, Dragon.class, LostSpirit.class};
-			for (int i = 0; i < bossAmount; i++){
-				mobsToSpawn.remove(0);
-				mobsToSpawn.add(Random.element(bosses));
-			}
-		}
+//		if (Dungeon.depth > 25 && Dungeon.bossLevel()){
+//			int bossAmount = Random.Int(3, 5 + 2*(Dungeon.depth - 25)/5);
+//			Class[] bosses = new Class[]{AbyssalNightmare.class, Dragon.class, LostSpirit.class};
+//			for (int i = 0; i < bossAmount; i++){
+////				mobsToSpawn.remove(0);
+//				mobsToSpawn.add(Random.element(bosses));
+//			}
+//		}
 		return m;
 	}
 

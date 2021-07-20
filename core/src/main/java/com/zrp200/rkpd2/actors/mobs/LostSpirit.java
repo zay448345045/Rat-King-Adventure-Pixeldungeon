@@ -132,7 +132,7 @@ public class LostSpirit extends AbyssalMob implements Callback {
             }
             //look for ally mobs to attack, ignoring the soul flame
             for (Mob mob : mobs)
-                if (mob.alignment == Alignment.ENEMY && canSee(mob.pos) && mob != this && mob.buff(ChampionEnemy.class) == null)
+                if (mob.alignment == Alignment.ENEMY && canSee(mob.pos) && mob != this && mob.buffs(ChampionEnemy.class).isEmpty())
                     enemies.add(mob);
 
             return chooseClosest(enemies);
