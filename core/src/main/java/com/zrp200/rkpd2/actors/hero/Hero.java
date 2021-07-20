@@ -192,9 +192,16 @@ public class Hero extends Char {
 		// TODO buff for warrior
 		if (hasTalent(Talent.STRONGMAN,Talent.RK_BERSERKER)){ // note that you need to have points in this.
 			float boost = Math.max(
-					0.05f + 0.08f*pointsInTalent(Talent.STRONGMAN), // get it? ~1.5x. Very, very slightly worse than v0.0.1
+					0.06f + 0.10f*pointsInTalent(Talent.STRONGMAN), // +16%/+26%/+36%
 					0.03f + 0.05f*pointsInTalent(Talent.RK_BERSERKER)
 			);
+			//let's see
+			//15 strength
+			//at +1 it will be 17 strength
+			//at +2 it will be 18 strength
+			//at +3 it will be 20 strength
+			//so +2/+3/+5
+			//seems legit
 			STR = (int)Math.floor(STR * (1 + boost));
 		}
 
