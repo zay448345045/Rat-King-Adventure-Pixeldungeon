@@ -335,10 +335,16 @@ public class ItemSpriteSheet {
 	public static final int DISPLACING_DART = TIPPED_DARTS+10;
 	public static final int BLINDING_DART   = TIPPED_DARTS+11;
 	public static final int STEEL_AXE       = TIPPED_DARTS+12;
+	public static final int HOMING_BOOMERANG= TIPPED_DARTS+13;
+	public static final int PHANTOM_SPEAR   = TIPPED_DARTS+14;
+	public static final int RED_KUNAI       = TIPPED_DARTS+15;
 	static {
 		for (int i = TIPPED_DARTS; i < TIPPED_DARTS+16; i++)
 			assignItemRect(i, 15, 15);
 		assignItemRect(STEEL_AXE, 16, 14);
+		assignItemRect(HOMING_BOOMERANG, 14, 14);
+		assignItemRect(PHANTOM_SPEAR, 16, 16);
+		assignItemRect(RED_KUNAI, 15, 15);
 	}
 	
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots

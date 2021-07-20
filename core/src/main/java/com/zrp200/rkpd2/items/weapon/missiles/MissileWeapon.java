@@ -264,7 +264,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	protected void rangedHit( Char enemy, int cell ){
 		decrementDurability();
-		if (durability > 0){
+		if (durability > 0 && !(this instanceof PhantomSpear)){
 			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
 			if (sticky && enemy != null && enemy.isAlive() && enemy.buff(Corruption.class) == null){
 				PinCushion p = Buff.affect(enemy, PinCushion.class);
@@ -279,7 +279,8 @@ abstract public class MissileWeapon extends Weapon {
 	
 	protected void rangedMiss( int cell ) {
 		parent = null;
-		super.onThrow(cell);
+		if (!(this instanceof PhantomSpear))
+			super.onThrow(cell);
 	}
 	
 	protected float durabilityPerUse(){

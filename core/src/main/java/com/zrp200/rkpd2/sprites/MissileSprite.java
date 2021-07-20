@@ -21,26 +21,18 @@
 
 package com.zrp200.rkpd2.sprites;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.weapon.SpiritBow;
-import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
-import com.zrp200.rkpd2.items.weapon.missiles.Bolas;
-import com.zrp200.rkpd2.items.weapon.missiles.FishingSpear;
-import com.zrp200.rkpd2.items.weapon.missiles.HeavyBoomerang;
-import com.zrp200.rkpd2.items.weapon.missiles.Javelin;
-import com.zrp200.rkpd2.items.weapon.missiles.Kunai;
-import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
-import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
-import com.zrp200.rkpd2.items.weapon.missiles.ThrowingSpear;
-import com.zrp200.rkpd2.items.weapon.missiles.Trident;
-import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.tweeners.PosTweener;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
+import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
+import com.zrp200.rkpd2.items.weapon.missiles.*;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 import java.util.HashMap;
 
@@ -95,6 +87,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
 		ANGULAR_SPEEDS.put(Javelin.class,       0);
 		ANGULAR_SPEEDS.put(Trident.class,       0);
+		ANGULAR_SPEEDS.put(PhantomSpear.class,  0);
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
@@ -103,6 +96,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		
 		ANGULAR_SPEEDS.put(HeavyBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
+		ANGULAR_SPEEDS.put(HomingBoomerang.class, 1440);
 		
 		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
 		

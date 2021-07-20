@@ -41,7 +41,7 @@ public class GodfireParticle extends PixelParticle.Shrinking {
 	public GodfireParticle() {
 		super();
 		
-		color( 0xfc6dca );
+		color( 0xed3636 );
 		lifespan = 0.6f;
 		
 		acc.set( 0, -60 );

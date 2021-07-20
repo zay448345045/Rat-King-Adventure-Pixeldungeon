@@ -297,9 +297,12 @@ public class Generator {
 			};
 			MIS_T5.probs = new float[]{ 6, 5, 4 };
 			MIS_T6.classes = new Class<?>[]{
-					SteelAxe.class
+					SteelAxe.class,
+					HomingBoomerang.class,
+					PhantomSpear.class,
+					RedKunai.class
 			};
-			MIS_T6.probs = new float[]{ 6 };
+			MIS_T6.probs = new float[]{ 6, 6, 6, 6 };
 			
 			FOOD.classes = new Class<?>[]{
 					Food.class,
