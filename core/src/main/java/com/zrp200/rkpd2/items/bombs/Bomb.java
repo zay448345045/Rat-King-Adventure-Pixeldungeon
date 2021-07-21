@@ -72,6 +72,7 @@ public class Bomb extends Item {
 	}
 
 	public Fuse fuse;
+	public static boolean doNotDamageHero;
 
 	//FIXME using a static variable for this is kinda gross, should be a better way
 	private static boolean lightingFuse = false;
@@ -165,8 +166,12 @@ public class Bomb extends Item {
 						heap.explode();
 					
 					Char ch = Actor.findChar(c);
-					if (ch != null && !ch.deathMarked) {
-						affected.add(ch);
+					if (doNotDamageHero && ch == Dungeon.hero) {
+
+					} else {
+						if (ch != null && !ch.deathMarked) {
+							affected.add(ch);
+						}
 					}
 				}
 			}

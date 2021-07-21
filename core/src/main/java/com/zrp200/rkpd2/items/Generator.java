@@ -250,9 +250,12 @@ public class Generator {
 					NuclearHatchet.class,
 					RunicBladeMkII.class,
 					ConstructWand.class,
+					BloomingPick.class,
+					LuminousCutlass.class,
+					MoltenStrife.class,
 					RoyalBrand.class
 			};
-			WEP_T6.probs = new float[]{ 9, 7, 6, 6, 3 };
+			WEP_T6.probs = new float[]{ 9, 8, 7, 7, 7, 6, 6, 3 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{

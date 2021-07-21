@@ -34,14 +34,10 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.effects.Ripple;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.painters.SewerPainter;
-import com.zrp200.rkpd2.levels.rooms.Room;
-import com.zrp200.rkpd2.levels.rooms.secret.RatKingRoom;
 import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-
-import java.util.ArrayList;
 
 public class SewerLevel extends RegularLevel {
 
@@ -55,14 +51,6 @@ public class SewerLevel extends RegularLevel {
 		if (forceMax) return 6;
 		//4 to 6, average 5
 		return 4+Random.chances(new float[]{1, 3, 1});
-	}
-
-	@Override
-	protected ArrayList<Room> initRooms() {
-
-		ArrayList<Room> rooms = super.initRooms();
-		rooms.add(new RatKingRoom());
-		return rooms;
 	}
 
 	@Override

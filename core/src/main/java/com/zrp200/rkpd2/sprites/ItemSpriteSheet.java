@@ -266,6 +266,9 @@ public class ItemSpriteSheet {
 	public static final int ALUMINUM_SWORD  = WEP_TIER5+8;
 	public static final int RUNIC_BLADE_MK2 = WEP_TIER5+9;
 	public static final int CONSTRUCT_WAND  = WEP_TIER5+10;
+	public static final int MOLTEN_STRIFE   = WEP_TIER5+11;
+	public static final int LUMINOUS_CUTLASS= WEP_TIER5+12;
+	public static final int BLOOMING_PICK   = WEP_TIER5+13;
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
 		assignItemRect(WAR_HAMMER,  16, 16);
@@ -278,10 +281,12 @@ public class ItemSpriteSheet {
 		assignItemRect(ALUMINUM_SWORD,  16, 16);
 		assignItemRect(RUNIC_BLADE_MK2,     14, 14);
 		assignItemRect(CONSTRUCT_WAND, 16, 16);
+		assignItemRect(MOLTEN_STRIFE, 14, 14);
+		assignItemRect(LUMINOUS_CUTLASS, 16, 16);
+		assignItemRect(BLOOMING_PICK, 14, 14);
 	}
 
-	                                                                                    //8 free slots
-
+	                                                                                    //8 free slot
 	private static final int MISSILE_WEP    =                               xy(1, 10);  //16 slots. 3 per tier + boomerang
 	public static final int SPIRIT_BOW      = MISSILE_WEP+0;
 	
