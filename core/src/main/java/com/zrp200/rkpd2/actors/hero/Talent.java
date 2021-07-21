@@ -440,11 +440,10 @@ public enum Talent {
 	}
 
 	public static void onHealingPotionUsed( Hero hero ){
-		if (hero.hasTalent(RESTORED_WILLPOWER,RESTORATION)){
+		if (hero.hasTalent(RESTORATION)){
 			BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
 			if (shield != null){
-				double multiplier = 0.33f*(1+hero.pointsInTalent(RESTORED_WILLPOWER,RESTORATION));
-				if(hero.hasTalent(RESTORED_WILLPOWER)) multiplier *= 1.5;
+				double multiplier = 0.33f*(1+hero.pointsInTalent(RESTORATION));
 				shield.supercharge((int)Math.round(shield.maxShield()*multiplier));
 			}
 		}

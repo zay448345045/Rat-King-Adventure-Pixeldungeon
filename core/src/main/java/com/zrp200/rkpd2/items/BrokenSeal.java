@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.ShieldBuff;
@@ -36,8 +38,6 @@ import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndUseItem;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -174,7 +174,9 @@ public class BrokenSeal extends Item {
 		@Override
 		public synchronized boolean act() {
 			if (shielding() < maxShield()) {
-				partialShield += 1/(RECHARGE_RATE * (1 - ((Hero)target).shiftedPoints(Talent.IRON_WILL)/(float)maxShield())); // this adjusts the seal recharge rate.
+				partialShield += 1/(RECHARGE_RATE * (1 - ((Hero)target).shiftedPoints(Talent.IRON_WILL)/(float)maxShield()))
+					* (1f + 0.6f*((Hero) target).pointsInTalent(Talent.RESTORED_WILLPOWER)*(Math.max(1f,
+						1f - (target.HP * 1f / target.HT) + 0.1f))); // this adjusts the seal recharge rate.
 			}
 			
 			while (partialShield >= 1){
