@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Item;
@@ -94,7 +95,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		if (!enemy.isAlive() || (enemy.buff(Corruption.class) != null && enemy.HP == enemy.HT)){
 			Hero hero = (Hero)target;
-			int time = 15 * hero.shiftedPoints(Talent.CLEAVE,Talent.RK_GLADIATOR);
+			int time = 15 * hero.pointsInTalent(Talent.RK_GLADIATOR);
+			if (Dungeon.hero.subClass == HeroSubClass.GLADIATOR) time = 25;
 			comboTime = Math.max(comboTime, time);
 		}
 		incCombo();
@@ -138,7 +140,13 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		comboTime-=TICK;
 		spend(TICK);
 		if (comboTime <= 0) {
-			detach();
+			if (Dungeon.hero.hasTalent(Talent.CLEAVE)){
+				comboTime = (float) Math.pow(2, Dungeon.hero.pointsInTalent(Talent.CLEAVE)-2);
+				count--;
+				if (count <= 0)
+					detach();
+			}
+			else detach();
 		}
 		return true;
 	}
