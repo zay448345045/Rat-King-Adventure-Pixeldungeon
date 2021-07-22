@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
+import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -231,6 +232,7 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public int buffedLvl() {
+		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		int lvl = super.buffedLvl();
 		if((isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this))
 				&& (Dungeon.hero.buff(CloakOfShadows.cloakStealth.class) != null && Dungeon.hero.heroClass == HeroClass.ROGUE)) lvl++;

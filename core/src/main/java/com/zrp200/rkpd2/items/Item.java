@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Degrade;
+import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
@@ -311,7 +312,10 @@ public class Item implements Bundlable {
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
 		int lvl = level();
-		if ((isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )) && Dungeon.hero.buff(Degrade.class) != null) lvl = Degrade.reduceLevel(lvl);
+		if ((isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )) && Dungeon.hero.buff(Degrade.class) != null) {
+			lvl = Degrade.reduceLevel(lvl);
+			if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
+		}
 		return lvl + Dungeon.hero.getBonus(this);
 	}
 

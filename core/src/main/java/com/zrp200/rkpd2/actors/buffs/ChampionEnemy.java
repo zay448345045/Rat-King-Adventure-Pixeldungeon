@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.mobs.Bestiary;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.ThreadRipper;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.wands.CursedWand;
@@ -116,6 +117,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		if (Dungeon.mobsToChampion <= 0){
 			makeChampion(m);
+			if (m instanceof ThreadRipper) makeChampion(m);
 			m.state = m.WANDERING;
 		}
 	}

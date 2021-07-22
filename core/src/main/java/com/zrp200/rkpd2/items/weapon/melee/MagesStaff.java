@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -137,6 +138,7 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public int buffedLvl() {
+		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		if (curUser != null && wand != null){
 			return Math.max(super.buffedLvl(), wand.buffedLvl()-curUser.getBonus(wand));
 		} else {

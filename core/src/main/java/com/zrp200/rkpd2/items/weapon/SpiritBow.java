@@ -30,10 +30,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.RevealedArea;
-import com.zrp200.rkpd2.actors.buffs.Roots;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -247,6 +244,7 @@ public class SpiritBow extends Weapon {
 
 	@Override
 	public int buffedLvl() {
+		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		//level isn't affected by buffs/debuffs
 		return level();
 	}

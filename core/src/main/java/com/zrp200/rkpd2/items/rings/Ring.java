@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.EnhancedRings;
+import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
@@ -307,6 +308,7 @@ public class Ring extends KindofMisc {
 
 	@Override
 	public int buffedLvl() {
+		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		return super.buffedLvl() + applyEnhancedRings();
 	}
 
