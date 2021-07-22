@@ -119,8 +119,12 @@ public class ElementalBlast extends ArmorAbility {
 		}
 
 		final Class<? extends Wand>[] wandCls = new Class[]{null};
+		int minDamage = 0, maxDamage = 0;
 		if (hero.belongings.getItem(MagesStaff.class) != null) {
-			wandCls[0] = hero.belongings.getItem(MagesStaff.class).wandClass();
+			MagesStaff magesStaff = hero.belongings.getItem(MagesStaff.class);
+			wandCls[0] = magesStaff.wandClass();
+			minDamage = magesStaff.augment.damageFactor(magesStaff.min());
+			maxDamage = magesStaff.augment.damageFactor(magesStaff.max());
 		}
 
 		if (wandCls[0] == null){
