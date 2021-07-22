@@ -89,16 +89,17 @@ public class Berserk extends Buff {
 		if (berserking()){
 			ShieldBuff buff = target.buff(WarriorShield.class);
 			if (target.HP <= 0) {
-				int dmg = 1 + (int)Math.ceil(target.shielding() * 0.05f);
-				if (buff != null && buff.shielding() > 0) {
-					buff.absorbDamage(dmg);
-				} else {
-					//if there is no shield buff, or it is empty, then try to remove from other shielding buffs
-					for (ShieldBuff s : target.buffs(ShieldBuff.class)){
-						dmg = s.absorbDamage(dmg);
-						if (dmg == 0) break;
+					int dmg = 1 + (int) Math.ceil(target.shielding()
+							* (0.05f - 0.0075*Dungeon.hero.pointsInTalent(Talent.BERSERKING_STAMINA)));
+					if (buff != null && buff.shielding() > 0) {
+						buff.absorbDamage(dmg);
+					} else {
+						//if there is no shield buff, or it is empty, then try to remove from other shielding buffs
+						for (ShieldBuff s : target.buffs(ShieldBuff.class)) {
+							dmg = s.absorbDamage(dmg);
+							if (dmg == 0) break;
+						}
 					}
-				}
 				if (target.shielding() <= 0) {
 					target.die(this);
 					if (!target.isAlive()) Dungeon.fail(this.getClass());
@@ -133,7 +134,9 @@ public class Berserk extends Buff {
 			if (shield != null){
 				state = State.BERSERK;
 				int shieldAmount = shield.maxShield() * 8;
-				shieldAmount = Math.round(shieldAmount * (1f + Dungeon.hero.shiftedPoints(Talent.BERSERKING_STAMINA, Talent.RK_BERSERKER)/4f));
+				shieldAmount = Math.round(shieldAmount * (1f +
+						+ (Dungeon.hero.hasTalent(Talent.BERSERKING_STAMINA) ? 0.1f : 0f)
+						+ Dungeon.hero.byTalent(Talent.BERSERKING_STAMINA, 0.20f, Talent.RK_BERSERKER, 0.25f)));
 				shield.supercharge(shieldAmount);
 
 				SpellSprite.show(target, SpellSprite.BERSERK);
@@ -159,7 +162,7 @@ public class Berserk extends Buff {
 	public void damage(int damage){
 		if (state == State.RECOVERING && !berserker()) return;
 		float maxPower = 1f + Dungeon.hero.byTalent(
-				Talent.ENDLESS_RAGE, 0.2f,
+				Talent.ENDLESS_RAGE, 0.0f,
 				Talent.RK_BERSERKER, 0.15f);
 		power = Math.min(maxPower*recovered(), power + rageFactor(damage)*recovered() );
 		BuffIndicator.refreshHero(); //show new power immediately
