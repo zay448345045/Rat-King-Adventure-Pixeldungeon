@@ -475,7 +475,7 @@ public class Hero extends Char {
 
 		if (pointsInTalent(Talent.ROGUES_FORESIGHT) > 0){
 			int hunger = buff(Hunger.class).hunger();
-			evasion *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*(Hunger.STARVING - hunger);
+			evasion *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
 
 		return Math.round(evasion);
@@ -571,7 +571,7 @@ public class Hero extends Char {
 		}
 		if (pointsInTalent(Talent.ROGUES_FORESIGHT) > 0){
 			int hunger = buff(Hunger.class).hunger();
-			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*(Hunger.STARVING - hunger);
+			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
