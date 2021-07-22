@@ -68,7 +68,7 @@ public class AboutScene extends PixelScene {
 		content.add(pa);
 
 		CreditsBlock tb = new CreditsBlock(false, 0x3c9efa,
-				"Abyssal version creator:",
+				"Creator of DLC:",
 				Icons.TRASHBOXBOBYLEV.get(),
 				"Trashbox Bobylev",
 				"trashboxbobylev.itch.io",

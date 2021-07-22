@@ -21,9 +21,7 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Assets;
 import com.watabou.glwrap.Blending;
-import com.watabou.glwrap.Texture;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
@@ -33,15 +31,16 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.Random;
 import com.watabou.utils.RectF;
+import com.zrp200.rkpd2.Assets;
 
 public class Fireball extends Component {
 
-	private static final RectF BLIGHT = new RectF( 0, 0, 0.25f, 1 );
-	private static final RectF FLIGHT = new RectF( 0.25f, 0, 0.5f, 1 );
-	private static final RectF FLAME1 = new RectF( 0.50f, 0, 0.75f, 1 );
-	private static final RectF FLAME2 = new RectF( 0.75f, 0, 1.00f, 1 );
+	private static final RectF BLIGHT = new RectF( 0, 0, 0.0625f, 1 );
+	private static final RectF FLIGHT = new RectF( 0.0625f*6, 0, 0.0625f*7, 1 );
+	private static final RectF FLAME1 = new RectF( 0.0625f*10, 0, 0.0625f*11, 1 );
+	private static final RectF FLAME2 = new RectF( 0.0625f*8, 0, 0.0625f*9, 1 );
 	
-	private static final int COLOR = 0xFF66FF;
+	private static final int COLOR = 0xd3d1d3;
 	
 	private Image bLight;
 	private Image fLight;
@@ -54,8 +53,9 @@ public class Fireball extends Component {
 		sparks = new Group();
 		add( sparks );
 		
-		bLight = new Image( Assets.Effects.FIREBALL );
+		bLight = new Image( Assets.Sprites.RAT_KING_HERO );
 		bLight.frame( BLIGHT );
+		bLight.scale.set(2f);
 		bLight.origin.set( bLight.width / 2 );
 		bLight.angularSpeed = -90;
 		add( bLight );
@@ -73,13 +73,14 @@ public class Fireball extends Component {
 		}, 0.1f );
 		add( emitter );
 		
-		fLight = new Image( Assets.Effects.FIREBALL );
+		fLight = new Image( Assets.Sprites.RAT_KING_HERO );
 		fLight.frame( FLIGHT );
+		fLight.scale.set(2f);
 		fLight.origin.set( fLight.width / 2 );
 		fLight.angularSpeed = 360;
 		add( fLight );
 		
-		bLight.texture.filter( Texture.LINEAR, Texture.LINEAR );
+//		bLight.texture.filter( Texture.LINEAR, Texture.LINEAR );
 	}
 	
 	@Override
@@ -123,9 +124,9 @@ public class Fireball extends Component {
 	
 	public static class Flame extends Image {
 		
-		private static float LIFESPAN	= 1f;
+		private static float LIFESPAN	= 2f;
 		
-		private static float SPEED	= -40f;
+		private static float SPEED	= -50f;
 		private static float ACC	= -20f;
 		
 		private float timeLeft;
@@ -133,7 +134,7 @@ public class Fireball extends Component {
 		
 		public Flame() {
 			
-			super( Assets.Effects.FIREBALL );
+			super( Assets.Sprites.RAT_KING_HERO );
 			
 			frame( Random.Int( 2 ) == 0 ? FLAME1 : FLAME2 );
 			origin.set( width / 2, height / 2 );
