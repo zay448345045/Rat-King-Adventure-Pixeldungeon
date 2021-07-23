@@ -21,13 +21,14 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 
 public class ShockingTrap extends Trap {
 
@@ -45,7 +46,7 @@ public class ShockingTrap extends Trap {
 		
 		for( int i : PathFinder.NEIGHBOURS9) {
 			if (!Dungeon.level.solid[pos + i]) {
-				GameScene.add(Blob.seed(pos + i, 10, Electricity.class));
+				GameScene.add(Blob.seed(pos + i, 10 + Dungeon.hero.pointsInTalent(Talent.FARADAY_CAGE), Electricity.class));
 			}
 		}
 	}

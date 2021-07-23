@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -30,9 +33,6 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem {
 	
@@ -89,7 +89,8 @@ abstract public class KindOfWeapon extends EquipableItem {
 	}
 
 	public int min(){
-		return min(buffedLvl());
+		return min(buffedLvl()) + (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.WEAPON_MASTERY) ?
+				Dungeon.hero.pointsInTalent(Talent.WEAPON_MASTERY)*2 : 0);
 	}
 
 	public int max(){

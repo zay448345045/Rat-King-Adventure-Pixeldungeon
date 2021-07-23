@@ -29,10 +29,12 @@ import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Alchemy;
+import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
+import com.zrp200.rkpd2.actors.mobs.Elemental;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Monk;
 import com.zrp200.rkpd2.actors.mobs.Phantom;
@@ -56,6 +58,7 @@ import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
+import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
@@ -1269,6 +1272,11 @@ public class Hero extends Char {
 		if(!(src instanceof Char) && subClass == HeroSubClass.BERSERKER && hasTalent(Talent.ENDLESS_RAGE)) {
 			Buff.affect(this, Berserk.class).damage(Math.round(dmg*0.2f*pointsInTalent(Talent.ENDLESS_RAGE)));
 		}
+
+		if ((src instanceof Electricity || src instanceof Elemental.ShockElemental || src instanceof WandOfLightning) && pointsInTalent(Talent.FARADAY_CAGE) > 1){
+			dmg /= 2;
+		}
+
 		dmg = (int)Math.ceil(dmg * RingOfTenacity.damageMultiplier( this ));
 
 		//TODO improve this when I have proper damage source logic

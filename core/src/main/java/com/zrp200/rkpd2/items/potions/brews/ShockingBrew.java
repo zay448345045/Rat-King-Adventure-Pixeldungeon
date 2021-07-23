@@ -21,17 +21,18 @@
 
 package com.zrp200.rkpd2.items.potions.brews;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
 import com.zrp200.rkpd2.items.potions.PotionOfParalyticGas;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.BArray;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 
 public class ShockingBrew extends Brew {
 	
@@ -49,7 +50,7 @@ public class ShockingBrew extends Brew {
 		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				GameScene.add(Blob.seed(i, 20, Electricity.class));
+				GameScene.add(Blob.seed(i, 20 + Dungeon.hero.pointsInTalent(Talent.FARADAY_CAGE)*2, Electricity.class));
 			}
 		}
 	}

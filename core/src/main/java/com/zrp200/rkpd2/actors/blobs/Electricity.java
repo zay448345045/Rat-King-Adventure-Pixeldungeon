@@ -21,11 +21,15 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Heap;
@@ -34,8 +38,6 @@ import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Electricity extends Blob {
 	
@@ -69,7 +71,8 @@ public class Electricity extends Blob {
 				cell = i + j*Dungeon.level.width();
 				if (cur[cell] > 0) {
 					Char ch = Actor.findChar( cell );
-					if (ch != null && !ch.isImmune(this.getClass())) {
+					if (ch != null && (!ch.isImmune(this.getClass()) ||
+							(ch instanceof Hero && ((Hero) ch).pointsInTalent(Talent.FARADAY_CAGE) > 0))) {
 						Buff.prolong( ch, Paralysis.class, 1f);
 						if (cur[cell] % 2 == 1) {
 							ch.damage(Math.round(Random.Float(2 + Dungeon.depth / 5f)), this);

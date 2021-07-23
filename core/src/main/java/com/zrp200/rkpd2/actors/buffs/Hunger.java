@@ -21,15 +21,17 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
+import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
 
 public class Hunger extends Buff implements Hero.Doom {
 
@@ -110,7 +112,15 @@ public class Hunger extends Buff implements Hero.Doom {
 		return true;
 	}
 
-	public void satisfy( float energy ) {
+	@Override
+	public void spend(float time) {
+		if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
+			super.spend( time * (0.85f + Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.4f));
+		}
+		else super.spend(time);
+	}
+
+	public void satisfy(float energy ) {
 
 		Artifact.ArtifactBuff buff = target.buff( HornOfPlenty.hornRecharge.class );
 		if (buff != null && buff.isCursed()){

@@ -23,8 +23,10 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.ChaliceOfBlood;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
+import com.zrp200.rkpd2.levels.Terrain;
 
 public class Regeneration extends Buff {
 	
@@ -60,6 +62,9 @@ public class Regeneration extends Buff {
 					delay -= regenBuff.itemLevel()*0.9f;
 					delay /= RingOfEnergy.artifactChargeMultiplier(target);
 				}
+			}
+			if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
+				delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.2f;
 			}
 			spend( delay );
 			
