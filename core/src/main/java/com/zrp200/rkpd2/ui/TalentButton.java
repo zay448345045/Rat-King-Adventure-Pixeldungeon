@@ -21,23 +21,22 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.gltextures.SmartTexture;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.*;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.ui.Button;
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.windows.WndHero;
 import com.zrp200.rkpd2.windows.WndInfoTalent;
-import com.watabou.gltextures.SmartTexture;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.PointerArea;
-import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.ui.Button;
-import com.watabou.utils.Callback;
 
 public class TalentButton extends Button {
 
@@ -156,6 +155,15 @@ public class TalentButton extends Button {
 			emitter.revive();
 			emitter.pos(fill.x + (fill.width() + oldWidth) / 2f, fill.y + fill.height() / 2f);
 			emitter.burst(Speck.factory(Speck.STAR), 12);
+			if (talent == Talent.HEROIC_RATINESS){
+				parent.destroy();
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndHero() );
+					}
+				});
+			}
 		}
 	}
 }

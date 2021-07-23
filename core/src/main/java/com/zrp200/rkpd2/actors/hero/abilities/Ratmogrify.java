@@ -6,6 +6,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
@@ -26,6 +27,7 @@ import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Ratmogrify extends ArmorAbility {
 
@@ -137,7 +139,10 @@ public class Ratmogrify extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{ Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.DRRATEDON, Talent.HEROIC_ENERGY};
+		ArrayList<Talent> talents = new ArrayList<>(Arrays.asList(Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.DRRATEDON, Talent.HEROIC_ENERGY));
+		if (GamesInProgress.selectedClass == HeroClass.RAT_KING || (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.RAT_KING))
+			talents.add(Talent.HEROIC_RATINESS);
+		return talents.toArray(new Talent[0]);
 	}
 
 	public static class TransmogRat extends Mob {

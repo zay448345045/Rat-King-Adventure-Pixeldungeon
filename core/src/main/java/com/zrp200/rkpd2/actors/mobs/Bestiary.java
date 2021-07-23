@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.actors.mobs;
 
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ public class Bestiary {
 			case 1:
 				//3x rat, 1x snake
 				return new ArrayList<>(Arrays.asList(
-						Rat.class, Rat.class, Rat.class,
+						Rat.class, RatKing.class, RatKing.class,
 						Snake.class));
 			case 2:
 				//2x rat, 1x snake, 2x gnoll

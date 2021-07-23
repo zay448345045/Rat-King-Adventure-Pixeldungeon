@@ -162,7 +162,7 @@ public class SmokeBomb extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.HASTY_RETREAT, Talent.BODY_REPLACEMENT, Talent.SHADOW_STEP, Talent.FRIGID_TOUCH, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.HASTY_RETREAT, Talent.BODY_REPLACEMENT, Talent.SHADOW_STEP, Talent.FRIGID_TOUCH, Talent.HEROIC_ENERGY, Talent.HEROIC_STAMINA};
 	}
 
 	public static class NinjaLog extends NPC {

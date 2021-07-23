@@ -434,6 +434,7 @@ public class RKPD2Changes {
                         new ChangeButton(new Image(TALENT_ICONS, 16*3,0,16,16), "Warrior",
                                 "_-_ Changed One Man Army and Skill to have unique sprite.\n" +
                                         "_-_ Replaced _Restored Willpower_ with _Willpower of Injured_: makes seal's shielding regenerate faster on low HP.\n" +
+                                        "_-_ Added _Weapon Mastery_ talent as 5th T1: increases the minimum amount of weapons.\n"+
                                         "_-_ Added _Big Rush_ talent as 6th T2: causes warrior to ram enemies instead of going around them, with bonus damage from seal's shielding.\n" +
                                         "_-_ Changed _Hold Fast_: now gives minimal armor value.\n\n" +
                                         "_-_ Reworked _Endless Rage_: now gives ability to gain rage from DoT, magic spells and Viscosity.\n" +
@@ -446,6 +447,7 @@ public class RKPD2Changes {
                                         "_-_ Added _Demonshader_ to Endure: imbues endure-empowered attacks with fire damage and ability to generate rage and combo."),
                         new ChangeButton(new Image(TALENT_ICONS, 16*13,16*4,16,16), "Mage",
                                 "_-_ Changed Sorcery and Warlock's Touch to have unique sprite.\n" +
+                                        "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands.\n"+
                                         "_-_ Added _Pyromaniac_ talent as 6th T2: increases damage from all fire in the game.\n\n" +
                                         "_-_ Buffed _Elemental Blast_ to have its base damage based on staff's melee damage.\n" +
                                         "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
@@ -453,6 +455,7 @@ public class RKPD2Changes {
                                         "_-_ Added _Chrono Screw_ to Remote Beacon: gives time bubble after successful teleportation."),
                         new ChangeButton(new Image(TALENT_ICONS, 16*5,16*2,16,16), "Rogue",
                                 "_-_ Changed Lethal Momentum and Marathon Runner to have unique sprite.\n" +
+                                        "_-_ Added _Faraday Cage_ talent as 5th T1: protects hero from electricity.\n"+
                                         "_-_ Replaced _Rogue's Foresight_ with _Protein Infusion_: gives bonus speed and evasion depending on satiety.\n" +
                                         "_-_ Added _Efficient Shadows_ talent as 6th T2: removes cloak's charge speed boost for more invisibility time per charge.\n" +
                                         "_-_ Fixed _Dual Wielding_: no longer causes softlocks.\n\n" +
@@ -462,6 +465,7 @@ public class RKPD2Changes {
                                         "_-_ Added _Dar Magic_ to Shadow Clone: gives various ranged capabilities to shadow clone."),
                         new ChangeButton(new Image(TALENT_ICONS, 16*3,16*3,16,16), "Huntress",
                                 "_-_ Changed Nature's Better Aid to have unique sprite.\n" +
+                                        "_-_ Added _Greenfields_ talent as 5th T1: increases regeneration while in furrowed grass.\n"+
                                         "_-_ Replaced _Nature's Aid_ with _Scout's Barrier_: gives shielding for successful Super-Shots.\n" +
                                         "_-_ Added _Scout's Agility_ talent as 6th T2: makes heroine dodge ranged attacks better.\n\n" +
                                         "_-_ Armored Cloak is preserved when using DK's crown.\n" +

@@ -253,6 +253,6 @@ public class WarpBeacon extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.CHRONO_SCREW, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.TELEFRAG, Talent.REMOTE_BEACON, Talent.LONGRANGE_WARP, Talent.CHRONO_SCREW, Talent.HEROIC_ENERGY, Talent.HEROIC_WIZARDRY};
 	}
 }

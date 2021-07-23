@@ -170,6 +170,7 @@ public enum Talent {
 			return super.title();
 		}
 	},
+	HEROIC_ENDURANCE(164, 4), HEROIC_WIZARDRY(165, 4), HEROIC_STAMINA(166, 4), HEROIC_ARCHERY(167, 4), HEROIC_RATINESS(168, 3),
 
 	//Ratmogrify T4
 	RATSISTANCE(124, 4), RATLOMACY(125, 4), RATFORCEMENTS(126, 4), DRRATEDON(123, 4),
@@ -264,6 +265,9 @@ public enum Talent {
 	public static int getMaxPoints(int tier) {
 		int max = tierLevelThresholds[tier+1] - tierLevelThresholds[tier];
 		if(tier == 3) max += 4;
+		if (Dungeon.hero != null){
+			if (Dungeon.hero.pointsInTalent(HEROIC_RATINESS) >= tier) max += 1;
+		}
 		return max;
 	}
 
@@ -525,6 +529,9 @@ public enum Talent {
 			float duration = 3f*hero.pointsInTalent(ENHANCED_RINGS,RK_ASSASSIN);
 			if(hero.hasTalent(ENHANCED_RINGS)) Buff.affect(hero, EnhancedRings.class, duration);
 			else Buff.prolong(hero, EnhancedRings.class, duration);
+		}
+		if (hero.hasTalent(HEROIC_STAMINA)){
+			Buff.prolong(hero, Stamina.class, 1.25f * hero.pointsInTalent(HEROIC_STAMINA));
 		}
 	}
 	public static void onItemEquipped( Hero hero, Item item ){
@@ -798,6 +805,7 @@ public enum Talent {
 		for (Talent t : abil.talents()){
 			talents.get(3).put(t, 0);
 		}
+
 	}
 
 	private static final String TALENT_TIER = "talents_tier_";

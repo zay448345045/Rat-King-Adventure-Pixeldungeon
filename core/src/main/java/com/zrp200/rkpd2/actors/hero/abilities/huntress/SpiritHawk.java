@@ -122,7 +122,7 @@ public class SpiritHawk extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.BEAK_OF_POWER, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EAGLE_EYE, Talent.GO_FOR_THE_EYES, Talent.SWIFT_SPIRIT, Talent.BEAK_OF_POWER, Talent.HEROIC_ENERGY, Talent.HEROIC_ARCHERY};
 	}
 
 	public static HawkAlly getHawk(){

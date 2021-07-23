@@ -419,6 +419,6 @@ public class ElementalBlast extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.EMPOWERED_STRIKE_II, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BLAST_RADIUS, Talent.ELEMENTAL_POWER, Talent.REACTIVE_BARRIER, Talent.EMPOWERED_STRIKE_II, Talent.HEROIC_ENERGY, Talent.HEROIC_WIZARDRY};
 	}
 }

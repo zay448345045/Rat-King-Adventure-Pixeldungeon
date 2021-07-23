@@ -122,7 +122,7 @@ public abstract class Wand extends Item {
 			return false;
 		}
 
-		if ( curCharges >= (cursed ? 1 : chargesPerCast())){
+		if ( curCharges >= (cursed ? 1 : chargesPerCast()) - Dungeon.hero.pointsInTalent(Talent.HEROIC_WIZARDRY)){
 			return true;
 		} else {
 			GLog.w(Messages.get(this, "fizzles"));

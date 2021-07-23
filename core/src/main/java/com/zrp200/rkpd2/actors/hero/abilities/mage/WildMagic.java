@@ -69,7 +69,7 @@ public class WildMagic extends ArmorAbility {
 		float chargeUsePerShot = (float)Math.pow(0.563f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
 
 		for (Wand w : wands.toArray(new Wand[0])){
-			if (w.curCharges < 1 && w.partialCharge < chargeUsePerShot){
+			if (w.curCharges < 1 - hero.pointsInTalent(Talent.HEROIC_WIZARDRY) && w.partialCharge < chargeUsePerShot){
 				wands.remove(w);
 			}
 		}
@@ -82,7 +82,7 @@ public class WildMagic extends ArmorAbility {
 
 			for (Wand w : dupes.toArray(new Wand[0])){
 				float totalCharge = w.curCharges + w.partialCharge;
-				if (totalCharge < 2*chargeUsePerShot){
+				if (totalCharge < 2*chargeUsePerShot - 2*hero.pointsInTalent(Talent.HEROIC_WIZARDRY)){
 					dupes.remove(w);
 				}
 			}
@@ -150,6 +150,6 @@ public class WildMagic extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.ELDRITCH_BLESSING, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.ELDRITCH_BLESSING, Talent.HEROIC_ENERGY, Talent.HEROIC_WIZARDRY};
 	}
 }

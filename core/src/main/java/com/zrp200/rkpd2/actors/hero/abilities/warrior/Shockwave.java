@@ -140,6 +140,6 @@ public class Shockwave extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.COCKATRIOCIOUS, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.COCKATRIOCIOUS, Talent.HEROIC_ENERGY, Talent.HEROIC_ENDURANCE};
 	}
 }

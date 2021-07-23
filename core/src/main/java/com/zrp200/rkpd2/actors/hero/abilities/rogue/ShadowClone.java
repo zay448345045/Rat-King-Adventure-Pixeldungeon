@@ -127,7 +127,7 @@ public class ShadowClone extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.SHADOW_BLADE, Talent.CLONED_ARMOR, Talent.PERFECT_COPY, Talent.DAR_MAGIC, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.SHADOW_BLADE, Talent.CLONED_ARMOR, Talent.PERFECT_COPY, Talent.DAR_MAGIC, Talent.HEROIC_ENERGY, Talent.HEROIC_STAMINA};
 	}
 
 	public static ShadowAlly getShadowAlly(){

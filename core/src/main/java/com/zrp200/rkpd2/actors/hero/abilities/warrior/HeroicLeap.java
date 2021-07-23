@@ -142,6 +142,6 @@ public class HeroicLeap extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.ALICE_GAMBIT, Talent.HEROIC_ENERGY};
+		return new Talent[]{Talent.BODY_SLAM, Talent.IMPACT_WAVE, Talent.DOUBLE_JUMP, Talent.ALICE_GAMBIT, Talent.HEROIC_ENERGY, Talent.HEROIC_ENDURANCE};
 	}
 }
