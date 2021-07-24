@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 public class Splash {
 	
@@ -66,7 +66,7 @@ public class Splash {
 	
 	private static final SplashFactory FACTORY = new SplashFactory();
 			
-	private static class SplashFactory extends Emitter.Factory {
+	private static class SplashFactory implements Emitter.Factory {
 
 		public int color;
 		public float dir;
