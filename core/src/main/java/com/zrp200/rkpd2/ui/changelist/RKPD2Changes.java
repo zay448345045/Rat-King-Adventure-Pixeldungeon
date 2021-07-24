@@ -487,6 +487,12 @@ public class RKPD2Changes {
                                 "Added wand of His Ratiness, which will create random wand zaps and use random wand effects for Battlemage and Elemental Blast."),
                         new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "New champions",
                                 "Added a lot of champion types, increasing their number to 15.")
+                ),
+                new ChangeInfo("", false, 0x000000, "",
+                bugFixes("_-_ Fixed light cloak charge speed being wrong (was higher than intended for Rogue and lower for RK)\n\n" +
+                        "_-_ Fixed Wealth and Might using wrong percentages in their descriptions.\n" +
+                        "_-_ Fixed Shrinking being only cosmetic effect.\n" +
+                        "_-_ Fixed shop appearing on D21.")
                 )
 
 
