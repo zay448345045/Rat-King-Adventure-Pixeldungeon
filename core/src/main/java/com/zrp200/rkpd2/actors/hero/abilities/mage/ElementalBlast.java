@@ -168,6 +168,8 @@ public class ElementalBlast extends ArmorAbility {
 
 		//cast a ray 2/3 the way, and do effects
 		final Class<? extends Wand>[] finalWandCls = new Class[]{wandCls[0] == WandOfFirebolt.class ? WandOfFireblast.class : wandCls[0]};
+		int finalMinDamage = minDamage;
+		int finalMaxDamage = maxDamage;
 		((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
 				effectTypes.get(wandCls[0]),
 				hero.sprite,
@@ -331,7 +333,7 @@ public class ElementalBlast extends ArmorAbility {
 											charm.ignoreHeroAllies = true;
 											mob.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 3);
 										} else {
-											damage = Math.round(Random.NormalIntRange(10, 20) * effectMulti);
+											damage = Math.round(Random.NormalIntRange(finalMinDamage, finalMaxDamage) * effectMulti);
 											mob.damage(damage, Reflection.newInstance(finalWandCls[0]));
 											mob.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 										}

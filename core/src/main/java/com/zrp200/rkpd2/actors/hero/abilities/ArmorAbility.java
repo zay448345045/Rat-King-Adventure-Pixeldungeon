@@ -68,7 +68,7 @@ public abstract class ArmorAbility implements Bundlable {
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;
 		if (hero.hasTalent(Talent.EMPOWERED_STRIKE_II)){
-			chargeUse = 85 - hero.pointsInTalent(Talent.EMPOWERED_STRIKE_II);
+			chargeUse = 85 - hero.pointsInTalent(Talent.EMPOWERED_STRIKE_II)*5;
 		}
 		if (hero.hasTalent(Talent.HEROIC_ENERGY)){
 			//reduced charge use by 16%/30%/41%/50%
