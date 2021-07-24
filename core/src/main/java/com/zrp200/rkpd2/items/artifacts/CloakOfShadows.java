@@ -171,12 +171,13 @@ public class CloakOfShadows extends Artifact {
 	protected ArtifactBuff activeBuff( ) {
 		return new cloakStealth();
 	}
-	
+
 	@Override
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap) {
-			if (!isEquipped(target)) amount *= target.pointsInTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER)*
-					(target.hasTalent(Talent.LIGHT_CLOAK)?.25f:0.4f/3f); // moved previous "equip for free" mechanic to light cloak.
+			if (!isEquipped(target))
+				amount *= target.byTalent(Talent.LIGHT_CLOAK, 0.75f, Talent.RK_FREERUNNER, 0.4f)
+						* (target.pointsInTalent(Talent.LIGHT_CLOAK, Talent.RK_FREERUNNER)/3f);
 			if(target.heroClass == HeroClass.ROGUE) amount *= ROGUE_BOOST;
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
@@ -191,7 +192,7 @@ public class CloakOfShadows extends Artifact {
 		charge = Math.min(charge+amount, chargeCap+amount);
 		updateQuickslot();
 	}
-	
+
 	@Override
 	public Item upgrade() {
 		chargeCap = Math.min(chargeCap + 1, 10);
@@ -235,8 +236,8 @@ public class CloakOfShadows extends Artifact {
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
-						chargeToGain *= (Dungeon.hero.hasTalent(Talent.LIGHT_CLOAK) ? 1/3f : 0.1f) *
-								Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER);
+						chargeToGain *= Dungeon.hero.byTalent(Talent.LIGHT_CLOAK, 0.75f, Talent.RK_FREERUNNER, 0.4f) *
+								(Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER)/3f);
 					}
 					partialCharge += chargeToGain;
 				}
@@ -265,11 +266,11 @@ public class CloakOfShadows extends Artifact {
 	}
 
 	public class cloakStealth extends ArtifactBuff{
-		
+
 		{
 			type = buffType.POSITIVE;
 		}
-		
+
 		int turnsToCost = 0;
 
 		@Override
@@ -331,7 +332,7 @@ public class CloakOfShadows extends Artifact {
 					barrier.incShield(1);
 				}
 			}
-			
+
 			if (turnsToCost <= 0){
 				charge--;
 				if (charge < 0) {
@@ -357,7 +358,7 @@ public class CloakOfShadows extends Artifact {
 						upgrade();
 						exp -= level() * expPerLevel;
 						GLog.p(Messages.get(this, "levelup"));
-						
+
 					}
 					turnsToCost = (int) stealthDuration();
 				}
@@ -398,22 +399,22 @@ public class CloakOfShadows extends Artifact {
 			super.detach();
 			updateQuickslot();
 		}
-		
+
 		private static final String TURNSTOCOST = "turnsToCost";
 		private static final String BARRIER_INC = "barrier_inc";
-		
+
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			
+
 			bundle.put( TURNSTOCOST , turnsToCost);
 			bundle.put( BARRIER_INC, inc);
 		}
-		
+
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			
+
 			turnsToCost = bundle.getInt( TURNSTOCOST );
 			inc = bundle.getFloat( BARRIER_INC );
 		}
