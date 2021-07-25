@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.items.Gold;
@@ -29,7 +30,6 @@ import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Random;
 
 public class TreasuryRoom extends SpecialRoom {
 
@@ -48,7 +48,7 @@ public class TreasuryRoom extends SpecialRoom {
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY || level.heaps.get( pos ) != null || level.findMob(pos) != null);
-			if (heapType == Heap.Type.CHEST && Dungeon.depth > 1 && Random.Int( 5 ) == 0){
+			if (heapType == Heap.Type.CHEST && Dungeon.getDepth() > 1 && Random.Int( 5 ) == 0){
 				level.mobs.add(Mimic.spawnAt(pos, new Gold().random()));
 			} else {
 				level.drop( new Gold().random(), pos ).type = heapType;
@@ -66,6 +66,6 @@ public class TreasuryRoom extends SpecialRoom {
 		}
 		
 		entrance().set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		level.addItemToSpawn( new IronKey(Dungeon.getDepth()) );
 	}
 }

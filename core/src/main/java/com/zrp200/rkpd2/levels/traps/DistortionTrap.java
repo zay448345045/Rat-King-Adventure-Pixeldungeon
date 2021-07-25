@@ -21,30 +21,17 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.mobs.Acidic;
-import com.zrp200.rkpd2.actors.mobs.Albino;
-import com.zrp200.rkpd2.actors.mobs.ArmoredBrute;
-import com.zrp200.rkpd2.actors.mobs.Bandit;
-import com.zrp200.rkpd2.actors.mobs.Bestiary;
-import com.zrp200.rkpd2.actors.mobs.CausticSlime;
-import com.zrp200.rkpd2.actors.mobs.DM201;
-import com.zrp200.rkpd2.actors.mobs.Elemental;
-import com.zrp200.rkpd2.actors.mobs.Mimic;
-import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.actors.mobs.Piranha;
-import com.zrp200.rkpd2.actors.mobs.Senior;
-import com.zrp200.rkpd2.actors.mobs.Statue;
-import com.zrp200.rkpd2.actors.mobs.Wraith;
+import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,7 +89,7 @@ public class DistortionTrap extends Trap{
 			Mob mob;
 			switch (summoned){
 				case 1:
-					if (Dungeon.depth != 5 && Random.Int(100) == 0){
+					if (Dungeon.getDepth() != 5 && Random.Int(100) == 0){
 						mob = new RatKing();
 						break;
 					}

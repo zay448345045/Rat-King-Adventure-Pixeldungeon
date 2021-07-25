@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.Bee;
 import com.zrp200.rkpd2.items.Honeypot;
@@ -29,7 +30,6 @@ import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
 
 public class SecretHoneypotRoom extends SecretRoom {
 	
@@ -47,7 +47,7 @@ public class SecretHoneypotRoom extends SecretRoom {
 		level.drop(pot, level.pointToCell(brokenPotPos));
 		
 		Bee bee = new Bee();
-		bee.spawn( Dungeon.depth );
+		bee.spawn(Dungeon.getDepth());
 		bee.HP = bee.HT;
 		bee.pos = level.pointToCell(brokenPotPos);
 		level.mobs.add( bee );

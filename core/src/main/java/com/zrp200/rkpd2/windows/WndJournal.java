@@ -21,6 +21,11 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
@@ -35,16 +40,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.QuickRecipe;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.ScrollPane;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.ui.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,7 +152,7 @@ public class WndJournal extends WndTabbed {
 				depth.text(Integer.toString(d));
 				depth.measure();
 				
-				if (d == Dungeon.depth) {
+				if (d == Dungeon.getDepth()) {
 					label.hardlight(TITLE_COLOR);
 					depth.hardlight(TITLE_COLOR);
 				}

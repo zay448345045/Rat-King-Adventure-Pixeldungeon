@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.rooms.standard;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.journal.Document;
@@ -28,8 +30,6 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 public class EntranceRoom extends StandardRoom {
 	
@@ -66,7 +66,7 @@ public class EntranceRoom extends StandardRoom {
 		Random.pushGenerator();
 
 		//places the first guidebook page on floor 1
-		if (Dungeon.depth == 1 && !Document.ADVENTURERS_GUIDE.hasPage(Document.GUIDE_INTRO_PAGE)){
+		if (Dungeon.getDepth() == 1 && !Document.ADVENTURERS_GUIDE.hasPage(Document.GUIDE_INTRO_PAGE)){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
@@ -79,7 +79,7 @@ public class EntranceRoom extends StandardRoom {
 		}
 
 		//places the third guidebook page on floor 2
-		if (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.hasPage(Document.GUIDE_SEARCH_PAGE)){
+		if (Dungeon.getDepth() == 2 && !Document.ADVENTURERS_GUIDE.hasPage(Document.GUIDE_SEARCH_PAGE)){
 			int pos;
 			do {
 				//can't be on bottom row of tiles

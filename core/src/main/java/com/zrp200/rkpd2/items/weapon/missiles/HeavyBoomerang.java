@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items.weapon.missiles;
 
+import com.watabou.noosa.tweeners.AlphaTweener;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -29,9 +32,6 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.MissileSprite;
-import com.watabou.noosa.tweeners.AlphaTweener;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 
 public class HeavyBoomerang extends MissileWeapon {
 	
@@ -59,7 +59,7 @@ public class HeavyBoomerang extends MissileWeapon {
 		}
 		decrementDurability();
 		if (durability > 0){
-			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.getDepth());
 		}
 	}
 
@@ -70,7 +70,7 @@ public class HeavyBoomerang extends MissileWeapon {
 			return;
 		}
 		parent = null;
-		Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+		Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.getDepth());
 	}
 	
 	public static class CircleBack extends Buff {
@@ -101,7 +101,7 @@ public class HeavyBoomerang extends MissileWeapon {
 		
 		@Override
 		public boolean act() {
-			if (returnDepth == Dungeon.depth){
+			if (returnDepth == Dungeon.getDepth()){
 				left--;
 				if (left <= 0){
 					final Char returnTarget = Actor.findChar(returnPos);

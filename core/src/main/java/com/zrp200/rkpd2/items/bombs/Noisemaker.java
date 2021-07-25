@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.bombs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -31,8 +33,6 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 public class Noisemaker extends Bomb {
 	
@@ -60,7 +60,7 @@ public class Noisemaker extends Bomb {
 		int left;
 		
 		public void set(int cell){
-			floor = Dungeon.depth;
+			floor = Dungeon.getDepth();
 			this.cell = cell;
 			left = 6;
 		}
@@ -68,7 +68,7 @@ public class Noisemaker extends Bomb {
 		@Override
 		public boolean act() {
 
-			if (Dungeon.depth != floor){
+			if (Dungeon.getDepth() != floor){
 				spend(TICK);
 				return true;
 			}

@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.items.food.ChargrilledMeat;
@@ -30,7 +31,6 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.plants.BlandfruitBush;
-import com.watabou.utils.Point;
 
 public class SecretLarderRoom extends SecretRoom {
 	
@@ -56,7 +56,7 @@ public class SecretLarderRoom extends SecretRoom {
 		
 		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
 		
-		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.depth / 5);
+		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.getDepth() / 5);
 		
 		while (extraFood > 0){
 			Food food;

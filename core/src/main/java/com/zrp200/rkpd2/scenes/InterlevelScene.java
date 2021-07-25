@@ -21,12 +21,11 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Chrome;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.GamesInProgress;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.glwrap.Blending;
+import com.watabou.noosa.*;
+import com.watabou.utils.DeviceCompat;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -35,22 +34,9 @@ import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.services.updates.Updates;
-import com.zrp200.rkpd2.ui.GameLog;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.StyledButton;
-import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.windows.WndError;
 import com.zrp200.rkpd2.windows.WndStory;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Blending;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.NoosaScriptNoLighting;
-import com.watabou.noosa.SkinnedBlock;
-import com.watabou.utils.DeviceCompat;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -100,7 +86,7 @@ public class InterlevelScene extends PixelScene {
 		fadeTime = NORM_FADE;
 		switch (mode){
 			default:
-				loadingDepth = Dungeon.depth;
+				loadingDepth = Dungeon.getDepth();
 				scrollSpeed = 0;
 				break;
 			case CONTINUE:
@@ -112,7 +98,7 @@ public class InterlevelScene extends PixelScene {
 					loadingDepth = 1;
 					fadeTime = SLOW_FADE;
 				} else {
-					loadingDepth = Dungeon.depth+1;
+					loadingDepth = Dungeon.getDepth() +1;
 					if (!(Statistics.deepestFloor < loadingDepth)) {
 						fadeTime = FAST_FADE;
 					} else if (loadingDepth == 6 || loadingDepth == 11
@@ -123,17 +109,17 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 5;
 				break;
 			case FALL:
-				loadingDepth = Dungeon.depth+1;
+				loadingDepth = Dungeon.getDepth() +1;
 				scrollSpeed = 50;
 				break;
 			case ASCEND:
 				fadeTime = FAST_FADE;
-				loadingDepth = Dungeon.depth-1;
+				loadingDepth = Dungeon.getDepth() -1;
 				scrollSpeed = -5;
 				break;
 			case RETURN:
 				loadingDepth = returnDepth;
-				scrollSpeed = returnDepth > Dungeon.depth ? 15 : -15;
+				scrollSpeed = returnDepth > Dungeon.getDepth() ? 15 : -15;
 				break;
 		}
 		if (loadingDepth <= 5)          loadingAsset = Assets.Interfaces.LOADING_SEWERS;
@@ -320,7 +306,7 @@ public class InterlevelScene extends PixelScene {
 						error.getMessage().equals("old save")) errorMsg = Messages.get(this, "io_error");
 
 				else throw new RuntimeException("fatal error occured while moving between floors. " +
-							"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth, error);
+							"Seed:" + Dungeon.seed + " depth:" + Dungeon.getDepth(), error);
 
 				add( new WndError( errorMsg ) {
 					public void onBackPressed() {
@@ -339,7 +325,7 @@ public class InterlevelScene extends PixelScene {
 				}
 				ShatteredPixelDungeon.reportException(
 						new RuntimeException("waited more than 10 seconds on levelgen. " +
-								"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth + " trace:" +
+								"Seed:" + Dungeon.seed + " depth:" + Dungeon.getDepth() + " trace:" +
 								s)
 				);
 			}
@@ -366,7 +352,7 @@ public class InterlevelScene extends PixelScene {
 		if (Dungeon.depth >= Statistics.deepestFloor) {
 			level = Dungeon.newLevel();
 		} else {
-			Dungeon.depth++;
+			Dungeon.depth = Dungeon.depth + 1;
 			level = Dungeon.loadLevel( GamesInProgress.curSlot );
 		}
 		Dungeon.switchLevel( level, level.entrance );
@@ -383,7 +369,7 @@ public class InterlevelScene extends PixelScene {
 		if (Dungeon.depth >= Statistics.deepestFloor) {
 			level = Dungeon.newLevel();
 		} else {
-			Dungeon.depth++;
+			Dungeon.depth = Dungeon.depth + 1;
 			level = Dungeon.loadLevel( GamesInProgress.curSlot );
 		}
 		Dungeon.switchLevel( level, level.fallCell( fallIntoPit ));
@@ -394,7 +380,7 @@ public class InterlevelScene extends PixelScene {
 		Mob.holdAllies( Dungeon.level );
 
 		Dungeon.saveAll();
-		Dungeon.depth--;
+		Dungeon.depth = Dungeon.depth - 1;
 		Level level = Dungeon.loadLevel( GamesInProgress.curSlot );
 		Dungeon.switchLevel( level, level.exit );
 	}
@@ -430,8 +416,8 @@ public class InterlevelScene extends PixelScene {
 		Mob.holdAllies( Dungeon.level );
 		
 		if (Dungeon.level.locked) {
-			Dungeon.hero.resurrect( Dungeon.depth );
-			Dungeon.depth--;
+			Dungeon.hero.resurrect(Dungeon.depth);
+			Dungeon.depth = Dungeon.depth - 1;
 			Level level = Dungeon.newLevel();
 			Dungeon.switchLevel( level, level.entrance );
 		} else {
@@ -444,9 +430,9 @@ public class InterlevelScene extends PixelScene {
 		
 		Mob.holdAllies( Dungeon.level );
 
-		SpecialRoom.resetPitRoom(Dungeon.depth+1);
+		SpecialRoom.resetPitRoom(Dungeon.getDepth() +1);
 
-		Dungeon.depth--;
+		Dungeon.depth = Dungeon.depth - 1;
 		Level level = Dungeon.newLevel();
 		Dungeon.switchLevel( level, level.entrance );
 	}

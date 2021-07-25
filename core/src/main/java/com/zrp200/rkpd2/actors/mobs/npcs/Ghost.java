@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
@@ -32,11 +38,7 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Generator;
-import com.zrp200.rkpd2.items.armor.Armor;
-import com.zrp200.rkpd2.items.armor.LeatherArmor;
-import com.zrp200.rkpd2.items.armor.MailArmor;
-import com.zrp200.rkpd2.items.armor.PlateArmor;
-import com.zrp200.rkpd2.items.armor.ScaleArmor;
+import com.zrp200.rkpd2.items.armor.*;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.journal.Notes;
@@ -47,12 +49,6 @@ import com.zrp200.rkpd2.sprites.GhostSprite;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndQuest;
 import com.zrp200.rkpd2.windows.WndSadGhost;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 public class Ghost extends NPC {
 
@@ -280,7 +276,7 @@ public class Ghost extends NPC {
 		}
 		
 		public static void spawn( SewerLevel level ) {
-			if (!spawned && Dungeon.depth > 1 && Random.Int( 5 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.getDepth() > 1 && Random.Int( 5 - Dungeon.getDepth()) == 0) {
 				
 				Ghost ghost = new Ghost();
 				do {
@@ -291,11 +287,11 @@ public class Ghost extends NPC {
 				spawned = true;
 				//dungeon depth determines type of quest.
 				//depth2=fetid rat, 3=gnoll trickster, 4=great crab
-				type = Dungeon.depth-1;
+				type = Dungeon.getDepth() -1;
 				
 				given = false;
 				processed = false;
-				depth = Dungeon.depth;
+				depth = Dungeon.getDepth();
 
 				//50%:tier2, 30%:tier3, 15%:tier4, 5%:tier5
 				switch (Random.chances(new float[]{0, 0, 10, 6, 3, 1})){
@@ -335,7 +331,7 @@ public class Ghost extends NPC {
 		}
 		
 		public static void process() {
-			if (spawned && given && !processed && (depth == Dungeon.depth)) {
+			if (spawned && given && !processed && (depth == Dungeon.getDepth())) {
 				GLog.n( Messages.get(Ghost.class, "find_me") );
 				Sample.INSTANCE.play( Assets.Sounds.GHOST );
 				processed = true;

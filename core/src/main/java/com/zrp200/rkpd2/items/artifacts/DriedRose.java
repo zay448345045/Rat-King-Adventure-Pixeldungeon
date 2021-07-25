@@ -21,9 +21,6 @@
 
 package com.zrp200.rkpd2.items.artifacts;
 
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -40,8 +37,10 @@ import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.Burning;
 import com.zrp200.rkpd2.actors.buffs.Corruption;
 import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Wraith;
+import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -57,6 +56,7 @@ import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.GhostSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -65,11 +65,7 @@ import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.GLog;
-import com.zrp200.rkpd2.windows.IconTitle;
-import com.zrp200.rkpd2.windows.WndBag;
-import com.zrp200.rkpd2.windows.WndBlacksmith;
-import com.zrp200.rkpd2.windows.WndQuest;
-import com.zrp200.rkpd2.windows.WndUseItem;
+import com.zrp200.rkpd2.windows.*;
 
 import java.util.ArrayList;
 
@@ -721,10 +717,10 @@ public class DriedRose extends Artifact {
 		}
 		
 		public void sayAppeared(){
-			int depth = (Dungeon.depth - 1) / 5;
+			int depth = (Dungeon.getDepth() - 1) / 5;
 			
 			//only some lines are said on the first floor of a depth
-			int variant = Dungeon.depth % 5 == 1 ? Random.IntRange(1, 3) : Random.IntRange(1, 6);
+			int variant = Dungeon.getDepth() % 5 == 1 ? Random.IntRange(1, 3) : Random.IntRange(1, 6);
 			
 			switch(depth){
 				case 0:
@@ -749,7 +745,7 @@ public class DriedRose extends Artifact {
 		}
 		
 		public void sayBoss(){
-			int depth = (Dungeon.depth - 1) / 5;
+			int depth = (Dungeon.getDepth() - 1) / 5;
 			
 			switch(depth){
 				case 0:

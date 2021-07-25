@@ -68,7 +68,7 @@ public class ThreadRipper extends Mob {
 			immunities.add(GodSlayerFire.class);
 		}
 	}
-	private static double getModifier() { return Math.max(1, Dungeon.depth/5d); }
+	private static double getModifier() { return Math.max(1, Dungeon.getDepth() /5d); }
 
 	@Override
 	public float spawningWeight() {

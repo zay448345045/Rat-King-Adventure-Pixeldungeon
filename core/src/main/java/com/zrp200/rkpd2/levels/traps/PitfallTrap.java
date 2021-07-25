@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -35,8 +37,6 @@ import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 
 public class PitfallTrap extends Trap {
 
@@ -48,13 +48,13 @@ public class PitfallTrap extends Trap {
 	@Override
 	public void activate() {
 		
-		if( Dungeon.bossLevel() || Dungeon.depth > 25){
+		if( Dungeon.bossLevel() || Dungeon.getDepth() > 25){
 			GLog.w(Messages.get(this, "no_pit"));
 			return;
 		}
 
 		DelayedPit p = Buff.affect(Dungeon.hero, DelayedPit.class, 1);
-		p.depth = Dungeon.depth;
+		p.depth = Dungeon.getDepth();
 		p.pos = pos;
 
 		for (int i : PathFinder.NEIGHBOURS9){
@@ -78,7 +78,7 @@ public class PitfallTrap extends Trap {
 
 		@Override
 		public boolean act() {
-			if (depth == Dungeon.depth) {
+			if (depth == Dungeon.getDepth()) {
 				for (int i : PathFinder.NEIGHBOURS9) {
 
 					int cell = pos + i;

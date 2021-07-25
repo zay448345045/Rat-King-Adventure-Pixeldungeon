@@ -21,22 +21,22 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
-import com.zrp200.rkpd2.items.KingsCrown;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
-import com.zrp200.rkpd2.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.items.Amulet;
+import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.RankingsScene;
 import com.zrp200.rkpd2.sprites.RatKingSprite;
+import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
+import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndQuest;
 
 public class RatKing extends NPC {
@@ -80,21 +80,21 @@ public class RatKing extends NPC {
 	@Override
 	protected void onAdd() {
 		super.onAdd();
-		if (Dungeon.depth != 5){
+		if (Dungeon.getDepth() != 5){
 			yell(Messages.get(this, "confused"));
 		}
 	}
 
 	@Override
 	protected boolean act() {
-		if (Dungeon.depth < 5){
+		if (Dungeon.getDepth() < 5){
 			if (pos == Dungeon.level.exit){
 				destroy();
 				sprite.killAndErase();
 			} else {
 				target = Dungeon.level.exit;
 			}
-		} else if (Dungeon.depth > 5){
+		} else if (Dungeon.getDepth() > 5){
 			if (pos == Dungeon.level.entrance){
 				destroy();
 				sprite.killAndErase();

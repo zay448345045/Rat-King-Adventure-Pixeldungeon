@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.glwrap.Blending;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Torch;
@@ -28,30 +34,9 @@ import com.zrp200.rkpd2.levels.painters.HallsPainter;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.special.DemonSpawnerRoom;
-import com.zrp200.rkpd2.levels.traps.BlazingTrap;
-import com.zrp200.rkpd2.levels.traps.CorrosionTrap;
-import com.zrp200.rkpd2.levels.traps.CursingTrap;
-import com.zrp200.rkpd2.levels.traps.DisarmingTrap;
-import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
-import com.zrp200.rkpd2.levels.traps.DistortionTrap;
-import com.zrp200.rkpd2.levels.traps.FlashingTrap;
-import com.zrp200.rkpd2.levels.traps.FrostTrap;
-import com.zrp200.rkpd2.levels.traps.GrimTrap;
-import com.zrp200.rkpd2.levels.traps.GuardianTrap;
-import com.zrp200.rkpd2.levels.traps.PitfallTrap;
-import com.zrp200.rkpd2.levels.traps.RockfallTrap;
-import com.zrp200.rkpd2.levels.traps.StormTrap;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
-import com.zrp200.rkpd2.levels.traps.WarpingTrap;
-import com.zrp200.rkpd2.levels.traps.WeakeningTrap;
+import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.glwrap.Blending;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -59,7 +44,7 @@ public class HallsLevel extends RegularLevel {
 
 	{
 		
-		viewDistance = Math.min( 26 - Dungeon.depth, viewDistance );
+		viewDistance = Math.min( 26 - Dungeon.getDepth(), viewDistance );
 		
 		color1 = 0x801500;
 		color2 = 0xa68521;

@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
@@ -32,7 +33,6 @@ import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
 
 public class CryptRoom extends SpecialRoom {
 
@@ -48,7 +48,7 @@ public class CryptRoom extends SpecialRoom {
 		Door entrance = entrance();
 		
 		entrance.set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		level.addItemToSpawn( new IronKey(Dungeon.getDepth()) );
 		
 		if (entrance.x == left) {
 			Painter.set( level, new Point( right-1, top+1 ), Terrain.STATUE );
@@ -74,7 +74,7 @@ public class CryptRoom extends SpecialRoom {
 	private static Item prize( Level level ) {
 		
 		//1 floor set higher than normal
-		Armor prize = Generator.randomArmor( (Dungeon.depth / 5) + 1);
+		Armor prize = Generator.randomArmor( (Dungeon.getDepth() / 5) + 1);
 		
 		if (Challenges.isItemBlocked(prize)){
 			return new Gold().random();

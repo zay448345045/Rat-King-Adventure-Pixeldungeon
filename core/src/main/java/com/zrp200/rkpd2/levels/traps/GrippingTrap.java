@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -31,7 +32,6 @@ import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.effects.Wound;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
-import com.watabou.noosa.audio.Sample;
 
 public class GrippingTrap extends Trap {
 
@@ -57,7 +57,7 @@ public class GrippingTrap extends Trap {
 		Char c = Actor.findChar( pos );
 
 		if (c != null && !c.flying) {
-			int damage = Math.max( 0,  (2 + Dungeon.depth/2) - c.drRoll()/2 );
+			int damage = Math.max( 0,  (2 + Dungeon.getDepth() /2) - c.drRoll()/2 );
 			Buff.affect( c, Bleeding.class ).set( damage );
 			Buff.prolong( c, Cripple.class, Cripple.DURATION);
 			Wound.hit( c );

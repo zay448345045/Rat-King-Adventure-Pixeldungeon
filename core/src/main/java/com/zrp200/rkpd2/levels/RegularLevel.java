@@ -130,7 +130,7 @@ public abstract class RegularLevel extends Level {
 			initRooms.add(s);
 		}
 		
-		int secrets = SecretRoom.secretsForFloor(Dungeon.depth);
+		int secrets = SecretRoom.secretsForFloor(Dungeon.getDepth());
 		// amount of secrets is not reduced.
 		//one additional secret for secret levels
 		if (feeling == Feeling.SECRETS) secrets++;
@@ -167,7 +167,7 @@ public abstract class RegularLevel extends Level {
 	protected abstract Painter painter();
 	
 	protected int nTraps() {
-		return Random.NormalIntRange( 2, 3 + (Dungeon.depth/5) );
+		return Random.NormalIntRange( 2, 3 + (Dungeon.getDepth() /5) );
 	}
 	
 	protected Class<?>[] trapClasses(){
@@ -180,13 +180,13 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	public int nMobs() {
-		if (Dungeon.depth <= 1) return 0;
+		if (Dungeon.getDepth() <= 1) return 0;
 
-		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
+		int mobs = 3 + Dungeon.getDepth() % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
-		if (Dungeon.bossLevel() && Dungeon.depth > 25){
+		if (Dungeon.bossLevel() && Dungeon.getDepth() > 25){
 			mobs *= 3;
 		}
 		return mobs;
@@ -195,7 +195,7 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createMobs() {
 		//on floor 1, 8 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 8 : nMobs();
+		int mobsToSpawn = Dungeon.getDepth() == 1 ? 8 : nMobs();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
@@ -229,7 +229,7 @@ public abstract class RegularLevel extends Level {
 				mobs.add(mob);
 
 				//chance to add a second mob to this room, except on floor 1
-				if (Dungeon.depth > 1 && mobsToSpawn > 0 && Random.Int(4) == 0){
+				if (Dungeon.getDepth() > 1 && mobsToSpawn > 0 && Random.Int(4) == 0){
 					mob = createMob();
 
 					tries = 30;
@@ -345,7 +345,7 @@ public abstract class RegularLevel extends Level {
 				type = Heap.Type.CHEST;
 				break;
 			case 5:
-				if (Dungeon.depth > 1 && findMob(cell) == null){
+				if (Dungeon.getDepth() > 1 && findMob(cell) == null){
 					mobs.add(Mimic.spawnAt(cell, toDrop));
 					continue;
 				}
@@ -359,13 +359,13 @@ public abstract class RegularLevel extends Level {
 			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
 
-				if (Dungeon.depth > 1 && Random.Int(10) == 0 && findMob(cell) == null){
+				if (Dungeon.getDepth() > 1 && Random.Int(10) == 0 && findMob(cell) == null){
 					mobs.add(Mimic.spawnAt(cell, toDrop, GoldenMimic.class));
 				} else {
 					Heap dropped = drop(toDrop, cell);
 					if (heaps.get(cell) == dropped) {
 						dropped.type = Heap.Type.LOCKED_CHEST;
-						addItemToSpawn(new GoldenKey(Dungeon.depth));
+						addItemToSpawn(new GoldenKey(Dungeon.getDepth()));
 					}
 				}
 			} else {
@@ -407,7 +407,7 @@ public abstract class RegularLevel extends Level {
 		DriedRose rose = Dungeon.hero.belongings.getItem( DriedRose.class );
 		if (rose != null && rose.isIdentified() && !rose.cursed){
 			//aim to drop 1 petal every 2 floors
-			int petalsNeeded = (int) Math.ceil((float)((Dungeon.depth / 2) - rose.droppedPetals) / 3);
+			int petalsNeeded = (int) Math.ceil((float)((Dungeon.getDepth() / 2) - rose.droppedPetals) / 3);
 
 			for (int i=1; i <= petalsNeeded; i++) {
 				//the player may miss a single petal and still max their rose.
@@ -456,7 +456,7 @@ public abstract class RegularLevel extends Level {
 		missingPages.remove(Document.GUIDE_SEARCH_PAGE);
 
 		//chance to find a page scales with pages missing and depth
-		float dropChance = (missingPages.size() + Dungeon.depth - 1) / (float)(allPages.size() - 2);
+		float dropChance = (missingPages.size() + Dungeon.getDepth() - 1) / (float)(allPages.size() - 2);
 		if (!missingPages.isEmpty() && Random.Float() < dropChance){
 			GuidePage p = new GuidePage();
 			p.page(missingPages.get(0));

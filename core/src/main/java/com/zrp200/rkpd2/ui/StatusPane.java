@@ -105,7 +105,7 @@ public class StatusPane extends Component {
 
 		talentBlink = 0;
 
-		compass = new Compass( Statistics.amuletObtained ? (Dungeon.depth >= 27 ? Dungeon.level.exit : Dungeon.level.entrance) : Dungeon.level.exit );
+		compass = new Compass( Statistics.amuletObtained ? (Dungeon.getDepth() >= 27 ? Dungeon.level.exit : Dungeon.level.entrance) : Dungeon.level.exit );
 		add( compass );
 
 		rawShielding = new Image( Assets.Interfaces.SHLD_BAR );
@@ -132,7 +132,7 @@ public class StatusPane extends Component {
 		level.hardlight( 0xFFFFAA );
 		add( level );
 
-		depth = new BitmapText( Integer.toString( Dungeon.depth ), PixelScene.pixelFont);
+		depth = new BitmapText( Integer.toString(Dungeon.getDepth()), PixelScene.pixelFont);
 		depth.hardlight( 0xCACFC2 );
 		depth.measure();
 		add( depth );

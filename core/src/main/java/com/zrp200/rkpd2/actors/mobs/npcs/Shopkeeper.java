@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
@@ -36,8 +38,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ShopkeeperSprite;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndTradeItem;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Callback;
 
 public class Shopkeeper extends NPC {
 
@@ -98,7 +98,7 @@ public class Shopkeeper extends NPC {
 	// TODO really what should have been done is define a "base value" method so I don't have to duplicate things over and over.
 	public static int sellPrice(Item item){
 		int basePrice = Reflection.newInstance(item.getClass()).quantity(item.quantity()).value();
-		return (int)Math.ceil((basePrice*2+item.value())/3f * 5 * (Dungeon.depth / 5 + 1));
+		return (int)Math.ceil((basePrice*2+item.value())/3f * 5 * (Dungeon.getDepth() / 5 + 1));
 	}
 	
 	public static WndBag sell() {

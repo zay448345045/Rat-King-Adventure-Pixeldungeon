@@ -78,7 +78,7 @@ public abstract class SecretRoom extends SpecialRoom {
 		if (floorsLeft == 0) {
 			secrets = regionSecretsThisRun[region];
 		} else {
-			if (Dungeon.depth >= 25){
+			if (Dungeon.getDepth() >= 25){
 				secrets = 1;
 			}
 			else secrets = regionSecretsThisRun[region] / (float)floorsLeft;
@@ -88,7 +88,7 @@ public abstract class SecretRoom extends SpecialRoom {
 				secrets = (float)Math.floor(secrets);
 			}
 		}
-		if (Dungeon.depth < 25)
+		if (Dungeon.getDepth() < 25)
 			regionSecretsThisRun[region] -= (int)secrets;
 		return (int)secrets;
 	}

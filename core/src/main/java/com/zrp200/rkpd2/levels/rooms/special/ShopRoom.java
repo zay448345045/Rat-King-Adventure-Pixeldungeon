@@ -21,29 +21,16 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Shopkeeper;
-import com.zrp200.rkpd2.items.Ankh;
-import com.zrp200.rkpd2.items.Generator;
-import com.zrp200.rkpd2.items.Heap;
-import com.zrp200.rkpd2.items.Honeypot;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.MerchantsBeacon;
-import com.zrp200.rkpd2.items.Stylus;
-import com.zrp200.rkpd2.items.Torch;
-import com.zrp200.rkpd2.items.armor.Armor;
-import com.zrp200.rkpd2.items.armor.LeatherArmor;
-import com.zrp200.rkpd2.items.armor.MailArmor;
-import com.zrp200.rkpd2.items.armor.PlateArmor;
-import com.zrp200.rkpd2.items.armor.ScaleArmor;
+import com.zrp200.rkpd2.items.*;
+import com.zrp200.rkpd2.items.armor.*;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
-import com.zrp200.rkpd2.items.bags.Bag;
-import com.zrp200.rkpd2.items.bags.MagicalHolster;
-import com.zrp200.rkpd2.items.bags.PotionBandolier;
-import com.zrp200.rkpd2.items.bags.ScrollHolder;
-import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.bags.*;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
@@ -51,14 +38,11 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.items.stones.StoneOfAugmentation;
-import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -155,7 +139,7 @@ public class ShopRoom extends SpecialRoom {
 
 		MeleeWeapon w;
 		Armor a;
-		switch (Dungeon.depth) {
+		switch (Dungeon.getDepth()) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify() );
@@ -236,7 +220,7 @@ public class ShopRoom extends SpecialRoom {
 			int bags = 0;
 			//creates the given float percent of the remaining bags to be dropped.
 			//this way players who get the hourglass late can still max it, usually.
-			switch (Dungeon.depth) {
+			switch (Dungeon.getDepth()) {
 				case 6:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
 				case 11:

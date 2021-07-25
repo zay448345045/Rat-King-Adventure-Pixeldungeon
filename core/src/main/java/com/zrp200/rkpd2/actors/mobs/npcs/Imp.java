@@ -21,6 +21,11 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -38,11 +43,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ImpSprite;
 import com.zrp200.rkpd2.windows.WndImp;
 import com.zrp200.rkpd2.windows.WndQuest;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Imp extends NPC {
 
@@ -196,7 +196,7 @@ public class Imp extends NPC {
 		}
 		
 		public static void spawn( CityLevel level ) {
-			if (!spawned && Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.getDepth() > 16 && Random.Int( 20 - Dungeon.getDepth()) == 0) {
 				
 				Imp npc = new Imp();
 				do {
@@ -214,7 +214,7 @@ public class Imp extends NPC {
 				spawned = true;
 
 				//always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
-				switch (Dungeon.depth){
+				switch (Dungeon.getDepth()){
 					case 17: default:
 						alternative = true;
 						break;

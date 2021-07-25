@@ -75,7 +75,7 @@ public class Electricity extends Blob {
 							(ch instanceof Hero && ((Hero) ch).pointsInTalent(Talent.FARADAY_CAGE) > 0))) {
 						Buff.prolong( ch, Paralysis.class, 1f);
 						if (cur[cell] % 2 == 1) {
-							ch.damage(Math.round(Random.Float(2 + Dungeon.depth / 5f)), this);
+							ch.damage(Math.round(Random.Float(2 + Dungeon.getDepth() / 5f)), this);
 							if (!ch.isAlive() && ch == Dungeon.hero){
 								Dungeon.fail( getClass() );
 								GLog.n( Messages.get(this, "ondeath") );

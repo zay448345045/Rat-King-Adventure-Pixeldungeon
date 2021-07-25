@@ -85,7 +85,7 @@ public class AbyssalSpawner extends AbyssalMob {
                     Actor.addDelayed(new Pushing(spawn, pos, spawn.pos), -1);
                 }
 
-                spawnCooldown = Math.max(4, 50 - Dungeon.depth);
+                spawnCooldown = Math.max(4, 50 - Dungeon.getDepth());
             }
         }
         return super.act();

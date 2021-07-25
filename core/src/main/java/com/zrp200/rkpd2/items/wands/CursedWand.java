@@ -212,7 +212,7 @@ public class CursedWand {
 			case 1:
 				final Char target = Actor.findChar( targetPos );
 				if (target != null) {
-					int damage = Dungeon.depth * 2 + eldritchLevel > 1 ? Dungeon.depth : 0;
+					int damage = Dungeon.getDepth() * 2 + eldritchLevel > 1 ? Dungeon.getDepth() : 0;
 					Char toHeal, toDamage;
 
 					if (Random.Int(2 + eldritchLevel) == 0){
@@ -300,11 +300,11 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
-				if (Dungeon.depth > 1 && !Dungeon.bossLevel() && user == Dungeon.hero) {
+				if (Dungeon.getDepth() > 1 && !Dungeon.bossLevel() && user == Dungeon.hero) {
 
 					//each depth has 1 more weight than the previous depth.
-					float[] depths = new float[Dungeon.depth-1];
-					for (int i = 1; i < Dungeon.depth; i++) depths[i-1] = i;
+					float[] depths = new float[Dungeon.getDepth() -1];
+					for (int i = 1; i < Dungeon.getDepth(); i++) depths[i-1] = i;
 					int depth = 1+Random.chances(depths);
 
 					Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);

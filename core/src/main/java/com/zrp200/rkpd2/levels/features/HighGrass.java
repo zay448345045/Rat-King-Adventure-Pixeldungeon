@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.features;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
@@ -41,8 +43,6 @@ import com.zrp200.rkpd2.items.food.Berry;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 public class HighGrass {
 	
@@ -96,9 +96,9 @@ public class HighGrass {
 
 					//If we're behind: 1/10, if we're on page: 1/30, if we're ahead: 1/90
 					boolean droppingBerry = false;
-					if (Dungeon.depth > targetFloor)        droppingBerry = Random.Int(10) == 0;
-					else if (Dungeon.depth == targetFloor)  droppingBerry = Random.Int(30) == 0;
-					else if (Dungeon.depth < targetFloor)   droppingBerry = Random.Int(90) == 0;
+					if (Dungeon.getDepth() > targetFloor)        droppingBerry = Random.Int(10) == 0;
+					else if (Dungeon.getDepth() == targetFloor)  droppingBerry = Random.Int(30) == 0;
+					else if (Dungeon.getDepth() < targetFloor)   droppingBerry = Random.Int(90) == 0;
 
 					if (droppingBerry){
 						berries.countDown(1);

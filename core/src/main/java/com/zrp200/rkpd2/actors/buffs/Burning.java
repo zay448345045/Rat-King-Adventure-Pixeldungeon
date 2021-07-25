@@ -90,7 +90,7 @@ public class Burning extends Buff implements Hero.Doom {
 		
 		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 1, 3 + Dungeon.depth/4 );
+			int damage = Random.NormalIntRange( 1, 3 + Dungeon.getDepth() /4 );
 			damage *= (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.125f);
 
 			Buff.detach( target, Chill.class);

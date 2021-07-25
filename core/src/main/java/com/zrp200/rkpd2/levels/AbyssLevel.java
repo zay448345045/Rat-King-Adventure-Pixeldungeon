@@ -43,8 +43,8 @@ public class AbyssLevel extends RegularLevel {
     public void create() {
         addItemToSpawn(Generator.random(Generator.Category.FOOD));
         addItemToSpawn( new com.zrp200.rkpd2.items.Torch() );
-        for (int i = 0; i < GameMath.gate(1, Dungeon.depth / 5 - 5
-                - (Dungeon.depth % 5 == 0 ? 1 : 0), Integer.MAX_VALUE); i++){
+        for (int i = 0; i < GameMath.gate(1, Dungeon.getDepth() / 5 - 5
+                - (Dungeon.getDepth() % 5 == 0 ? 1 : 0), Integer.MAX_VALUE); i++){
             addItemToSpawn(new Chaosstone());
             if (Random.Int(2) == 0) addItemToSpawn(new Chaosstone());
         }

@@ -21,6 +21,11 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
@@ -41,14 +46,8 @@ import com.zrp200.rkpd2.levels.rooms.standard.BlacksmithRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.BlacksmithSprite;
-import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBlacksmith;
 import com.zrp200.rkpd2.windows.WndQuest;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -324,7 +323,7 @@ public class Blacksmith extends NPC {
 		}
 		
 		public static ArrayList<Room> spawn( ArrayList<Room> rooms ) {
-			if (!spawned && Dungeon.depth > 11 && Random.Int( 15 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.getDepth() > 11 && Random.Int( 15 - Dungeon.getDepth()) == 0) {
 				
 				rooms.add(new BlacksmithRoom());
 				spawned = true;

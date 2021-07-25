@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
@@ -31,9 +34,6 @@ import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
 import com.zrp200.rkpd2.levels.traps.RockfallTrap;
 import com.zrp200.rkpd2.levels.traps.Trap;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 public class SecretHoardRoom extends SecretRoom {
 	
@@ -45,7 +45,7 @@ public class SecretHoardRoom extends SecretRoom {
 		Class<? extends Trap> trapClass;
 		if (Random.Int(2) == 0){
 			trapClass = RockfallTrap.class;
-		} else if (Dungeon.depth >= 10){
+		} else if (Dungeon.getDepth() >= 10){
 			trapClass = DisintegrationTrap.class;
 		} else {
 			trapClass = PoisonDartTrap.class;

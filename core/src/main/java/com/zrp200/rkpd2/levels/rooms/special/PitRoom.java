@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
@@ -30,8 +32,6 @@ import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 public class PitRoom extends SpecialRoom {
 
@@ -66,7 +66,7 @@ public class PitRoom extends SpecialRoom {
 			remains = level.pointToCell(random());
 		}
 		
-		level.drop( new IronKey( Dungeon.depth ), remains ).type = Heap.Type.SKELETON;
+		level.drop( new IronKey(Dungeon.getDepth()), remains ).type = Heap.Type.SKELETON;
 		Item mainLoot = null;
 		do {
 			switch (Random.Int(3)){

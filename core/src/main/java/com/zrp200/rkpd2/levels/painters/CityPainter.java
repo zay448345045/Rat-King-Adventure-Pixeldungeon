@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.levels.painters;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.tiles.DungeonTileSheet;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class CityPainter extends RegularPainter {
 				
 			} else if (map[i] == Terrain.WALL
 					&& !DungeonTileSheet.wallStitcheable(map[i + w])
-					&& Random.Int( 21 - Dungeon.depth ) == 0) {
+					&& Random.Int( 21 - Dungeon.getDepth()) == 0) {
 				map[i] = Terrain.WALL_DECO;
 			}
 		}

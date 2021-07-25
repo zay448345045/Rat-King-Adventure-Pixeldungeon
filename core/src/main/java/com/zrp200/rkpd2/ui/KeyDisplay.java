@@ -21,14 +21,6 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.items.keys.CrystalKey;
-import com.zrp200.rkpd2.items.keys.GoldenKey;
-import com.zrp200.rkpd2.items.keys.IronKey;
-import com.zrp200.rkpd2.items.keys.Key;
-import com.zrp200.rkpd2.items.keys.SkeletonKey;
-import com.zrp200.rkpd2.journal.Notes;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Quad;
@@ -36,6 +28,10 @@ import com.watabou.glwrap.Vertexbuffer;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.RectF;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.items.keys.*;
+import com.zrp200.rkpd2.journal.Notes;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -73,10 +69,10 @@ public class KeyDisplay extends Visual {
 		keys = new int[keyMap.size()+1];
 		
 		for (Notes.KeyRecord rec : Notes.getRecords(Notes.KeyRecord.class)){
-			if (rec.depth() < Dungeon.depth){
+			if (rec.depth() < Dungeon.getDepth()){
 				//only ever 1 black key
 				keys[0] = 1;
-			} else if (rec.depth() == Dungeon.depth){
+			} else if (rec.depth() == Dungeon.getDepth()){
 				keys[keyMap.get(rec.type())] += rec.quantity();
 			}
 		}

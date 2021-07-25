@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.scrolls.exotic;
 
+import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
@@ -30,7 +31,6 @@ import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Game;
 
 public class ScrollOfPassage extends ExoticScroll {
 	
@@ -56,7 +56,7 @@ public class ScrollOfPassage extends ExoticScroll {
 		if (buff != null) buff.detach();
 		
 		InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-		InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1 - (Dungeon.depth-2)%5));
+		InterlevelScene.returnDepth = Math.max(1, (Dungeon.getDepth() - 1 - (Dungeon.getDepth() -2)%5));
 		InterlevelScene.returnPos = -1;
 		Game.switchScene( InterlevelScene.class );
 	}

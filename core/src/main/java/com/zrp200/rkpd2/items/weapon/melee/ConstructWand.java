@@ -55,7 +55,7 @@ public class ConstructWand extends MeleeWeapon {
 
     @Override
     public String statsInfo() {
-        return Messages.get(this, "stats_desc", 5 + Dungeon.depth * 2);
+        return Messages.get(this, "stats_desc", 5 + Dungeon.getDepth() * 2);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class ConstructWand extends MeleeWeapon {
         }
 
         public GuardianKnight() {
-            HP = HT = 5 + Dungeon.depth*2;
-            defenseSkill = Dungeon.depth;
+            HP = HT = 5 + Dungeon.getDepth() *2;
+            defenseSkill = Dungeon.getDepth();
         }
 
         @Override
@@ -106,7 +106,7 @@ public class ConstructWand extends MeleeWeapon {
 
         @Override
         public int drRoll() {
-            return Random.Int(0, Dungeon.depth);
+            return Random.Int(0, Dungeon.getDepth());
         }
     }
 

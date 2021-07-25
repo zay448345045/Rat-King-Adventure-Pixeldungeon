@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.journal;
 
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.keys.Key;
 import com.zrp200.rkpd2.messages.Messages;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -193,9 +193,9 @@ public class Notes {
 	}
 	
 	public static boolean add( Landmark landmark ) {
-		LandmarkRecord l = new LandmarkRecord( landmark, Dungeon.depth );
+		LandmarkRecord l = new LandmarkRecord( landmark, Dungeon.getDepth());
 		if (!records.contains(l)) {
-			boolean result = records.add(new LandmarkRecord(landmark, Dungeon.depth));
+			boolean result = records.add(new LandmarkRecord(landmark, Dungeon.getDepth()));
 			Collections.sort(records);
 			return result;
 		}
@@ -203,7 +203,7 @@ public class Notes {
 	}
 	
 	public static boolean remove( Landmark landmark ) {
-		return records.remove( new LandmarkRecord(landmark, Dungeon.depth) );
+		return records.remove( new LandmarkRecord(landmark, Dungeon.getDepth()) );
 	}
 	
 	public static boolean add( Key key ){

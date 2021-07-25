@@ -217,7 +217,7 @@ public class Bestiary {
 	//switches out regular mobs for their alt versions when appropriate
 	private static void swapMobAlts(ArrayList<Class<?extends Mob>> rotation){
 		for (int i = 0; i < rotation.size(); i++){
-			if (Random.Int( Dungeon.depth > 26 && Dungeon.bossLevel() ? 3 : 50 ) == 0) {
+			if (Random.Int( Dungeon.getDepth() > 26 && Dungeon.bossLevel() ? 3 : 50 ) == 0) {
 				Class<? extends Mob> cl = rotation.get(i);
 				if (cl == Rat.class) {
 					cl = Albino.class;

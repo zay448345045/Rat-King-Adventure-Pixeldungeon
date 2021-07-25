@@ -21,10 +21,10 @@
 
 package com.zrp200.rkpd2.tiles;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.levels.Terrain;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.levels.Terrain;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -216,7 +216,7 @@ public class DungeonTileSheet {
 
 	public static boolean wallStitcheable(int tile){
 		for (int i : wallStitcheable)
-			if (tile == i && !(i == Terrain.LOCKED_EXIT && Dungeon.depth == 15))
+			if (tile == i && !(i == Terrain.LOCKED_EXIT && Dungeon.getDepth() == 15))
 				return true;
 		return false;
 	}

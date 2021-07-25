@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.painters;
 
+import com.watabou.noosa.Game;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.journal.Document;
@@ -32,13 +34,6 @@ import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.EntranceRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.StandardRoom;
 import com.zrp200.rkpd2.levels.traps.Trap;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Graph;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,7 +112,7 @@ public abstract class RegularPainter extends Painter {
 		
 		for (Room r : rooms.toArray(new Room[0])) {
 			if (r.connected.isEmpty()){
-				Game.reportException( new RuntimeException("Painting a room with no connections! Room:" + r.getClass().getSimpleName() + " Seed:" + Dungeon.seed + " Depth:" + Dungeon.depth));
+				Game.reportException( new RuntimeException("Painting a room with no connections! Room:" + r.getClass().getSimpleName() + " Seed:" + Dungeon.seed + " Depth:" + Dungeon.getDepth()));
 				if (r instanceof SpecialRoom) return false;
 			}
 			placeDoors( r );
@@ -174,9 +169,9 @@ public abstract class RegularPainter extends Painter {
 	protected void paintDoors( Level l, ArrayList<Room> rooms ) {
 
 		float hiddenDoorChance = 0;
-		if (Dungeon.depth > 1){
+		if (Dungeon.getDepth() > 1){
 			//chance for a hidden door scales from 2/20 on floor 2 to 20/20 on floor 20
-			hiddenDoorChance = Math.min(1f, Dungeon.depth / 20f);
+			hiddenDoorChance = Math.min(1f, Dungeon.getDepth() / 20f);
 		}
 		if (l.feeling == Level.Feeling.SECRETS){
 			//pull the value of extra secret doors toward 50% on secrets level feel
@@ -215,7 +210,7 @@ public abstract class RegularPainter extends Painter {
 					}
 
 					//entrance doors on floor 2 are hidden if the player hasn't picked up 2nd guidebook page
-					if (Dungeon.depth == 2
+					if (Dungeon.getDepth() == 2
 							&& !Document.ADVENTURERS_GUIDE.hasPage(Document.GUIDE_SEARCH_PAGE)
 							&& r instanceof EntranceRoom){
 						d.type = Room.Door.Type.HIDDEN;

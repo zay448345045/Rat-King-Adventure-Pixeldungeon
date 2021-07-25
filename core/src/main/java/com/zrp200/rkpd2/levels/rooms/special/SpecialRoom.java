@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.levels.rooms.Room;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.levels.rooms.Room;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +100,7 @@ public abstract class SpecialRoom extends Room {
 		floorSpecials = (ArrayList<Class<?extends Room>>) runSpecials.clone();
 		
 		//laboratory rooms spawn at set intervals every chapter
-		if (Dungeon.depth%5 == (Dungeon.seed%3 + 2)){
+		if (Dungeon.getDepth() %5 == (Dungeon.seed%3 + 2)){
 			floorSpecials.add(0, LaboratoryRoom.class);
 		}
 	}
@@ -117,7 +117,7 @@ public abstract class SpecialRoom extends Room {
 	}
 	
 	public static SpecialRoom createRoom(){
-		if (Dungeon.depth == pitNeededDepth){
+		if (Dungeon.getDepth() == pitNeededDepth){
 			pitNeededDepth = -1;
 			
 			floorSpecials.remove( ArmoryRoom.class );
@@ -138,7 +138,7 @@ public abstract class SpecialRoom extends Room {
 		
 		} else {
 			
-			if (Dungeon.bossLevel(Dungeon.depth + 1)){
+			if (Dungeon.bossLevel(Dungeon.getDepth() + 1)){
 				floorSpecials.remove(WeakFloorRoom.class);
 			}
 			
@@ -152,7 +152,7 @@ public abstract class SpecialRoom extends Room {
 			r = Reflection.newInstance(floorSpecials.get( index ));
 			
 			if (r instanceof WeakFloorRoom){
-				pitNeededDepth = Dungeon.depth + 1;
+				pitNeededDepth = Dungeon.getDepth() + 1;
 			}
 			
 			useType( r.getClass() );

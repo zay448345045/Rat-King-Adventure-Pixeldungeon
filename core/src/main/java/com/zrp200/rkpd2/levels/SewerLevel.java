@@ -80,7 +80,7 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	protected Class<?>[] trapClasses() {
-		return Dungeon.depth == 1 ?
+		return Dungeon.getDepth() == 1 ?
 				new Class<?>[]{ WornDartTrap.class } :
 				new Class<?>[]{
 						ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, WornDartTrap.class,
@@ -90,7 +90,7 @@ public class SewerLevel extends RegularLevel {
 
 	@Override
 	protected float[] trapChances() {
-		return Dungeon.depth == 1 ?
+		return Dungeon.getDepth() == 1 ?
 				new float[]{1} :
 				new float[]{
 						4, 4, 4, 4,

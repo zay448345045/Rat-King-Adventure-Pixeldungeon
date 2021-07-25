@@ -57,7 +57,7 @@ public class SteelAxe extends MissileWeapon {
         }
         decrementDurability();
         if (durability > 0){
-            Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+            Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.getDepth());
         }
     }
 
@@ -68,7 +68,7 @@ public class SteelAxe extends MissileWeapon {
             return;
         }
         parent = null;
-        Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth);
+        Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.getDepth());
     }
 
     @Override
@@ -243,7 +243,7 @@ public class SteelAxe extends MissileWeapon {
 
         @Override
         public boolean act() {
-            if (returnDepth == Dungeon.depth){
+            if (returnDepth == Dungeon.getDepth()){
                 left--;
                 if (left <= 0){
                     final Char returnTarget = Actor.findChar(returnPos);

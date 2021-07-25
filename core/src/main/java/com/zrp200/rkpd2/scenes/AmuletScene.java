@@ -65,7 +65,7 @@ public class AmuletScene extends PixelScene {
 		RedButton btnExit = new RedButton( Messages.get(this, "exit") ) {
 			@Override
 			protected void onClick() {
-				if ((Dungeon.depth > 0)) {
+				if ((Dungeon.getDepth() > 0)) {
 					Class clazz = Amulet.class;
 					if (Dungeon.hero.belongings.getSimilar(new Chaosstone()) != null) {
 						clazz = Chaosstone.class;
