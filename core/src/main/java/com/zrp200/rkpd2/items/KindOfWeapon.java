@@ -90,7 +90,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 
 	public int min(){
 		return min(buffedLvl()) + (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.WEAPON_MASTERY) ?
-				Dungeon.hero.pointsInTalent(Talent.WEAPON_MASTERY)*2 : 0);
+				(2 + Dungeon.hero.pointsInTalent(Talent.WEAPON_MASTERY)) : 0);
 	}
 
 	public int max(){
