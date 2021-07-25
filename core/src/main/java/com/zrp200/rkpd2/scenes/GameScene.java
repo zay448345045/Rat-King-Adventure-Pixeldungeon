@@ -267,10 +267,18 @@ public class GameScene extends PixelScene {
 		fog = new FogOfWar( Dungeon.level.width(), Dungeon.level.height() );
 		add( fog );
 
+		add(overFogEffects);
+
+		add( emoicons );
+
+		tint = new Tint();
+		tint.camera = uiCamera;
+		tint.autoAdjust = true;
+		add( tint );
+		tint.visible = false;
+
 		spells = new Group();
 		add( spells );
-
-		add(overFogEffects);
 		
 		statuses = new Group();
 		add( statuses );
@@ -278,8 +286,6 @@ public class GameScene extends PixelScene {
 		add( healthIndicators );
 		//always appears ontop of other health indicators
 		add( new TargetHealthIndicator() );
-		
-		add( emoicons );
 		
 		add( cellSelector = new CellSelector( tiles ) );
 
@@ -326,12 +332,6 @@ public class GameScene extends PixelScene {
 		counter.color( 0x808080, true );
 		counter.camera = uiCamera;
 		counter.show(this, busy.center(), 0f);
-
-		tint = new Tint();
-		tint.camera = uiCamera;
-		tint.autoAdjust = true;
-		addToFront( tint );
-		tint.visible = false;
 		
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
