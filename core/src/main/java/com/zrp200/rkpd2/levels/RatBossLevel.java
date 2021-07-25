@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.actors.mobs.YogDzewa;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
@@ -201,7 +202,7 @@ public class RatBossLevel extends Level {
 
 		Dungeon.observe();
 
-		YogDzewa boss = new YogDzewa();
+		RatKingBoss boss = new RatKingBoss();
 		boss.pos = exit + width*3;
 		GameScene.add( boss );
 	}

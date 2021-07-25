@@ -83,17 +83,18 @@ public class GameScene extends PixelScene {
 		@Override
 		public void update() {
 			super.update();
+			resetColor();
 			hardlight(hexColor);
 		}
 
 		public void changeColor (int color){
 			hexColor = color;
-			if (color == 0x000000) visible = false;
+			visible = color != 0x000000;
 		}
 	}
 
 	private SkinnedBlock water;
-	private Tint tint;
+	public Tint tint;
 	private DungeonTerrainTilemap tiles;
 	private GridTileMap visualGrid;
 	private TerrainFeaturesTilemap terrainFeatures;
@@ -330,6 +331,7 @@ public class GameScene extends PixelScene {
 		tint.camera = uiCamera;
 		tint.autoAdjust = true;
 		addToFront( tint );
+		tint.visible = false;
 		
 		switch (InterlevelScene.mode) {
 			case RESURRECT:

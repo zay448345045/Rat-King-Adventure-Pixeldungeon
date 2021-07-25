@@ -1,7 +1,11 @@
 package com.zrp200.rkpd2.sprites;
 
+import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
+import com.zrp200.rkpd2.scenes.GameScene;
 
 public class RatKingBossSprite extends CharSprite {
 
@@ -36,6 +40,37 @@ public class RatKingBossSprite extends CharSprite {
         operate.frames( film, offset+2,offset+6,offset+2,offset+6);
 
         play( idle );
+
+    }
+
+    @Override
+    public void link(Char ch) {
+        super.link(ch);
+        changeSprite(((RatKingBoss)ch).phase);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        if (ch != null)
+        ((GameScene)Game.scene()).tint.changeColor(phaseColor(
+                ((RatKingBoss)ch).phase
+        ));
+    }
+
+    public static int phaseColor(int phase){
+        switch (phase){
+            case RatKingBoss.GLADIATOR:
+                return 0xff667f;
+            case RatKingBoss.BATTLEMAGE:
+                return 0x5ce6cf;
+            case RatKingBoss.ASSASSIN:
+                return 0x060803;
+            case RatKingBoss.SNIPER:
+                return 0xb8e65c;
+            default:
+                return 0x000000;
+        }
     }
 
 
