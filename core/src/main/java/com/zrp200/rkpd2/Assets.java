@@ -58,6 +58,7 @@ public class Assets {
 		public static final String CAVES_BOSS       = "environment/custom_tiles/caves_boss.png";
 		public static final String CITY_BOSS        = "environment/custom_tiles/city_boss.png";
 		public static final String HALLS_SP         = "environment/custom_tiles/halls_special.png";
+		public static final String SEWERS_SP        = "environment/custom_tiles/ratking_special.png";
 		public static final String ABYSS_SP         = "environment/custom_tiles/abyss_special.png";
 	}
 
@@ -309,5 +310,6 @@ public class Assets {
 		public static final String MAGIC_MISSILE = "sprites/magic_missile.png";
 		public static final String DRAGON = "sprites/mob_drake.png";
         public static final String TRAPPET = "sprites/trappet.png";
+        public static final String RATBOSS = "sprites/ratkingboss.png";
     }
 }

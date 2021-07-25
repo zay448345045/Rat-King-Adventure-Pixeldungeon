@@ -71,7 +71,29 @@ public class GameScene extends PixelScene {
 
 	static GameScene scene;
 
+	public static class Tint extends SkinnedBlock{
+		public Tint(){
+			super(GameScene.uiCamera.width,
+					GameScene.uiCamera.height,
+					"effects/tint.png");
+		}
+
+		int hexColor = 0x000000;
+
+		@Override
+		public void update() {
+			super.update();
+			hardlight(hexColor);
+		}
+
+		public void changeColor (int color){
+			hexColor = color;
+			if (color == 0x000000) visible = false;
+		}
+	}
+
 	private SkinnedBlock water;
+	private Tint tint;
 	private DungeonTerrainTilemap tiles;
 	private GridTileMap visualGrid;
 	private TerrainFeaturesTilemap terrainFeatures;
@@ -303,6 +325,11 @@ public class GameScene extends PixelScene {
 		counter.color( 0x808080, true );
 		counter.camera = uiCamera;
 		counter.show(this, busy.center(), 0f);
+
+		tint = new Tint();
+		tint.camera = uiCamera;
+		tint.autoAdjust = true;
+		addToFront( tint );
 		
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
