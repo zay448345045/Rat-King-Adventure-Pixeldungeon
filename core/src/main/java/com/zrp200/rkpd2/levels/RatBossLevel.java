@@ -21,10 +21,14 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.glwrap.Blending;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
@@ -43,6 +47,7 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 public class RatBossLevel extends Level {
 
@@ -278,8 +283,93 @@ public class RatBossLevel extends Level {
 	@Override
 	public Group addVisuals () {
 		super.addVisuals();
-		HallsLevel.addHallsVisuals( this, visuals );
+		addHallsVisuals( this, visuals );
 		return visuals;
+	}
+
+	public static void addHallsVisuals( Level level, Group group ) {
+		for (int i=0; i < level.length(); i++) {
+			if (level.map[i] == Terrain.WATER) {
+				group.add( new Stream( i ) );
+			}
+		}
+	}
+
+	private static class Stream extends Group {
+
+		private int pos;
+
+		private float delay;
+
+		public Stream( int pos ) {
+			super();
+
+			this.pos = pos;
+
+			delay = Random.Float( 2 );
+		}
+
+		@Override
+		public void update() {
+
+			if (!Dungeon.level.water[pos]){
+				killAndErase();
+				return;
+			}
+
+			if (visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos])) {
+
+				super.update();
+
+				if ((delay -= Game.elapsed) <= 0) {
+
+					delay = Random.Float( 1 );
+
+					PointF p = DungeonTilemap.tileToWorld( pos );
+					recycle( FireParticle.class ).reset(
+							p.x + Random.Float( DungeonTilemap.SIZE ),
+							p.y + Random.Float( DungeonTilemap.SIZE ) );
+				}
+			}
+		}
+
+		@Override
+		public void draw() {
+			Blending.setLightMode();
+			super.draw();
+			Blending.setNormalMode();
+		}
+	}
+
+	public static class FireParticle extends PixelParticle.Shrinking {
+
+		public FireParticle() {
+			super();
+
+			color( 0x4a7561 );
+			lifespan = 1.5f;
+
+			acc.set( 0, +100 );
+		}
+
+		public void reset( float x, float y ) {
+			revive();
+
+			this.x = x;
+			this.y = y;
+
+			left = lifespan;
+
+			speed.set( 0, -40 );
+			size = 4;
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			float p = left / lifespan;
+			am = p > 0.8f ? (1 - p) * 6 : 1;
+		}
 	}
 
 	public static class CenterPieceVisuals extends CustomTilemap {
