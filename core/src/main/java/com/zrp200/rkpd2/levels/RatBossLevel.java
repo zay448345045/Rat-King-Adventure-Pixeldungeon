@@ -55,7 +55,7 @@ public class RatBossLevel extends Level {
 		color1 = 0x801500;
 		color2 = 0xa68521;
 
-		viewDistance = Math.min(6, viewDistance);
+		viewDistance = 8;
 	}
 
 	private static final int WIDTH = 40;
