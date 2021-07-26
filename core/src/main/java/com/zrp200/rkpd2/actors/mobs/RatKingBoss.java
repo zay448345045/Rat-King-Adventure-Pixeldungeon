@@ -2,10 +2,7 @@ package com.zrp200.rkpd2.actors.mobs;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
@@ -15,6 +12,7 @@ import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
@@ -22,6 +20,8 @@ import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.wands.*;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
+import com.zrp200.rkpd2.items.weapon.enchantments.Unstable;
 import com.zrp200.rkpd2.items.weapon.missiles.PhantomSpear;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -35,11 +35,12 @@ import com.zrp200.rkpd2.utils.BArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class RatKingBoss extends Mob {
 
-    public int phase = 2;
+    public int phase = -1;
     public static final int EMPEROR = 0;
     public static final int GLADIATOR = 1;
     public static final int BATTLEMAGE = 2;
@@ -84,11 +85,50 @@ public class RatKingBoss extends Mob {
         properties.add(Property.BOSS);
         properties.add(Property.MINIBOSS);
     }
+    private float summonCooldown;
+    private static final int MIN_SUMMON_CD = 1;
+    private static final int MAX_SUMMON_CD = 3;
+
+    public static class EmperorRat extends Ratmogrify.SummonedRat{
+        {
+            alignment = Alignment.ENEMY;
+        }
+    }
+
+    public static class EmperorAlbinoRat extends Ratmogrify.SummonedAlbino{
+        {
+            alignment = Alignment.ENEMY;
+        }
+    }
+
+    private ArrayList<Class> regularSummons = new ArrayList<>();
+    {
+        if (Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE)){
+            for (int i = 0; i < 6; i++){
+                if (i >= 3){
+                    regularSummons.add(ThreadRipper.class);
+                }
+                if (i >= 4){
+                    regularSummons.add(EmperorAlbinoRat.class);
+                }
+                regularSummons.add(EmperorRat.class);
+            }
+        } else {
+            for (int i = 0; i < 8; i++){
+                if (i >= 6){
+                    regularSummons.add(ThreadRipper.class);
+                }
+                regularSummons.add(EmperorRat.class);
+            }
+        }
+        Random.shuffle(regularSummons);
+    }
 
     @Override
     public boolean canAttack(Char enemy) {
-        if (phase == GLADIATOR) return super.canAttack(enemy);
         if (phase == BATTLEMAGE) return false;
+        if (phase == SNIPER) return new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
+        if (phase == EMPEROR) return false;
         return super.canAttack(enemy);
     }
 
@@ -116,7 +156,7 @@ public class RatKingBoss extends Mob {
                 Buff.prolong(enemy, PowerfulDegrade.class, 3f);
             if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
                 Buff.prolong(enemy, Vulnerable.class, 3f);
-                Buff.prolong(enemy, Charm.class, 2f);
+                Buff.prolong(enemy, Charm.class, 2f).object = id();
             }
             if (Dungeon.isChallenged(Challenges.NO_FOOD) && Random.Int(2) == 0){
                 if (enemy instanceof Hero){
@@ -132,8 +172,21 @@ public class RatKingBoss extends Mob {
                 }
             }
         }
-        if (phase == ASSASSIN){
+        if (phase == ASSASSIN && Dungeon.level.adjacent(pos, Dungeon.hero.pos)){
             ((Hunting)state).teleport();
+        } else if (phase == ASSASSIN){
+            if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
+                Buff.prolong(enemy, PowerfulDegrade.class, 5f);
+            if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
+                Buff.prolong(enemy, Vulnerable.class, 2f);
+                Buff.prolong(enemy, Charm.class, 3f).object = id();
+            }
+        }
+        if (phase == SNIPER){
+            Buff.prolong(enemy, Vulnerable.class, 4f);
+            Unstable.getRandomEnchant(new SpiritBow()).proc(new SpiritBow(), this, Dungeon.hero, damageRoll());
+            if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
+                Buff.prolong(enemy, PowerfulDegrade.class, 5f);
         }
         return super.attackProc(enemy, damage);
     }
@@ -154,6 +207,9 @@ public class RatKingBoss extends Mob {
         }
         if (phase == ASSASSIN){
             return Random.NormalIntRange(12, 28);
+        }
+        if (phase == SNIPER){
+            return Random.NormalIntRange(5, 14);
         }
         return super.damageRoll();
     }
@@ -205,13 +261,69 @@ public class RatKingBoss extends Mob {
             notice();
             haventSeen = false;
         }
+        if (phase == EMPEROR){
+            while (summonCooldown <= 0){
+
+                Class<?extends Mob> cls = regularSummons.remove(0);
+                Mob summon = Reflection.newInstance(cls);
+                regularSummons.add(cls);
+
+                int spawnPos = -1;
+                for (int i : PathFinder.NEIGHBOURS8){
+                    if (Actor.findChar(pos+i) == null){
+                        if (spawnPos == -1 || Dungeon.level.trueDistance(Dungeon.hero.pos, spawnPos) > Dungeon.level.trueDistance(Dungeon.hero.pos, pos+i)){
+                            spawnPos = pos + i;
+                        }
+                    }
+                }
+
+                if (spawnPos != -1) {
+                    summon.pos = spawnPos;
+                    GameScene.add( summon );
+                    Actor.addDelayed( new Pushing( summon, pos, summon.pos ), -1 );
+                    summon.beckon(Dungeon.hero.pos);
+
+                    summonCooldown += Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
+                } else {
+                    break;
+                }
+            }
+            if (summonCooldown > 0) summonCooldown--;
+        }
         return super.act();
     }
+
+    protected boolean doAttack(Char enemy ) {
+        if (phase == SNIPER) {
+                if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+                    sprite.zap(enemy.pos);
+                    return false;
+                } else {
+                    zap();
+                    return true;
+                }
+        }
+        return super.doAttack(enemy);
+    }
+
+    private void zap() {
+        spend( 0.66f );
+
+        attack(Dungeon.hero);
+    }
+
+    public void onZapComplete() {
+        zap();
+        next();
+    }
+
     private static final String PHASE = "phase";
     private static final String HAVESEEN = "haveseen";
     private static final String ATTACK = "attack";
     private static final String MAGIC_POS = "magicPos";
     private static final String SPEAR_POS = "spearPos";
+    private static final String REGULAR_SUMMONS = "summons";
+    private static final String SUMMON_CD = "summonCD";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -221,6 +333,8 @@ public class RatKingBoss extends Mob {
         bundle.put(ATTACK, attack);
         bundle.put(MAGIC_POS, magicCastPos);
         bundle.put(SPEAR_POS, phantomSpearPositions);
+        bundle.put(REGULAR_SUMMONS, regularSummons.toArray(new Class[0]));
+        bundle.put(SUMMON_CD, summonCooldown);
     }
 
     @Override
@@ -231,6 +345,17 @@ public class RatKingBoss extends Mob {
         attack = bundle.getEnum(ATTACK, MagicAttack.class);
         magicCastPos = bundle.getInt(MAGIC_POS);
         phantomSpearPositions = bundle.getIntArray(SPEAR_POS);
+        regularSummons.clear();
+        Collections.addAll(regularSummons, bundle.getClassArray(REGULAR_SUMMONS));
+        summonCooldown = bundle.getFloat(SUMMON_CD);
+    }
+
+    public static class SniperCurse extends FlavourBuff{
+        @Override
+        public void fx(boolean on) {
+            if (on) target.sprite.add(CharSprite.State.MARKED);
+            else target.sprite.remove(CharSprite.State.MARKED);
+        }
     }
 
     //rat king is always hunting
@@ -536,6 +661,46 @@ public class RatKingBoss extends Mob {
         next();
     }*/
 
+        public boolean doSniper(){
+            if (enemySeen && !isCharmedBy( enemy ) && canAttack( enemy )) {
+                target = Dungeon.hero.pos;
+                return doAttack(Dungeon.hero);
+            } else {
+                target = Dungeon.hero.pos;
+                enemy = Dungeon.hero;
+                if (enemy.buff(SniperCurse.class) == null){
+                    int bestPos = enemy.pos;
+                    for (int i : PathFinder.NEIGHBOURS8){
+                        if (Dungeon.level.passable[pos + i]
+                                && Actor.findChar(pos+i) == null
+                                && Dungeon.level.trueDistance(pos+i, enemy.pos) > Dungeon.level.trueDistance(bestPos, enemy.pos)){
+                            bestPos = pos+i;
+                        }
+                    }
+
+                    if (enemy.buff(MagicImmune.class) != null){
+                        bestPos = enemy.pos;
+                    }
+
+                    if (bestPos != enemy.pos){
+                        ScrollOfTeleportation.appear(enemy, bestPos);
+                        if (enemy instanceof Hero){
+                            ((Hero) enemy).interrupt();
+                            Dungeon.observe();
+                        }
+                    }
+                    Buff.affect(enemy, SniperCurse.class, 5f);
+                }
+            }
+            spend(TICK);
+            return true;
+        }
+
+        public boolean doEmperor(){
+            spend(TICK);
+            return true;
+        }
+
         @Override
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
@@ -552,6 +717,10 @@ public class RatKingBoss extends Mob {
             if (phase == GLADIATOR) return doCharging();
             if (phase == BATTLEMAGE) return doMagic();
             if (phase == ASSASSIN) return doRogue();
+            if (phase == SNIPER) return doSniper();
+
+
+
             spend( TICK );
             return true;
         }

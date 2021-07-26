@@ -2,12 +2,16 @@ package com.zrp200.rkpd2.sprites;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
+import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.scenes.GameScene;
 
 public class RatKingBossSprite extends CharSprite {
+
+    private int cellToAttack;
 
     public RatKingBossSprite() {
         super();
@@ -20,7 +24,7 @@ public class RatKingBossSprite extends CharSprite {
     public void changeSprite(int phase) {
         TextureFilm film = new TextureFilm( texture, 16, 17 );
 
-        int offset = phase*16;
+        int offset = Math.max(0, phase*16);
 
         idle = new Animation( 2, true );
         idle.frames( film, offset+0, offset+0, offset+0, offset+1 );
@@ -56,6 +60,35 @@ public class RatKingBossSprite extends CharSprite {
         ((GameScene)Game.scene()).tint.changeColor(phaseColor(
                 ((RatKingBoss)ch).phase
         ));
+    }
+
+    public void zap( int cell ) {
+        turnTo( ch.pos, cell );
+        play( zap );
+        cellToAttack = cell;
+    }
+
+    @Override
+    public void onComplete( Animation anim ) {
+        if (anim == zap) {
+            idle();
+
+            parent.recycle( MissileSprite.class ).
+                    reset( this, cellToAttack, new ScorpioShot(), new Callback() {
+                        @Override
+                        public void call() {
+                            ((RatKingBoss)ch).onZapComplete();
+                        }
+                    } );
+        } else {
+            super.onComplete( anim );
+        }
+    }
+
+    public class ScorpioShot extends Item {
+        {
+            image = ItemSpriteSheet.SR_RANGED;
+        }
     }
 
     public static int phaseColor(int phase){

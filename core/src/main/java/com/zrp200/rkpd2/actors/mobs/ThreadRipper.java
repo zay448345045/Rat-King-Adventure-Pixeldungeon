@@ -80,7 +80,7 @@ public class ThreadRipper extends Mob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( damageRange[0], damageRange[1] );
+		return Random.NormalIntRange( (int)(damageRange[0]*getModifier()), (int)(damageRange[1]*getModifier()) );
 	}
 
 	@Override
