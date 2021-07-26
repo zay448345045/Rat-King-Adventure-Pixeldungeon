@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Assets;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PointF;
+import com.zrp200.rkpd2.Assets;
 
 public class Beam extends Image {
 	
@@ -69,6 +69,13 @@ public class Beam extends Image {
 	public static class HealthRay extends Beam{
 		public HealthRay(PointF s, PointF e){
 			super(s, e, Effects.Type.HEALTH_RAY, 0.75f);
+		}
+	}
+
+	public static class RatRay extends Beam{
+		public RatRay(PointF s, PointF e) {
+			super(s, e, Effects.Type.DEATH_RAY, 1f);
+			hardlight(0xffc61a);
 		}
 	}
 	

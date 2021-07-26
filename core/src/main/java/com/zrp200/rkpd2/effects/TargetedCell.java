@@ -21,17 +21,17 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.zrp200.rkpd2.ui.Icons;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
+import com.zrp200.rkpd2.ui.Icons;
 
 public class TargetedCell extends Image {
 
 	private float alpha;
 
 	public TargetedCell( int pos, int color ) {
-		super(Icons.get(Icons.TARGET));
+		super(Icons.get(Icons.COLORLESS_TARGET));
 		hardlight(color);
 
 		origin.set( width/2f );

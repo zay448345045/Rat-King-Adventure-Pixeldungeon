@@ -54,6 +54,7 @@ public enum Icons {
 	ALERT,
 	LOST,
 	TARGET,
+	COLORLESS_TARGET,
 	BACKPACK,
 	SEED_POUCH,
 	SCROLL_HOLDER,
@@ -159,6 +160,9 @@ public enum Icons {
 			break;
 		case TARGET:
 			icon.frame( icon.texture.uvRect( 32, 32, 48, 48 ) );
+			break;
+		case COLORLESS_TARGET:
+			icon.frame( icon.texture.uvRect( 96, 16, 112, 32 ) );
 			break;
 		case BACKPACK:
 			icon.frame( icon.texture.uvRect( 48, 32, 58, 42 ) );
