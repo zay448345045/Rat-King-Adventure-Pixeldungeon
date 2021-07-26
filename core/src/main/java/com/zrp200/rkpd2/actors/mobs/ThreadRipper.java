@@ -286,7 +286,7 @@ public class ThreadRipper extends Mob {
 				}
 
 				if (leapCooldown <= 0 && enemyInFOV && !rooted
-						&& Dungeon.level.distance(pos, enemy.pos) >= 3 + (Dungeon.isChallenged(Challenges.DARKNESS) ? 99 : 0)) {
+						&& Dungeon.level.distance(pos, enemy.pos) >= 3 - (Dungeon.isChallenged(Challenges.DARKNESS) ? 4 : 0)) {
 
 					int targetPos = enemy.pos;
 					if (lastEnemyPos != enemy.pos){

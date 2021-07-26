@@ -187,6 +187,10 @@ public class RatKingBoss extends Mob {
             Unstable.getRandomEnchant(new SpiritBow()).proc(new SpiritBow(), this, Dungeon.hero, damageRoll());
             if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
                 Buff.prolong(enemy, PowerfulDegrade.class, 5f);
+            if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
+                Buff.prolong(enemy, Vulnerable.class, 2f);
+                Buff.prolong(enemy, Charm.class, 3f).object = id();
+            }
         }
         return super.attackProc(enemy, damage);
     }
@@ -198,6 +202,11 @@ public class RatKingBoss extends Mob {
             ((Hunting)state).teleport();
         }
         super.damage(dmg, src);
+    }
+
+    @Override
+    public int drRoll() {
+        return Random.NormalIntRange(0 + phase == GLADIATOR ? 10 : 0, 22 + phase == GLADIATOR ? 10 : 0);
     }
 
     @Override
@@ -244,8 +253,15 @@ public class RatKingBoss extends Mob {
             super.detach();
             ((RatKingBoss)target).changePhase();
             Sample.INSTANCE.play(Assets.Sounds.CHALLENGE, 2f, 0.85f);
-            Buff.affect(target, PhaseTracker.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20);
+            Buff.affect(target, PhaseTracker.class,
+                    (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20));
         }
+    }
+
+    @Override
+    public void spend(float time) {
+        time *= GameMath.gate(0.25f, HP * 2f / HT, 1f);
+        super.spend(time);
     }
 
     @Override
@@ -317,6 +333,45 @@ public class RatKingBoss extends Mob {
         next();
     }
 
+    @Override
+    public String description() {
+        String description = super.description();
+        switch (phase){
+            case EMPEROR:
+                description += "\n\n" + Messages.get(this, "emperor");
+                if (Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE)){
+                    description += "\n" + Messages.get(this, "faster_summons");
+                }
+                break;
+            case GLADIATOR:
+                description += "\n\n" + Messages.get(this, "gladiator");
+                if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+                    description += "\n" + Messages.get(this, "healing");
+                }
+                break;
+            case BATTLEMAGE:
+                description += "\n\n" + Messages.get(this, "battlemage"); break;
+            case ASSASSIN:
+                description += "\n\n" + Messages.get(this, "assassin");
+                if (Dungeon.isChallenged(Challenges.DARKNESS)){
+                    description += "\n" + Messages.get(this, "dark");
+                }
+                break;
+            case SNIPER:
+                description += "\n\n" + Messages.get(this, "sniper"); break;
+        }
+        if (Dungeon.isChallenged(Challenges.NO_SCROLLS)){
+            description += "\n\n" + Messages.get(this, "runes");
+        }
+        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+            description += "\n\n" + Messages.get(this, "bad_boss");
+        }
+        if (Dungeon.isChallenged(Challenges.NO_ARMOR)){
+            description += "\n\n" + Messages.get(this, "armor");
+        }
+        return description;
+    }
+
     private static final String PHASE = "phase";
     private static final String HAVESEEN = "haveseen";
     private static final String ATTACK = "attack";
@@ -351,11 +406,6 @@ public class RatKingBoss extends Mob {
     }
 
     public static class SniperCurse extends FlavourBuff{
-        @Override
-        public void fx(boolean on) {
-            if (on) target.sprite.add(CharSprite.State.MARKED);
-            else target.sprite.remove(CharSprite.State.MARKED);
-        }
     }
 
     //rat king is always hunting
@@ -385,6 +435,8 @@ public class RatKingBoss extends Mob {
                    MagicAttack.MAGIC_MISSILE, MagicAttack.FIREBLAST, MagicAttack.FROST,
                    MagicAttack.POISON, MagicAttack.BLAST_WAVE, MagicAttack.LIGHTNING
                 ));
+                if (Dungeon.isChallenged(Challenges.DARKNESS))
+                    possibleAttacks.add(MagicAttack.PRISMATIC);
                 if (Dungeon.isChallenged(Challenges.NO_HERBALISM))
                     possibleAttacks.add(MagicAttack.RED_FIRE);
                 if (Dungeon.isChallenged(Challenges.NO_HEALING))
