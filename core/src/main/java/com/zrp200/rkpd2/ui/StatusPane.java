@@ -132,7 +132,7 @@ public class StatusPane extends Component {
 		level.hardlight( 0xFFFFAA );
 		add( level );
 
-		depth = new BitmapText( Integer.toString(Dungeon.getDepth()), PixelScene.pixelFont);
+		depth = new BitmapText( Integer.toString(Dungeon.depth), PixelScene.pixelFont);
 		depth.hardlight( 0xCACFC2 );
 		depth.measure();
 		add( depth );

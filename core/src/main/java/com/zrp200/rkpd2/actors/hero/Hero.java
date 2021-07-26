@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.mobs.Elemental;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Monk;
 import com.zrp200.rkpd2.actors.mobs.Phantom;
+import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.CheckedCell;
 import com.zrp200.rkpd2.effects.Flare;
@@ -76,10 +77,7 @@ import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Earthroot;
 import com.zrp200.rkpd2.plants.Swiftthistle;
-import com.zrp200.rkpd2.scenes.AlchemyScene;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.scenes.InterlevelScene;
-import com.zrp200.rkpd2.scenes.SurfaceScene;
+import com.zrp200.rkpd2.scenes.*;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.AttackIndicator;
@@ -1045,18 +1043,30 @@ public class Hero extends Char {
 		//there can be multiple exit tiles, so descend on any of them
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of exit tiles
 		} else if ((Dungeon.level.map[pos] == Terrain.EXIT || Dungeon.level.map[pos] == Terrain.UNLOCKED_EXIT)) {
-			
-			curAction = null;
 
-			Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
-			if (buff != null) buff.detach();
-			buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-			if (buff != null) buff.detach();
-			
-			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-			Game.switchScene( InterlevelScene.class );
+			if (Dungeon.depth == 0){
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndMessage( Messages.get(Hero.this, "leave_rk") ) );
+					}
+				});
+				ready();
+				return false;
+			} else {
 
-			return false;
+				curAction = null;
+
+				Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
+				if (buff != null) buff.detach();
+				buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+				if (buff != null) buff.detach();
+
+				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				Game.switchScene(InterlevelScene.class);
+
+				return false;
+			}
 
 		} else if (getCloser( stairs )) {
 
@@ -1079,8 +1089,12 @@ public class Hero extends Char {
 		//there can be multiple entrance tiles, so descend on any of them
 		//TODO this is slightly brittle, it assumes there are no disjointed sets of entrance tiles
 		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
-			
-			if (Dungeon.getDepth() == 1) {
+
+			if (Dungeon.depth == 0){
+				Dungeon.win(RatKing.class);
+				Dungeon.deleteGame( GamesInProgress.curSlot, true );
+				Game.switchScene(RankingsScene.class);
+			} else if (Dungeon.getDepth() == 1) {
 				
 				if (belongings.getItem( Amulet.class ) == null) {
 					Game.runOnRenderThread(new Callback() {

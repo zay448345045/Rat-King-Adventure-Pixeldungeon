@@ -184,7 +184,7 @@ public class Dungeon {
 		quickslot.reset();
 		QuickSlotButton.reset();
 		
-		depth = -1;
+		depth = 0;
 		gold = 0;
 
 		droppedItems = new SparseArray<>();
@@ -331,7 +331,7 @@ public class Dungeon {
 	
 	public static void switchLevel( final Level level, int pos ) {
 		
-		if (pos == -2){
+		if (pos == -2 || level instanceof RatBossLevel){
 			pos = level.exit;
 		} else if (pos < 0 || pos >= level.length() || (!level.passable[pos] && !level.avoid[pos])){
 			pos = level.entrance;
@@ -520,7 +520,6 @@ public class Dungeon {
 			saveLevel( GamesInProgress.curSlot );
 
 			GamesInProgress.set( GamesInProgress.curSlot, depth, challenges, hero );
-
 		}
 	}
 	

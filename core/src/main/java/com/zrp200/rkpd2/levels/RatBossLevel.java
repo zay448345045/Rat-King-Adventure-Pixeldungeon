@@ -100,7 +100,7 @@ public class RatBossLevel extends Level {
 			Painter.fill(this, 4 + i * 5, top, 5, bottom - top + 1, Terrain.EMPTY);
 
 			if (i == 2) {
-				entrance = (6 + i * 5) + (bottom - 1) * width();
+				exit = (6 + i * 5) + (bottom - 1) * width();
 			}
 
 		}
@@ -112,7 +112,7 @@ public class RatBossLevel extends Level {
 			}
 		}
 
-		map[entrance] = Terrain.ENTRANCE;
+		map[exit] = Terrain.EXIT;
 
 		Painter.fill(this, ROOM_LEFT-1, ROOM_TOP-1, 11, 11, Terrain.EMPTY );
 
@@ -137,7 +137,7 @@ public class RatBossLevel extends Level {
 
 		Painter.fill(this, ROOM_LEFT+3, ROOM_TOP+2, 3, 4, Terrain.EMPTY );
 
-		exit = width/2 + ((ROOM_TOP+1) * width);
+		entrance = width/2 + ((ROOM_TOP+1) * width);
 
 		CustomTilemap vis = new CenterPieceVisuals();
 		vis.pos(ROOM_LEFT, ROOM_TOP+1);
@@ -192,8 +192,8 @@ public class RatBossLevel extends Level {
 	public void occupyCell( Char ch ) {
 		super.occupyCell( ch );
 
-		if (map[entrance] == Terrain.ENTRANCE && map[exit] != Terrain.EXIT
-				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 2) {
+		if (map[exit] == Terrain.EXIT && map[entrance] != Terrain.ENTRANCE
+				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 1) {
 			seal();
 		}
 	}
@@ -201,24 +201,24 @@ public class RatBossLevel extends Level {
 	@Override
 	public void seal() {
 		super.seal();
-		set( entrance, Terrain.EMPTY_SP );
-		GameScene.updateMap( entrance );
-		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
+		set( exit, Terrain.EMPTY_SP );
+		GameScene.updateMap( exit );
+		CellEmitter.get( exit ).start( FlameParticle.FACTORY, 0.1f, 10 );
 
 		Dungeon.observe();
 
 		RatKingBoss boss = new RatKingBoss();
-		boss.pos = exit + width*3;
+		boss.pos = entrance + width*3;
 		GameScene.add( boss );
 	}
 
 	@Override
 	public void unseal() {
 		super.unseal();
-		set( entrance, Terrain.ENTRANCE );
+		set( exit, Terrain.EXIT );
 		GameScene.updateMap( entrance );
 
-		set( exit, Terrain.EXIT );
+		set( entrance, Terrain.ENTRANCE );
 		GameScene.updateMap( exit );
 
 		CellEmitter.get(exit-1).burst(ShadowParticle.UP, 25);
@@ -252,14 +252,14 @@ public class RatBossLevel extends Level {
 	public String tileName( int tile ) {
 		switch (tile) {
 			case Terrain.WATER:
-				return Messages.get(HallsLevel.class, "water_name");
+				return Messages.get(RatBossLevel.class, "water_name");
 			case Terrain.GRASS:
-				return Messages.get(HallsLevel.class, "grass_name");
+				return Messages.get(SewerLevel.class, "grass_name");
 			case Terrain.HIGH_GRASS:
-				return Messages.get(HallsLevel.class, "high_grass_name");
+				return Messages.get(SewerLevel.class, "high_grass_name");
 			case Terrain.STATUE:
 			case Terrain.STATUE_SP:
-				return Messages.get(HallsLevel.class, "statue_name");
+				return Messages.get(SewerLevel.class, "statue_name");
 			default:
 				return super.tileName( tile );
 		}
@@ -269,12 +269,12 @@ public class RatBossLevel extends Level {
 	public String tileDesc(int tile) {
 		switch (tile) {
 			case Terrain.WATER:
-				return Messages.get(HallsLevel.class, "water_desc");
+				return Messages.get(RatBossLevel.class, "water_desc");
 			case Terrain.STATUE:
 			case Terrain.STATUE_SP:
-				return Messages.get(HallsLevel.class, "statue_desc");
+				return Messages.get(SewerLevel.class, "statue_desc");
 			case Terrain.BOOKSHELF:
-				return Messages.get(HallsLevel.class, "bookshelf_desc");
+				return Messages.get(SewerLevel.class, "bookshelf_desc");
 			default:
 				return super.tileDesc( tile );
 		}
@@ -402,7 +402,7 @@ public class RatBossLevel extends Level {
 		private void updateState(){
 			if (vis != null){
 				int[] data = map.clone();
-				if (Dungeon.level.map[Dungeon.level.exit] == Terrain.EXIT) {
+				if (Dungeon.level.map[Dungeon.level.entrance] == Terrain.ENTRANCE) {
 					data[4] = 19;
 					data[12] = data[14] = 31;
 				}
@@ -441,7 +441,7 @@ public class RatBossLevel extends Level {
 		private void updateState(){
 			if (vis != null){
 				int[] data = map.clone();
-				if (Dungeon.level.map[Dungeon.level.exit] == Terrain.EXIT) {
+				if (Dungeon.level.map[Dungeon.level.entrance] == Terrain.ENTRANCE) {
 					data[3] = 1;
 					data[4] = 0;
 					data[5] = 2;

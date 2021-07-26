@@ -430,7 +430,7 @@ public class InterlevelScene extends PixelScene {
 		
 		Mob.holdAllies( Dungeon.level );
 
-		SpecialRoom.resetPitRoom(Dungeon.getDepth() +1);
+		SpecialRoom.resetPitRoom(Dungeon.depth +1);
 
 		Dungeon.depth = Dungeon.depth - 1;
 		Level level = Dungeon.newLevel();

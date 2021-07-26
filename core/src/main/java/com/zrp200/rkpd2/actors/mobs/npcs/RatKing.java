@@ -25,7 +25,7 @@ import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.GamesInProgress;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
@@ -33,7 +33,7 @@ import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.scenes.RankingsScene;
+import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.RatKingSprite;
 import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
 import com.zrp200.rkpd2.windows.WndOptions;
@@ -122,10 +122,11 @@ public class RatKing extends NPC {
 					GameScene.show(new WndQuest(RatKing.this, Messages.get(RatKing.this,"amulet")){
 						@Override
 						public void hide() {
-							Dungeon.win(RatKing.class);
-							Dungeon.deleteGame( GamesInProgress.curSlot, true );
-							Game.switchScene(RankingsScene.class);
-							super.hide();
+							Dungeon.hero.belongings.getItem(Amulet.class).detach(Dungeon.hero.belongings.backpack);
+							Dungeon.depth = -1;
+							Statistics.deepestFloor = -1;
+							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+							Game.switchScene(InterlevelScene.class);
 						}
 					});
 				}

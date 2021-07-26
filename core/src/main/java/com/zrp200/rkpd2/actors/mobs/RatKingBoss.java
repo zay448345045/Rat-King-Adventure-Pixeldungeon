@@ -242,6 +242,20 @@ public class RatKingBoss extends Mob {
         }
     }
 
+    @Override
+    public void die( Object cause ) {
+
+        for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
+            if (mob instanceof Ratmogrify.SummonedRat || mob instanceof ThreadRipper) {
+                mob.die( cause );
+            }
+        }
+
+        GameScene.bossSlain();
+        Dungeon.level.unseal();
+        super.die( cause );
+    }
+
     public void changePhase(){
         if (++phase > 4) phase = 0;
         ((RatKingBossSprite)sprite).changeSprite(phase);
