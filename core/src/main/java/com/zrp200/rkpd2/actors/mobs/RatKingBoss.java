@@ -17,12 +17,16 @@ import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
+import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Unstable;
 import com.zrp200.rkpd2.items.weapon.missiles.PhantomSpear;
+import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -32,6 +36,7 @@ import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,10 +74,10 @@ public class RatKingBoss extends Mob {
     }
     public MagicAttack attack;
     public int magicCastPos = -1;
-    public int[] phantomSpearPositions = {-1, -1, -1};
+    public int phantomSpearPositions = -1;
 
     {
-        HP = HT = 2000 + Challenges.activeChallenges()*111;
+        HP = HT = 1500 + Challenges.activeChallenges()*165;
         spriteClass = RatKingBossSprite.class;
 
         HUNTING = new Hunting();
@@ -86,8 +91,14 @@ public class RatKingBoss extends Mob {
         properties.add(Property.MINIBOSS);
     }
     private float summonCooldown;
-    private static final int MIN_SUMMON_CD = 1;
-    private static final int MAX_SUMMON_CD = 3;
+    private static final int MIN_SUMMON_CD = 3;
+    private static final int MAX_SUMMON_CD = 6;
+
+    private float abilityCooldown;
+    private static final int MIN_ABILITY_CD = 5;
+    private static final int MAX_ABILITY_CD = 10;
+    private ArrayList<Integer> targetedCells = new ArrayList<>();
+    private int lastHeroPos;
 
     public static class EmperorRat extends Ratmogrify.SummonedRat{
         {
@@ -197,9 +208,9 @@ public class RatKingBoss extends Mob {
 
     @Override
     public void damage(int dmg, Object src) {
+        dmg *= Math.max(0.45f, 1 - (HP * 1.f / HT));
         if (phase == ASSASSIN){
-            dmg *= 2.25f;
-            ((Hunting)state).teleport();
+            dmg *= 1.75f;
         }
         super.damage(dmg, src);
     }
@@ -269,12 +280,19 @@ public class RatKingBoss extends Mob {
             Sample.INSTANCE.play(Assets.Sounds.CHALLENGE, 2f, 0.85f);
             Buff.affect(target, PhaseTracker.class,
                     (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20));
+            for (Heap heap : Dungeon.level.heaps.valueList()){
+                for (Item i :heap.items){
+                    if (i instanceof Tengu.ShockerAbility.ShockerItem){
+                        heap.remove(i);
+                    }
+                }
+            }
         }
     }
 
     @Override
     public void spend(float time) {
-        time *= GameMath.gate(0.4f, HP * 2f / HT, 1f);
+        time *= GameMath.gate(0.66f, HP * 2f / HT, 1f);
         super.spend(time);
     }
 
@@ -339,7 +357,7 @@ public class RatKingBoss extends Mob {
     private void zap() {
         spend( 0.66f );
 
-        attack(Dungeon.hero);
+        attack(enemy);
     }
 
     public void onZapComplete() {
@@ -393,6 +411,8 @@ public class RatKingBoss extends Mob {
     private static final String SPEAR_POS = "spearPos";
     private static final String REGULAR_SUMMONS = "summons";
     private static final String SUMMON_CD = "summonCD";
+    private static final String TARGETED_CELLS = "targetCells";
+    private static final String TARGETED_DEST = "targetDest";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -404,6 +424,12 @@ public class RatKingBoss extends Mob {
         bundle.put(SPEAR_POS, phantomSpearPositions);
         bundle.put(REGULAR_SUMMONS, regularSummons.toArray(new Class[0]));
         bundle.put(SUMMON_CD, summonCooldown);
+        int[] bundleArr = new int[targetedCells.size()];
+        for (int i = 0; i < targetedCells.size(); i++){
+            bundleArr[i] = targetedCells.get(i);
+        }
+        bundle.put(TARGETED_CELLS, bundleArr);
+        bundle.put(TARGETED_DEST, lastHeroPos);
     }
 
     @Override
@@ -413,10 +439,14 @@ public class RatKingBoss extends Mob {
         haventSeen = bundle.getBoolean(HAVESEEN);
         attack = bundle.getEnum(ATTACK, MagicAttack.class);
         magicCastPos = bundle.getInt(MAGIC_POS);
-        phantomSpearPositions = bundle.getIntArray(SPEAR_POS);
+        phantomSpearPositions = bundle.getInt(SPEAR_POS);
         regularSummons.clear();
         Collections.addAll(regularSummons, bundle.getClassArray(REGULAR_SUMMONS));
         summonCooldown = bundle.getFloat(SUMMON_CD);
+        for (int i : bundle.getIntArray(TARGETED_CELLS)){
+            targetedCells.add(i);
+        }
+        lastHeroPos = bundle.getInt(TARGETED_DEST);
     }
 
     public static class SniperCurse extends FlavourBuff{
@@ -444,7 +474,7 @@ public class RatKingBoss extends Mob {
 
         public boolean doMagic(){
             if (magicCastPos == -1) {
-                magicCastPos = Dungeon.hero.pos;
+                magicCastPos = enemy.pos;
                 ArrayList<MagicAttack> possibleAttacks = new ArrayList<>(Arrays.asList(
                    MagicAttack.MAGIC_MISSILE, MagicAttack.FIREBLAST, MagicAttack.FROST,
                    MagicAttack.POISON, MagicAttack.BLAST_WAVE, MagicAttack.LIGHTNING
@@ -459,7 +489,7 @@ public class RatKingBoss extends Mob {
                     possibleAttacks.add(MagicAttack.RAT_KING);
                 attack = Random.element(possibleAttacks);
                 Game.scene().addToFront(new TargetedCell(magicCastPos, attack.color));
-                spend(TICK);
+                spend(1 / GameMath.gate(0.66f, HP * 2f / HT, 1f));
                 return true;
             } else if (magicCastPos != -1) {
                 sprite.zap(magicCastPos, () -> {
@@ -543,12 +573,16 @@ public class RatKingBoss extends Mob {
                                                 }
                                                 break;
                                             case BLAST_WAVE:
-                                                if (ch != null) {
-                                                    Ballistica trajectory = new Ballistica(pos, ch.pos, Ballistica.STOP_TARGET);
-                                                    trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-                                                    WandOfBlastWave.throwChar(ch, trajectory, 3, true);
-                                                    if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                        Buff.affect(ch, Paralysis.class, 2.5f);
+                                                WandOfBlastWave.BlastWave.blast(magicCastPos);
+                                                for (int i : PathFinder.NEIGHBOURS4){
+                                                    Char c = Actor.findChar(magicCastPos+i);
+                                                    if (c != null) {
+                                                        Ballistica trajectory = new Ballistica(pos, c.pos, Ballistica.STOP_TARGET);
+                                                        trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+                                                        WandOfBlastWave.throwChar(c, trajectory, 3, true);
+                                                        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                            Buff.affect(c, Paralysis.class, 1f);
+                                                        }
                                                     }
                                                 }
                                                 break;
@@ -578,7 +612,7 @@ public class RatKingBoss extends Mob {
                                     });
                         });
                 Sample.INSTANCE.play(Assets.Sounds.ZAP);
-                spend(TICK);
+                spend(1f);
 
                 return false;
             } else {
@@ -588,7 +622,7 @@ public class RatKingBoss extends Mob {
         }
 
         public boolean doRogue(){
-            if (Random.Int(3) == 0 || phantomSpearPositions[0] != -1){
+            if (Random.Int(3) == 0 || phantomSpearPositions != -1){
                 return teleport();
             } else {
                 return doCharging();
@@ -596,81 +630,44 @@ public class RatKingBoss extends Mob {
         }
 
         public boolean teleport() {
-            final HashSet<Callback> callbacks = new HashSet<>();
-            sprite.operate(Dungeon.hero.pos, () -> {});
-            if (phantomSpearPositions[0] == -1) {
-                for (int i = 0; i < 3; i++) {
-                    if (phantomSpearPositions[i] == -1) {
-                        PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null),
-                                Dungeon.isChallenged(Challenges.DARKNESS) ? 1 : 3);
-                        int k;
-                        do {
-                            k = Random.Int(PathFinder.distance.length);
-                        } while (PathFinder.distance[k] >= Integer.MAX_VALUE || Actor.findChar(k) != null);
-                        phantomSpearPositions[i] = k;
-                        Ballistica path = new Ballistica(pos, phantomSpearPositions[i], Ballistica.STOP_CHARS | Ballistica.STOP_TARGET);
-                        int collisionPos = path.collisionPos;
-                        if (collisionPos != Dungeon.hero.pos){
-                            //create a new collision pos
-                            int newSourcePos = path.sourcePos;
-                            for (int l = 0; l < path.path.size(); l++){
-                                if (path.path.get(l) == collisionPos) {
-                                    if (l-1 > -1) {
-                                        newSourcePos = path.path.get(l - 1);
-                                    }
-                                }
+            sprite.operate(enemy.pos, () -> {});
+            if (phantomSpearPositions == -1) {
+                PathFinder.buildDistanceMap(enemy.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null),
+                        Dungeon.isChallenged(Challenges.DARKNESS) ? 0 : 1);
+                int k;
+                do {
+                    k = Random.Int(PathFinder.distance.length);
+                } while (PathFinder.distance[k] >= Integer.MAX_VALUE);
+                Ballistica path = new Ballistica(pos, k, Ballistica.STOP_CHARS | Ballistica.STOP_TARGET);
+                int collisionPos = path.collisionPos;
+                if (collisionPos != Dungeon.hero.pos) {
+                    //create a new collision pos
+                    int newSourcePos = path.sourcePos;
+                    for (int l = 0; l < path.path.size(); l++) {
+                        if (path.path.get(l) == collisionPos) {
+                            if (l - 1 > -1) {
+                                newSourcePos = path.path.get(l - 1);
                             }
-                            Ballistica path2 = new Ballistica(newSourcePos, path.collisionPos, Ballistica.MAGIC_BOLT);
-                            collisionPos = path2.collisionPos;
-                        }
-                        Ballistica path2 = new Ballistica(pos, collisionPos, Ballistica.STOP_TARGET);
-                        for (int l = 0; l < path2.dist+1; l++){
-                            Game.scene().addToFront(new TargetedCell(path2.path.get(l), 0xa9ded3));
                         }
                     }
+                    Ballistica path2 = new Ballistica(newSourcePos, path.collisionPos, Ballistica.MAGIC_BOLT);
+                    collisionPos = path2.collisionPos;
+                }
+                phantomSpearPositions = collisionPos;
+                Ballistica path2 = new Ballistica(pos, collisionPos, Ballistica.STOP_TARGET);
+                for (int l = 0; l < path2.dist + 2; l++) {
+                    Game.scene().addToFront(new TargetedCell(path2.path.get(l), 0xa9ded3));
                 }
                 spend(TICK*2);
                 next();
                 return true;
             }
             else sprite.doAfterAnim( () -> {
-                for (int i = 0; i < 3; i++) {
-                    final int psp = phantomSpearPositions[i];
-                    Ballistica path = new Ballistica(pos, psp, Ballistica.STOP_CHARS | Ballistica.STOP_TARGET);
-                    int collisionPos = path.collisionPos;
-                    if (collisionPos != Dungeon.hero.pos){
-                        //create a new collision pos
-                        int newSourcePos = path.sourcePos;
-                        for (int l = 0; l < path.path.size(); l++){
-                            if (path.path.get(l) == collisionPos) {
-                                if (l-1 > -1) {
-                                    newSourcePos = path.path.get(l - 1);
-                                }
-                            }
-                        }
-                        Ballistica path2 = new Ballistica(newSourcePos, path.collisionPos, Ballistica.MAGIC_BOLT);
-                        collisionPos = path2.collisionPos;
-                    }
-                    int finalCollisionPos = collisionPos;
+                    final int psp = phantomSpearPositions;
                     Callback callback = new Callback() {
                         @Override
                         public void call() {
-                            Ballistica path = new Ballistica(pos, psp, Ballistica.STOP_CHARS | Ballistica.STOP_TARGET);
-                            int collisionPos = path.collisionPos;
-                            if (collisionPos != Dungeon.hero.pos){
-                                //create a new collision pos
-                                int newSourcePos = path.sourcePos;
-                                for (int l = 0; l < path.path.size(); l++){
-                                    if (path.path.get(l) == collisionPos) {
-                                        if (l-1 > -1) {
-                                            newSourcePos = path.path.get(l - 1);
-                                        }
-                                    }
-                                }
-                                Ballistica path2 = new Ballistica(newSourcePos, path.collisionPos, Ballistica.MAGIC_BOLT);
-                                collisionPos = path2.collisionPos;
-                            }
-                            Char ch = Actor.findChar(collisionPos);
+                            Char ch = Actor.findChar(psp);
                             if (ch != null && ch != RatKingBoss.this) {
                                 attack(ch);
                                 Buff.detach(ch, Light.class);
@@ -678,29 +675,40 @@ public class RatKingBoss extends Mob {
                                     Buff.affect(ch, Blindness.class, 10f);
                                 }
                             }
-                            callbacks.remove(this);
-
-                            if (callbacks.isEmpty()) {
-                                spend(0);
-                                next();
-                            }
+                            next();
                         }
                     };
+                    if (psp != -1) {
+                        MissileSprite m = sprite.parent.recycle(MissileSprite.class);
+                        Game.scene().addToFront(m);
+                        m.reset(sprite, psp, new PhantomSpear(), callback);
+                    }
 
-                    MissileSprite m = sprite.parent.recycle(MissileSprite.class);
-                    Game.scene().addToFront(m);
-                    m.reset(sprite, finalCollisionPos, new PhantomSpear(), callback);
-                    callbacks.add(callback);
-                }
                 CellEmitter.bottom(pos).burst(Speck.factory(Speck.WOOL, true), 5);
                 Sample.INSTANCE.play(Assets.Sounds.PUFF);
                 do {
                     pos = Dungeon.level.randomDestination(RatKingBoss.this);
-                } while (Actor.findChar(pos) == Dungeon.hero);
+                } while (Actor.findChar(pos) == Dungeon.hero || Actor.findChar(pos) == enemy);
                 ScrollOfTeleportation.appear(RatKingBoss.this, pos);
-                for (int i = 0; i < 3; i++){
-                    phantomSpearPositions[i] = -1;
-                }
+                Actor.addDelayed(new Actor() {
+                    @Override
+                    protected boolean act() {
+                        switch (Random.Int(2)){
+                            case 0:
+                                if (buff(Tengu.BombAbility.class) == null)
+                                    Tengu.throwBomb(RatKingBoss.this, enemy); break;
+                            case 1:
+                                if (buff(Tengu.BombAbility.class) == null)
+                                    Tengu.throwShocker(RatKingBoss.this, enemy); break;
+                        }
+                        diactivate();
+                        return true;
+                    }
+                }, 1);
+
+
+
+                phantomSpearPositions = -1;
             });
 
             return false;
@@ -727,14 +735,87 @@ public class RatKingBoss extends Mob {
         next();
     }*/
 
+        public void doYogLasers(){
+            boolean terrainAffected = false;
+            HashSet<Char> affected = new HashSet<>();
+            //delay fire on a rooted hero
+            if (!enemy.rooted) {
+                for (int i : targetedCells) {
+                    Ballistica b = new Ballistica(i, lastHeroPos, Ballistica.WONT_STOP);
+                    //shoot beams
+                    sprite.parent.add(new Beam.RatRay(DungeonTilemap.raisedTileCenterToWorld(i), DungeonTilemap.raisedTileCenterToWorld(b.collisionPos)));
+                    for (int p : b.path) {
+                        Char ch = Actor.findChar(p);
+                        if (ch != null && (ch.alignment != alignment || ch instanceof Bee)) {
+                            affected.add(ch);
+                        }
+                        if (Dungeon.level.flamable[p]) {
+                            Dungeon.level.destroy(p);
+                            GameScene.updateMap(p);
+                            terrainAffected = true;
+                        }
+                    }
+                }
+                if (terrainAffected) {
+                    Dungeon.observe();
+                }
+                for (Char ch : affected) {
+                    if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                        ch.damage(Random.NormalIntRange(40, 69), new Eye.DeathGaze());
+                    } else {
+                        ch.damage(Random.NormalIntRange(60, 121), new Eye.DeathGaze());
+                    }
+                    if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && ch instanceof Hero){
+                        Buff.affect(ch, PowerfulDegrade.class, 12f);
+                    }
+
+                    if (Dungeon.level.heroFOV[pos]) {
+                        ch.sprite.flash();
+                        CellEmitter.center(pos).burst(Speck.factory(Speck.COIN), Random.IntRange(2, 3));
+                    }
+                    if (!ch.isAlive() && ch == Dungeon.hero) {
+                        Dungeon.fail(getClass());
+                        GLog.n(Messages.get(Char.class, "kill", name()));
+                    }
+                }
+                targetedCells.clear();
+            }
+
+            if (abilityCooldown <= 0 && HP < HT*0.8f){
+                lastHeroPos = enemy.pos;
+
+                int beams = (int) (4 + (HP * 1.0f / HT)*4);
+                for (int i = 0; i < beams; i++){
+                    int randompos = Random.Int(Dungeon.level.width()) + Dungeon.level.width()*2;
+                    targetedCells.add(randompos);
+                }
+
+                for (int i : targetedCells){
+                    Ballistica b = new Ballistica(i, Dungeon.hero.pos, Ballistica.WONT_STOP);
+                    for (int p : b.path){
+                        Game.scene().addToFront(new TargetedCell(p, 0xFF0000));
+                    }
+                }
+
+                spend(TICK*1.5f);
+                Dungeon.hero.interrupt();
+
+                abilityCooldown += Random.NormalFloat(MIN_ABILITY_CD - 2*(1 - (HP * 1f / HT)), MAX_ABILITY_CD - 5*(1 - (HP * 1f / HT)));
+            } else {
+                spend(TICK);
+            }
+            if (abilityCooldown > 0) abilityCooldown--;
+        }
+
         public boolean doSniper(){
             if (enemySeen && !isCharmedBy( enemy ) && canAttack( enemy )) {
-                target = Dungeon.hero.pos;
+                target = enemy.pos;
                 return doAttack(Dungeon.hero);
             } else {
-                target = Dungeon.hero.pos;
-                enemy = Dungeon.hero;
-                if (enemy.buff(SniperCurse.class) == null){
+                target = enemy.pos;
+                if (enemy.buff(SniperCurse.class) == null) {
+                    Buff.affect(enemy, SniperCurse.class, 6f);
+                } else if (enemy.buff(SniperCurse.class).cooldown() < 2){
                     int bestPos = enemy.pos;
                     for (int i : PathFinder.NEIGHBOURS8){
                         if (Dungeon.level.passable[pos + i]
@@ -755,36 +836,63 @@ public class RatKingBoss extends Mob {
                             Dungeon.observe();
                         }
                     }
-                    Buff.affect(enemy, SniperCurse.class, 5f);
                 }
+            }
+            int traps = Random.IntRange(1, 4);
+            for (int i = 0; i < traps; i++){
+                int trapPos;
+                do {
+                    trapPos = Dungeon.level.randomDestination(RatKingBoss.this);
+                } while (Actor.findChar(pos) == Dungeon.hero || Actor.findChar(pos) == enemy);
+                Trap t = ((Trap) Reflection.newInstance(Random.element(trapClasses)));
+                Dungeon.level.setTrap(t, trapPos);
+                Dungeon.level.map[t.pos] = t.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
+                t.reveal();
             }
             spend(TICK);
             return true;
         }
+
+        protected Class[] trapClasses = new Class[]{
+                FrostTrap.class, StormTrap.class, CorrosionTrap.class,  DisintegrationTrap.class,
+                RockfallTrap.class, FlashingTrap.class, GuardianTrap.class,
+                DisarmingTrap.class,
+                WarpingTrap.class, CursingTrap.class, GrimTrap.class, PitfallTrap.class, DistortionTrap.class };
 
         public boolean doEmperor(){
             spend(TICK);
             return true;
         }
 
+        //prevents rare infinite loop cases
+        private boolean recursing = false;
+
         @Override
         public boolean act(boolean enemyInFOV, boolean justAlerted) {
 
             enemySeen = enemyInFOV;
             if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
-
                 target = Dungeon.hero.pos;
-                return doAttack(Dungeon.hero);
-
+                return doAttack(enemy);
             } else {
-                target = Dungeon.hero.pos;
-                enemy = Dungeon.hero;
+                if (enemyInFOV) {
+                    target = enemy.pos;
+                } else {
+                    chooseEnemy();
+                    if (enemy == null){
+                        //if nothing else can be targeted, target hero
+                        enemy = Dungeon.hero;
+                    }
+                    target = enemy.pos;
+                }
             }
             if (phase == GLADIATOR) return doCharging();
             if (phase == BATTLEMAGE) return doMagic();
             if (phase == ASSASSIN) return doRogue();
-            if (phase == SNIPER) return doSniper();
-
+            if (phase == SNIPER) {
+                doYogLasers();
+                return doSniper();
+            }
 
 
             spend( TICK );

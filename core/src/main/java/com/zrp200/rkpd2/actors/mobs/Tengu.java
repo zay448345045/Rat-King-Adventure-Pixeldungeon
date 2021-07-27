@@ -397,7 +397,7 @@ public class Tengu extends Mob {
 	//*****************************************************************************************
 	
 	//so that mobs can also use this
-	private static Char throwingChar;
+	public static Char throwingChar;
 	
 	private int lastAbility = -1;
 	private int abilitiesUsed = 0;

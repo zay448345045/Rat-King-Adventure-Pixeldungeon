@@ -21,8 +21,8 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Assets;
 import com.watabou.noosa.Image;
+import com.zrp200.rkpd2.Assets;
 
 public class Effects {
 
@@ -34,7 +34,8 @@ public class Effects {
 		CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
-		HEALTH_RAY
+		HEALTH_RAY,
+		RAT_RAY
 	}
 	
 	public static Image get( Type type ) {
@@ -63,6 +64,9 @@ public class Effects {
 				break;
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
+				break;
+			case RAT_RAY:
+				icon.frame(icon.texture.uvRect(16, 37, 32, 80));
 				break;
 		}
 		return icon;

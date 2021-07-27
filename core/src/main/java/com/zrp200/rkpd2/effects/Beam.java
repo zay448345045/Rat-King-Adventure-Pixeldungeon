@@ -74,8 +74,9 @@ public class Beam extends Image {
 
 	public static class RatRay extends Beam{
 		public RatRay(PointF s, PointF e) {
-			super(s, e, Effects.Type.DEATH_RAY, 1f);
+			super(s, e, Effects.Type.RAT_RAY, 2f);
 			hardlight(0xffc61a);
+
 		}
 	}
 	
