@@ -274,7 +274,7 @@ public class RatKingBoss extends Mob {
 
     @Override
     public void spend(float time) {
-        time *= GameMath.gate(0.25f, HP * 2f / HT, 1f);
+        time *= GameMath.gate(0.4f, HP * 2f / HT, 1f);
         super.spend(time);
     }
 
