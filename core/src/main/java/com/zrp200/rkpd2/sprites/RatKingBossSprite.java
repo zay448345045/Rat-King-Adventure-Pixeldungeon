@@ -70,7 +70,7 @@ public class RatKingBossSprite extends CharSprite {
 
     @Override
     public void onComplete( Animation anim ) {
-        if (anim == zap) {
+        if (anim == zap && ch != null && ((RatKingBoss)ch).phase != RatKingBoss.BATTLEMAGE) {
             idle();
 
             parent.recycle( MissileSprite.class ).
