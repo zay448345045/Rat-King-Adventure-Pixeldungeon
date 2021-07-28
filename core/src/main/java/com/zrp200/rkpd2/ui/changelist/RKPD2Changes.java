@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.scenes.ChangesScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.KingSprite;
+import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
 
 import java.util.ArrayList;
@@ -414,7 +415,9 @@ public class RKPD2Changes {
                         new ChangeButton(avatar(RAT_KING,6), "Another attempt at Rat King Nerfs (rat king nerfs)",
                                 "_-_ Reverted HP nerf.\n\n" +
                                         "_-_ Subclass powers are acquired via talents instead of being given by default.\n\n" +
-                                        "_-_ Restoration works with drinking from waterskin.")
+                                        "_-_ Restoration works with drinking from waterskin."),
+                new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
+                        "Added new extremely hard boss, which can be fought, when you try to talk with RK while having an amulet.\n\nHis attacks are based on hero classes and some bosses, and Rat King will frequently switch between them.\n\n_Beware of his power while doing challenge run._")
                         ),
                 new ChangeInfo("Talents", false, 0x44d1d3, "",
                         new ChangeButton(new Image(TALENT_ICONS, 16*3,16*4,16,16), "RK",
@@ -480,9 +483,9 @@ public class RKPD2Changes {
                 ),
                 new ChangeInfo("New Content", false, 0x44d1d3, "",
                         new ChangeButton(new ItemSprite(ROYAL_SWORD), "Tier 6 weapons",
-                                "Added 8 melee and 4 thrown exceptionally rare tier 6 weapons.\n\n" +
+                                "Added 10 melee and 4 thrown exceptionally rare tier 6 weapons.\n\n" +
                                         "_-_ They appear in ebony chest and have many special abilities.\n" +
-                                        "_-_ There is also omni-melee weapon and omni-thrown weapon, called _Royal Brand_ and _Steel Axe_, respectively."),
+                                        "_-_ T6 weapons also omni-melee weapon and omni-thrown weapon, called _Royal Brand_ and _Steel Axe_, respectively."),
                         new ChangeButton(new ItemSprite(WAND_UNSTABLE), "New wand",
                                 "Added wand of His Ratiness, which will create random wand zaps and use random wand effects for Battlemage and Elemental Blast."),
                         new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "New champions",

@@ -21,11 +21,6 @@
 
 package com.zrp200.rkpd2.sprites;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Camera;
@@ -35,6 +30,12 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.RectF;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.items.weapon.melee.ExoKnife;
+import com.zrp200.rkpd2.scenes.GameScene;
 
 public class HeroSprite extends CharSprite {
 	
@@ -47,6 +48,7 @@ public class HeroSprite extends CharSprite {
 	
 	protected Animation fly;
 	protected Animation read;
+	private int cellToAttack;
 
 	public HeroSprite() {
 		super();
@@ -94,7 +96,32 @@ public class HeroSprite extends CharSprite {
 		else
 			die();
 	}
-	
+
+	@Override
+	public void attack( int cell ) {
+		cellToAttack = cell;
+		super.attack( cell );
+	}
+
+	@Override
+	public void onComplete(Animation anim) {
+		if (ch instanceof Hero && anim == attack){
+			if (((Hero) ch).belongings.weapon instanceof ExoKnife) {
+				((MissileSprite) parent.recycle(MissileSprite.class)).
+						reset(this, cellToAttack, new ExoKnife.RunicMissile(), new Callback() {
+							@Override
+							public void call() {
+								ch.onAttackComplete();
+							}
+						});
+			} else {
+				super.onComplete(anim);
+			}
+		} else {
+			super.onComplete( anim );
+		}
+	}
+
 	@Override
 	public void place( int p ) {
 		super.place( p );

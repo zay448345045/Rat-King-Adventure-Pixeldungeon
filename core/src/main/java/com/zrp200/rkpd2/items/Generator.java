@@ -253,9 +253,11 @@ public class Generator {
 					BloomingPick.class,
 					LuminousCutlass.class,
 					MoltenStrife.class,
+					ElementalDirk.class,
+					ExoKnife.class,
 					RoyalBrand.class
 			};
-			WEP_T6.probs = new float[]{ 9, 8, 7, 7, 7, 6, 6, 3 };
+			WEP_T6.probs = new float[]{ 9, 8, 7, 7, 7, 6, 6, 6, 5, 3 };
 			
 			//see Generator.randomArmor
 			ARMOR.classes = new Class<?>[]{
@@ -356,9 +358,9 @@ public class Generator {
 			{0, 75, 20,  4,  1, 0},
 			{0, 25, 50, 20,  5, 0},
 			{0,  0, 40, 50, 10, 0},
-			{0,  0, 20, 39, 40, 1},
-			{0,  0,  0, 17, 80, 3},
-			{0,  0,  0,  0,  19, 1}
+			{0,  0, 20, 39, 39, 2},
+			{0,  0,  0, 17, 77, 6},
+			{0,  0,  0,  0,  9, 1}
 	};
 	
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();

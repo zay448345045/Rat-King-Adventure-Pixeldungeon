@@ -269,6 +269,8 @@ public class ItemSpriteSheet {
 	public static final int MOLTEN_STRIFE   = WEP_TIER5+11;
 	public static final int LUMINOUS_CUTLASS= WEP_TIER5+12;
 	public static final int BLOOMING_PICK   = WEP_TIER5+13;
+	public static final int ELEMENTAL_DIRK  = WEP_TIER5+14;
+	public static final int EXO_KNIFE       = WEP_TIER5+15;
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
 		assignItemRect(WAR_HAMMER,  16, 16);
@@ -284,6 +286,8 @@ public class ItemSpriteSheet {
 		assignItemRect(MOLTEN_STRIFE, 14, 14);
 		assignItemRect(LUMINOUS_CUTLASS, 16, 16);
 		assignItemRect(BLOOMING_PICK, 14, 14);
+		assignItemRect(ELEMENTAL_DIRK, 14, 15);
+		assignItemRect(EXO_KNIFE, 11, 12);
 	}
 
 	                                                                                    //8 free slot
