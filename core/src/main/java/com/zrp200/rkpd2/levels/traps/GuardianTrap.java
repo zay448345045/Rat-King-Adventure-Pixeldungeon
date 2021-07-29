@@ -43,6 +43,10 @@ public class GuardianTrap extends Trap {
 	@Override
 	public void activate() {
 
+		if (Dungeon.depth == 0){
+			return;
+		}
+
 		for (Mob mob : Dungeon.level.mobs) {
 			mob.beckon( pos );
 		}

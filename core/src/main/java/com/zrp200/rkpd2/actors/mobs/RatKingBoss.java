@@ -857,9 +857,8 @@ public class RatKingBoss extends Mob {
 
         protected Class[] trapClasses = new Class[]{
                 FrostTrap.class, StormTrap.class, CorrosionTrap.class,  DisintegrationTrap.class,
-                RockfallTrap.class, FlashingTrap.class, GuardianTrap.class,
-                DisarmingTrap.class,
-                WarpingTrap.class, CursingTrap.class, GrimTrap.class, PitfallTrap.class, DistortionTrap.class };
+                RockfallTrap.class, FlashingTrap.class,
+                DisarmingTrap.class, CursingTrap.class, GrimTrap.class, DistortionTrap.class };
 
         public boolean doEmperor(){
             spend(TICK);
