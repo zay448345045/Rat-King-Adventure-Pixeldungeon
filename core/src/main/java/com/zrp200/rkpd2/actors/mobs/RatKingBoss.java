@@ -902,6 +902,14 @@ public class RatKingBoss extends Mob {
 
     }
 
+    @Override
+    public float resistanceValue(Class effect) {
+        if (effect == Paralysis.class){
+            return 0.33f;
+        }
+        return super.resistanceValue(effect);
+    }
+
     {
         immunities.add(Sleep.class);
 
@@ -909,6 +917,7 @@ public class RatKingBoss extends Mob {
         resistances.add(Charm.class);
         resistances.add(Vertigo.class);
         resistances.add(Cripple.class);
+        resistances.add(Paralysis.class);
         resistances.add(Chill.class);
         resistances.add(Frost.class);
         resistances.add(Roots.class);
