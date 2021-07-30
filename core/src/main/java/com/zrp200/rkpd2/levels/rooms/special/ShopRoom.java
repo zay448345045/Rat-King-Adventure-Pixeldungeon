@@ -167,6 +167,13 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			break;
 		}
+		if (Dungeon.getDepth() > 26){
+			w = (MeleeWeapon) Generator.random(Generator.wepTiers[5]);
+			itemsToSpawn.add( Generator.random(Generator.misTiers[5]).quantity(2).identify() );
+			a = ClassArmor.upgrade(Dungeon.hero, new PlateArmor());
+			itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
+			itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.SCROLL ) );
+		}
 		while(w.cursed) w = (MeleeWeapon) w.random();
 		w.identify();
 		itemsToSpawn.add(w);
@@ -178,9 +185,7 @@ public class ShopRoom extends SpecialRoom {
 
 		itemsToSpawn.add( new MerchantsBeacon() );
 
-
 		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
-
 
 		itemsToSpawn.add( new PotionOfHealing() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
