@@ -22,17 +22,19 @@
 package com.zrp200.rkpd2.actors.mobs;
 
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Doom;
-import com.zrp200.rkpd2.actors.buffs.LifeLink;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -57,12 +59,6 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -558,7 +554,19 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	}
 
 	private void enterPhase2 (int wavesLeft) {
-		int shielding = wavesLeft * (HT/3);
+		int shielding = 0;
+		switch (wavesLeft) {
+			case 1:
+				shielding = 100;
+				break;
+			case 2:
+				shielding = 200;
+				break;
+			case 3:
+				shielding = 300;
+				break;
+		}
+		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) shielding *= 1.5f;
 		HP = 50;
 		summonsMade = 4*(3-wavesLeft);
 		sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
