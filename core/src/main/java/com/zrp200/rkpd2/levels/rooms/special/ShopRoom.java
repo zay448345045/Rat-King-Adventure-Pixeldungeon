@@ -230,6 +230,9 @@ public class ShopRoom extends SpecialRoom {
 				case 20: case 21:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
 			}
+			if (Dungeon.getDepth() > 26){
+				bags = (int)Math.ceil(( 5-hourglass.sandBags) * 1f );
+			}
 
 			for(int i = 1; i <= bags; i++){
 				itemsToSpawn.add( new TimekeepersHourglass.sandBag());
