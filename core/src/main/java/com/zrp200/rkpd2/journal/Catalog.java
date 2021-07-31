@@ -31,6 +31,10 @@ import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.melee.*;
+import com.zrp200.rkpd2.items.weapon.missiles.HomingBoomerang;
+import com.zrp200.rkpd2.items.weapon.missiles.PhantomSpear;
+import com.zrp200.rkpd2.items.weapon.missiles.RedKunai;
+import com.zrp200.rkpd2.items.weapon.missiles.SteelAxe;
 
 import java.util.*;
 
@@ -88,6 +92,20 @@ public enum Catalog {
 		WEAPONS.seen.put( Greatshield.class,                false);
 		WEAPONS.seen.put( Gauntlet.class,                   false);
 		WEAPONS.seen.put(RoyalBrand.class,                  false);
+		WEAPONS.seen.put(AluminumSword.class,               false);
+		WEAPONS.seen.put(NuclearHatchet.class,              false);
+		WEAPONS.seen.put(RunicBladeMkII.class,              false);
+		WEAPONS.seen.put(ConstructWand.class,               false);
+		WEAPONS.seen.put(BloomingPick.class,                false);
+		WEAPONS.seen.put(LuminousCutlass.class,             false);
+		WEAPONS.seen.put(MoltenStrife.class,                false);
+		WEAPONS.seen.put(ElementalDirk.class,               false);
+		WEAPONS.seen.put(ExoKnife.class,                    false);
+		WEAPONS.seen.put(HomingBoomerang.class,             false);
+		WEAPONS.seen.put(PhantomSpear.class,                false);
+		WEAPONS.seen.put(RedKunai.class,                    false);
+		WEAPONS.seen.put(SteelAxe.class,                    false);
+
 	
 		ARMOR.seen.put( ClothArmor.class,                   false);
 		ARMOR.seen.put( LeatherArmor.class,                 false);
