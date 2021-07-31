@@ -1970,6 +1970,10 @@ public class Hero extends Char {
 
 	@Override
 	public boolean isImmune(Class effect) {
+		if (effect == Electricity.class &&
+			hasTalent(Talent.FARADAY_CAGE)){
+			return true;
+		}
 		if (effect == Burning.class
 				&& belongings.armor != null
 				&& belongings.armor.hasGlyph(Brimstone.class, this)){
