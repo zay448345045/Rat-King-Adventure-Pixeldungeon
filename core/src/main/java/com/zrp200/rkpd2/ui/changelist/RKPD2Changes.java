@@ -495,7 +495,9 @@ public class RKPD2Changes {
                 bugFixes("_-_ Fixed light cloak charge speed being wrong (was higher than intended for Rogue and lower for RK)\n\n" +
                         "_-_ Fixed Wealth and Might using wrong percentages in their descriptions.\n" +
                         "_-_ Fixed Shrinking being only cosmetic effect.\n" +
-                        "_-_ Fixed shop appearing on D21.")
+                        "_-_ Fixed shop appearing on D21."),
+                misc("_-_ Added some additional lore and sprite edits for dungeon monsters.\n\n" +
+                        "_-_ Added missing loot into abyssal shops.")
                 )
 
 
