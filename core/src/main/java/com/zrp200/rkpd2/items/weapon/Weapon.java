@@ -73,7 +73,7 @@ abstract public class Weapon extends KindOfWeapon {
 		public int damageFactor(int dmg){
 			int damage = Math.round(dmg * damageFactor);
 			damage *= 1f + 0.08f*(Dungeon.hero.pointsInTalent(Talent.HEROIC_ENERGY));
-			return dmg;
+			return damage;
 		}
 
 		public float delayFactor(float dly){
