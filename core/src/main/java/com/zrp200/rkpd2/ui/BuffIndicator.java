@@ -21,13 +21,6 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.windows.WndInfoBuff;
 import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.noosa.Image;
@@ -40,6 +33,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.windows.WndInfoBuff;
 
 import java.util.ArrayList;
@@ -108,6 +102,7 @@ public class BuffIndicator extends Component {
 	public static final int SIZE    = 7;
 	public static final int FROSTBURN = 52;
 	public static final int ERADICATION = 53;
+	public static final int LASTSTAND = 54;
 
     private static BuffIndicator heroInstance;
 	

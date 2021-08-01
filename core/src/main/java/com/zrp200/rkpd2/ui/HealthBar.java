@@ -21,9 +21,9 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.actors.Char;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.actors.Char;
 
 public class HealthBar extends Component {
 
@@ -32,10 +32,10 @@ public class HealthBar extends Component {
 	private static final int COLOR_SHLD = 0xFFBBEEBB;
 	
 	private static final int HEIGHT	= 2;
-	
-	private ColorBlock Bg;
+
+	protected ColorBlock Bg;
 	private ColorBlock Shld;
-	private ColorBlock Hp;
+	protected ColorBlock Hp;
 	
 	private float health;
 	private float shield;

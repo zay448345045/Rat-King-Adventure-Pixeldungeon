@@ -21,13 +21,14 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.effects.particles.BloodParticle;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
+import com.zrp200.rkpd2.effects.particles.BloodParticle;
 
 public class BossHealthBar extends Component {
 
@@ -110,6 +111,10 @@ public class BossHealthBar extends Component {
 				hp.scale.x = Math.max( 0, (health-shield)/max);
 				shieldedHP.scale.x = health/max;
 				rawShielding.scale.x = shield/max;
+				if (boss instanceof RatKingBoss && ((RatKingBoss) boss).phase3()){
+					hp.scale.x = 1;
+					hp.color(0xffff00);
+				}
 
 				if (hp.scale.x < 0.25f) bleed( true );
 

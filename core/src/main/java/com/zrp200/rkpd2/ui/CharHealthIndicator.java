@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.ui;
 
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 
@@ -51,6 +52,11 @@ public class CharHealthIndicator extends HealthBar {
 			width = sprite.width()*(4/6f);
 			x = sprite.x + sprite.width()/6f;
 			y = sprite.y - 2;
+			if (target instanceof RatKingBoss && ((RatKingBoss) target).phase3()){
+				level(1f);
+				Bg.color(0xFFFF00);
+				Hp.color(0xFFFF00);
+			}
 			level( target );
 			visible = target.HP < target.HT || target.shielding() > 0;
 		} else {

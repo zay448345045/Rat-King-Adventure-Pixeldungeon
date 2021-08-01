@@ -60,6 +60,9 @@ public class RatKingBossSprite extends CharSprite {
             if (ch.HP < ch.HT * 0.5f){
                 if (parent != null && aura == null) aura(0xFFFF00);
             }
+            if (((RatKingBoss) ch).phase3()){
+                hardlight(0xFFFF00);
+            }
             ((GameScene) Game.scene()).tint.changeColor(phaseColor(
                     ((RatKingBoss) ch).phase
             ));

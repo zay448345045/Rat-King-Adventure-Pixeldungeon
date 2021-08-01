@@ -1,6 +1,7 @@
 package com.zrp200.rkpd2.actors.mobs;
 
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
@@ -35,6 +36,7 @@ import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
+import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -75,12 +77,13 @@ public class RatKingBoss extends Mob {
     public MagicAttack attack;
     public boolean magicPrepare = false;
     public boolean phase2Notice = false;
+    public boolean phase3Notice = false;
     public int[] magicCastPos = {-1, -1};
     public int phantomSpearPositions = -1;
 
     {
         HP = HT = 1500 + Challenges.activeChallenges()*165;
-        HP *= 0.6f;
+        HP = 2;
         spriteClass = RatKingBossSprite.class;
 
         HUNTING = new Hunting();
@@ -94,8 +97,8 @@ public class RatKingBoss extends Mob {
         properties.add(Property.MINIBOSS);
     }
     private float summonCooldown;
-    private static final int MIN_SUMMON_CD = 3;
-    private static final int MAX_SUMMON_CD = 6;
+    private static final int MIN_SUMMON_CD = 4;
+    private static final int MAX_SUMMON_CD = 7;
 
     private float abilityCooldown = 0;
     private static final int MIN_ABILITY_CD = 7;
@@ -167,16 +170,20 @@ public class RatKingBoss extends Mob {
         return speed;
     }
 
+    public boolean phase3(){
+        return phase3Notice;
+    }
+
     @Override
     public int attackProc(Char enemy, int damage) {
         if (phase == GLADIATOR){
-            if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
+            if (isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
                 Buff.prolong(enemy, PowerfulDegrade.class, 3f);
-            if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
+            if (isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
                 Buff.prolong(enemy, Vulnerable.class, 3f);
                 Buff.prolong(enemy, Charm.class, 2f).object = id();
             }
-            if (Dungeon.isChallenged(Challenges.NO_FOOD) && Random.Int(2) == 0){
+            if (isChallenged(Challenges.NO_FOOD) && Random.Int(2) == 0){
                 if (enemy instanceof Hero){
                     enemy.buff(Hunger.class).affectHunger(-30);
                 }
@@ -193,9 +200,9 @@ public class RatKingBoss extends Mob {
         if (phase == ASSASSIN && Dungeon.level.adjacent(pos, Dungeon.hero.pos)){
             ((Hunting)state).teleport();
         } else if (phase == ASSASSIN){
-            if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
+            if (isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
                 Buff.prolong(enemy, PowerfulDegrade.class, 5f);
-            if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
+            if (isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
                 Buff.prolong(enemy, Vulnerable.class, 2f);
                 Buff.prolong(enemy, Charm.class, 3f).object = id();
             }
@@ -203,14 +210,51 @@ public class RatKingBoss extends Mob {
         if (phase == SNIPER){
             Buff.prolong(enemy, Vulnerable.class, 4f);
             Unstable.getRandomEnchant(new SpiritBow()).proc(new SpiritBow(), this, Dungeon.hero, damageRoll());
-            if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
+            if (isChallenged(Challenges.NO_SCROLLS) && Random.Int(2) == 0)
                 Buff.prolong(enemy, PowerfulDegrade.class, 5f);
-            if (Dungeon.isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
+            if (isChallenged(Challenges.NO_ARMOR) && Random.Int(2) == 0) {
                 Buff.prolong(enemy, Vulnerable.class, 2f);
                 Buff.prolong(enemy, Charm.class, 3f).object = id();
             }
         }
         return super.attackProc(enemy, damage);
+    }
+
+    public static class LastStand extends FlavourBuff {
+        @Override
+        public int icon() {
+            return BuffIndicator.LASTSTAND;
+        }
+
+        @Override
+        public void detach() {
+            super.detach();
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof RatKingBoss){
+                    mob.sprite.flash();
+                    mob.sprite.bloodBurstA(target.sprite.center(), target.HT*2);
+                    Sample.INSTANCE.play(Assets.Sounds.BLAST);
+                    mob.die(Dungeon.hero);
+                }
+            }
+        }
+
+        @Override
+        public void tintIcon(Image icon) {
+            int duration = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 60;
+            float color = 1 - (Math.max(0, (duration - visualcooldown() * 1.2f) / duration));
+            icon.hardlight(color, color, 0);
+        }
+
+        @Override
+        public String toString() {
+            return Messages.get(this, "name");
+        }
+
+        @Override
+        public String desc() {
+            return Messages.get(this, "desc");
+        }
     }
 
     @Override
@@ -220,6 +264,17 @@ public class RatKingBoss extends Mob {
         if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg*1.5f);
         if (phase == ASSASSIN){
             dmg *= 1.75f;
+        }
+        if (HP - dmg <= 1 && !phase3Notice){
+            dmg = 0;
+            HP = 1;
+            GameScene.flash(0xFFFF00);
+            yell(Messages.get(this, "enraged_2"));
+            phase3Notice = true;
+            phase = -1;
+            Buff.detach(this, PhaseTracker.class);
+            Buff.affect(this, PhaseTracker.class, 0);
+            Buff.affect(Dungeon.hero, LastStand.class, 2/*Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 60*/);
         }
         super.damage(dmg, src);
         if (HP < HT * 0.5f && !phase2Notice){
@@ -246,12 +301,21 @@ public class RatKingBoss extends Mob {
             if (HP < HT*0.5f){
                 return Random.NormalIntRange(58, 77);
             }
+            if (phase3()){
+                return Random.NormalIntRange(69, 100);
+            }
             return Random.NormalIntRange(36, 48);
         }
         if (phase == ASSASSIN){
+            if (phase3()){
+                return Random.NormalIntRange(20, 45);
+            }
             return Random.NormalIntRange(12, 28);
         }
         if (phase == SNIPER){
+            if (phase3()){
+                return Random.NormalIntRange(9, 20);
+            }
             return Random.NormalIntRange(5, 14);
         }
         return super.damageRoll();
@@ -276,15 +340,22 @@ public class RatKingBoss extends Mob {
         }
     }
 
+    public boolean isChallenged( int mask ) {
+        if (phase3()) return true;
+        return (Dungeon.challenges & mask) != 0;
+    }
+
     @Override
     public void die( Object cause ) {
 
         for (Mob mob : (Iterable<Mob>)Dungeon.level.mobs.clone()) {
-            if (mob instanceof Ratmogrify.SummonedRat || mob instanceof ThreadRipper) {
+            if (mob.alignment == Alignment.ENEMY && mob != this) {
+                mob.maxLvl = -2;
                 mob.die( cause );
             }
         }
-        phase = 0;
+        phase = -1;
+        ((RatKingBossSprite)sprite).changeSprite(phase);
 
         GameScene.bossSlain();
         Dungeon.level.unseal();
@@ -296,6 +367,22 @@ public class RatKingBoss extends Mob {
         ((RatKingBossSprite)sprite).changeSprite(phase);
     }
 
+    @Override
+    protected int modifyDamage(int dmg, Object src) {
+        if (phase3()){
+            return 0;
+        }
+        return super.modifyDamage(dmg, src);
+    }
+
+    @Override
+    public boolean isImmune(Class effect) {
+        if (phase3() && !(effect == PhaseTracker.class)){
+            return true;
+        }
+        return super.isImmune(effect);
+    }
+
     public static class PhaseTracker extends FlavourBuff{
         @Override
         public void detach() {
@@ -303,7 +390,7 @@ public class RatKingBoss extends Mob {
             ((RatKingBoss)target).changePhase();
             Sample.INSTANCE.play(Assets.Sounds.CHALLENGE, 2f, 0.85f);
             Buff.affect(target, PhaseTracker.class,
-                    (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20));
+                    (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20) / (((RatKingBoss) target).phase3() ? 2 : 1));
             for (Heap heap : Dungeon.level.heaps.valueList()){
                 for (Item i :heap.items){
                     if (i instanceof Tengu.ShockerAbility.ShockerItem){
@@ -322,6 +409,9 @@ public class RatKingBoss extends Mob {
 
     @Override
     public int attackSkill(Char target) {
+        if (phase3()){
+            return INFINITE_ACCURACY;
+        }
         if (HP < HT * 0.5f && phase == SNIPER){
             return INFINITE_ACCURACY;
         }
@@ -336,7 +426,7 @@ public class RatKingBoss extends Mob {
             notice();
             haventSeen = false;
         }
-        if (phase == EMPEROR){
+        if (phase == EMPEROR || phase3()){
             while (summonCooldown <= 0){
 
                 Class<?extends Mob> cls = regularSummons.remove(0);
@@ -359,7 +449,6 @@ public class RatKingBoss extends Mob {
                     summon.beckon(Dungeon.hero.pos);
 
                     summonCooldown += Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
-
                     if (HP < HT*0.5f){
                         new DistortionTrap().set(pos).activate();
                     }
@@ -386,7 +475,7 @@ public class RatKingBoss extends Mob {
     }
 
     private void zap() {
-        spend( 0.66f );
+        spend( phase3() ? 0.5f : 0.66f );
 
         attack(enemy);
     }
@@ -399,6 +488,9 @@ public class RatKingBoss extends Mob {
     @Override
     public String description() {
         String description = super.description();
+        if (phase3()){
+            description = Messages.get(this, "phase3");
+        }
         switch (phase){
             case EMPEROR:
                 description += "\n\n" + Messages.get(this, "emperor");
@@ -446,6 +538,7 @@ public class RatKingBoss extends Mob {
     private static final String TARGETED_DEST = "targetDest";
     private static final String MAGIC_PREPARE = "magicOn";
     private static final String PHASE2 = "phase2";
+    private static final String PHASE3 = "phase3";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -465,6 +558,7 @@ public class RatKingBoss extends Mob {
         bundle.put(TARGETED_DEST, lastHeroPos);
         bundle.put(MAGIC_PREPARE, magicPrepare);
         bundle.put(PHASE2, phase2Notice);
+        bundle.put(PHASE3, phase3Notice);
     }
 
     @Override
@@ -484,6 +578,7 @@ public class RatKingBoss extends Mob {
         lastHeroPos = bundle.getInt(TARGETED_DEST);
         magicPrepare = bundle.getBoolean(MAGIC_PREPARE);
         phase2Notice = bundle.getBoolean(PHASE2);
+        phase3Notice = bundle.getBoolean(PHASE3);
     }
 
     public static class SniperCurse extends FlavourBuff{
@@ -523,6 +618,10 @@ public class RatKingBoss extends Mob {
                     possibleAttacks.add(MagicAttack.CORROSION);
                 if (Dungeon.isChallenged(Challenges.NO_SCROLLS))
                     possibleAttacks.add(MagicAttack.RAT_KING);
+                if (phase3()){
+                    possibleAttacks.clear();
+                    possibleAttacks.addAll(Arrays.asList(MagicAttack.values()));
+                }
                 attack = Random.element(possibleAttacks);
                 for (int i = (HP < HT * 0.5f ? 0 : 1); i < magicCastPos.length; i++) {
                     magicCastPos[i] = enemy.pos;
@@ -556,7 +655,7 @@ public class RatKingBoss extends Mob {
                                                     GameScene.add(Blob.seed(finalDest + ii, 3, Fire.class));
                                                 }
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 40, Inferno.class));
                                             }
                                             if (ch != null) {
@@ -570,7 +669,7 @@ public class RatKingBoss extends Mob {
                                                     GameScene.add(Blob.seed(finalDest + k, 3, Freezing.class));
                                                 }
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 40, Blizzard.class));
                                             }
                                             if (ch != null) {
@@ -583,7 +682,7 @@ public class RatKingBoss extends Mob {
                                                 ch.damage(Random.NormalIntRange(5, 21), new Poison());
                                                 Buff.affect(ch, Poison.class).set(20);
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 200, ToxicGas.class));
                                             }
                                             break;
@@ -593,7 +692,7 @@ public class RatKingBoss extends Mob {
                                                 ch.damage(Random.NormalIntRange(24, 45), new WandOfLightning());
                                                 ch.sprite.parent.addToFront(new Lightning(ch.pos, ch.pos, null));
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 for (int k : PathFinder.NEIGHBOURS4) {
                                                     if (!Dungeon.level.solid[finalDest + k]) {
                                                         GameScene.add(Blob.seed(finalDest + k, 3, Electricity.class));
@@ -606,7 +705,7 @@ public class RatKingBoss extends Mob {
                                                 ch.damage(Random.NormalIntRange(8, 20), new WandOfCorrosion());
                                                 Buff.affect(ch, Corrosion.class).set(3, 6);
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 100, CorrosiveGas.class));
                                             }
                                             break;
@@ -615,7 +714,7 @@ public class RatKingBoss extends Mob {
                                                 ch.damage(Random.NormalIntRange(10, 22), new WandOfPrismaticLight());
                                                 Buff.affect(ch, Blindness.class, 10f);
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 100, SmokeScreen.class));
                                             }
                                             break;
@@ -627,7 +726,7 @@ public class RatKingBoss extends Mob {
                                                     Ballistica trajectory = new Ballistica(pos, c.pos, Ballistica.STOP_TARGET);
                                                     trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
                                                     WandOfBlastWave.throwChar(c, trajectory, 3, true);
-                                                    if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                    if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                         Buff.affect(c, Paralysis.class, 1f);
                                                     }
                                                 }
@@ -639,7 +738,7 @@ public class RatKingBoss extends Mob {
                                                     GameScene.add(Blob.seed(finalDest + ii, 3, GodSlayerFire.class));
                                                 }
                                             }
-                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                            if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 400, Inferno.class));
                                             }
                                             if (ch != null) {
@@ -679,7 +778,7 @@ public class RatKingBoss extends Mob {
             sprite.operate(enemy.pos, () -> {});
             if (phantomSpearPositions == -1) {
                 PathFinder.buildDistanceMap(enemy.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null),
-                        Dungeon.isChallenged(Challenges.DARKNESS) ? 0 : 1);
+                        isChallenged(Challenges.DARKNESS) ? 0 : 1);
                 int k;
                 do {
                     k = Random.Int(PathFinder.distance.length);
@@ -717,7 +816,7 @@ public class RatKingBoss extends Mob {
                             if (ch != null && ch != RatKingBoss.this) {
                                 attack(ch);
                                 Buff.detach(ch, Light.class);
-                                if (Dungeon.isChallenged(Challenges.DARKNESS)) {
+                                if (isChallenged(Challenges.DARKNESS)) {
                                     Buff.affect(ch, Blindness.class, 10f);
                                 }
                             }
@@ -771,7 +870,7 @@ public class RatKingBoss extends Mob {
                         if (ch != null) {
                             attack(ch);
                             Buff.detach(ch, Light.class);
-                            if (Dungeon.isChallenged(Challenges.DARKNESS)) {
+                            if (isChallenged(Challenges.DARKNESS)) {
                                 Buff.affect(ch, Blindness.class, 10f);
                                 phantomSpearPositions[finalI] = -1;
                             }
@@ -807,12 +906,12 @@ public class RatKingBoss extends Mob {
                     Dungeon.observe();
                 }
                 for (Char ch : affected) {
-                    if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+                    if (isChallenged(Challenges.STRONGER_BOSSES)){
                         ch.damage(Random.NormalIntRange(40, 69), new Eye.DeathGaze());
                     } else {
                         ch.damage(Random.NormalIntRange(60, 121), new Eye.DeathGaze());
                     }
-                    if (Dungeon.isChallenged(Challenges.NO_SCROLLS) && ch instanceof Hero){
+                    if (isChallenged(Challenges.NO_SCROLLS) && ch instanceof Hero){
                         Buff.affect(ch, PowerfulDegrade.class, 12f);
                     }
 
