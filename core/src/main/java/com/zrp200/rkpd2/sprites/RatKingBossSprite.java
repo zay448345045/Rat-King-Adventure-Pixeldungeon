@@ -56,10 +56,14 @@ public class RatKingBossSprite extends CharSprite {
     @Override
     public void update() {
         super.update();
-        if (ch != null)
-        ((GameScene)Game.scene()).tint.changeColor(phaseColor(
-                ((RatKingBoss)ch).phase
-        ));
+        if (ch != null) {
+            if (ch.HP < ch.HT * 0.5f){
+                if (parent != null && aura == null) aura(0xFFFF00);
+            }
+            ((GameScene) Game.scene()).tint.changeColor(phaseColor(
+                    ((RatKingBoss) ch).phase
+            ));
+        }
     }
 
     public void zap( int cell ) {

@@ -73,11 +73,14 @@ public class RatKingBoss extends Mob {
         }
     }
     public MagicAttack attack;
-    public int magicCastPos = -1;
+    public boolean magicPrepare = false;
+    public boolean phase2Notice = false;
+    public int[] magicCastPos = {-1, -1};
     public int phantomSpearPositions = -1;
 
     {
         HP = HT = 1500 + Challenges.activeChallenges()*165;
+        HP *= 0.6f;
         spriteClass = RatKingBossSprite.class;
 
         HUNTING = new Hunting();
@@ -94,9 +97,9 @@ public class RatKingBoss extends Mob {
     private static final int MIN_SUMMON_CD = 3;
     private static final int MAX_SUMMON_CD = 6;
 
-    private float abilityCooldown;
-    private static final int MIN_ABILITY_CD = 5;
-    private static final int MAX_ABILITY_CD = 10;
+    private float abilityCooldown = 0;
+    private static final int MIN_ABILITY_CD = 7;
+    private static final int MAX_ABILITY_CD = 12;
     private ArrayList<Integer> targetedCells = new ArrayList<>();
     private int lastHeroPos;
 
@@ -145,19 +148,23 @@ public class RatKingBoss extends Mob {
 
     @Override
     public float attackDelay() {
-        if (phase == ASSASSIN) return super.attackDelay()*0.5f;
-        return super.attackDelay();
+        float attackDelay = super.attackDelay();
+        attackDelay *= Dungeon.hero.attackDelay();
+        if (phase == ASSASSIN) return attackDelay *0.5f;
+        return attackDelay;
     }
 
     @Override
     public float speed() {
+        float speed = super.speed();
+        speed *= Dungeon.hero.speed();
         if (phase == GLADIATOR){
-            return super.speed()*1.5f;
+            return speed * 1.25f;
         }
         if (phase == ASSASSIN){
-            return super.speed()*2f;
+            return speed *1.5f;
         }
-        return super.speed();
+        return speed;
     }
 
     @Override
@@ -215,17 +222,31 @@ public class RatKingBoss extends Mob {
             dmg *= 1.75f;
         }
         super.damage(dmg, src);
+        if (HP < HT * 0.5f && !phase2Notice){
+                BossHealthBar.bleed(true);
+                GameScene.flash(0xFFFF00);
+                sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Goo.class, "enraged"));
+                yell(Messages.get(this, "enraged"));
+                phase2Notice = true;
+        }
     }
 
     @Override
     public int drRoll() {
-        return Random.NormalIntRange(0 + phase == GLADIATOR ? 10 : 0, 22 + phase == GLADIATOR ? 10 : 0);
+        int dr = Random.NormalIntRange((phase == GLADIATOR ? 10 : 0), 22 + (phase == GLADIATOR ? 10 : 0));
+        if (HP < HT*0.5f && phase == GLADIATOR){
+            dr = Random.NormalIntRange(15, 40);
+        }
+        return dr;
     }
 
     @Override
     public int damageRoll() {
         if (phase == GLADIATOR){
-            return Random.NormalIntRange(24, 64);
+            if (HP < HT*0.5f){
+                return Random.NormalIntRange(58, 77);
+            }
+            return Random.NormalIntRange(36, 48);
         }
         if (phase == ASSASSIN){
             return Random.NormalIntRange(12, 28);
@@ -263,6 +284,7 @@ public class RatKingBoss extends Mob {
                 mob.die( cause );
             }
         }
+        phase = 0;
 
         GameScene.bossSlain();
         Dungeon.level.unseal();
@@ -294,12 +316,15 @@ public class RatKingBoss extends Mob {
 
     @Override
     public void spend(float time) {
-        time *= GameMath.gate(0.66f, HP * 2f / HT, 1f);
+        if (buff(Vertigo.class) != null) time *= 0.333f;
         super.spend(time);
     }
 
     @Override
     public int attackSkill(Char target) {
+        if (HP < HT * 0.5f && phase == SNIPER){
+            return INFINITE_ACCURACY;
+        }
         return 45;
     }
 
@@ -334,6 +359,10 @@ public class RatKingBoss extends Mob {
                     summon.beckon(Dungeon.hero.pos);
 
                     summonCooldown += Random.NormalFloat(MIN_SUMMON_CD, MAX_SUMMON_CD);
+
+                    if (HP < HT*0.5f){
+                        new DistortionTrap().set(pos).activate();
+                    }
                 } else {
                     break;
                 }
@@ -415,6 +444,8 @@ public class RatKingBoss extends Mob {
     private static final String SUMMON_CD = "summonCD";
     private static final String TARGETED_CELLS = "targetCells";
     private static final String TARGETED_DEST = "targetDest";
+    private static final String MAGIC_PREPARE = "magicOn";
+    private static final String PHASE2 = "phase2";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -432,6 +463,8 @@ public class RatKingBoss extends Mob {
         }
         bundle.put(TARGETED_CELLS, bundleArr);
         bundle.put(TARGETED_DEST, lastHeroPos);
+        bundle.put(MAGIC_PREPARE, magicPrepare);
+        bundle.put(PHASE2, phase2Notice);
     }
 
     @Override
@@ -440,7 +473,7 @@ public class RatKingBoss extends Mob {
         phase = bundle.getInt(PHASE);
         haventSeen = bundle.getBoolean(HAVESEEN);
         attack = bundle.getEnum(ATTACK, MagicAttack.class);
-        magicCastPos = bundle.getInt(MAGIC_POS);
+        magicCastPos = bundle.getIntArray(MAGIC_POS);
         phantomSpearPositions = bundle.getInt(SPEAR_POS);
         regularSummons.clear();
         Collections.addAll(regularSummons, bundle.getClassArray(REGULAR_SUMMONS));
@@ -449,6 +482,8 @@ public class RatKingBoss extends Mob {
             targetedCells.add(i);
         }
         lastHeroPos = bundle.getInt(TARGETED_DEST);
+        magicPrepare = bundle.getBoolean(MAGIC_PREPARE);
+        phase2Notice = bundle.getBoolean(PHASE2);
     }
 
     public static class SniperCurse extends FlavourBuff{
@@ -474,12 +509,11 @@ public class RatKingBoss extends Mob {
             }
         }
 
-        public boolean doMagic(){
-            if (magicCastPos == -1) {
-                magicCastPos = enemy.pos;
+        public boolean doMagic() {
+            if (!magicPrepare) {
                 ArrayList<MagicAttack> possibleAttacks = new ArrayList<>(Arrays.asList(
-                   MagicAttack.MAGIC_MISSILE, MagicAttack.FIREBLAST, MagicAttack.FROST,
-                   MagicAttack.POISON, MagicAttack.BLAST_WAVE, MagicAttack.LIGHTNING
+                        MagicAttack.MAGIC_MISSILE, MagicAttack.FIREBLAST, MagicAttack.FROST,
+                        MagicAttack.POISON, MagicAttack.BLAST_WAVE, MagicAttack.LIGHTNING
                 ));
                 if (Dungeon.isChallenged(Challenges.DARKNESS))
                     possibleAttacks.add(MagicAttack.PRISMATIC);
@@ -490,141 +524,151 @@ public class RatKingBoss extends Mob {
                 if (Dungeon.isChallenged(Challenges.NO_SCROLLS))
                     possibleAttacks.add(MagicAttack.RAT_KING);
                 attack = Random.element(possibleAttacks);
-                Game.scene().addToFront(new TargetedCell(magicCastPos, attack.color));
-                spend(1 / GameMath.gate(0.66f, HP * 2f / HT, 1f));
+                for (int i = (HP < HT * 0.5f ? 0 : 1); i < magicCastPos.length; i++) {
+                    magicCastPos[i] = enemy.pos;
+                    if (i == 0) {
+                        magicCastPos[i] = enemy.pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
+                    }
+                    Game.scene().addToFront(new TargetedCell(magicCastPos[i], attack.color));
+                }
+                magicPrepare = true;
+                spend(TICK);
                 return true;
-            } else if (magicCastPos != -1) {
-                sprite.zap(magicCastPos, () -> {
-                            MagicMissile.boltFromChar(sprite.parent, attack.boltType, sprite, magicCastPos,
-                                    () -> {
-                                        next();
-                                        Char ch = Actor.findChar(magicCastPos);
-                                        switch (attack) {
-                                            case MAGIC_MISSILE:
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(15, 30), new WandOfMagicMissile());
-                                                }
-                                                break;
-                                            case FIREBLAST:
-                                                for (int i : PathFinder.NEIGHBOURS4) {
-                                                    if (!Dungeon.level.solid[magicCastPos + i]) {
-                                                        GameScene.add(Blob.seed(magicCastPos + i, 3, Fire.class));
-                                                    }
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 40, Inferno.class));
-                                                }
-                                                if (ch != null) {
-                                                    ch.damage((int) (Random.NormalIntRange(10, 23) *
-                                                            (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new WandOfFireblast());
-                                                }
-                                                break;
-                                            case FROST:
-                                                for (int k : PathFinder.NEIGHBOURS4) {
-                                                    if (!Dungeon.level.solid[magicCastPos + k]) {
-                                                        GameScene.add(Blob.seed(magicCastPos + k, 3, Freezing.class));
-                                                    }
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 40, Blizzard.class));
-                                                }
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(7, 19), new WandOfFrost());
-                                                    Buff.affect(ch, FrostBurn.class).reignite(ch);
-                                                }
-                                                break;
-                                            case POISON:
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(5, 21), new Poison());
-                                                    Buff.affect(ch, Poison.class).set(20);
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 200, ToxicGas.class));
-                                                }
-                                                break;
-                                            case LIGHTNING:
-                                                if (ch != null) {
-                                                    ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 5);
-                                                    ch.damage(Random.NormalIntRange(24, 45), new WandOfLightning());
-                                                    ch.sprite.parent.addToFront(new Lightning(ch.pos, ch.pos, null));
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    for (int k : PathFinder.NEIGHBOURS4) {
-                                                        if (!Dungeon.level.solid[magicCastPos + k]) {
-                                                            GameScene.add(Blob.seed(magicCastPos + k, 3, Electricity.class));
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                            case CORROSION:
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(8, 20), new WandOfCorrosion());
-                                                    Buff.affect(ch, Corrosion.class).set(3, 6);
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 100, CorrosiveGas.class));
-                                                }
-                                                break;
-                                            case PRISMATIC:
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(10, 22), new WandOfPrismaticLight());
-                                                    Buff.affect(ch, Blindness.class, 10f);
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 100, SmokeScreen.class));
-                                                }
-                                                break;
-                                            case BLAST_WAVE:
-                                                WandOfBlastWave.BlastWave.blast(magicCastPos);
-                                                for (int i : PathFinder.NEIGHBOURS4){
-                                                    Char c = Actor.findChar(magicCastPos+i);
-                                                    if (c != null) {
-                                                        Ballistica trajectory = new Ballistica(pos, c.pos, Ballistica.STOP_TARGET);
-                                                        trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-                                                        WandOfBlastWave.throwChar(c, trajectory, 3, true);
-                                                        if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                            Buff.affect(c, Paralysis.class, 1f);
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                            case RED_FIRE:
-                                                for (int i : PathFinder.NEIGHBOURS4) {
-                                                    if (!Dungeon.level.solid[magicCastPos + i]) {
-                                                        GameScene.add(Blob.seed(magicCastPos + i, 3, GodSlayerFire.class));
-                                                    }
-                                                }
-                                                if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-                                                    GameScene.add(Blob.seed(magicCastPos, 400, Inferno.class));
-                                                }
-                                                if (ch != null) {
-                                                    ch.damage((int) (Random.NormalIntRange(15, 33) *
-                                                            (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new GodfireParticle());
-                                                }
-                                                break;
-                                            case RAT_KING:
-                                                sprite.parent.add(new Beam.RatRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(magicCastPos)));
-                                                if (ch != null) {
-                                                    ch.damage(Random.NormalIntRange(45, 80), new Wrath());
-                                                    Buff.affect(ch, PowerfulDegrade.class, 20f);
-                                                }
-                                                break;
-                                        }
-                                        magicCastPos = -1;
-                                    });
-                        });
-                Sample.INSTANCE.play(Assets.Sounds.ZAP);
-                spend(1f);
-
-                return false;
             } else {
-                spend( TICK );
-                return true;
+                int dest;
+                for (int i = (HP < HT * 0.5f ? 0 : 1); i < magicCastPos.length; i++) {
+                    dest = magicCastPos[i];
+                    final int attackNum = i;
+                    int finalDest = dest;
+                        sprite.zap(dest, () -> MagicMissile.boltFromChar(sprite.parent, attack.boltType, sprite, finalDest,
+                                () -> {
+                                    sprite.idle();
+                                    Char ch = Actor.findChar(finalDest);
+                                    switch (attack) {
+                                        case MAGIC_MISSILE:
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(15, 30), new WandOfMagicMissile());
+                                            }
+                                            break;
+                                        case FIREBLAST:
+                                            for (int ii : PathFinder.NEIGHBOURS4) {
+                                                if (!Dungeon.level.solid[finalDest + ii]) {
+                                                    GameScene.add(Blob.seed(finalDest + ii, 3, Fire.class));
+                                                }
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 40, Inferno.class));
+                                            }
+                                            if (ch != null) {
+                                                ch.damage((int) (Random.NormalIntRange(10, 23) *
+                                                        (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new WandOfFireblast());
+                                            }
+                                            break;
+                                        case FROST:
+                                            for (int k : PathFinder.NEIGHBOURS4) {
+                                                if (!Dungeon.level.solid[finalDest + k]) {
+                                                    GameScene.add(Blob.seed(finalDest + k, 3, Freezing.class));
+                                                }
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 40, Blizzard.class));
+                                            }
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(7, 19), new WandOfFrost());
+                                                Buff.affect(ch, FrostBurn.class).reignite(ch);
+                                            }
+                                            break;
+                                        case POISON:
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(5, 21), new Poison());
+                                                Buff.affect(ch, Poison.class).set(20);
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 200, ToxicGas.class));
+                                            }
+                                            break;
+                                        case LIGHTNING:
+                                            if (ch != null) {
+                                                ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 5);
+                                                ch.damage(Random.NormalIntRange(24, 45), new WandOfLightning());
+                                                ch.sprite.parent.addToFront(new Lightning(ch.pos, ch.pos, null));
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                for (int k : PathFinder.NEIGHBOURS4) {
+                                                    if (!Dungeon.level.solid[finalDest + k]) {
+                                                        GameScene.add(Blob.seed(finalDest + k, 3, Electricity.class));
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case CORROSION:
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(8, 20), new WandOfCorrosion());
+                                                Buff.affect(ch, Corrosion.class).set(3, 6);
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 100, CorrosiveGas.class));
+                                            }
+                                            break;
+                                        case PRISMATIC:
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(10, 22), new WandOfPrismaticLight());
+                                                Buff.affect(ch, Blindness.class, 10f);
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 100, SmokeScreen.class));
+                                            }
+                                            break;
+                                        case BLAST_WAVE:
+                                            WandOfBlastWave.BlastWave.blast(finalDest);
+                                            for (int ii : PathFinder.NEIGHBOURS4) {
+                                                Char c = Actor.findChar(finalDest + ii);
+                                                if (c != null) {
+                                                    Ballistica trajectory = new Ballistica(pos, c.pos, Ballistica.STOP_TARGET);
+                                                    trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+                                                    WandOfBlastWave.throwChar(c, trajectory, 3, true);
+                                                    if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                        Buff.affect(c, Paralysis.class, 1f);
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case RED_FIRE:
+                                            for (int ii : PathFinder.NEIGHBOURS4) {
+                                                if (!Dungeon.level.solid[finalDest + ii]) {
+                                                    GameScene.add(Blob.seed(finalDest + ii, 3, GodSlayerFire.class));
+                                                }
+                                            }
+                                            if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+                                                GameScene.add(Blob.seed(finalDest, 400, Inferno.class));
+                                            }
+                                            if (ch != null) {
+                                                ch.damage((int) (Random.NormalIntRange(15, 33) *
+                                                        (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new GodfireParticle());
+                                            }
+                                            break;
+                                        case RAT_KING:
+                                            sprite.parent.add(new Beam.RatRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(finalDest)));
+                                            if (ch != null) {
+                                                ch.damage(Random.NormalIntRange(45, 80), new Wrath());
+                                                Buff.affect(ch, PowerfulDegrade.class, 20f);
+                                            }
+                                            break;
+                                    }
+                                    if (attackNum == 1){
+                                        spend(TICK);
+                                        next();
+                                    }
+                                }));
+                        Sample.INSTANCE.play(Assets.Sounds.ZAP);
+                }
+                magicPrepare = false;
+                return false;
             }
         }
 
         public boolean doRogue(){
-            if (Random.Int(3) == 0 || phantomSpearPositions != -1){
+            if (((HP < HT*0.5f) || Random.Int(3) == 0) || phantomSpearPositions != -1){
                 return teleport();
             } else {
                 return doCharging();
@@ -660,7 +704,7 @@ public class RatKingBoss extends Mob {
                 for (int l = 0; l < path2.dist + 2; l++) {
                     Game.scene().addToFront(new TargetedCell(path2.path.get(l), 0xa9ded3));
                 }
-                spend(TICK*2);
+                spend(TICK*1);
                 next();
                 return true;
             }
@@ -692,7 +736,8 @@ public class RatKingBoss extends Mob {
                     pos = Dungeon.level.randomDestination(RatKingBoss.this);
                 } while (Actor.findChar(pos) == Dungeon.hero || Actor.findChar(pos) == enemy);
                 ScrollOfTeleportation.appear(RatKingBoss.this, pos);
-                Actor.addDelayed(new Actor() {
+                if (enemy != null)
+                 Actor.addDelayed(new Actor() {
                     @Override
                     protected boolean act() {
                         switch (Random.Int(2)){
@@ -887,14 +932,15 @@ public class RatKingBoss extends Mob {
                     target = enemy.pos;
                 }
             }
+            if (phase > -1 && HP < HT*0.5f){
+                doYogLasers();
+            }
             if (phase == GLADIATOR) return doCharging();
             if (phase == BATTLEMAGE) return doMagic();
             if (phase == ASSASSIN) return doRogue();
             if (phase == SNIPER) {
-                doYogLasers();
                 return doSniper();
             }
-
 
             spend( TICK );
             return true;
@@ -912,6 +958,7 @@ public class RatKingBoss extends Mob {
 
     {
         immunities.add(Sleep.class);
+        immunities.add(Petrified.class);
 
         resistances.add(Terror.class);
         resistances.add(Charm.class);

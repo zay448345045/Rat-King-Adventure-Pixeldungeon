@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.items.wands;
 
-import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
@@ -34,12 +33,16 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Haste;
 import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.effects.Effects;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.enchantments.Elastic;
+import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.Door;
 import com.zrp200.rkpd2.levels.traps.TenguDartTrap;
@@ -155,6 +158,7 @@ public class WandOfBlastWave extends DamageWand {
 		final boolean finalCollided = collided && collideDmg;
 		final int initialpos = ch.pos;
 
+		int finalPower = power;
 		Actor.addDelayed(new Pushing(ch, ch.pos, newPos, new Callback() {
 			public void call() {
 				if (initialpos != ch.pos) {
@@ -172,6 +176,9 @@ public class WandOfBlastWave extends DamageWand {
 					Door.leave(oldPos);
 				}
 				Dungeon.level.occupyCell(ch);
+				if (ch instanceof RatKingBoss){
+					Buff.affect(ch, Haste.class, 0.4f * finalPower);
+				}
 				if (ch == Dungeon.hero){
 					//FIXME currently no logic here if the throw effect kills the hero
 					Dungeon.observe();
