@@ -545,7 +545,7 @@ public abstract class Wand extends Item {
 				if (target == curUser.pos || cell == curUser.pos) {
 					if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION)){
 						float shield = curUser.HT * (0.05f*curWand.curCharges);
-						if(curUser.hasTalent(Talent.SHIELD_BATTERY)) shield *= 1.5f; // bonus.
+						if(curUser.hasTalent(Talent.SHIELD_BATTERY)) shield *= 1.25f; // bonus.
 						if (curUser.pointsInTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION) == 2) shield *= 1.5f;
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
 						curWand.curCharges = 0;
@@ -679,7 +679,7 @@ public abstract class Wand extends Item {
 			}
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
-					- (Dungeon.hero.hasTalent(Talent.ARCANE_BOOST) ? 3 + Dungeon.hero.pointsInTalent(Talent.ARCANE_BOOST)*3 : 0)
+					- ((Dungeon.hero.hasTalent(Talent.ARCANE_BOOST) && Dungeon.hero.belongings.contains(Wand.this)) ? 4 + Dungeon.hero.pointsInTalent(Talent.ARCANE_BOOST)*5 : 0)
 					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
 
 			LockedFloor lock = target.buff(LockedFloor.class);

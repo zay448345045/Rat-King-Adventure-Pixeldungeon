@@ -153,7 +153,8 @@ public class MagesStaff extends MeleeWeapon {
 		}*/
 		int points = Dungeon.hero.shiftedPoints(Talent.EXCESS_CHARGE, Talent.RK_BATTLEMAGE);
 		if ((wand.curCharges >= wand.maxCharges || Dungeon.hero.canHaveTalent(Talent.EXCESS_CHARGE)) && Random.Int(5) < points){
-			Buff.affect(Dungeon.hero, Barrier.class).setShield(buffedLvl()*2*wand.curCharges/wand.maxCharges);
+			Buff.affect(Dungeon.hero, Barrier.class).setShield((int) (buffedLvl()*
+								Dungeon.hero.byTalent(Talent.EXCESS_CHARGE, 1, Talent.RK_BATTLEMAGE, 2)*wand.curCharges/wand.maxCharges));
 		}
 		points = Dungeon.hero.shiftedPoints(Talent.MYSTICAL_CHARGE, Talent.RK_BATTLEMAGE);
 		if (points > 0){

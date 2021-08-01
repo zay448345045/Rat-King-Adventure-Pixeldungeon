@@ -452,8 +452,10 @@ public class RKPD2Changes {
                                         "_-_ Added _Demonshader_ to Endure: imbues endure-empowered attacks with fire damage and ability to generate rage and combo."),
                         new ChangeButton(new Image(TALENT_ICONS, 16*13,16*4,16,16), "Mage",
                                 "_-_ Changed Sorcery and Warlock's Touch to have unique sprite.\n" +
-                                        "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands.\n"+
+                                        "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands not in staff.\n" +
+                                        "_-_ Nerfed _Shield Battery_ by 17.3%.\n" +
                                         "_-_ Added _Pyromaniac_ talent as 6th T2: increases damage from all fire in the game.\n" +
+                                        "_-_ Nerfed _Excess Charge_: 50% reduced shielding.\n" +
                                         "_-_ Added _Heroic Wizardry_ talent as additional T4: allows to use wand charges beyond 0.\n" +
                                         "_-_ Buffed _Elemental Blast_ to have its base damage based on staff's melee damage.\n" +
                                         "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
