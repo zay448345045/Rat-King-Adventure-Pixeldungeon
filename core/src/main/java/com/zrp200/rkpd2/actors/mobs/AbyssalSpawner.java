@@ -5,6 +5,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.Splash;
@@ -100,6 +101,20 @@ public class AbyssalSpawner extends AbyssalMob {
         }
         spawnCooldown -= dmg;
         super.damage(dmg, src);
+    }
+
+    @Override
+    protected boolean getCloser(int target) {
+        return false;
+    }
+
+    @Override
+    protected boolean getFurther(int target) {
+        return false;
+    }
+
+    @Override
+    public void aggro(Char ch) {
     }
 
     public static final String SPAWN_COOLDOWN = "spawn_cooldown";
