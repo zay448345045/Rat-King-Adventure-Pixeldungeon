@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        maven { url 'https://jitpack.io'}
         google()
         mavenCentral()
     }
@@ -20,7 +21,7 @@ allprojects {
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
         appAndroidCompileSDK = 30
-        appAndroidMinSDK = 9
+        appAndroidMinSDK = 15
         appAndroidTargetSDK = 30
 
         gdxVersion = '1.9.10'
@@ -28,6 +29,7 @@ allprojects {
     version = appVersionName
 
     repositories {
+        maven { url 'https://jitpack.io'}
         google()
         mavenCentral()
     }
