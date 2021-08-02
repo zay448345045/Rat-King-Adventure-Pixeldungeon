@@ -83,7 +83,6 @@ public class RatKingBoss extends Mob {
 
     {
         HP = HT = 1500 + Challenges.activeChallenges()*165;
-        HP = 2;
         spriteClass = RatKingBossSprite.class;
 
         HUNTING = new Hunting();
@@ -274,7 +273,7 @@ public class RatKingBoss extends Mob {
             phase = -1;
             Buff.detach(this, PhaseTracker.class);
             Buff.affect(this, PhaseTracker.class, 0);
-            Buff.affect(Dungeon.hero, LastStand.class, 2/*Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 60*/);
+            Buff.affect(Dungeon.hero, LastStand.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 80 : 60);
         }
         super.damage(dmg, src);
         if (HP < HT * 0.5f && !phase2Notice){
