@@ -14,7 +14,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath2;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -748,7 +748,7 @@ public class RatKingBoss extends Mob {
                                         case RAT_KING:
                                             sprite.parent.add(new Beam.RatRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(finalDest)));
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(45, 80), new Wrath());
+                                                ch.damage(Random.NormalIntRange(45, 80), new Wrath2());
                                                 Buff.affect(ch, PowerfulDegrade.class, 20f);
                                             }
                                             break;

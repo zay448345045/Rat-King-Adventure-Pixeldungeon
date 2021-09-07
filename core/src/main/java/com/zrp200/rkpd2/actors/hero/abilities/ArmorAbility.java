@@ -26,7 +26,7 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath2;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -88,7 +88,7 @@ public abstract class ArmorAbility implements Bundlable {
 	}
 
 	public String desc(){
-		if (this instanceof Wrath || this instanceof MusRexIra){
+		if (this instanceof Wrath2 || this instanceof MusRexIra){
 			return Messages.get(this, "desc");
 		}
 		return Messages.get(this, "desc") + "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);

@@ -38,7 +38,7 @@ import java.util.Map;
 
 // here we fucking go. this is a legacy ability to correspond with the previous mechanics.
 
-public class Wrath extends ArmorAbility {
+public class Wrath2 extends ArmorAbility {
 
     {
         baseChargeUse = 100;
