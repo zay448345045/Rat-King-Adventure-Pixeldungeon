@@ -258,7 +258,12 @@ public class Armor extends EquipableItem {
 
 		}
 	}
-	
+
+	@Override
+	public int buffedLvl() {
+		return super.buffedLvl() + (Dungeon.hero != null ? Dungeon.hero.pointsInTalent(Talent.HEROIC_ENDURANCE) : 0);
+	}
+
 	@Override
 	public boolean isEquipped( Hero hero ) {
 		return hero.belongings.armor() == this;
