@@ -369,7 +369,7 @@ public abstract class Mob extends Char {
 	
 	protected boolean getCloser( int target ) {
 		
-		if (rooted || target == pos) {
+		if (rooted || target == pos || buff(StuckBuff.class) != null) {
 			return false;
 		}
 
@@ -505,7 +505,7 @@ public abstract class Mob extends Char {
 	}
 	
 	protected boolean getFurther( int target ) {
-		if (rooted || target == pos) {
+		if (rooted || target == pos|| buff(StuckBuff.class) != null) {
 			return false;
 		}
 		

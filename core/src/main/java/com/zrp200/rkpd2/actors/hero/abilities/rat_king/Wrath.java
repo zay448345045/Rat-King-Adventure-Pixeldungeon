@@ -3,13 +3,17 @@ package com.zrp200.rkpd2.actors.hero.abilities.rat_king;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.StuckBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -17,12 +21,14 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
+import com.zrp200.rkpd2.actors.mobs.SpectreRat;
 import com.zrp200.rkpd2.effects.particles.BloodParticle;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
 
@@ -99,6 +105,19 @@ public class Wrath extends ArmorAbility {
         if(!isShadowStep) {
             SmokeBomb.blindAdjacentMobs(hero);
             SmokeBomb.doBodyReplacement(hero, SMOKE_AND_MIRRORS, RatStatue.class);
+            if (hero.hasTalent(SMOKE_AND_MIRRORS) && hero.pointsInTalent(Talent.FUN) > 2){
+                for (int i : PathFinder.NEIGHBOURS4){
+                    int poss = hero.pos+i;
+                    if (Dungeon.level.insideMap(poss) && Dungeon.level.passable[poss] && Actor.findChar(poss) == null){
+                        SpectreRat rat = new SpectreRat();
+                        rat.pos = poss;
+                        rat.HP = rat.HT = rat.HT/2;
+                        Buff.affect(rat, AllyBuff.class);
+                        Buff.affect(rat, StuckBuff.class);
+                        GameScene.add(rat);
+                    }
+                }
+            }
         }
         SmokeBomb.throwSmokeBomb(hero, target);
 

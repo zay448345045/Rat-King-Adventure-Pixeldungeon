@@ -169,6 +169,10 @@ public class SmokeBomb extends ArmorAbility {
 
 	public static void applyHastyRetreat(Hero hero) {
 		float duration = hero.shiftedPoints(Talent.HASTY_RETREAT, Talent.SMOKE_AND_MIRRORS);
+		if (hero.pointsInTalent(Talent.FUN) > 2){
+			GameScene.add(Blob.seed(hero.pos, 1000, SmokeScreen.class));
+			Buff.affect(hero, MagicalSight.class, 3f*(hero.pointsInTalent(Talent.FUN)-2));
+		}
 		if(duration == 0) return;
 		duration += 0.67f;
 		Buff.affect(hero, Haste.class, duration);

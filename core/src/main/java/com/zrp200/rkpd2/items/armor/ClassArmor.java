@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.LockedFloor;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
 import com.zrp200.rkpd2.items.BrokenSeal;
@@ -185,7 +186,8 @@ abstract public class ClassArmor extends Armor {
 					GLog.w( Messages.get(this, "low_charge") );*/
 					GLog.n("Rat King: I don't have time for this nonsense! I have a kingdom to run! CLASS ARMOR SUPERCHAARGE!!");
 					charge += 100;
-					hero.HP = Math.max( Math.min(hero.HP,1), hero.HP*2/3 );
+					hero.HP = Math.max( Math.min(hero.HP,1),
+							hero.HP*(hero.pointsInTalent(Talent.FUN) > 3 ? 3/4 : 2/3) );
 					updateQuickslot();
 					ScrollOfRecharging.charge(hero);
 					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
