@@ -340,11 +340,6 @@ public enum Talent {
 	}
 
 	public String desc(){
-		if ((this == RATLOMACY || this == RATFORCEMENTS || this == RATSISTANCE || this == DRRATEDON)
-			&& (GamesInProgress.selectedClass == HeroClass.RAT_KING
-				|| (Dungeon.hero != null && (Dungeon.hero.heroClass == HeroClass.RAT_KING)))){
-			return Messages.get(this, name() + ".desc_rk");
-		}
 		String desc = Messages.get(this, name() + ".desc");
 		String comment = Messages.get(this, name() + ".comment");
 		//noinspection StringEquality
