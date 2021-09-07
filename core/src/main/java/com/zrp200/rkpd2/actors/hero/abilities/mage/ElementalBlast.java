@@ -241,7 +241,7 @@ public class ElementalBlast extends ArmorAbility {
 
 							//### Deal damage ###
 							Char mob = Actor.findChar(cell);
-							int damage = Math.round(Random.NormalIntRange(15, 25)
+							int damage = Math.round(Random.NormalIntRange(finalMinDamage, finalMaxDamage)
 									* effectMulti
 									* damageFactors.get(finalWandCls[0]));
 
