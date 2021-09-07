@@ -35,7 +35,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 
 public class Fire extends Blob {
 
-	protected static Class<? extends Burning> fireClass = Burning.class;
+	protected Class<? extends Burning> fireClass = Burning.class;
 
 	@Override
 	protected void evolve() {
@@ -79,7 +79,7 @@ public class Fire extends Blob {
 							|| cur[cell-Dungeon.level.width()] > 0
 							|| cur[cell+Dungeon.level.width()] > 0)) {
 						fire = 4;
-						burn( cell );
+						burn( cell, fireClass );
 						area.union(i, j);
 					} else {
 						fire = 0;
@@ -97,8 +97,12 @@ public class Fire extends Blob {
 			Dungeon.observe();
 		}
 	}
+
+	public static void burn (int pos){
+		burn(pos, Burning.class);
+	}
 	
-	public static void burn( int pos ) {
+	public static void burn( int pos, Class<? extends Burning> fireClass) {
 		Char ch = Actor.findChar( pos );
 		if (ch != null && !ch.isImmune(fireClass)) {
 			Buff.affect( ch, fireClass ).reignite( ch );
