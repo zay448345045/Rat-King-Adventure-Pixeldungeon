@@ -138,4 +138,16 @@ public class MeleeWeapon extends Weapon {
 		return price;
 	}
 
+	public float warriorMod(){
+		return 1f;
+	}
+
+	public void warriorAttack(Char enemy){
+
+	}
+
+	public float warriorDelay(float delay, Char enemy){
+		return delay*1.5f;
+	}
+
 }

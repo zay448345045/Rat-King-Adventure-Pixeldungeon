@@ -51,6 +51,7 @@ import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -427,6 +428,7 @@ public abstract class Wand extends Item {
 		if (Dungeon.hero.hasTalent(Talent.ARCANITY_ENSUES) && this instanceof DamageWand) {
 			BrawlerBuff brawlerBuff = Dungeon.hero.buff(BrawlerBuff.class);
 			brawlerBuff.countDown(brawlerBuff.count());
+			ActionIndicator.clearAction(brawlerBuff);
 		}
 
 		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 0){

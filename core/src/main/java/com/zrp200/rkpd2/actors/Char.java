@@ -67,6 +67,7 @@ import com.zrp200.rkpd2.levels.traps.GrimTrap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -336,6 +337,7 @@ public abstract class Char extends Actor {
 			if (brawler != null){
 				dmg = brawler.damageFactor(dmg);
 				brawler.countDown(brawler.count());
+				ActionIndicator.clearAction(brawler);
 			}
 
 			if (buff( Fury.class ) != null) {
