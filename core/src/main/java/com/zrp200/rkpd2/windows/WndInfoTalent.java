@@ -31,7 +31,7 @@ import com.zrp200.rkpd2.ui.TalentIcon;
 public class WndInfoTalent extends WndTitledMessage {
 
 	public WndInfoTalent(Talent talent, int points, Callback onUpgradeButton){
-		super( new TalentIcon( talent ), Messages.titleCase(talent.title() + (points > 0 ? " + " + points: "")), talent.desc(), WIDTH_MIN );
+		super( new TalentIcon( talent ), Messages.titleCase(talent.title() + (points > 0 ? " +" + points: "")), talent.desc(), WIDTH_MIN );
 
 		if (onUpgradeButton != null) {
 			addToBottom(new RedButton( Messages.get(this, "upgrade") ) {
