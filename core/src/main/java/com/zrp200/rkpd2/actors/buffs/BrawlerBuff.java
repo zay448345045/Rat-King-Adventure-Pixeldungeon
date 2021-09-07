@@ -1,6 +1,8 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -9,7 +11,7 @@ import java.text.DecimalFormat;
 public class BrawlerBuff extends CounterBuff {
 
     public int maxCharge(){
-        return 10;
+        return 15 + Dungeon.hero.pointsInTalent(Talent.POWER_STABILIZER)*5;
     }
 
     public int damageFactor(int damage){
