@@ -22,39 +22,34 @@
 package com.zrp200.rkpd2.items.stones;
 
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.actors.buffs.Terror;
+import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 public class StoneOfFear extends Runestone {
-	
+
 	{
 		image = ItemSpriteSheet.STONE_FEAR;
 	}
-	
+
 	@Override
 	protected void activate(int cell) {
-		
-		for (int i : PathFinder.NEIGHBOURS9){
-			
-			CellEmitter.center(cell + i).start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-			
-			
-			Char ch = Actor.findChar( cell + i );
-			
-			if (ch != null && ch.alignment == Char.Alignment.ENEMY){
-				Buff.prolong(ch, Charm.class, Charm.DURATION).object = curUser.id();
-			}
+
+		Char ch = Actor.findChar( cell );
+
+		if (ch != null){
+			Buff.affect( ch, Terror.class, Terror.DURATION ).object = curUser.id();
 		}
-		
-		Sample.INSTANCE.play( Assets.Sounds.CHARMS );
-		
+
+		new Flare( 5, 16 ).color( 0xFF0000, true ).show(Dungeon.hero.sprite.parent, DungeonTilemap.tileCenterToWorld(cell), 2f );
+		Sample.INSTANCE.play( Assets.Sounds.READ );
+
 	}
-	
+
 }
