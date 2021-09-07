@@ -21,10 +21,10 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.scenes.PixelScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.scenes.PixelScene;
 
 import java.util.ArrayList;
 
@@ -71,6 +71,18 @@ public class RenderedTextBlock extends Component {
 			
 			build();
 		}
+	}
+
+	//for manual text block splitting, a space between each word is assumed
+	public void tokens(String... words){
+		StringBuilder fullText = new StringBuilder();
+		for (String word : words) {
+			fullText.append(word);
+		}
+		text = fullText.toString();
+
+		tokens = words;
+		build();
 	}
 
 	public void text(String text, int maxWidth){

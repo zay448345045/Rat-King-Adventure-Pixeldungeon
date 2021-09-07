@@ -24,7 +24,6 @@ package com.zrp200.rkpd2.items.armor;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.LockedFloor;
@@ -40,6 +39,8 @@ import com.zrp200.rkpd2.windows.WndChooseAbility;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 abstract public class ClassArmor extends Armor {
 
@@ -57,7 +58,7 @@ abstract public class ClassArmor extends Armor {
 
 	private Charger charger;
 	public float charge = 0;
-	
+
 	public ClassArmor() {
 		super( 5 );
 	}
@@ -196,9 +197,8 @@ abstract public class ClassArmor extends Armor {
 		}
 	}
 
-	// TODO remove
-	protected void useCharge() {
-		charge -= 35;
+	public void useCharge() {
+		charge -= hero.armorAbility.chargeUse(hero);
 		updateQuickslot();
 	}
 
@@ -206,13 +206,15 @@ abstract public class ClassArmor extends Armor {
 	public String desc() {
 		String desc = super.desc();
 
-		ArmorAbility ability = Dungeon.hero.armorAbility;
-		if (ability != null){
-			desc += "\n\n" + ability.shortDesc();
-			float chargeUse = ability.chargeUse(Dungeon.hero);
-			desc += " " + Messages.get(this, "charge_use", new DecimalFormat("#.##").format(chargeUse));
-		} else {
-			desc += "\n\n" + "_" + Messages.get(this, "no_ability") + "_";
+		if (hero.belongings.contains(this)) {
+			ArmorAbility ability = hero.armorAbility;
+			if (ability != null) {
+				desc += "\n\n" + ability.shortDesc();
+			float chargeUse = ability.chargeUse(hero);
+				desc += " " + Messages.get(this, "charge_use", new DecimalFormat("#.##").format(chargeUse));
+			} else {
+				desc += "\n\n" + "_" + Messages.get(this, "no_ability") + "_";
+			}
 		}
 
 		return desc;

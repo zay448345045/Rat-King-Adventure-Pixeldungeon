@@ -59,6 +59,9 @@ public class Buff extends Actor {
 	public HashSet<Class> immunities() {
 		return new HashSet<>(immunities);
 	}
+
+	// used during restoring, when true, is not attached afterwards.
+	public boolean attachAfterRestore = true;
 	
 	public boolean attachTo( Char target ) {
 
@@ -91,6 +94,7 @@ public class Buff extends Actor {
 
 	@Override // need to be public, alternatively could have prolong/affect affect all instances instead of just one.
 	public void postpone(float time) { super.postpone(time); }
+	@Override public void spend(float time) { super.spend(time); }
 
 	public int icon() {
 		return BuffIndicator.NONE;

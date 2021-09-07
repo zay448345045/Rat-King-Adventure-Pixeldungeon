@@ -30,8 +30,9 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath2;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.ShadowClone;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
@@ -71,7 +72,7 @@ public enum HeroClass {
 
 	WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR),
 	MAGE(HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK) {
-		@Override public int getBonus(Item item) { return item instanceof Wand ? 2 : 0; }
+		@Override public int getBonus(Item item) { return item instanceof Wand ? MAGE_WAND_BOOST : 0; }
 	},
 	ROGUE(HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER) {
 		//@Override public int getBonus(Item item) { return item instanceof Weapon ? 1 : 0; }
@@ -264,7 +265,7 @@ public enum HeroClass {
 			case HUNTRESS:
 				return new ArmorAbility[]{new SpectralBlades(), new NaturesPower(), new SpiritHawk()};
 			case RAT_KING:
-				return new ArmorAbility[]{new Wrath2(), new Ratmogrify(), new MusRexIra()/*, new OmniAbility()*/};
+				return new ArmorAbility[]{new LegacyWrath(), new Ratmogrify(), new MusRexIra(), new Wrath()};
 		}
 	}
 

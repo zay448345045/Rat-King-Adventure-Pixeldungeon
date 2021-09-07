@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.weapon.missiles.darts;
 
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -31,23 +32,10 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.plants.Blindweed;
-import com.zrp200.rkpd2.plants.Dreamfoil;
-import com.zrp200.rkpd2.plants.Earthroot;
-import com.zrp200.rkpd2.plants.Fadeleaf;
-import com.zrp200.rkpd2.plants.Firebloom;
-import com.zrp200.rkpd2.plants.Icecap;
-import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.plants.Rotberry;
-import com.zrp200.rkpd2.plants.Sorrowmoss;
-import com.zrp200.rkpd2.plants.Starflower;
-import com.zrp200.rkpd2.plants.Stormvine;
-import com.zrp200.rkpd2.plants.Sungrass;
-import com.zrp200.rkpd2.plants.Swiftthistle;
+import com.zrp200.rkpd2.plants.*;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.windows.WndOptions;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,7 +117,7 @@ public abstract class TippedDart extends Dart {
 	private static int targetPos = -1;
 
 	@Override
-	protected float durabilityPerUse() {
+	public float durabilityPerUse() {
 		float use = super.durabilityPerUse();
 
 		int points = Dungeon.hero.pointsInTalent(Talent.DURABLE_TIPS, Talent.RK_WARDEN);

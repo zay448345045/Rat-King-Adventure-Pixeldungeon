@@ -49,6 +49,7 @@ import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.levels.features.HighGrass;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
@@ -102,14 +103,7 @@ public class ElementalBlast extends ArmorAbility {
 		baseChargeUse = 35f;
 	}
 
-	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
-		castElementalBlast(hero);
-		armor.charge -= chargeUse(hero);
-		armor.updateQuickslot();
-	}
-
-	public static void castElementalBlast(Hero hero) {
+	public static boolean activate(Hero hero, Callback next) {
 		Ballistica aim;
 		//Basically the direction of the aim only matters if it goes outside the map
 		//So we just ensure it won't do that.
@@ -129,10 +123,11 @@ public class ElementalBlast extends ArmorAbility {
 		}
 
 		if (wandCls[0] == null){
-			return;
+			next.call();
+			return false;
 		}
 
-		int aoeSize = /*4*/(5 + hero.pointsInTalent(Talent.BLAST_RADIUS, Talent.AVALON_POWER_UP))  *
+		int aoeSize = /*4*/(5 + hero.pointsInTalent(Talent.BLAST_RADIUS, Talent.AVALON_POWER_UP, Talent.RAT_BLAST))  *
 				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2 : 1);
 
 		int projectileProps = Ballistica.STOP_SOLID | Ballistica.STOP_TARGET;
@@ -163,8 +158,10 @@ public class ElementalBlast extends ArmorAbility {
 			);
 		}
 
-		final float effectMulti = (1f + (0.15f*hero.pointsInTalent(Talent.ELEMENTAL_POWER))*1.5f) *
-				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2f : 1f);
+		final float effectMulti = (1f + (0.2f*hero.byTalent(
+				Talent.ELEMENTAL_POWER,1.5f,
+				Talent.RAT_BLAST,1f)) *
+				(hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2f : 1f));
 		final int miscEffectMulti = (hero.hasTalent(Talent.EMPOWERED_STRIKE_II) ? 2 : 1);
 
 		//cast a ray 2/3 the way, and do effects
@@ -237,14 +234,8 @@ public class ElementalBlast extends ArmorAbility {
 							//*** Wand of Regrowth ***
 							} else if (finalWandCls[0] == WandOfRegrowth.class){
 								//TODO: spend 3 charges worth of regrowth energy from staff?
-								int t = Dungeon.level.map[cell];
 								if (Random.Float() < 0.33f*effectMulti) {
-									if ((t == Terrain.EMPTY || t == Terrain.EMPTY_DECO || t == Terrain.EMBERS
-											|| t == Terrain.GRASS || t == Terrain.FURROWED_GRASS)
-											&& Dungeon.level.plants.get(cell) == null) {
-										Level.set(cell, Terrain.HIGH_GRASS);
-										GameScene.updateMap(cell);
-									}
+									HighGrass.plant(cell);
 								}
 							}
 
@@ -362,7 +353,7 @@ public class ElementalBlast extends ArmorAbility {
 						//### Self-Effects ###
 						//*** Wand of Magic Missile ***
 						if (finalWandCls[0] == WandOfMagicMissile.class) {
-							Buff.affect(hero, Recharging.class, effectMulti* Recharging.DURATION / 2f);
+							Buff.append(hero, Recharging.class, effectMulti* Recharging.DURATION / 2f);
 
 						//*** Wand of Living Earth ***
 						} else if (finalWandCls[0] == WandOfLivingEarth.class && charsHit > 0){
@@ -387,20 +378,30 @@ public class ElementalBlast extends ArmorAbility {
 						}
 
 						charsHit = Math.min(5, charsHit);
-						if (charsHit > 0 && hero.hasTalent(Talent.REACTIVE_BARRIER)){
-							Buff.affect(hero, Barrier.class).setShield(charsHit*/*2*/3*hero.pointsInTalent(Talent.REACTIVE_BARRIER)*miscEffectMulti);
+						if (charsHit > 0 && hero.hasTalent(Talent.REACTIVE_BARRIER, Talent.RAT_BLAST)){
+							Buff.affect(hero, Barrier.class).setShield(charsHit*(int)hero.byTalent(Talent.REACTIVE_BARRIER, 3, Talent.RAT_BLAST, 2)*miscEffectMulti);
 						}
 
-						hero.spendAndNext(Actor.TICK);
+						next.call();
 					}
 				}
 		);
-
 		hero.sprite.operate( hero.pos );
-		Invisibility.dispel();
 		hero.busy();
 
-		Sample.INSTANCE.play( Assets.Sounds.CHARGEUP );
+		return true;
+	}
+	@Override
+	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+		if(MagesStaff.getWandClass() == null) return; // prevents the callback by catching it now.
+
+		activate(hero, () -> hero.spendAndNext(Actor.TICK) );
+
+		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+		Invisibility.dispel();
+
+		armor.charge -= chargeUse(hero);
+		armor.updateQuickslot();
 	}
 
 	@Override

@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.items.wands;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -35,10 +39,6 @@ import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 public class WandOfFrost extends DamageWand {
 
@@ -106,7 +106,8 @@ public class WandOfFrost extends DamageWand {
 	@Override
 	public void onHit(Weapon staff, Char attacker, Char defender, int damage) {
 		Chill chill = defender.buff(Chill.class);
-		if (chill != null && Random.IntRange(2, (int)Chill.DURATION) <= chill.cooldown()){
+		if (chill != null && /*Random.IntRange(2, (int)Chill.DURATION) <= chill.cooldown()*/
+				Weapon.Enchantment.proc(attacker, -1, chill.cooldown(), Chill.DURATION)){
 			//need to delay this through an actor so that the freezing isn't broken by taking damage from the staff hit.
 			new FlavourBuff(){
 				{actPriority = VFX_PRIO;}

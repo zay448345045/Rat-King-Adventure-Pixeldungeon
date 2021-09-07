@@ -38,7 +38,6 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
@@ -48,6 +47,9 @@ import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
+import static com.watabou.utils.Reflection.newInstance;
+import static com.zrp200.rkpd2.Dungeon.hero;
+
 public class SmokeBomb extends ArmorAbility {
 
 	@Override
@@ -55,22 +57,32 @@ public class SmokeBomb extends ArmorAbility {
 		return Messages.get(this, "prompt");
 	}
 
+	public static boolean isShadowStep(Hero hero) {
+		return hero != null
+				&& hero.hasTalent(Talent.SHADOW_STEP, Talent.SMOKE_AND_MIRRORS) && hero.invisible > 0;
+	}
 	@Override
 	public float chargeUse(Hero hero) {
-		if (!hero.hasTalent(Talent.SHADOW_STEP) || hero.invisible <= 0){
-			return super.chargeUse(hero);
-		} else {
-			//reduced charge use by 20%/36%/50%/60%
-			return (float)(super.chargeUse(hero) * Math.pow(0.795, hero.pointsInTalent(Talent.SHADOW_STEP)));
+		float chargeUse = super.chargeUse(hero);
+		if(isShadowStep(hero)) {
+			//reduced charge use by 24%/42%/56%/67%
+			chargeUse *= Math.pow(0.76, hero.pointsInTalent(Talent.SHADOW_STEP));
 		}
+		return chargeUse;
 	}
 
-	public static boolean isValidTarget(Hero hero, int target) {
-		PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid,null), 6 + hero.pointsInTalent(Talent.QUANTUM_POSITION)*3);
+	public static boolean isValidTarget(Hero hero, int target, int limit) {
+		Char ch = Actor.findChar( target );
+		if(ch == hero) {
+			GLog.w( Messages.get(ArmorAbility.class, "self-target") );
+			return false;
+		}
+
+		PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid,null), limit);
 
 		if ( PathFinder.distance[target] == Integer.MAX_VALUE ||
 				!Dungeon.level.heroFOV[target] ||
-				Actor.findChar( target ) != null) {
+				ch != null) {
 
 			GLog.w( Messages.get(SmokeBomb.class, "fov") );
 			return false;
@@ -112,35 +124,29 @@ public class SmokeBomb extends ArmorAbility {
 		GameScene.updateFog();
 	}
 
+	public static <T extends Mob> void doBodyReplacement(Hero hero, Talent talent, Class<T> ninjaLogClass) {
+		if(!hero.hasTalent(talent)) return;
+		for (Char ch : Actor.chars()){
+			if (ninjaLogClass.isInstance(ch)){
+				ch.die(null);
+			}
+		}
+
+		T n = newInstance(ninjaLogClass);
+		n.pos = hero.pos;
+		GameScene.add(n);
+	}
+
 	@Override
 	protected void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target != null) {
-			if(!isValidTarget(hero, target)) return;
-			armor.charge -= chargeUse(hero);
-			Item.updateQuickslot();
+			if(!isValidTarget(hero, target, 8)) return;
+			armor.useCharge();
 
-			boolean shadowStepping = hero.invisible > 0 && hero.hasTalent(Talent.SHADOW_STEP);
-
-			if (!shadowStepping) {
+			if (!isShadowStep(hero)) {
 				blindAdjacentMobs(hero);
-
-				if (hero.hasTalent(Talent.BODY_REPLACEMENT)) {
-					for (Char ch : Actor.chars()){
-						if (ch instanceof NinjaLog){
-							ch.die(null);
-						}
-					}
-
-					NinjaLog n = new NinjaLog();
-					n.pos = hero.pos;
-					GameScene.add(n);
-				}
-
-				if (hero.hasTalent(Talent.HASTY_RETREAT)){
-					int duration = hero.pointsInTalent(Talent.HASTY_RETREAT);
-					Buff.affect(hero, Haste.class, duration);
-					Buff.affect(hero, Invisibility.class, duration);
-				}
+				doBodyReplacement(hero, Talent.BODY_REPLACEMENT, NinjaLog.class);
+				applyHastyRetreat(hero);
 
 				if (hero.hasTalent(Talent.FRIGID_TOUCH)){
 					for (int i = 0; i < Dungeon.level.length(); i++){
@@ -153,12 +159,20 @@ public class SmokeBomb extends ArmorAbility {
 			}
 
 			throwSmokeBomb(hero, target);
-			if (!shadowStepping) {
+			if (!isShadowStep(hero)) {
 				hero.spendAndNext(Actor.TICK);
 			} else {
 				hero.next();
 			}
 		}
+	}
+
+	public static void applyHastyRetreat(Hero hero) {
+		float duration = hero.shiftedPoints(Talent.HASTY_RETREAT, Talent.SMOKE_AND_MIRRORS);
+		if(duration == 0) return;
+		duration += 0.67f;
+		Buff.affect(hero, Haste.class, duration);
+		Buff.affect(hero, Invisibility.class, duration);
 	}
 
 	@Override
@@ -181,7 +195,7 @@ public class SmokeBomb extends ArmorAbility {
 
 			alignment = Alignment.ALLY;
 
-			HP = HT = 20*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE);
+			HP = HT = 20* hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE);
 		}
 
 		{
@@ -190,8 +204,15 @@ public class SmokeBomb extends ArmorAbility {
 
 		@Override
 		public int drRoll() {
-			return Random.NormalIntRange(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE),
-					3*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE));
+			return Random.NormalIntRange(hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SMOKE_AND_MIRRORS),
+					(int)hero.byTalent(Talent.BODY_REPLACEMENT, 5, Talent.SMOKE_AND_MIRRORS, 3));
+		}
+
+		{
+			immunities.add( Terror.class );
+			immunities.add( Amok.class );
+			immunities.add( Charm.class );
+			immunities.add( Sleep.class );
 		}
 
 	}

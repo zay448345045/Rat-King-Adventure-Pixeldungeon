@@ -182,13 +182,13 @@ public class Hero extends Char {
 	}
 
 	public int STR() {
-		int STR = this.STR;
+		int strBonus = 0;
 
-		STR += RingOfMight.strengthBonus( this );
+		strBonus += RingOfMight.strengthBonus( this );
 		
 		AdrenalineSurge buff = buff(AdrenalineSurge.class);
 		if (buff != null){
-			STR += buff.boost();
+			strBonus += buff.boost();
 		}
 
 		// TODO buff for warrior
@@ -204,10 +204,10 @@ public class Hero extends Char {
 			//at +3 it will be 20 strength
 			//so +2/+3/+5
 			//seems legit
-			STR = (int)Math.floor(STR * (1 + boost));
+			strBonus += (int)Math.floor(STR * boost);
 		}
 
-		return STR;
+		return STR + strBonus;
 	}
 
 	// this affects what items get boosted. if I want a talent to grant boosts I should go here.
@@ -543,7 +543,7 @@ public class Hero extends Char {
 				dmg += pointsInTalent(Talent.BIG_RUSH)/3f*shield.maxShield();
 			}
 		}
-		
+
 		return dmg;
 	}
 	
@@ -1178,11 +1178,13 @@ public class Hero extends Char {
 		
 		KindOfWeapon wep = belongings.weapon();
 
+		float mult = Talent.SpiritBladesTracker.getProcModifier();
+
 		// subclass logic here
         if (subClass == HeroSubClass.BATTLEMAGE || hasTalent(Talent.RK_BATTLEMAGE)) {
             MagesStaff staff = belongings.getItem(MagesStaff.class);
-            if (staff != null && (staff == wep || hasTalent(Talent.SORCERY))) {
-                if (staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
+            if (staff != null && (staff == wep || hasTalent(Talent.SORCERY))&& (mult == 1 || Random.Float() < mult)){
+					if(staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
                     staff.procBM();
                 }
                 if (staff == wep || Random.Int(3) < pointsInTalent(Talent.SORCERY))
@@ -1197,11 +1199,10 @@ public class Hero extends Char {
         }
 		if (wep != null) damage = wep.proc( this, enemy, damage );
 
-		if (buff(Talent.SpiritBladesTracker.class) != null
-				&& Random.Int(10) < 3*pointsInTalent(Talent.SPIRIT_BLADES)){
+		if ( Random.Float() < 3*pointsInTalent(Talent.SPIRIT_BLADES, Talent.SEA_OF_BLADES) * mult ){
 			SpiritBow bow = belongings.getItem(SpiritBow.class);
 			if (bow != null) damage = bow.proc( this, enemy, damage );
-			buff(Talent.SpiritBladesTracker.class).detach();
+			buff(Talent.SpiritBladesTracker.class, false).detach();
 		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
@@ -1218,9 +1219,8 @@ public class Hero extends Char {
                     protected boolean act() {
                         if (enemy.isAlive() || hasTalent(Talent.MULTISHOT)) {
                             int level = hasTalent(Talent.RK_SNIPER) || canHaveTalent(Talent.SHARED_UPGRADES) ? wep.buffedLvl() : 0;
-                            SnipersMark mark = Buff.affect(Hero.this, SnipersMark.class);
-                            mark.set(enemy.id(), level);
-                            if (!enemy.isAlive()) mark.remove(enemy.id()); // this lets it trigger ranger
+                            SnipersMark .add(enemy, level);
+                            // handles dead as well.
                         }
                         Actor.remove(this);
                         return true;
@@ -1345,7 +1345,7 @@ public class Hero extends Char {
 					} else if (distance(target) > distance(m)) {
 						target = m;
 					}
-					if (m instanceof Snake
+					if (m instanceof Snake && Dungeon.level.distance(m.pos, pos) <= 4
 							&& !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_EXAMINING)){
 						GLog.p(Messages.get(Guidebook.class, "hint"));
 						GameScene.flashForDocument(Document.GUIDE_EXAMINING);
@@ -1731,11 +1731,9 @@ public class Hero extends Char {
 		Ankh ankh = null;
 
 		//look for ankhs in player inventory, prioritize ones which are blessed.
-		for (Item item : belongings){
-			if (item instanceof Ankh) {
-				if (ankh == null || ((Ankh) item).isBlessed()) {
-					ankh = (Ankh) item;
-				}
+		for (Ankh i : belongings.getAllItems(Ankh.class)){
+			if (ankh == null || i.isBlessed()) {
+				ankh = i;
 			}
 		}
 

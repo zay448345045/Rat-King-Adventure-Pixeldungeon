@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -34,10 +38,6 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.GuardSprite;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class Guard extends Mob {
 
@@ -116,6 +116,7 @@ public class Guard extends Mob {
 
 	private void pullEnemy( Char enemy, int pullPos ){
 		enemy.pos = pullPos;
+		enemy.sprite.place(pullPos);
 		Dungeon.level.occupyCell(enemy);
 		Cripple.prolong(enemy, Cripple.class, 4f);
 		if (enemy == Dungeon.hero) {
@@ -173,7 +174,7 @@ public class Guard extends Mob {
 					&& !isCharmedBy( enemy )
 					&& !canAttack( enemy )
 					&& Dungeon.level.distance( pos, enemy.pos ) < 5
-					&& Random.Int(3) == 0
+
 					
 					&& chain(enemy.pos)){
 				return !(sprite.visible || enemy.sprite.visible);

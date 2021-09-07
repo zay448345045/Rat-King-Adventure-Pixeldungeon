@@ -38,9 +38,11 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndOptions;
+import com.zrp200.rkpd2.windows.WndTitledMessage;
 
 public class ScrollOfEnchantment extends ExoticScroll {
 	
@@ -90,13 +92,26 @@ public class ScrollOfEnchantment extends ExoticScroll {
 				if (index < 3) {
 					weapon.enchant(enchants[index]);
 					GLog.p(Messages.get(StoneOfEnchantment.class, "weapon"));
-					((ScrollOfEnchantment)curItem).readAnimation();
+					readAnimation();
 
 					Sample.INSTANCE.play( Assets.Sounds.READ );
 					Enchanting.show(curUser, weapon);
 					Talent.onUpgradeScrollUsed( Dungeon.hero );
 				}
 			}
+
+					@Override
+					protected boolean hasInfo(int index) {
+						return index < 3;
+					}
+
+					@Override
+					protected void onInfo( int index ) {
+						GameScene.show(new WndTitledMessage(
+								Icons.get(Icons.INFO),
+								Messages.titleCase(enchants[index].name()),
+								enchants[index].desc()));
+					}
 
 			@Override
 			public void onBackPressed() {
@@ -124,11 +139,11 @@ public class ScrollOfEnchantment extends ExoticScroll {
 
 		@Override
 		public void onSelect(final Item item) {
-			
+
 			if (item instanceof Weapon){
 
 				enchantWeapon((Weapon)item);
-			
+
 			} else if (item instanceof Armor) {
 				
 				final Armor.Glyph glyphs[] = new Armor.Glyph[3];
@@ -153,14 +168,27 @@ public class ScrollOfEnchantment extends ExoticScroll {
 						if (index < 3) {
 							((Armor) item).inscribe(glyphs[index]);
 							GLog.p(Messages.get(StoneOfEnchantment.class, "armor"));
-							((ScrollOfEnchantment)curItem).readAnimation();
+							readAnimation();
 							
 							Sample.INSTANCE.play( Assets.Sounds.READ );
 							Enchanting.show(curUser, item);
 							Talent.onUpgradeScrollUsed( Dungeon.hero );
 						}
 					}
-					
+
+					@Override
+					protected boolean hasInfo(int index) {
+						return index < 3;
+					}
+
+					@Override
+					protected void onInfo( int index ) {
+						GameScene.show(new WndTitledMessage(
+								Icons.get(Icons.INFO),
+								Messages.titleCase(glyphs[index].name()),
+								glyphs[index].desc()));
+					}
+
 					@Override
 					public void onBackPressed() {
 						//do nothing, reader has to cancel

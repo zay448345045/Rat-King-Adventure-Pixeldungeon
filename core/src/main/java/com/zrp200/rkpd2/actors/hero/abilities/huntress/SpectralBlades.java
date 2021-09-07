@@ -27,8 +27,8 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Combo;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.SnipersMark;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -36,9 +36,6 @@ import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
-import com.zrp200.rkpd2.items.rings.RingOfSharpshooting;
-import com.zrp200.rkpd2.items.weapon.SpiritBow;
-import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
@@ -112,102 +109,66 @@ public class SpectralBlades extends ArmorAbility {
 		armor.charge -= chargeUse(hero);
 		Item.updateQuickslot();
 
-		Item proto = new Shuriken();
-
 		final HashSet<Callback> callbacks = new HashSet<>();
 
+		Callback onComplete = ()->{
+			Invisibility.dispel();
+			hero.spendAndNext( hero.attackDelay() );
+		};
 		for (Char ch : targets) {
-			Callback callback = new Callback() {
-				@Override
-				public void call() {
-					float dmgMulti = ch == enemy ? 1f : 0.75f;
-					float accmulti = 1 + 1/3f*hero.shiftedPoints(Talent.PROJECTING_BLADES);
-					if (hero.hasTalent(Talent.SPIRIT_BLADES)){
-						Buff.affect(hero, Talent.SpiritBladesTracker.class, 0f);
-					}
-					int dmgBonus = 0;
-					if (hero.belongings.weapon instanceof MeleeWeapon &&
-							hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 2){
-						dmgBonus = Random.NormalIntRange(
-								((MeleeWeapon) hero.belongings.weapon).min(RingOfSharpshooting.levelDamageBonus(hero)),
-								((MeleeWeapon) hero.belongings.weapon).max(RingOfSharpshooting.levelDamageBonus(hero))
-						);
-					}
-					hero.attack( ch, dmgMulti, dmgBonus, accmulti );
-					if (hero.hasTalent(Talent.SPECTRAL_SHOT)) {
-						if (hero.subClass == HeroSubClass.SNIPER) {
-							Actor.add(new Actor() {
-
-								{
-									actPriority = VFX_PRIO;
-								}
-
-								@Override
-								protected boolean act() {
-									if (enemy.isAlive() || hero.hasTalent(Talent.MULTISHOT)) {
-										int level = 0;
-										SnipersMark mark = Buff.affect(hero, SnipersMark.class);
-										mark.set(enemy.id(), level);
-										if (!enemy.isAlive()) mark.remove(enemy.id()); // this lets it trigger ranger
-									}
-									Actor.remove(this);
-									return true;
-								}
-							});
-						}
-					}
-					callbacks.remove( this );
-					if (callbacks.isEmpty()) {
-						Invisibility.dispel();
-						hero.spendAndNext( hero.attackDelay() );
-					}
-				}
-			};
-
-			MissileSprite m = ((MissileSprite)hero.sprite.parent.recycle( MissileSprite.class ));
-			m.reset( hero.sprite, ch.pos, proto, callback );
-			m.hardlight(0.6f, 1f, 1f);
-			m.alpha(0.8f);
-			if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 1){
-				SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-				if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
-					bow = (SpiritBow) Dungeon.hero.belongings.weapon;
-				}
-				if (bow != null && hero.subClass == HeroSubClass.SNIPER){
-					SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
-					if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
-					spiritArrow.forceSkipDelay = true;
-					spiritArrow.doNotDelay = true;
-					spiritArrow.cast(hero, ch.pos);
-//								hero.spend(-hero.cooldown());
-				}
-			}
-
-			callbacks.add( callback );
+			shoot(hero, ch,
+					ch == enemy ? 1f : 0.5f,
+					1 + 1/3f*hero.shiftedPoints(Talent.PROJECTING_BLADES),
+					Talent.SPIRIT_BLADES, Talent.SpiritBladesTracker.class,
+					callbacks, onComplete);
 		}
 
 		hero.sprite.zap( enemy.pos );
 		hero.busy();
 	}
 
-	private Char findChar(Ballistica path, Hero hero, int wallPenetration, HashSet<Char> existingTargets){
+	private static final Item PROTO = new Shuriken();
+	public static void shoot(Hero hero,
+							 Char ch,
+							 float dmgMulti,
+							 float accMulti,
+							 Talent spiritBlades,
+							 Class<? extends Talent.SpiritBladesTracker> trackerClass,
+							 HashSet<Callback> callbacks,
+							 Callback onComplete)
+	{
+		Callback callback = new Callback() {
+			@Override public void call() {
+				if (hero.hasTalent(spiritBlades)) {
+					// todo should I have enchant effectiveness for sea of blades be seperate from dmgMulti? In that case it would be 200/300/400/500-550%. Currently it is 150/200/250/300-330.
+					Buff.affect(hero, trackerClass, 0f).setModifier(dmgMulti);
+				}
+				if(hero.attack( ch, dmgMulti, 0, accMulti )
+						&& hero.subClass == HeroSubClass.KING
+						&& Random.Float() < Talent.SpiritBladesTracker.getProcModifier()) {
+					// this isn't going to be added otherwise.
+					Buff.affect(hero, Combo.class).hit(ch);
+				};
+				callbacks.remove( this );
+				if (callbacks.isEmpty()) onComplete.call();
+			}
+		};
+		MissileSprite m = hero.sprite.parent.recycle( MissileSprite.class );
+		m.reset( hero.sprite, ch.pos, PROTO, callback );
+		m.hardlight(0.6f, 1f, 1f);
+		m.alpha(0.8f);
+		callbacks.add(callback);
+	}
+
+	public static Char findChar(Ballistica path, Hero hero, int wallPenetration, HashSet<Char> existingTargets){
 		for (int cell : path.path){
 			Char ch = Actor.findChar(cell);
 			if (ch != null){
-				if (ch == hero || existingTargets.contains(ch) || ch.alignment == Char.Alignment.ALLY){
-					continue;
-				} else if (ch.alignment != Char.Alignment.ALLY && !(ch instanceof NPC)){
-					return ch;
-				} else {
-					return ch;
-				}
+				if (ch == hero || existingTargets.contains(ch)
+						|| ch.alignment == Char.Alignment.ALLY || ch instanceof NPC) continue;
+				else return ch;
 			}
-			if (Dungeon.level.solid[cell]){
-				wallPenetration--;
-				if (wallPenetration < 0){
-					return null;
-				}
-			}
+			if (Dungeon.level.solid[cell] && --wallPenetration < 0) return null;
 		}
 		return null;
 	}

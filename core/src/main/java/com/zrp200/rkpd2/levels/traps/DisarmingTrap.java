@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -34,8 +36,6 @@ import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 
 public class DisarmingTrap extends Trap{
 
@@ -53,9 +53,11 @@ public class DisarmingTrap extends Trap{
 
 			if (cell != -1) {
 				Item item = heap.pickUp();
-				Dungeon.level.drop( item, cell ).seen = true;
-				for (int i : PathFinder.NEIGHBOURS9)
-					Dungeon.level.visited[cell+i] = true;
+				Heap dropped = Dungeon.level.drop( item, cell );
+				dropped.type = heap.type;
+				dropped.sprite.view( dropped );
+				dropped.seen = true;
+				for (int i : PathFinder.NEIGHBOURS9) Dungeon.level.visited[cell+i] = true;
 				GameScene.updateFog();
 
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);

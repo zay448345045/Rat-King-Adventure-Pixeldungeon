@@ -21,19 +21,15 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.input.KeyBindings;
+import com.watabou.input.KeyEvent;
+import com.watabou.input.PointerEvent;
+import com.watabou.noosa.*;
+import com.watabou.utils.Signal;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.effects.ShadowBox;
 import com.zrp200.rkpd2.scenes.PixelScene;
-import com.watabou.input.KeyBindings;
-import com.watabou.input.KeyEvent;
-import com.watabou.input.PointerEvent;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.PointerArea;
-import com.watabou.utils.Signal;
 
 public class Window extends Group implements Signal.Listener<KeyEvent> {
 
@@ -116,6 +112,9 @@ public class Window extends Group implements Signal.Listener<KeyEvent> {
 
 		KeyEvent.addKeyListener( this );
 	}
+
+	public final void setWidth(int width)   { resize(width, height); }
+	public final void setHeight(int height) { resize(width, height); }
 	
 	public void resize( int w, int h ) {
 		this.width = w;

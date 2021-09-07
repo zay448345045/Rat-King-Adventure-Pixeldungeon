@@ -24,14 +24,12 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
@@ -77,11 +75,9 @@ public class Blacksmith extends NPC {
 		}
 
 		if (!Quest.given) {
-			Game.runOnRenderThread(new Callback() {
-				@Override
-				public void call() {
-					/*GameScene.show( new WndQuest( Blacksmith.this,
-							Quest.alternative ? Messages.get(Blacksmith.this, "blood_1") : Messages.get(Blacksmith.this, "gold_1") ) {
+			Game.runOnRenderThread( () -> {
+				/*GameScene.show( new WndQuest( Blacksmith.this,
+					Quest.alternative ? Messages.get(Blacksmith.this, "blood_1") : Messages.get(Blacksmith.this, "gold_1") ) {
 						
 						@Override
 						public void onBackPressed() {
@@ -99,7 +95,7 @@ public class Blacksmith extends NPC {
 							}
 						}
 					} );*/
-					GameScene.show(new WndQuest(Blacksmith.this, Messages.get(Blacksmith.this, Dungeon.hero.heroClass == HeroClass.RAT_KING ? "greeting_ratking" : "greeting")) {
+					GameScene.show(new WndQuest(Blacksmith.this, Messages.get(Blacksmith.this, "greeting")) {
 						@Override
 						public void onBackPressed() {
 							super.onBackPressed();
@@ -109,7 +105,6 @@ public class Blacksmith extends NPC {
 							interact(c); // go directly into the reward.
 						}
 					});
-				}
 			});
 			Quest.given = Quest.completed = true;
 
@@ -154,12 +149,7 @@ public class Blacksmith extends NPC {
 				//}
 			}
 			if (!Quest.reforged) {
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show(new WndBlacksmith(Blacksmith.this, Dungeon.hero));
-					}
-				});
+				Game.runOnRenderThread(() -> GameScene.show(new WndBlacksmith(Blacksmith.this, Dungeon.hero)));
 			} else {
 				tell(Messages.get(this, "get_lost"));
 			}
@@ -169,12 +159,7 @@ public class Blacksmith extends NPC {
 	}
 	
 	private void tell( String text ) {
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.show( new WndQuest( Blacksmith.this, text ) );
-			}
-		});
+		Game.runOnRenderThread(() -> GameScene.show( new WndQuest( Blacksmith.this, text ) ));
 	}
 	
 	public static String verify( Item item1, Item item2 ) {

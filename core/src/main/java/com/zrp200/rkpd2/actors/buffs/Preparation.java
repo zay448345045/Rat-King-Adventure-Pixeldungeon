@@ -307,6 +307,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		@Override
 		protected void onInvalid(int cell) {
 			// this just..guesses. it just checks the conditions until it gets a reasonable result.
+			if(cell == -1) return;
 			GLog.w(Messages.get(Preparation.class,
 					canAttack(findChar(cell)) ? "out_of_reach" : "no_target"));
 		}

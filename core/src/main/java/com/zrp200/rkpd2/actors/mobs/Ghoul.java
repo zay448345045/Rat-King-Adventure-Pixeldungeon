@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -32,9 +35,6 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.GhoulSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -122,10 +122,10 @@ public class Ghoul extends Mob {
 				}
 				
 				child.pos = Random.element( candidates );
-				
+
+				GameScene.add( child );
 				Dungeon.level.occupyCell(child);
 				
-				GameScene.add( child );
 				if (sprite.visible) {
 					Actor.addDelayed( new Pushing( child, pos, child.pos ), -1 );
 				}

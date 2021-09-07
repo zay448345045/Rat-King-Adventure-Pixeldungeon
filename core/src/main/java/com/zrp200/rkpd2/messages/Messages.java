@@ -26,12 +26,14 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.IllegalFormatException;
-import java.util.Locale;
+import java.util.*;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
+import static com.zrp200.rkpd2.GamesInProgress.selectedClass;
+
+// for class specific messages
 
 /*
 	Simple wrapper class for libGDX I18NBundles.
@@ -104,6 +106,14 @@ public class Messages {
 		if (c != null){
 			key = c.getName().replace("com.zrp200.rkpd2.", "");
 			key += "." + k;
+			// this allows me to change messages by character class, currently this is only done in actors
+			// I really don't understand why there is so much redundancy in heroclass, but it seems to be...needed?
+			HeroClass cls = selectedClass != null ? selectedClass : hero != null ? hero.heroClass : null;
+			if(cls != null && key.startsWith("actors")) {
+				String byClass = get(key + "_" + cls.name(), args);
+				//noinspection StringEquality
+				if(byClass != NULL) return byClass;
+			}
 		} else
 			key = k;
 
@@ -169,7 +179,7 @@ public class Messages {
 		if (lang == Languages.ENGLISH){
 			String result = "";
 			//split by any unicode space character
-			for (String word : str.split("(?<=\\p{Zs})")){
+			for (String word : str.split("(?<=[\\p{Zs}-])")){
 				if (noCaps.contains(word.trim().toLowerCase(Locale.ENGLISH).replaceAll(":|[0-9]", ""))){
 					result += word;
 				} else {

@@ -24,14 +24,16 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class SoulMark extends FlavourBuff {
 
@@ -42,56 +44,70 @@ public class SoulMark extends FlavourBuff {
 		announced = true;
 	}
 
-	public static void process(Char defender, int level, int chargesUsed, boolean delay) {
+	// delayed skips the first proc.
+	private boolean delayed = false;
+
+	// fixme do I really need this?
+	@Override public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put("delayed", delayed);
+	}
+	@Override public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		if(bundle.contains("duration")) {
+			spend( bundle.getFloat("duration") );
+			delayed = true;
+		} else delayed = bundle.getBoolean("delayed");
+	}
+
+	public static void process(Char defender, int level, int chargesUsed, boolean afterDamage) {
+		// increased level to imitate mage's innate wand boost when applicable.
+		if(hero.subClass == HeroSubClass.WARLOCK && hero.heroClass != HeroClass.MAGE) level += 2;
+
 		//standard 1 - 0.92^x chance, plus 7%. Starts at 15%
-		if (defender != Dungeon.hero
-				&& (Dungeon.hero.subClass == HeroSubClass.WARLOCK || Dungeon.hero.hasTalent(Talent.RK_WARLOCK))
-				&& Random.Float() > (Math.pow(0.92f, (level * chargesUsed) + 1) - 0.07f)) {
-			DelayedMark mark = affect(defender,DelayedMark.class);
-			mark.duration = DURATION+level;
-			if(!delay) mark.activate(); // is active immediately, which means that if damage is taken directly afterwards it'll be processed.
+		process(defender, level, 1f - (float)(Math.pow(0.92f, (level * chargesUsed) + 1) - 0.07f), afterDamage);
+	}
+
+	// note chance is chance to NOT proc :/
+	public static void process(Char defender, int bonusDuration, float chance, boolean afterDamage ) {
+		// warlock's touch can cancel an afterDamage argument with 20%/30%/40% chance.
+		afterDamage = afterDamage && hero.hasTalent(Talent.WARLOCKS_TOUCH)
+				// this is GREATER THAN because we're checking if the proc failed, not succeeded.
+				&& Random.Float() > .1f*(1+hero.pointsInTalent(Talent.WARLOCKS_TOUCH));
+
+		if (defender != hero
+				&& (hero.subClass == HeroSubClass.WARLOCK || hero.hasTalent(Talent.RK_WARLOCK))
+				&& Random.Float() < chance) {
+			affect(defender, SoulMark.class, DURATION+bonusDuration).delayed = afterDamage;
 			// see Char#damage
 		}
 	}
+	// fixme this class should not be needed at all, much less stored. but if I make it a blind actor then
 	// basically lets me hold onto it for a hot second. detaching adds the mark, which means I can delay activation to when I want it to.
-	public static class DelayedMark extends Buff {
-		public float duration;
-
-		public void activate() {
-			if(target == null) return;
-			Buff.prolong(target,SoulMark.class,duration);
-			detach();
-		}
-		// is this needed? idk
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put("duration",duration);
-		}
-		public void restoreFromBundle(Bundle bundle) {
-			duration = bundle.getFloat("duration");
-		}
-	}
 
 	public void proc(Object src, Char defender, int damage) {
-		if(!(src instanceof Char) && !Dungeon.hero.hasTalent(Talent.SOUL_SIPHON)) return; // this shouldn't come up, but in case it does...
+		if(delayed) {
+			delayed = false;
+			return;
+		}
+		if(!( src instanceof Char || hero.hasTalent(Talent.SOUL_SIPHON) )) return; // this shouldn't come up, but in case it does...
 		int restoration = Math.min(damage, defender.HP);
 		//physical damage that doesn't come from the hero is less effective
-		if (src != Dungeon.hero){
+		if (src != hero){
 			// wand damage is handled prior this method's calling.
-			int points = Dungeon.hero.pointsInTalent(Talent.SOUL_SIPHON,Talent.RK_WARLOCK);
+			int points = hero.pointsInTalent(Talent.SOUL_SIPHON,Talent.RK_WARLOCK);
 			restoration = Math.round(restoration * (
-					Dungeon.hero.hasTalent(Talent.SOUL_SIPHON) ?
+					hero.hasTalent(Talent.SOUL_SIPHON) ?
+							// can't use Hero#byTalent here because of the shift.
 							src instanceof Char ? points*.2f : .1f*(1+points)
 							: points / 7.5f ));
 		}
 		if(restoration > 0)
 		{
-			Buff.affect(Dungeon.hero, Hunger.class).affectHunger(restoration*Math.max(
-					Dungeon.hero.pointsInTalent(Talent.SOUL_EATER)/2f,
-					Dungeon.hero.pointsInTalent(Talent.RK_WARLOCK)/3f));
-			Dungeon.hero.HP = (int) Math.ceil(Math.min(Dungeon.hero.HT, Dungeon.hero.HP + (restoration * 0.4f)));
-			Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+			Buff.affect(hero, Hunger.class)
+					.affectHunger( restoration/hero.byTalent(Talent.SOUL_EATER, 2f, Talent.RK_WARLOCK, 3f) );
+			hero.HP = (int) Math.ceil(Math.min(hero.HT, hero.HP + restoration * 0.4f));
+			hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 		}
 	}
 
@@ -123,6 +139,6 @@ public class SoulMark extends FlavourBuff {
 
 	@Override
 	public String desc() {
-		return Messages.get(this, "desc", Dungeon.hero.subClass.title(), dispTurns());
+		return Messages.get(this, "desc", hero.subClass.title(), dispTurns());
 	}
 }

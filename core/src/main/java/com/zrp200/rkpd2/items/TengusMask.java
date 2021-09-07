@@ -28,7 +28,6 @@ import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -86,6 +85,8 @@ public class TengusMask extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
+
+	public static void choose( Hero hero, HeroSubClass way) { HeroSubClass.set(hero, way); }
 	
 	public void choose( HeroSubClass way ) {
 		
@@ -94,8 +95,7 @@ public class TengusMask extends Item {
 		curUser.spend( Actor.TICK );
 		curUser.busy();
 		
-		curUser.subClass = way;
-		Talent.initSubclassTalents(curUser);
+		choose(curUser, way);
 		
 		curUser.sprite.operate( curUser.pos );
 		Sample.INSTANCE.play( Assets.Sounds.MASTERY );

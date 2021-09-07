@@ -20,7 +20,6 @@ import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.armor.HuntressArmor;
-import com.zrp200.rkpd2.items.armor.MageArmor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -28,7 +27,6 @@ import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -38,7 +36,7 @@ import java.util.Map;
 
 // here we fucking go. this is a legacy ability to correspond with the previous mechanics.
 
-public class Wrath2 extends ArmorAbility {
+public class LegacyWrath extends ArmorAbility {
 
     {
         baseChargeUse = 100;
@@ -62,7 +60,7 @@ public class Wrath2 extends ArmorAbility {
         boolean[] stages = new boolean[3]; // jump/molten/blades
 
         if( stages[0] = target != hero.pos ) {
-            if( !SmokeBomb.isValidTarget(hero, target) ) return;
+            if( !SmokeBomb.isValidTarget(hero, target, 6) ) return;
 
             if (Actor.findChar(target) != null) { // use heroic leap mechanics instead.
                 Ballistica route = new Ballistica(hero.pos, target, Ballistica.STOP_TARGET);
@@ -80,13 +78,13 @@ public class Wrath2 extends ArmorAbility {
             CellEmitter.center(hero.pos).burst(Speck.factory(Speck.DUST), 10);
             Camera.main.shake(2, 0.5f);
         }
-        // now do mage
-        if(stages[1] = MageArmor.doMoltenEarth()) {
-            Dungeon.observe();
-            hero.sprite.remove(CharSprite.State.INVISIBLE); // you still benefit from initial invisibiilty, even if you can't see it visually.
-            hero.sprite.operate(hero.pos,()->{}); // handled.
-            MageArmor.playMoltenEarthFX();
-        }
+//        // now do mage
+//        if(stages[1] = MageArmor.doMoltenEarth()) {
+//            Dungeon.observe();
+//            hero.sprite.remove(CharSprite.State.INVISIBLE); // you still benefit from initial invisibiilty, even if you can't see it visually.
+//            hero.sprite.operate(hero.pos,()->{}); // handled.
+//            MageArmor.playMoltenEarthFX();
+//        }
         // warrior. this is delayed so the burst burning damage doesn't cancel this out instantly.
         if(stages[0]) for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
             Char mob = Actor.findChar(hero.pos + PathFinder.NEIGHBOURS8[i]);

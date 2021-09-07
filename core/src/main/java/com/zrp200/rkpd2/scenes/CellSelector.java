@@ -148,7 +148,7 @@ public class CellSelector extends ScrollArea {
 		if (enabled && listener != null && cell != -1) {
 			
 			listener.onSelect( cell );
-			GameScene.ready();
+			if( !( listener instanceof TargetedListener && !((TargetedListener) listener ).readyOnSelect) ) GameScene.ready();
 			
 		} else {
 			
@@ -348,6 +348,12 @@ public class CellSelector extends ScrollArea {
 
 	public static abstract class TargetedListener implements Listener {
 		private boolean skippable = true;
+
+		// stuff that allows this to work with Multishot
+		protected int conflictTolerance = 0;
+		protected boolean promptIfNoTargets = true;
+		protected boolean readyOnSelect = true;
+
 		private final List<SelectableCell> selectableCells = new ArrayList();
 		public final void highlightCells() {
 			for(Char c : getTargets()) {
@@ -368,7 +374,9 @@ public class CellSelector extends ScrollArea {
 					skippable = skippable && canIgnore(ch);
 				}
 			}
-		} public final List<Char> getTargets() { // lazily evaluated
+		}
+
+		public final List<Char> getTargets() { // lazily evaluated
 			if(targets == null) findTargets();
 			return targets;
 		}
@@ -383,7 +391,7 @@ public class CellSelector extends ScrollArea {
 		}
 		// whether this character can be 'safely' skipped for purposes of, well, skipping. usually overlaps with auto-target.
 		// Sometimes we want to be given the option to choose our move even if there is only one valid target.
-		private boolean canIgnore(Char ch) {
+		protected boolean canIgnore(Char ch) {
 			switch (ch.alignment) {
 				case ALLY: return true;
 				case NEUTRAL: if(ch instanceof NPC) return true;
@@ -395,15 +403,27 @@ public class CellSelector extends ScrollArea {
 
 		protected abstract void action(Char ch);
 
+		public final List<Char> getHighlightedTargets() {
+			List<Char> l = new ArrayList();
+			for(Char c : getTargets()) {
+				if( canAutoTarget(c) ) l.add(c);
+			}
+			return l;
+		}
+
 		// if there's only one target, this skips the actual selecting.
 		protected final boolean action() {
-			if(getTargets().isEmpty() || !skippable) return false;
+			if( getTargets().isEmpty() ) {
+				if(promptIfNoTargets) return false;
+				onCancel();
+				return true;
+			}
+			if( !skippable ) return false;
+
 			Char target = null;
-			for(Char ch : getTargets()) {
-				if( canAutoTarget(ch) ) {
-					if(target != null) return false; // more than one possible target, force manual targeting
-					target = ch;
-				}
+			for(Char ch : getHighlightedTargets()) {
+				if(target != null && conflictTolerance-- == 0) return false;
+				target = ch;
 			}
 			if(target == null) return false; // no targets
 
@@ -422,13 +442,17 @@ public class CellSelector extends ScrollArea {
 			for(SelectableCell c : selectableCells) c.killAndErase();
 			selectableCells.clear();
 
-			if(cell == null) return;
+			if(cell == null) {
+				onCancel();
+				return;
+			}
 
 			Char c = Actor.findChar(cell);
 			if(c != null && getTargets().contains(c)) action(c);
 			else onInvalid(cell);
 		}
 
-		protected void onInvalid(int cell) {/* do nothing */}
+		protected void onInvalid(int cell) { onCancel(); }
+		protected void onCancel() {/* do nothing */}
 	}
 }

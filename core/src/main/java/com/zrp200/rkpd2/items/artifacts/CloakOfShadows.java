@@ -27,10 +27,7 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.buffs.Preparation;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -171,13 +168,14 @@ public class CloakOfShadows extends Artifact {
 	protected ArtifactBuff activeBuff( ) {
 		return new cloakStealth();
 	}
-
+public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 	@Override
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap) {
-			if (!isEquipped(target))
-				amount *= target.byTalent(Talent.LIGHT_CLOAK, 0.75f, Talent.RK_FREERUNNER, 0.4f)
-						* (target.pointsInTalent(Talent.LIGHT_CLOAK, Talent.RK_FREERUNNER)/3f);
+			// moved previous equip for free mechanic to light cloak
+			if (!isEquipped(target)) amount *= target.byTalent(
+					Talent.LIGHT_CLOAK, LC_FACTOR,
+					Talent.RK_FREERUNNER, LC_FACTOR_RK);
 			if(target.heroClass == HeroClass.ROGUE) amount *= ROGUE_BOOST;
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
@@ -236,8 +234,9 @@ public class CloakOfShadows extends Artifact {
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
-						chargeToGain *= Dungeon.hero.byTalent(Talent.LIGHT_CLOAK, 0.75f, Talent.RK_FREERUNNER, 0.4f) *
-								(Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER)/3f);
+						chargeToGain *= Dungeon.hero.byTalent(
+								Talent.LIGHT_CLOAK, LC_FACTOR,
+								Talent.RK_FREERUNNER, LC_FACTOR_RK);
 					}
 					partialCharge += chargeToGain;
 				}
@@ -304,31 +303,31 @@ public class CloakOfShadows extends Artifact {
 			}
 		}
 
-		float inc = 1;
+		private float incHeal = 1, incShield = 1;
 
 		@Override
 		public boolean act(){
 			turnsToCost--;
 			Hero target = (Hero)this.target;
-			if(target.hasTalent(Talent.MENDING_SHADOWS)) {
-				// heal every 2/1 turns
-				if (++inc >= 3-target.pointsInTalent(Talent.MENDING_SHADOWS)){
-					inc = 0;
-					if(target.HP != target.HT) {
-						target.HP = Math.min(target.HT, target.HP + 1);
-						target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-					}
+			if(target.hasTalent(Talent.MENDING_SHADOWS)
+					&& !Buff.affect(target, Hunger.class).isStarving()) {
+				// heal every 4/2 turns when not starving. effectively a 1.5x boost to standard protective shadows, plus it doesn't go away.
+				incHeal += target.pointsInTalent(Talent.MENDING_SHADOWS)/4f;
+				if (incHeal >= 1 && target.HP < target.HT){
+					incHeal = 0;
+					target.HP++;
+					target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 				}
 			}
 			//barrier every 2/1 turns, to a max of 3/5
-			if (target.hasTalent(Talent.NOBLE_CAUSE)){
+			if (target.hasTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE)){
 				Barrier barrier = Buff.affect(target, Barrier.class);
-				int points = target.pointsInTalent(Talent.NOBLE_CAUSE);
+				int points = target.pointsInTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE);
 				if (barrier.shielding() < 1 + 2*points) {
-					inc += 0.5f*points;
+					incShield += 0.5f*points;
 				}
-				if (inc >= 1 ){
-					inc = 0;
+				if (incShield >= 1 ){
+					incShield = 0;
 					barrier.incShield(1);
 				}
 			}
@@ -401,14 +400,15 @@ public class CloakOfShadows extends Artifact {
 		}
 
 		private static final String TURNSTOCOST = "turnsToCost";
-		private static final String BARRIER_INC = "barrier_inc";
-
+		private static final String BARRIER_INC = "barrier_inc",
+INC_HEAL="incHeal";
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
 
 			bundle.put( TURNSTOCOST , turnsToCost);
-			bundle.put( BARRIER_INC, inc);
+			bundle.put( BARRIER_INC, incShield);
+			bundle.put( INC_HEAL, incHeal);
 		}
 
 		@Override
@@ -416,7 +416,8 @@ public class CloakOfShadows extends Artifact {
 			super.restoreFromBundle(bundle);
 
 			turnsToCost = bundle.getInt( TURNSTOCOST );
-			inc = bundle.getFloat( BARRIER_INC );
+			incShield = bundle.getFloat( BARRIER_INC );
+			incHeal = Math.max(incHeal, bundle.getFloat(INC_HEAL));
 		}
 	}
 }

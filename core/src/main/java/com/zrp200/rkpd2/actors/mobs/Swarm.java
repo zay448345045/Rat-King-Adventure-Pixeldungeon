@@ -21,21 +21,17 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.Corruption;
-import com.zrp200.rkpd2.actors.buffs.Poison;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.SwarmSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -100,11 +96,11 @@ public class Swarm extends Mob {
 				clone.HP = (HP - damage) / 2;
 				clone.pos = Random.element( candidates );
 				clone.state = clone.HUNTING;
-				
-				Dungeon.level.occupyCell(clone);
-				
+
 				GameScene.add( clone, SPLIT_DELAY );
 				Actor.addDelayed( new Pushing( clone, pos, clone.pos ), -1 );
+
+				Dungeon.level.occupyCell(clone);
 				
 				HP -= clone.HP;
 			}

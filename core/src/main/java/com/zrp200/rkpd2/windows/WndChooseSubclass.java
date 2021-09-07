@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.audio.Sample;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -31,12 +33,17 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.*;
 
+import static com.zrp200.rkpd2.actors.hero.HeroClass.HUNTRESS;
+
 public class WndChooseSubclass extends Window {
 	
 	private static final int WIDTH		= 130;
 	private static final float GAP		= 2;
-	
-	public WndChooseSubclass(final TengusMask tome, final Hero hero ) {
+
+	public WndChooseSubclass(final TengusMask tome, final Hero hero) {
+		this(tome, hero, hero.heroClass.subClasses());
+	}
+	private WndChooseSubclass(final TengusMask tome, final Hero hero, final HeroSubClass... subClasses ) {
 		
 		super();
 
@@ -53,7 +60,7 @@ public class WndChooseSubclass extends Window {
 
 		float pos = message.bottom() + 3*GAP;
 
-		for (HeroSubClass subCls : hero.heroClass.subClasses()){
+		for (HeroSubClass subCls : subClasses){
 			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
 				private void resolve() {
 					WndChooseSubclass.this.hide();
@@ -103,6 +110,25 @@ public class WndChooseSubclass extends Window {
 			@Override
 			protected void onClick() {
 				hide();
+			}
+
+			@Override protected boolean onLongClick() {
+				// this is how you access hidden subclasses, for now.
+				if(hero.heroClass == HUNTRESS) {
+					for(HeroSubClass subClass : subClasses) {
+						if(subClass == HeroSubClass.WARLOCK) return false;
+					}
+					hide();
+
+					int length = subClasses.length;
+					HeroSubClass[] newSubClasses = java.util.Arrays.copyOf(subClasses,length+1);
+					newSubClasses[length] = HeroSubClass.WARLOCK;
+					// fixme maybe I should just get a designated secret pitch and volume?
+					Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
+					GameScene.show( new WndChooseSubclass(tome, hero, newSubClasses) );
+					return true;
+				}
+				return false;
 			}
 		};
 		btnCancel.setRect( 0, pos, WIDTH, 18 );

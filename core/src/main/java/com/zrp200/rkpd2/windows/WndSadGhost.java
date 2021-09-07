@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
@@ -39,9 +42,6 @@ import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
 
 public class WndSadGhost extends Window {
 
@@ -175,7 +175,6 @@ public class WndSadGhost extends Window {
 				}
 			};
 			btnConfirm.setRect(0, height+2, width/2-1, 16);
-			add(btnConfirm);
 
 			RedButton btnCancel = new RedButton(Messages.get(WndSadGhost.class, "cancel")){
 				@Override
@@ -184,9 +183,8 @@ public class WndSadGhost extends Window {
 				}
 			};
 			btnCancel.setRect(btnConfirm.right()+2, height+2, btnConfirm.width(), 16);
-			add(btnCancel);
 
-			resize(width, (int)btnCancel.bottom());
+			addToBottom(btnConfirm, btnCancel);
 		}
 	}
 }

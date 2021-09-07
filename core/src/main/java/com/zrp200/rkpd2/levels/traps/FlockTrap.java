@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -29,9 +32,6 @@ import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.utils.BArray;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class FlockTrap extends Trap {
 
@@ -57,7 +57,7 @@ public class FlockTrap extends Trap {
 					CellEmitter.get(i).burst(Speck.factory(Speck.WOOL), 4);
 					//before the tile is pressed, directly trigger traps to avoid sfx spam
 					if ((t = Dungeon.level.traps.get(i)) != null && t.active){
-						t.disarm();
+						if (t.disarmedByActivation) t.disarm();
 						t.reveal();
 						t.activate();
 					}

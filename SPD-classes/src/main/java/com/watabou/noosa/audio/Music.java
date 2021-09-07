@@ -109,22 +109,14 @@ public enum Music {
 		play(trackQueue.remove(0), trackLooper);
 	}
 
-	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = new com.badlogic.gdx.audio.Music.OnCompletionListener() {
-		@Override
-		public void onCompletion(com.badlogic.gdx.audio.Music music) {
-			//we do this in a separate thread to avoid graphics hitching while the music is prepared
-			//FIXME this fixes graphics stutter but there's still some audio stutter, perhaps keep more than 1 player alive?
-			if (!DeviceCompat.isDesktop()) {
-				new Thread() {
-					@Override
-					public void run() {
-						playNextTrack(music);
-					}
-				}.start();
-			} else {
-				//don't use a separate thread on desktop, causes errors and makes no performance difference(?)
-				playNextTrack(music);
-			}
+	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = music -> {
+		//we do this in a separate thread to avoid graphics hitching while the music is prepared
+		//FIXME this fixes graphics stutter but there's still some audio stutter, perhaps keep more than 1 player alive?
+		if (!DeviceCompat.isDesktop()) {
+			new Thread(() -> playNextTrack(music)).start();
+		} else {
+			//don't use a separate thread on desktop, causes errors and makes no performance difference(?)
+			playNextTrack(music);
 		}
 	};
 

@@ -30,17 +30,17 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.effects.MagicMissile;
-import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
+
+import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
 public class Shockwave extends ArmorAbility {
 
@@ -53,33 +53,21 @@ public class Shockwave extends ArmorAbility {
 		return Messages.get(this, "prompt");
 	}
 
-	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
-		if (target == null){
-			return;
-		}
-		if (target == hero.pos){
-			GLog.w(Messages.get(this, "self_target"));
-			return;
-		}
-		hero.busy();
+	public static void activate(Hero hero, int target, int degrees, int maxDist, Callback next) {
+		boolean endTurn = next == null;
 
-		armor.charge -= chargeUse(hero);
-		Item.updateQuickslot();
+		hero.busy();
 
 		Ballistica aim = new Ballistica(hero.pos, target, Ballistica.WONT_STOP);
 
-		int maxDist = 5 + hero.shiftedPoints(Talent.EXPANDING_WAVE);
 		int dist = Math.min(aim.dist, maxDist);
 
-		ConeAOE cone = new ConeAOE(aim,
-				dist,
-				60 + 15*hero.shiftedPoints(Talent.EXPANDING_WAVE),
+		ConeAOE cone = new ConeAOE(aim, dist, degrees,
 				Ballistica.STOP_SOLID | Ballistica.STOP_TARGET);
 
 		//cast to cells at the tip, rather than all cells, better performance.
 		for (Ballistica ray : cone.outerRays){
-			((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
+			hero.sprite.parent.recycle( MagicMissile.class ).reset(
 					MagicMissile.FORCE_CONE,
 					hero.sprite,
 					ray.path.get(ray.dist),
@@ -88,43 +76,49 @@ public class Shockwave extends ArmorAbility {
 		}
 
 		hero.sprite.zap(target);
-		Sample.INSTANCE.play(Assets.Sounds.BLAST, 1f, 0.5f);
+		// TODO fix so that sounds can just play as soon as possible.
+		Sample.INSTANCE.playDelayed(Assets.Sounds.BLAST, next == null ? 0f : 0.125f, next == null ? 1f : 3f, 0.5f);
 		Camera.main.shake(2, 0.5f);
 		//final zap at 2/3 distance, for timing of the actual effect
 		MagicMissile.boltFromChar(hero.sprite.parent,
 				MagicMissile.FORCE_CONE,
 				hero.sprite,
 				cone.coreRay.path.get(dist * 2 / 3),
-				new Callback() {
-					@Override
-					public void call() {
+				() -> {
+					for (int cell : cone.cells){
 
-						for (int cell : cone.cells){
+						Char ch = Actor.findChar(cell);
+						if (ch != null && ch.alignment != hero.alignment){
+							int scalingStr = hero.STR()-10;
+							int damage = Random.NormalIntRange(5 + scalingStr, 10 + 2*scalingStr);
+							float modifier = (1f + hero.byTalent(
+									SHOCK_FORCE, .25f,
+									AFTERSHOCK, .15f));
+							damage = Math.round(damage * modifier);
+							damage -= ch.drRoll();
 
-							Char ch = Actor.findChar(cell);
-							if (ch != null && ch.alignment != hero.alignment){
-								int scalingStr = hero.STR()-10;
-								int damage = Random.NormalIntRange(5 + scalingStr, 10 + 2*scalingStr);
-								damage = Math.round(damage * (1f + 0.2f*hero.shiftedPoints(Talent.SHOCK_FORCE)));
-								damage -= ch.drRoll();
+							// note I'm not giving this to aftershock.
+							if (hero.pointsInTalent(Talent.STRIKING_WAVE) == 4){
+								Buff.affect(hero, Talent.StrikingWaveTracker.class, 0f);
+							}
 
-								if (hero.pointsInTalent(Talent.STRIKING_WAVE) == 4){
-									Buff.affect(hero, Talent.StrikingWaveTracker.class, 0f);
-								}
-
-								if (Random.Int(10) < 3*hero.pointsInTalent(Talent.STRIKING_WAVE)){
-									damage = hero.attackProc(ch, damage);
-									ch.damage(damage, hero);
-									if (hero.subClass == HeroSubClass.GLADIATOR || hero.subClass == HeroSubClass.KING){
+							if (Random.Int(10) < hero.byTalent(
+									STRIKING_WAVE, 3,
+									AFTERSHOCK, 2)){
+								damage = hero.attackProc(ch, damage);
+								ch.damage(damage, hero);
+								switch (hero.subClass) {
+									case KING: case GLADIATOR:
 										Buff.affect( hero, Combo.class ).hit( ch );
-									}
-								} else {
-									ch.damage(damage, hero);
 								}
-								if (ch.isAlive()){
-									if (Random.Int(4) < hero.pointsInTalent(Talent.SHOCK_FORCE)){
+							} else {
+								ch.damage(damage, hero);
+							}
+							if (ch.isAlive()){
+								// fixme for wrath this should probably be delayed, though
+								if (Random.Int(hero.hasTalent(SHOCK_FORCE) ? 4 : 5) < hero.pointsInTalent(SHOCK_FORCE,AFTERSHOCK)){
 										Buff.affect(ch, Paralysis.class, 5f);
-									} else {
+									Buff.affect(ch, ShockForceStunHold.class, 0f);} else {
 										Buff.affect(ch, Cripple.class, 5f);
 									}
 									if (hero.hasTalent(Talent.COCKATRIOCIOUS)){
@@ -132,14 +126,33 @@ public class Shockwave extends ArmorAbility {
 									}
 								}
 
-							}
 						}
+					}
 
+					if(endTurn) {
 						Invisibility.dispel();
 						hero.spendAndNext(Actor.TICK);
+					} else next.call();
 
-					}
 				});
+	}
+
+	// this prevents stun from being broken during wrath.
+	public static class ShockForceStunHold extends FlavourBuff {{ actPriority = VFX_PRIO; }}
+
+	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+		if (target == null){
+			return;
+		}
+		if (target == hero.pos){
+			GLog.w(Messages.get(Shockwave.class, "self_target"));
+			return;
+		}
+		activate(hero, target,
+				60 + 15*hero.shiftedPoints(EXPANDING_WAVE),
+				5 + hero.shiftedPoints(EXPANDING_WAVE),
+				null);
+		armor.useCharge();
 	}
 
 	@Override
@@ -149,6 +162,6 @@ public class Shockwave extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.EXPANDING_WAVE, Talent.STRIKING_WAVE, Talent.SHOCK_FORCE, Talent.COCKATRIOCIOUS, Talent.HEROIC_ENERGY, Talent.HEROIC_ENDURANCE};
+		return new Talent[]{EXPANDING_WAVE, STRIKING_WAVE, SHOCK_FORCE, Talent.COCKATRIOCIOUS, Talent.HEROIC_ENERGY, Talent.HEROIC_ENDURANCE};
 	}
 }

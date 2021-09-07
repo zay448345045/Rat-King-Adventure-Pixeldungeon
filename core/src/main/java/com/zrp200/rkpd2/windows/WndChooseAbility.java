@@ -30,12 +30,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
+import com.zrp200.rkpd2.ui.*;
 
 public class WndChooseAbility extends Window {
 
@@ -68,7 +63,7 @@ public class WndChooseAbility extends Window {
 			RedButton abilityButton = new RedButton(ability.shortDesc(), 6){
 				@Override
 				protected void onClick() {
-					GameScene.show(new WndOptions( new ItemSprite( crown == null ? armor.image() : crown.image(), null ),
+					GameScene.show(new WndOptions( new HeroIcon( ability ),
 							Messages.titleCase(ability.name()),
 							Messages.get(WndChooseAbility.this, "are_you_sure"),
 							Messages.get(WndChooseAbility.this, "yes"),

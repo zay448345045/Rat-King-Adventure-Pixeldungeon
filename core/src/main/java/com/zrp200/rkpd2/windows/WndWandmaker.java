@@ -32,7 +32,6 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Wandmaker;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.CorpseDust;
 import com.zrp200.rkpd2.items.quest.Embers;
-import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Rotberry;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -173,7 +172,6 @@ public class WndWandmaker extends Window {
 				}
 			};
 			btnConfirm.setRect(0, height+2, width/2-1, 16);
-			add(btnConfirm);
 
 			RedButton btnCancel = new RedButton(Messages.get(WndSadGhost.class, "cancel")){
 				@Override
@@ -182,9 +180,8 @@ public class WndWandmaker extends Window {
 				}
 			};
 			btnCancel.setRect(btnConfirm.right()+2, height+2, btnConfirm.width(), 16);
-			add(btnCancel);
 
-			resize(width, (int)btnCancel.bottom());
+			addToBottom(btnConfirm, btnCancel);
 		}
 	}
 

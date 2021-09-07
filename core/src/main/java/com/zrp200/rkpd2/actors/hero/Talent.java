@@ -37,11 +37,9 @@ import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
@@ -60,6 +58,7 @@ import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.levels.features.HighGrass;
 import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -71,6 +70,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public enum Talent {
 
@@ -147,13 +148,13 @@ public enum Talent {
 		private boolean ratmogrify() {
 			// FIXME this is really brittle, will be an issue if/when I add OmniAbility
 			return GamesInProgress.selectedClass == HeroClass.RAT_KING
-					|| Dungeon.hero != null
-						&& (Dungeon.hero.heroClass == HeroClass.RAT_KING
-							|| Dungeon.hero.armorAbility instanceof Ratmogrify);
+					|| hero != null
+						&& (hero.heroClass == HeroClass.RAT_KING
+							|| hero.armorAbility instanceof Ratmogrify);
 		}
 		@Override public int icon() {
 			if ( ratmogrify() ) return 127;
-			switch (Dungeon.hero != null ? Dungeon.hero.heroClass : GamesInProgress.selectedClass){
+			switch (hero != null ? hero.heroClass : GamesInProgress.selectedClass){
 				case WARRIOR: default: return 26;
 				case MAGE: return 58;
 				case ROGUE: return 90;
@@ -189,14 +190,16 @@ public enum Talent {
 	// Wrath T4
 	AURIC_TESLA(92, 4), QUANTUM_POSITION(93, 4), RAT_AGE(94, 4), AVALON_POWER_UP(95, 4),
 	// Mus Rex Ira T4
-	BLOODFLARE_SKIN(60, 4), ASTRAL_CHARGE(61, 4), SHADOWSPEC_SLICE(62, 4), SILVA_RANGE(63, 4);
+	BLOODFLARE_SKIN(60, 4), ASTRAL_CHARGE(61, 4), SHADOWSPEC_SLICE(62, 4), SILVA_RANGE(63, 4),
+	// Wrath2
+	AFTERSHOCK(21,4), RAT_BLAST(49,4), SMOKE_AND_MIRRORS(83,4), SEA_OF_BLADES(113,4);
 
 	protected String[] aliases = new String[0];
 
 	public static abstract class Cooldown extends FlavourBuff {
 		public static <T extends Cooldown> void affectHero(Class<T> cls) {
 			if(cls == Cooldown.class) return;
-			T buff = Buff.affect(Dungeon.hero, cls);
+			T buff = Buff.affect(hero, cls);
 			buff.spend( buff.duration() );
 		}
 		public abstract float duration();
@@ -207,14 +210,13 @@ public enum Talent {
 
 	// TODO is splitting up t2s arbitrarily really a good idea?
 	public static class ImprovisedProjectileCooldown extends Cooldown {
-		public float duration() { return Dungeon.hero.hasTalent(IMPROVISED_PROJECTILES) ? 15 : 50; }
+		public float duration() { return hero.hasTalent(IMPROVISED_PROJECTILES) ? 15 : 50; }
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
 	};
 	public static class BigRushTracker extends FlavourBuff{};
 	public static class LethalMomentumTracker extends FlavourBuff{
 		public static void process() {
-			Hero hero = Dungeon.hero;
 			if(hero.hasTalent(LETHAL_MOMENTUM,PURSUIT,LETHAL_MOMENTUM_2)
 					&& Random.Float() < (
 							( hero.hasTalent(LETHAL_MOMENTUM) ? 2 : 1 )
@@ -233,8 +235,8 @@ public enum Talent {
 	public static class RejuvenatingStepsCooldown extends Cooldown{
 		{ revivePersists = true; }
 		@Override public float duration() {
-			int points = Dungeon.hero.pointsInTalent(REJUVENATING_STEPS, POWER_WITHIN);
-			if(Dungeon.hero.pointsInTalent(Talent.REJUVENATING_STEPS) > 0) points++;
+			int points = hero.pointsInTalent(REJUVENATING_STEPS, POWER_WITHIN);
+			if(hero.pointsInTalent(Talent.REJUVENATING_STEPS) > 0) points++;
 			return 10*(float)Math.pow(2,1-points);
 		}
 		public int icon() { return BuffIndicator.TIME; }
@@ -260,16 +262,25 @@ public enum Talent {
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{};
 	public static class SeerShotCooldown extends Cooldown{
-		@Override public float duration() {
-			return Dungeon.hero.hasTalent(SEER_SHOT) ? 5 : 20;
-		}
+		@Override public float duration() { return hero.hasTalent(SEER_SHOT) ? 5 : 20; }
 		public int icon() {
 			// changed cooldown behavior to be more stacking-friendly.
-			return target.buff(RevealedArea.class) != null && !Dungeon.hero.hasTalent(SEER_SHOT) ? BuffIndicator.NONE : BuffIndicator.TIME;
+			return target.buff(RevealedArea.class) != null && !hero.hasTalent(SEER_SHOT) ? BuffIndicator.NONE : BuffIndicator.TIME;
 		}
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
 	};
-	public static class SpiritBladesTracker extends FlavourBuff{};
+	public static class SpiritBladesTracker extends FlavourBuff{
+		// todo should I have enchant have increased proc chances for Wrath?
+		public float getModifier() {
+			return hero.pointsInTalent(SPIRIT_BLADES, SEA_OF_BLADES) < 4 ? 1f : 1.1f;
+		}
+		public void setModifier(float modifier) {/* ignored by default */}
+
+		public static float getProcModifier() {
+			SpiritBladesTracker tracker = hero.buff(SpiritBladesTracker.class, false);
+			return tracker != null ? tracker.getModifier() : 1f;
+		}
+	};
 
 
 	int icon;
@@ -314,7 +325,10 @@ public enum Talent {
 				|| (Dungeon.hero != null && (Dungeon.hero.heroClass == HeroClass.RAT_KING)))){
 			return Messages.get(this, name() + ".desc_rk");
 		}
-		return Messages.get(this, name() + ".desc");
+		String desc = Messages.get(this, name() + ".desc");
+		String comment = Messages.get(this, name() + ".comment");
+		//noinspection StringEquality
+		return comment == Messages.NULL ? desc : desc + "\n\n" + comment;
 	}
 
 	public static void onTalentUpgraded( Hero hero, Talent talent){
@@ -343,12 +357,12 @@ public enum Talent {
 					}
 				}
 				break;
-			case LIGHT_CLOAK:
+			case LIGHT_CLOAK: case RK_FREERUNNER:
 				if (hero.pointsInTalent(LIGHT_CLOAK) == 1) {
-					for (Item item : Dungeon.hero.belongings.backpack) {
+					for (Item item : hero.belongings.backpack) {
 						if (item instanceof CloakOfShadows) {
 							if (hero.buff(LostInventory.class) == null || item.keptThoughLostInvent) {
-								((CloakOfShadows) item).activate(Dungeon.hero);
+								((CloakOfShadows) item).activate(hero);
 							}
 						}
 					}
@@ -438,25 +452,26 @@ public enum Talent {
 		{ actPriority = HERO_PRIO+1; }
 	}
 
+	// additive instead of multiplicative due to the presence of rk
 	public static float itemIDSpeedFactor( Hero hero, Item item ){
-		// 1.75x/2.5x speed with huntress talent
-		float factor = 1f + hero.pointsInTalent(ROYAL_INTUITION,SURVIVALISTS_INTUITION) *0.75f;
-		if(hero.pointsInTalent(SURVIVALISTS_INTUITION) > 0) factor *= 1.5;
+		float factor = 1f;
+
+		// +75% speed with royal intuition talent across the board
+		factor += hero.pointsInTalent(ROYAL_INTUITION,SURVIVALISTS_INTUITION) * 0.75f;
+		if( hero.hasTalent(SURVIVALISTS_INTUITION) ) factor *= 1.5f; // this is multiplicative to avoid nerfing huntress right now.
 
 		// 2x/instant for Warrior (see onItemEquipped)
 		if (item instanceof MeleeWeapon || item instanceof Armor){
-			int points = hero.pointsInTalent(ROYAL_INTUITION,ARMSMASTERS_INTUITION);
-			// basically an innate +1 for armsmaster
-			if(hero.hasTalent(ARMSMASTERS_INTUITION)) points++;
-			factor *= 1f + points;
+			factor += hero.shiftedPoints(ARMSMASTERS_INTUITION,ROYAL_INTUITION);
 		}
 		// 3x/instant for mage (see Wand.wandUsed()), 4.5x/instant for rk
+		// not shifted for mage right now.
 		if (item instanceof Wand){
-			factor *= 1f + 2*(hero.pointsInTalent(SCHOLARS_INTUITION) + hero.pointsInTalent(ROYAL_INTUITION));
+			factor += 2*hero.pointsInTalent(SCHOLARS_INTUITION, ROYAL_INTUITION);
 		}
 		// 2x/instant for rogue (see onItemEqupped), also id's type on equip/on pickup
 		if (item instanceof Ring){
-			factor *= 1f + (Dungeon.hero.heroClass == HeroClass.ROGUE ? 1 : 0) + hero.pointsInTalent(THIEFS_INTUITION, ROYAL_INTUITION);
+			factor += hero.shiftedPoints(THIEFS_INTUITION, ROYAL_INTUITION);
 		}
 		return factor;
 	}
@@ -487,7 +502,7 @@ public enum Talent {
 					Level.set(cell, Terrain.GRASS);
 					GameScene.updateMap(cell);
 				}
-				CellEmitter.get(cell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
+				HighGrass.playVFX(cell);
 			}
 			if (hero.pointsInTalent(RESTORATION) == 1){
 				grassCells.remove(0);
@@ -513,18 +528,18 @@ public enum Talent {
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
 			if(hero.hasTalent(ENERGIZING_UPGRADE)) {
 				hero.belongings.charge(charge, true);
-				ScrollOfRecharging.charge( Dungeon.hero );
+				ScrollOfRecharging.charge(hero);
 				SpellSprite.show( hero, SpellSprite.CHARGE );
 			} else if (staff != null){
 				staff.gainCharge( charge, true);
-				ScrollOfRecharging.charge( Dungeon.hero );
+				ScrollOfRecharging.charge(hero);
 				SpellSprite.show( hero, SpellSprite.CHARGE );
 			}
 		}
 		if (hero.hasTalent(RESTORATION)){
 			boolean charge = false;
 			if(hero.hasTalent(MYSTICAL_UPGRADE)) {
-				for(Artifact.ArtifactBuff buff : Dungeon.hero.buffs(Artifact.ArtifactBuff.class)) {
+				for(Artifact.ArtifactBuff buff : hero.buffs(Artifact.ArtifactBuff.class)) {
 					if(buff.artifactClass() != CloakOfShadows.class) {
 						buff.charge(hero,4*(1+hero.pointsInTalent(MYSTICAL_UPGRADE))); // 8/12 turns sounds legit...
 						charge = true;
@@ -536,7 +551,7 @@ public enum Talent {
 				cloak.overCharge(1+hero.pointsInTalent(RESTORATION));
 				charge = true; }
 			if(charge) {
-				ScrollOfRecharging.charge( Dungeon.hero );
+				ScrollOfRecharging.charge(hero);
 				SpellSprite.show( hero, SpellSprite.CHARGE );
 			}
 		}

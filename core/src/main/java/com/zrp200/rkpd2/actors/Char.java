@@ -42,7 +42,6 @@ import com.zrp200.rkpd2.actors.mobs.Elemental;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.items.Heap;
-import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
 import com.zrp200.rkpd2.items.bombs.Bomb;
@@ -150,7 +149,7 @@ public abstract class Char extends Actor {
 			return true;
 		} else if (c instanceof Hero
 				&& alignment == Alignment.ALLY
-				&& Dungeon.level.distance(pos, c.pos) <= Math.max(4*Dungeon.hero.pointsInTalent(Talent.ALLY_WARP), 2*Dungeon.hero.pointsInTalent(Talent.RK_WARLOCK))){
+				&& Dungeon.level.distance(pos, c.pos) <= Math.max(4* hero.pointsInTalent(Talent.ALLY_WARP), 2* hero.pointsInTalent(Talent.RK_WARLOCK))){
 			return true;
 		} else {
 			return false;
@@ -175,7 +174,7 @@ public abstract class Char extends Actor {
 		int curPos = pos;
 
 		//warp instantly with allies in this case
-		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK)){
+		if (c == hero && hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
@@ -200,12 +199,12 @@ public abstract class Char extends Actor {
 		
 		c.spend( 1 / c.speed() );
 
-		if (c == Dungeon.hero){
-			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
-				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+		if (c == hero){
+			if (hero.subClass == HeroSubClass.FREERUNNER){
+				Buff.affect(hero, Momentum.class).gainStack();
 			}
 
-			Dungeon.hero.busy();
+			hero.busy();
 		}
 
 		return true;
@@ -247,21 +246,25 @@ public abstract class Char extends Actor {
 		bundle.put( TAG_HT, HT );
 		bundle.put( BUFFS, buffs );
 	}
-	
+
+	public static Char restoring = null; // get a reference to the current character while restoring them.
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
-		
+
 		super.restoreFromBundle( bundle );
+
+		restoring = this;
 		
 		pos = bundle.getInt( POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
-		
+
 		for (Bundlable b : bundle.getCollection( BUFFS )) {
-			if (b != null) {
+			if (b != null && ((Buff)b).attachAfterRestore) {
 				((Buff)b).attachTo( this );
 			}
 		}
+		restoring = null;
 	}
 
 	final public boolean attack( Char enemy ){
@@ -300,15 +303,10 @@ public abstract class Char extends Actor {
 			if (enemy.buff(Shrink.class) != null || enemy.buff(TimedShrink.class) != null) dr *= 0.5f;
 
 			if (this instanceof Hero){
-				Hero h = (Hero)this;
-				KindOfWeapon wep = h.belongings.weapon;
-				if(h.hasTalent(Talent.WARLOCKS_TOUCH)) {
-					// warlock can soul mark by simply attacking with warlock's touch.
-					SoulMark.process(enemy,(wep != null ? wep.buffedLvl():0)+Math.max(0,h.pointsInTalent(Talent.WARLOCKS_TOUCH)-1),1,Random.Int(4) >= h.pointsInTalent(Talent.WARLOCKS_TOUCH));
-				}
-				if (h.belongings.weapon() instanceof MissileWeapon
-						&& (h.subClass == HeroSubClass.SNIPER || h.hasTalent(Talent.RK_SNIPER))
-						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
+				Hero hero = (Hero)this;
+				if (hero.belongings.weapon() instanceof MissileWeapon
+						&& (hero.subClass == HeroSubClass.SNIPER || hero.hasTalent(Talent.RK_SNIPER))
+						&& !Dungeon.level.adjacent(hero.pos, enemy.pos)){
 					dr = 0;
 				}
 			}
@@ -321,8 +319,8 @@ public abstract class Char extends Actor {
 			while(rolls-- > 0) {
 				if (prep != null) {
 					dmg = Math.max(dmg, prep.damageRoll(this));
-					if (this == Dungeon.hero && Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER, Talent.RK_ASSASSIN)) {
-						Buff.affect(Dungeon.hero, Talent.BountyHunterTracker.class, 0.0f);
+					if (this == hero && hero.hasTalent(Talent.BOUNTY_HUNTER, Talent.RK_ASSASSIN)) {
+						Buff.affect(hero, Talent.BountyHunterTracker.class, 0.0f);
 					}
 				} else {
 					dmg = Math.max(dmg,damageRoll());
@@ -404,16 +402,16 @@ public abstract class Char extends Actor {
 			enemy.sprite.flash();
 
 			if (!enemy.isAlive() && visibleFight) {
-				if (enemy == Dungeon.hero) {
+				if (enemy == hero) {
 					
-					if (this == Dungeon.hero) {
+					if (this == hero) {
 						return true;
 					}
 
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
 					
-				} else if (this == Dungeon.hero) {
+				} else if (this == hero) {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
 			}
@@ -538,6 +536,22 @@ public abstract class Char extends Actor {
 			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
+
+		if(alignment == Alignment.ALLY && hero.hasTalent(Talent.WARLOCKS_TOUCH)) {
+			// warlock+allies can soul mark by simply attacking via warlock's touch.
+
+			float shift=.5f, scaling=.1f;
+			// 15/25/35 for melee and spirit bow, 20/35/50 for thrown weapons. Not sure if this is a good gimmick or if I'm forcing a synergy here.
+			if(this == hero && hero.belongings.thrownWeapon != null && !(hero.belongings.thrownWeapon instanceof SpiritBow.SpiritArrow) ) {
+				// thrown weapons have a slight boost.
+				scaling *= 1.5f;
+			}
+			SoulMark.process(enemy,
+					-4, // 10 - 4 = 6 turns
+					shift + scaling*hero.pointsInTalent(Talent.WARLOCKS_TOUCH),
+					true);
+		}
+
 		return damage;
 	}
 	
@@ -643,13 +657,9 @@ public abstract class Char extends Actor {
 	}
 	protected void onDamage(int dmg, Object src) {
 		int initialHP = HP;
-		// TODO change?
-		if(!(src instanceof Char) && Dungeon.hero.hasTalent(Talent.SOUL_SIPHON)) { // character damage is already handled before damage is dealt.
-			SoulMark soulMark = buff(SoulMark.class);
-			if(soulMark != null) soulMark.proc(src,this,dmg);
-		}
-		SoulMark.DelayedMark mark = buff(SoulMark.DelayedMark.class);
-		if(mark != null) mark.activate(); // this prevents the above from happening the same turn.
+
+		SoulMark soulMark = buff(SoulMark.class);
+		if( soulMark != null && !(src instanceof Char) ) soulMark.proc(src,this,dmg);
 
 		Terror t = buff(Terror.class);
 		if (t != null){
@@ -728,9 +738,10 @@ public abstract class Char extends Actor {
 			if (ch.buff(Terror.class) != null && ch.buff(Terror.class).object == id()){
 				ch.buff(Terror.class).detach();
 			}
-			SnipersMark snipersMark = ch.buff(SnipersMark.class);
-			if (snipersMark != null) snipersMark.remove(id());
 		}
+		// the current setup makes it impossible for anyone but Dungeon.hero to use Sniper's Mark properly.
+		// If it were to be given to multiple characters it would need another refactor.
+		SnipersMark.remove(this);
 	}
 	
 	public void die( Object src ) {
@@ -769,22 +780,29 @@ public abstract class Char extends Actor {
 	}
 	
 	@SuppressWarnings("unchecked")
-	//returns all buffs assignable from the given buff class
-	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c ) {
+	//returns all buffs assignable from the given buff class if not strict, or of the class if strict.
+	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c, boolean strict ) {
 		HashSet<T> filtered = new HashSet<>();
 		for (Buff b : buffs) {
-			if (c.isInstance( b )) {
+			if (strict ? b.getClass() == c : c.isInstance( b )) {
 				filtered.add( (T)b );
 			}
 		}
 		return filtered;
 	}
 
+	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c ) {
+		return buffs(c, false);
+	}
+
 	@SuppressWarnings("unchecked")
+	public synchronized final <T extends Buff> T buff(Class<T> c) {
+		return buff(c, true);
+	}
 	//returns an instance of the specific buff class, if it exists. Not just assignable
-	public synchronized  <T extends Buff> T buff( Class<T> c ) {
+	public synchronized  <T extends Buff> T buff( Class<T> c, boolean matchClass ) {
 		for (Buff b : buffs) {
-			if (b.getClass() == c) {
+			if (matchClass ? b.getClass() == c : c.isInstance(b)) {
 				return (T)b;
 			}
 		}
@@ -872,7 +890,7 @@ public abstract class Char extends Actor {
 
 		pos = step;
 		
-		if (this != Dungeon.hero) {
+		if (this != hero) {
 			sprite.visible = Dungeon.level.heroFOV[pos];
 		}
 		

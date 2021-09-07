@@ -486,6 +486,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 		@Override
 		protected void onInvalid(int cell) {
+			if(cell == -1) return;
 			GLog.w(Messages.get(Combo.class, "bad_target"));
 		}
 

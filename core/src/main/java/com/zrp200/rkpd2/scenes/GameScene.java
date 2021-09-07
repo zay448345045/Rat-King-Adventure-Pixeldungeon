@@ -1049,10 +1049,16 @@ public class GameScene extends PixelScene {
 			selectCell((CellSelector.Listener)listener); // default logic
 		}
 	}
-	public static void selectCell( CellSelector.Listener listener ) {
-		if (cellSelector.listener != null && cellSelector.listener != defaultCellListener){
+
+	public static void clearCellSelector(boolean force) {
+		if (!force && cellSelector.listener != null && cellSelector.listener != defaultCellListener){
 			cellSelector.listener.onSelect(null);
 		}
+		cellSelector.listener = defaultCellListener;
+	}
+
+	public static void selectCell( CellSelector.Listener listener ) {
+		clearCellSelector(false);
 		cellSelector.listener = listener;
 		if (scene != null)
 			scene.prompt( listener.prompt() );

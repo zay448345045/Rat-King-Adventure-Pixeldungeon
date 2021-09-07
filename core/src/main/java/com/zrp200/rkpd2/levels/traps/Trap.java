@@ -92,7 +92,7 @@ public abstract class Trap implements Bundlable {
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
 			}
 			if (disarmedByActivation) disarm();
-			reveal();
+			Dungeon.level.discover(pos);
 			activate();
 		}
 	}

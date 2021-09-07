@@ -21,14 +21,13 @@
 
 package com.zrp200.rkpd2.effects;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.ui.Component;
 
 public class Transmuting extends Component {
-	private static final int SIZE	= 16;
 
 	private enum Phase {
 		FADE_IN, TRANSMUTING, FADE_OUT
@@ -69,8 +68,13 @@ public class Transmuting extends Component {
 	public void update() {
 		super.update();
 
-		oldSprite.x = newSprite.x = target.sprite.center().x - SIZE / 2;
-		oldSprite.y = newSprite.y = target.sprite.y - SIZE;
+		if (passed == 0) {
+			oldSprite.x = target.sprite.center().x - oldSprite.width() / 2;
+			oldSprite.y = target.sprite.y - oldSprite.height();
+
+			newSprite.x = target.sprite.center().x - newSprite.width() / 2;
+			newSprite.y = target.sprite.y - newSprite.height();
+		}
 
 		switch (phase) {
 			case FADE_IN:
