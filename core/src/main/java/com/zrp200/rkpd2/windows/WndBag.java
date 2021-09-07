@@ -419,7 +419,7 @@ public class WndBag extends WndTabbed {
 		
 		@Override
 		protected boolean onLongClick() {
-			if (selector == null && item.defaultAction != null) {
+			if (selector == null && item.getDefaultAction() != null) {
 				hide();
 				Dungeon.quickslot.setSlot( 0 , item );
 				QuickSlotButton.refresh();

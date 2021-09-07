@@ -25,6 +25,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 
@@ -40,6 +41,13 @@ public class MeleeWeapon extends Weapon {
 	public int max(int lvl) {
 		return  5*(tier+1) +    //base
 				lvl*(tier+1);   //level scaling
+	}
+
+	@Override
+	public String getDefaultAction() {
+		if (Dungeon.hero.subClass == HeroSubClass.BRAWLER && Dungeon.hero.belongings.weapon != this)
+			return AC_EQUIP;
+		return "";
 	}
 
 	public int STRReq(int lvl){

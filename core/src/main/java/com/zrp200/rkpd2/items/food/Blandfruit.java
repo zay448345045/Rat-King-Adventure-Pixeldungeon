@@ -162,8 +162,8 @@ public class Blandfruit extends Food {
 		if (potionAttrib instanceof PotionOfHaste)          potionGlow = new ItemSprite.Glowing( 0xCCBB00 );
 
 		potionAttrib.setAction();
-		defaultAction = potionAttrib.defaultAction;
-		if (defaultAction.equals(Potion.AC_DRINK)){
+		defaultAction = potionAttrib.getDefaultAction();
+		if (getDefaultAction().equals(Potion.AC_DRINK)){
 			defaultAction = AC_EAT;
 		}
 

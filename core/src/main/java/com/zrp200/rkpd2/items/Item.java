@@ -163,7 +163,7 @@ public class Item implements Bundlable {
 	}
 	
 	public void execute( Hero hero ) {
-		execute( hero, defaultAction );
+		execute( hero, getDefaultAction());
 	}
 	
 	protected void onThrow( int cell ) {
@@ -632,4 +632,8 @@ public class Item implements Bundlable {
 			return Messages.get(Item.class, "prompt");
 		}
 	};
+
+	public String getDefaultAction() {
+		return defaultAction;
+	}
 }
