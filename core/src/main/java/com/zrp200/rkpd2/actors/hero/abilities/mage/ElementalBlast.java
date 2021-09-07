@@ -252,6 +252,14 @@ public class ElementalBlast extends ArmorAbility {
 
 							//### Other Char Effects ###
 							if (mob != null && mob != hero){
+								if (Dungeon.hero.pointsInTalent(Talent.FUN) > 1 && cell != Dungeon.hero.pos){
+									WandOfUnstable wand = new WandOfUnstable();
+									wand.upgrade(hero.lvl/3);
+									wand.fx(new Ballistica(hero.pos, cell, Ballistica.STOP_TARGET), () -> {
+										wand.onZap(new Ballistica(hero.pos, cell, Ballistica.STOP_TARGET));
+									});
+									hero.busy();
+								}
 								//*** Wand of Lightning ***
 								if (finalWandCls[0] == WandOfLightning.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {

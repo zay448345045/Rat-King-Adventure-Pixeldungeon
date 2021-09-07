@@ -48,6 +48,7 @@ public class Wrath extends ArmorAbility {
 
     @Override public float chargeUse(Hero hero) {
         float chargeUse = super.chargeUse(hero);
+        chargeUse += hero.pointsInTalent(FUN)*6;
         if (SmokeBomb.isShadowStep(hero)){
             // shadow step: reduced charge use by 20%/36%/50%/60%
             chargeUse *= Math.pow(0.795, hero.pointsInTalent(SMOKE_AND_MIRRORS));
