@@ -744,6 +744,9 @@ public class Hero extends Char {
 		if (belongings.weapon instanceof NuclearHatchet){
 			Buff.affect(this, ToxicImbue.class).set(1.1f);
 		}
+		if (subClass == HeroSubClass.BRAWLER && buff(BrawlerBuff.class) == null){
+			Buff.affect(this, BrawlerBuff.class);
+		}
 
 		return actResult;
 	}

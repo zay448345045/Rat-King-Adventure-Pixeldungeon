@@ -332,6 +332,12 @@ public abstract class Char extends Actor {
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null) dmg = berserk.damageFactor(dmg);
 
+			BrawlerBuff brawler = buff(BrawlerBuff.class);
+			if (brawler != null){
+				dmg = brawler.damageFactor(dmg);
+				brawler.countDown(brawler.count());
+			}
+
 			if (buff( Fury.class ) != null) {
 				dmg *= 1.5f;
 			}
