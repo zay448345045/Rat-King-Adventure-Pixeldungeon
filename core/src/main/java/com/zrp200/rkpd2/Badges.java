@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.FileUtils;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
@@ -31,17 +33,9 @@ import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Badges {
 	
@@ -150,7 +144,9 @@ public class Badges {
 		//diamond
 		GAMES_PLAYED_4              ( 112, true ),
 		CHAMPION_2                  ( 113 ),
-		CHAMPION_3                  ( 114 );
+		CHAMPION_3                  ( 114 ),
+
+		DEFEATED_RK					(115);
 
 		public boolean meta;
 
@@ -767,6 +763,14 @@ public class Badges {
 	public static void validateGrimWeapon() {
 		if (!local.contains( Badge.GRIM_WEAPON )) {
 			Badge badge = Badge.GRIM_WEAPON;
+			local.add( badge );
+			displayBadge( badge );
+		}
+	}
+
+	public static void validateRatKing() {
+		if (!local.contains( Badge.DEFEATED_RK )) {
+			Badge badge = Badge.DEFEATED_RK;
 			local.add( badge );
 			displayBadge( badge );
 		}
