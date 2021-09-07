@@ -142,8 +142,8 @@ public class MeleeWeapon extends Weapon {
 		return 1f;
 	}
 
-	public void warriorAttack(Char enemy){
-
+	public int warriorAttack(int damage, Char enemy){
+		return damage;
 	}
 
 	public float warriorDelay(float delay, Char enemy){

@@ -58,6 +58,7 @@ import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blocking;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
 import com.zrp200.rkpd2.items.weapon.enchantments.Shocking;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.ShockingDart;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -377,6 +378,9 @@ public abstract class Char extends Actor {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
 				}
+			}
+			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
+				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
 
 			// If the enemy is already dead, interrupt the attack.

@@ -107,6 +107,8 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         return Messages.get(this, "desc", (int)count(), new DecimalFormat("#.#").format(Math.min(damageModifier()*maxCharge(), count()*damageModifier())*100));
     }
 
+    public static class BrawlingTracker extends Buff{}
+
     private void doAttack(final Char enemy) {
         AttackIndicator.target(enemy);
         boolean wasAlly = enemy.alignment == target.alignment;
@@ -117,6 +119,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
             BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
             dmgBonus += 0.25f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
         }
+        Buff.affect(hero, BrawlingTracker.class);
 
         if (hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY)){
             ((MeleeWeapon)(Dungeon.hero.belongings.weapon())).warriorAttack(enemy);
