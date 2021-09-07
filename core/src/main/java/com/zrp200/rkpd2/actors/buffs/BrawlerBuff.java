@@ -134,6 +134,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
                 if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/3)));
             }
         }
+        Buff.detach(hero, BrawlingTracker.class);
     }
 
     private class Selector extends CellSelector.TargetedListener {
