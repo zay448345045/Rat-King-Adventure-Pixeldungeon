@@ -199,7 +199,7 @@ public class SmokeBomb extends ArmorAbility {
 
 			alignment = Alignment.ALLY;
 
-			HP = HT = 20* hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE);
+			HP = HT = 20* hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE, Talent.SMOKE_AND_MIRRORS);
 		}
 
 		{
