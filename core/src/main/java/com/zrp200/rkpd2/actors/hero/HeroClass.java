@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.TengusMask;
 import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
@@ -112,6 +113,7 @@ public enum HeroClass {
 
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
+		new TengusMask().collect();
 
 		new ScrollOfIdentify().identify();
 

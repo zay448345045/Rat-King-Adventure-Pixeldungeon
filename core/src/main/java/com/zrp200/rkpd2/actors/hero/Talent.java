@@ -101,7 +101,27 @@ public enum Talent {
 	//Battlemage T3
 	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(141,3),
 	//Warlock T3
-	SOUL_EATER(46, 3), SOUL_SIPHON(47, 3), NECROMANCERS_MINIONS(48, 3), WARLOCKS_TOUCH (142, 3),
+	SOUL_EATER(46, 3){
+		@Override
+		public int icon() {
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 181 : 46;
+		}
+	}, SOUL_SIPHON(47, 3){
+		@Override
+		public int icon() {
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 182 : 47;
+		}
+	}, NECROMANCERS_MINIONS(48, 3){
+		@Override
+		public int icon() {
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 183 : 48;
+		}
+	}, WARLOCKS_TOUCH (142, 3){
+		@Override
+		public int icon() {
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 184 : 142;
+		}
+	},
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), EMPOWERED_STRIKE_II(148, 4),
 	//Wild Magic T4
