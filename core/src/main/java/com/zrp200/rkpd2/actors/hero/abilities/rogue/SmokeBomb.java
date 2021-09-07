@@ -208,6 +208,10 @@ public class SmokeBomb extends ArmorAbility {
 
 		@Override
 		public int drRoll() {
+			if (hero.hasTalent(Talent.SHADOWSPEC_SLICE)){
+				return Random.NormalIntRange(hero.pointsInTalent(Talent.SHADOWSPEC_SLICE),
+						(int)hero.pointsInTalent(Talent.SHADOWSPEC_SLICE)*5);
+			}
 			return Random.NormalIntRange(hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SMOKE_AND_MIRRORS),
 					(int)hero.byTalent(Talent.BODY_REPLACEMENT, 5, Talent.SMOKE_AND_MIRRORS, 3));
 		}
