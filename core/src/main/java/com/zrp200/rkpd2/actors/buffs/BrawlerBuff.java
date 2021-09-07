@@ -1,11 +1,13 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
+import com.watabou.noosa.particles.Emitter;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.messages.Messages;
@@ -120,6 +122,15 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
 
         Invisibility.dispel();
         hero.spendAndNext(hero.attackDelay());
+
+        if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
+            if (hero.hasTalent(Talent.HOLERIC_BURST)){
+                int heal = Math.min(hero.pointsInTalent(Talent.HOLERIC_BURST)*5, hero.HT-hero.HP);
+                hero.HP += heal;
+                Emitter e = hero.sprite.emitter();
+                if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/3)));
+            }
+        }
     }
 
     private class Selector extends CellSelector.TargetedListener {
