@@ -118,6 +118,9 @@ public class WildMagic extends ArmorAbility {
 
 		armor.charge -= chargeUse(hero);
 		armor.updateQuickslot();
+		if (hero.hasTalent(Talent.ELDRITCH_BLESSING)) {
+			CursedWand.eldritchLevel = hero.pointsInTalent(Talent.ELDRITCH_BLESSING) - 1;
+		}
 
 		zapWand(wands, hero, target);
 
@@ -132,7 +135,7 @@ public class WildMagic extends ArmorAbility {
 
 		hero.sprite.zap(target);
 
-		if (!cur.cursed) {
+		if (!cur.cursed || !hero.hasTalent(Talent.ELDRITCH_BLESSING)) {
 			cur.fx(aim, new Callback() {
 				@Override
 				public void call() {
@@ -165,6 +168,7 @@ public class WildMagic extends ArmorAbility {
 			if (hero.buff(WildMagicTracker.class) != null) {
 				hero.buff(WildMagicTracker.class).detach();
 			}
+			CursedWand.eldritchLevel = 0;
 			Item.updateQuickslot();
 			Invisibility.dispel();
 			hero.spendAndNext(Actor.TICK);
