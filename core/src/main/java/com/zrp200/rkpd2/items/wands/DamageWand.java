@@ -25,7 +25,9 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.buffs.WandEmpower;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 
 //for wands that directly damage a target
@@ -33,13 +35,23 @@ import com.zrp200.rkpd2.messages.Messages;
 public abstract class DamageWand extends Wand{
 
 	public int min(){
-		return min(buffedLvl());
+		int dmg = min(buffedLvl());
+		if (Dungeon.hero.hasTalent(Talent.ARCANITY_ENSUES)){
+			BrawlerBuff buff = Dungeon.hero.buff(BrawlerBuff.class);
+			dmg *= 1f + 0.2f*Dungeon.hero.pointsInTalent(Talent.ARCANITY_ENSUES)*buff.damageModifier();
+		}
+		return dmg;
 	}
 
 	public abstract int min(int lvl);
 
 	public int max(){
-		return max(buffedLvl());
+		int dmg = max(buffedLvl());
+		if (Dungeon.hero.hasTalent(Talent.ARCANITY_ENSUES)){
+			BrawlerBuff buff = Dungeon.hero.buff(BrawlerBuff.class);
+			dmg *= 1f + 0.2f*Dungeon.hero.pointsInTalent(Talent.ARCANITY_ENSUES)*buff.damageModifier();
+		}
+		return dmg;
 	}
 
 	public abstract int max(int lvl);

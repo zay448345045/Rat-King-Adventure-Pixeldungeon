@@ -424,6 +424,10 @@ public abstract class Wand extends Item {
 				empower.detach();
 			}
 		}
+		if (Dungeon.hero.hasTalent(Talent.ARCANITY_ENSUES) && this instanceof DamageWand) {
+			BrawlerBuff brawlerBuff = Dungeon.hero.buff(BrawlerBuff.class);
+			brawlerBuff.countDown(brawlerBuff.count());
+		}
 
 		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 0){
 			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeMissileTracker.class, 1f);
