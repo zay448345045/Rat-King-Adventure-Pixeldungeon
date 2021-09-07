@@ -814,6 +814,9 @@ public enum Talent {
 			case BERSERKER: default:
 				Collections.addAll(tierTalents, ENDLESS_RAGE, BERSERKING_STAMINA, ENRAGED_CATALYST, ONE_MAN_ARMY);
 				break;
+			case BRAWLER:
+				Collections.addAll(tierTalents, POWER_STABILIZER, ARCANITY_ENSUES, IN_MY_MEMORIES, HOLERIC_BURST);
+				break;
 			case GLADIATOR:
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL);
 				break;
