@@ -67,6 +67,8 @@ import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.messages.Messages;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 public enum HeroClass {
@@ -81,13 +83,20 @@ public enum HeroClass {
 	HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN),
 	RAT_KING (HeroSubClass.KING);
 
-	private HeroSubClass[] subClasses;
+	private ArrayList<HeroSubClass> subClasses;
 
 	public static final int MAGE_WAND_BOOST = 2;
 	public int getBonus(Item item) { return 0; }
 
-	HeroClass( HeroSubClass...subClasses ) {
-		this.subClasses = subClasses;
+	public HeroSubClass secretSub(){
+		switch (this){
+			case HUNTRESS: default:
+				return HeroSubClass.WARLOCK;
+		}
+	}
+
+	HeroClass(HeroSubClass... subClasses ) {
+		this.subClasses = new ArrayList<>(Arrays.asList(subClasses));
 	}
 
 	public void initHero( Hero hero ) {
@@ -252,7 +261,11 @@ public enum HeroClass {
 		return Messages.get(HeroClass.class, name()+"_desc");
 	}
 
-	public HeroSubClass[] subClasses() {
+	public ArrayList<HeroSubClass> subClasses() {
+		ArrayList<HeroSubClass> subClasses = this.subClasses;
+		if (Badges.isUnlocked(Badges.Badge.DEFEATED_RK) && !subClasses.contains(secretSub())){
+			subClasses.add(secretSub());
+		}
 		return subClasses;
 	}
 

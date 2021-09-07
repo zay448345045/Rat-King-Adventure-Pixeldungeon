@@ -33,6 +33,8 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.*;
 
+import java.util.ArrayList;
+
 import static com.zrp200.rkpd2.actors.hero.HeroClass.HUNTRESS;
 
 public class WndChooseSubclass extends Window {
@@ -43,7 +45,7 @@ public class WndChooseSubclass extends Window {
 	public WndChooseSubclass(final TengusMask tome, final Hero hero) {
 		this(tome, hero, hero.heroClass.subClasses());
 	}
-	private WndChooseSubclass(final TengusMask tome, final Hero hero, final HeroSubClass... subClasses ) {
+	private WndChooseSubclass(final TengusMask tome, final Hero hero, final ArrayList<HeroSubClass> subClasses ) {
 		
 		super();
 
@@ -68,7 +70,7 @@ public class WndChooseSubclass extends Window {
 				}
 				@Override
 				protected void onClick() {
-					if(hero.heroClass.subClasses().length == 1) {
+					if(hero.heroClass.subClasses().size() == 1) {
 						// Oh no what a decision!!!
 						resolve();
 						return;
@@ -116,16 +118,14 @@ public class WndChooseSubclass extends Window {
 				// this is how you access hidden subclasses, for now.
 				if(hero.heroClass == HUNTRESS) {
 					for(HeroSubClass subClass : subClasses) {
-						if(subClass == HeroSubClass.WARLOCK) return false;
+						if(subClass == hero.heroClass.secretSub()) return false;
 					}
 					hide();
-
-					int length = subClasses.length;
-					HeroSubClass[] newSubClasses = java.util.Arrays.copyOf(subClasses,length+1);
-					newSubClasses[length] = HeroSubClass.WARLOCK;
+					ArrayList<HeroSubClass> subs = subClasses;
+					subs.add(hero.heroClass.secretSub());
 					// fixme maybe I should just get a designated secret pitch and volume?
 					Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
-					GameScene.show( new WndChooseSubclass(tome, hero, newSubClasses) );
+					GameScene.show( new WndChooseSubclass(tome, hero, subs) );
 					return true;
 				}
 				return false;
