@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.ui.changelist;
 import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
+import com.zrp200.rkpd2.items.armor.RatKingArmor;
 import com.zrp200.rkpd2.items.armor.WarriorArmor;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
@@ -34,18 +35,20 @@ import com.zrp200.rkpd2.scenes.ChangesScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.KingSprite;
+import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.TalentIcon;
 
 import java.util.ArrayList;
 
+import static com.zrp200.rkpd2.Assets.Interfaces.TALENT_ICONS;
 import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
 import static com.zrp200.rkpd2.actors.hero.HeroSubClass.BATTLEMAGE;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 import static com.zrp200.rkpd2.messages.Messages.get;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
-import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.CROWN;
-import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.KIT;
+import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
 import static com.zrp200.rkpd2.ui.Icons.DEPTH;
 import static com.zrp200.rkpd2.ui.Icons.INFO;
 import static com.zrp200.rkpd2.ui.Icons.TARGET;
@@ -219,6 +222,97 @@ public class RKPD2Changes {
                         "Rat King is also affected by the v1.0.0 staff nerf.")),
                 new ChangeButton(RATFORCEMENTS, "I've successfully made Ratforcements the best talent Ratmogrify has. That said, it's so powerful now that it's making the other aspects of Ratmogrify much less useful." + list(2, "Ratforcements stats reduced by ~20% across the board.") + "Don't be fooled though into thinking it's bad now, it is still VERY superior to Shattered's Ratforcements."))
         },
+
+        {
+                new ChangeInfo("DLC (Abyssal 1.2)", true, TITLE_COLOR, "From this update, the mod is called RKPD2 DLC.",
+                        new ChangeButton(avatar(RAT_KING,6), "Another attempt at Rat King Nerfs (rat king nerfs)",
+                                "_-_ Reverted HP nerf.\n\n" +
+                                        "_-_ Subclass powers are acquired via talents instead of being given by default.\n\n" +
+                                        "_-_ Restoration works with drinking from waterskin."),
+                        new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
+                                "Added new extremely hard boss, which can be fought, when you try to talk with RK while having an amulet.\n\nHis attacks are based on hero classes and some bosses, and Rat King will frequently switch between them.\n\n_Beware of his power while doing challenge run._")
+                ),
+                new ChangeInfo("Talents", false, 0x44d1d3, "",
+                        new ChangeButton(new TalentIcon(NOBLE_CAUSE), "RK",
+                                "_-_ Changed every Rat King talent to have unique sprite.\n" +
+                                        "_-_ Imperial Wrath now get both _Hold Fast_ and _Strongman_, to make it more relevant.\n" +
+                                        "_-_ Added _Advanced Education_ talent as additional T4: allows to get bonus points for previous tiers.\n" +
+                                        "_-_ Ratmogrify talents are level-shifted for Rat King.\n"+
+                                        "_-_ Added _Drratedon_ talent for Ratmogrify: gives buffs to allied ratmogrified enemies and summoned rats.\n" +
+                                        "_-_ Revamped Wrath's talents to have more rounded distribution of powers.\n" +
+                                        "_-_ Added _Avalon Power-Up_ talent for Wrath: enhances wrath with powers related to Ratmogrify, Heroic Leap, Elemental Blast.\n\n" +
+                                        "_-_ Added _Mus Rex Ira_ armor ability, combining the powers of _Spirit Hawk_, _Shadow Clone_, _Remote Beacon_, _Wild Magic_, _Endure_ and _Nature's Power_.\n" +
+                                        "_-_ It has four talents:\n" +
+                                        "_-_ _Bloodflare Skin_ buffs enduring and enhances clone and hawk's survivability.\n" +
+                                        "_-_ _Astral Charge_ buffs beacon and wild magic.\n" +
+                                        "_-_ _Shadowspec Blade_ buffs clone and hawk's offensive capabilities.\n" +
+                                        "_-_ _Silva Range_ buffs nature's power and gives ranged attack to clone."
+                        ),
+                        new ChangeButton(new TalentIcon(IRON_WILL), "Warrior",
+                                "_-_ Changed One Man Army and Skill to have unique sprite.\n" +
+                                        "_-_ Replaced _Restored Willpower_ with _Willpower of Injured_: makes seal's shielding regenerate faster on low HP.\n" +
+                                        "_-_ Added _Weapon Mastery_ talent as 5th T1: increases the minimum amount of weapons.\n"+
+                                        "_-_ Added _Big Rush_ talent as 6th T2: causes warrior to ram enemies instead of going around them, with bonus damage from seal's shielding.\n" +
+                                        "_-_ Changed _Hold Fast_: now gives minimal armor value.\n" +
+                                        "_-_ Reworked _Endless Rage_: now gives ability to gain rage from DoT, magic spells and Viscosity.\n" +
+                                        "_-_ Changed _Berserkering Stamina_: now also makes shielding decay slower, but gives slighty less of it; level-shifting for bonus shielding is removed.\n" +
+                                        "_-_ Gladiator gets 25 turns of combo after killing an enemy, from 15.\n" +
+                                        "_-_ Replaced _Cleave_ with _Battle Tendency_: causes combo to decay instead of resetting.\n" +
+                                        "_-_ Added _Heroic Endurance_ talent as additional T4: adds bonus upgrades to any armor.\n" +
+                                        "_-_ Added _Alice Gambit_ to Heroic Leap: causes enemies around landing place to shrink after leap.\n" +
+                                        "_-_ Reworked _Double Jump_: gives second jump for free at +2 and adjusts cost for third jump starting from +3.\n" +
+                                        "_-_ Added _Cockatriocious_ to Shockwave: turns enemies caught in shockwave into stone.\n" +
+                                        "_-_ Added _Demonshader_ to Endure: imbues endure-empowered attacks with fire damage and ability to generate rage and combo."),
+                        new ChangeButton(new TalentIcon(SORCERY), "Mage",
+                                "_-_ Changed Sorcery and Warlock's Touch to have unique sprite.\n" +
+                                        "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands not in staff.\n" +
+                                        "_-_ Nerfed _Shield Battery_ by 17.3%.\n" +
+                                        "_-_ Added _Pyromaniac_ talent as 6th T2: increases damage from all fire in the game.\n" +
+                                        "_-_ Nerfed _Excess Charge_: 50% reduced shielding.\n" +
+                                        "_-_ Added _Heroic Wizardry_ talent as additional T4: allows to use wand charges beyond 0.\n" +
+                                        "_-_ Buffed _Elemental Blast_ to have its base damage based on staff's melee damage.\n" +
+                                        "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
+                                        "_-_ Added _Eldritch Blessing_ to Wild Magic: makes all zaps cursed, cursed effects are safer and stronger while using the ability.\n" +
+                                        "_-_ Added _Chrono Screw_ to Remote Beacon: gives time bubble after successful teleportation."),
+                        new ChangeButton(new TalentIcon(MENDING_SHADOWS), "Rogue",
+                                "_-_ Changed Lethal Momentum and Marathon Runner to have unique sprite.\n" +
+                                        "_-_ Added _Faraday Cage_ talent as 5th T1: protects hero from electricity.\n"+
+                                        "_-_ Replaced _Rogue's Foresight_ with _Protein Infusion_: gives bonus speed and evasion depending on satiety.\n" +
+                                        "_-_ Added _Efficient Shadows_ talent as 6th T2: removes cloak's charge speed boost for more invisibility time per charge.\n" +
+                                        "_-_ Fixed _Dual Wielding_: no longer causes softlocks.\n" +
+                                        "_-_ Added _Heroic Stamina_ talent as additional T4: gives movespeed boost for using artifacts.\n" +
+                                        "_-_ Added _Frigid Touch_ to Smoke Bomb: sets the hero's FOV on frost fire after blinking.\n" +
+                                        "_-_ Reworked _Double Mark_: gives second use for free at +2 and adjusts cost for third use starting from +3.\n" +
+                                        "_-_ Added _Cataclysmic Energy_ to Death Mark: increases the duration of death mark and removes damage boost, but marked enemies at 0 HP will combust each turn.\n" +
+                                        "_-_ Added _Dar Magic_ to Shadow Clone: gives various ranged capabilities to shadow clone."),
+                        new ChangeButton(new TalentIcon(NATURES_WRATH), "Huntress",
+                                "_-_ Changed Nature's Better Aid to have unique sprite.\n" +
+                                        "_-_ Added _Greenfields_ talent as 5th T1: increases regeneration while in furrowed grass.\n"+
+                                        "_-_ Replaced _Nature's Aid_ with _Scout's Barrier_: gives shielding for successful Super-Shots.\n" +
+                                        "_-_ Added _Scout's Agility_ talent as 6th T2: makes heroine dodge ranged attacks better.\n" +
+                                        "_-_ Armored Cloak is preserved when using DK's crown.\n" +
+                                        "_-_ Added _Heroic Archery_ talent as additional T4: adds bonus upgrades to thrown weapons.\n" +
+                                        "_-_ Added _Spectral Shot_ to Spectral Blades: makes blades behave like throwing weapons and summon arrows from her bow.\n" +
+                                        "_-_ Added _Primal Awakening_ to Nature's Power: with small chance turns enemies into gnoll trickster while buff is active.\n" +
+                                        "_-_ Added _Beak of Power_ to Spirit Hawk: increases utility power of hawk and gives it ranged attack at +4.")
+                ),
+                NewContent(new ChangeButton(new ItemSprite(ROYAL_SWORD), "Tier 6 weapons",
+                                "Added 10 melee and 4 thrown exceptionally rare tier 6 weapons.\n\n" +
+                                        "_-_ They appear in ebony chest and have many special abilities.\n" +
+                                        "_-_ T6 weapons also omni-melee weapon and omni-thrown weapon, called _Royal Brand_ and _Steel Axe_, respectively."),
+                        new ChangeButton(new ItemSprite(WAND_UNSTABLE), "New wand",
+                                "Added wand of His Ratiness, which will create random wand zaps and use random wand effects for Battlemage and Elemental Blast."),
+                        new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "New champions",
+                                "Added a lot of champion types, increasing their number to 15.")),
+                new ChangeInfo("", false, 0x000000, "",
+                        bugFixes("_-_ Fixed light cloak charge speed being wrong (was higher than intended for Rogue and lower for RK)\n\n" +
+                                "_-_ Fixed Wealth and Might using wrong percentages in their descriptions.\n" +
+                                "_-_ Fixed Shrinking being only cosmetic effect.\n" +
+                                "_-_ Fixed shop appearing on D21."),
+                        misc("_-_ Added some additional lore and sprite edits for dungeon monsters.\n\n" +
+                                "_-_ Added missing loot into abyssal shops.")
+                )
+        },
             // v0.1.0
         {
             new ChangeInfo("v0.1.0", true, TITLE_COLOR, ""),
@@ -331,6 +425,37 @@ public class RKPD2Changes {
                         +"\nOverall Strongman is a bit worse at +3 and a bit better at +2 and +1. Its ability to be exploited is down due to now being reliant on having strength, but in return it also gives true strength bonuses (thus opening up synergies with rings of force and might...)"
                 ),
                 new ChangeButton(BACKUP_BARRIER, "Backup barrier now generates 5/8 shield, down from 6/9, to reflect the Shattered nerf to Backup Barrier."))
+        },
+
+        {
+                new ChangeInfo("Abyssal", true, TITLE_COLOR, "",
+                        new ChangeButton(get(Icons.DEPTH),"New chapter!",
+                                "Added endless abyss chapter from Summoning PD, excluding exclusive traps"),
+                        new ChangeButton(avatar(RAT_KING,6), "Rat King Nerfs (rat king nerfs)",
+                                "Rat King's incomprehensible power bugged me during development of abyss too much.\n\n" +
+                                        "_-_ Reduced HP by 60%"),
+                        new ChangeButton(new Image(Assets.Sprites.HUNTRESS, 0, 15, 12, 15), "Huntress changes",
+                                "The Huntress recieved brand new starting armor to make her more stylish and strong.\n\n" +
+                                        "_-_ With new armor, she can use _Super-Shots_ to shoot stronger arrow which does more damage with distance.\n\n" +
+                                        "_-_ This ability has 35 turns cooldown.\n\n" +
+                                        "_-_ The armor works as +1 cloak armor, but still can be viable in endgame."),
+                        new ChangeButton(new ItemSprite(new RatKingArmor()), "Rat King's Wrath",
+                                "Reworked Rat King's Wrath into full armor ability with 3 exclusive talents:\n\n" +
+                                        "_-_ _Auric Tesla Ability_ twists Wrath's components to have properties of 0.9.3 Shattered armor abilities.\n\n" +
+                                        "_-_ _Quantum Positioning_ significantly extends Wrath's range.\n\n" +
+                                        "_-_ _Rat Age Origins_ turns Smoke Bomb component into gas spreader which can freeze, confuse and damage enemies.\n\n" +
+                                        "Molten Earth damage, Heroic Leap paralysis, Smoke Bomb invis and Spectral Blades range have been signficantly adjusted, cost increased from _35_ to _100_."),
+                        new ChangeButton(new ItemSprite(RING_AGATE), "Ring caps",
+                                "Most of the rings have been capped at 2x of their effect (2.5x for Furor, 60% damage reduction for defense rings and no cap for SS and Wealth)."),
+
+                        new ChangeButton(new Image(TALENT_ICONS, 16*5,16,16,16), "Talent changes",
+                                "_-_ Reworked _Energized Upgrade_ to recharge auxiliary wands when they are fully used.\n\n" +
+                                        "_-_ Replaced _Mystical Upgrade_ with _Dual Wielding_, allowing player to use wands and missiles at same time.\n\n" +
+                                        "_-_ Healing potion talents work on drinking from waterskin.\n\n" +
+                                        "_-_ Replaced _Restored Nature_ with _Ivylash_, which augments super-shots with Rooting.\n\n" +
+                                        "_-_ Huntress T3 and T4 talents boost the damage potential of Super-Shots."
+                        )
+                )
         },
             // v0.0.1
         {
