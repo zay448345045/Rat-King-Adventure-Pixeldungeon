@@ -90,8 +90,16 @@ public enum HeroClass {
 
 	public HeroSubClass secretSub(){
 		switch (this){
-			case HUNTRESS: default:
+			case HUNTRESS:
 				return HeroSubClass.WARLOCK;
+			case WARRIOR:
+				return HeroSubClass.BRAWLER;
+			case ROGUE:
+				return HeroSubClass.DECEPTICON;
+			case MAGE:
+				return HeroSubClass.SPIRITUALIST;
+			default:
+				return null;
 		}
 	}
 
@@ -266,6 +274,7 @@ public enum HeroClass {
 		if (Badges.isUnlocked(Badges.Badge.DEFEATED_RK) && !subClasses.contains(secretSub())){
 			subClasses.add(secretSub());
 		}
+		subClasses.remove(null);
 		return subClasses;
 	}
 

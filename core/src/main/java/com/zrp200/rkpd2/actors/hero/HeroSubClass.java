@@ -80,6 +80,10 @@ public enum HeroSubClass {
 	SNIPER(HeroIcon.SNIPER),
 	WARDEN(HeroIcon.WARDEN),
 
+	SPIRITUALIST(HeroIcon.SPIRITUALIST),
+	BRAWLER(HeroIcon.BRAWLER),
+	DECEPTICON(HeroIcon.DECEPTICON),
+
 	KING(HeroIcon.KING);
 
 	public static void set(Hero hero, HeroSubClass subClass) {
