@@ -43,7 +43,7 @@ public class Wrath extends ArmorAbility {
     @Override public int icon() { return HeroIcon.WRATH; }
 
     @Override public Talent[] talents() {
-        return new Talent[]{AFTERSHOCK, Talent.RAT_BLAST, SMOKE_AND_MIRRORS, SEA_OF_BLADES};
+        return new Talent[]{AFTERSHOCK, Talent.RAT_BLAST, SMOKE_AND_MIRRORS, SEA_OF_BLADES, FUN, HEROIC_RATINESS};
     }
 
     @Override public float chargeUse(Hero hero) {
@@ -125,7 +125,12 @@ public class Wrath extends ArmorAbility {
             Sample.INSTANCE.play(Assets.Sounds.CHARGEUP,0.5f); // this sound is disproportionately loud.
         }
     }
-    private void doSpectralBlades() { // fixme this code....aaaaaaaaaaaaaaaaaaaaaaa
+
+    private void doSpectralBlades(){
+        doSpectralBlades(true);
+    }
+
+    private void doSpectralBlades(boolean doubleBlades) { // fixme this code....aaaaaaaaaaaaaaaaaaaaaaa
         Ballistica b = new Ballistica(hero.pos, target, Ballistica.WONT_STOP);
         final HashSet<Char> targets = new HashSet<>();
 
@@ -154,12 +159,21 @@ public class Wrath extends ArmorAbility {
         for (Char ch : targets) sum.offset(Dungeon.level.cellToPoint(ch.pos));
         sum.scale(1f / targets.size());
         hero.sprite.zap(Dungeon.level.pointToCell(sum), () -> {
-            Callback onComplete = this::finish;
-            for (Char ch : targets) SpectralBlades.shoot(
-                    hero, ch,
-                    mult, 1 + 1/4f * hero.pointsInTalent(SEA_OF_BLADES),
-                    SEA_OF_BLADES, SeaOfBladesTracker.class,
-                    callbacks, onComplete);
+            Callback onComplete = () -> {
+                if (hero.hasTalent(FUN) && doubleBlades){
+                    doSpectralBlades(false);
+                } else {
+                    finish();
+                }
+            };
+            for (Char ch : targets){
+                if (hero.hasTalent(FUN)) Sample.INSTANCE.play(Assets.Sounds.BIRD);
+                SpectralBlades.shoot(
+                        hero, ch,
+                        mult, 1 + 1/4f * hero.pointsInTalent(SEA_OF_BLADES),
+                        SEA_OF_BLADES, SeaOfBladesTracker.class,
+                        callbacks, onComplete);
+            }
             hero.busy();
         });
     }

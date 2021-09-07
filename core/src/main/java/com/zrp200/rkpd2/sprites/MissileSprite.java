@@ -27,6 +27,7 @@ import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
@@ -104,6 +105,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(HomingBoomerang.class, 1440);
 		
 		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
+		ANGULAR_SPEEDS.put(SpectralBlades.BirbBlade.class, 0);
 		
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class,      2160);
 	}
@@ -156,6 +158,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 				|| item instanceof TenguSprite.TenguShuriken
 				|| item instanceof ExoKnife.RunicMissile){
 			speed *= 1.5f;
+		} else if (item instanceof SpectralBlades.BirbBlade){
+			speed *= 0.66f;
 		}
 		
 		PosTweener tweener = new PosTweener( this, to, d.length() / speed );

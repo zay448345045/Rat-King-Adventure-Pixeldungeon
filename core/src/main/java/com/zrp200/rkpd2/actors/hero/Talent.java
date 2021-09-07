@@ -212,7 +212,7 @@ public enum Talent {
 	// Mus Rex Ira T4
 	BLOODFLARE_SKIN(60, 4), ASTRAL_CHARGE(61, 4), SHADOWSPEC_SLICE(62, 4), SILVA_RANGE(63, 4),
 	// Wrath2
-	AFTERSHOCK(185,4), RAT_BLAST(186,4), SMOKE_AND_MIRRORS(187,4), SEA_OF_BLADES(188,4);
+	AFTERSHOCK(185,4), RAT_BLAST(186,4), SMOKE_AND_MIRRORS(187,4), SEA_OF_BLADES(188,4), FUN(189, 4);
 
 	protected String[] aliases = new String[0];
 
@@ -298,7 +298,7 @@ public enum Talent {
 
 		public static float getProcModifier() {
 			SpiritBladesTracker tracker = hero.buff(SpiritBladesTracker.class, false);
-			return tracker != null ? tracker.getModifier() : 1f;
+			return tracker != null ? tracker.getModifier() : 0f;
 		}
 	};
 

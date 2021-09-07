@@ -21,15 +21,14 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.huntress;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Combo;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.SnipersMark;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -44,13 +43,79 @@ import com.zrp200.rkpd2.items.weapon.missiles.Shuriken;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.HashSet;
 
+import static com.zrp200.rkpd2.actors.hero.Talent.FUN;
+
 public class SpectralBlades extends ArmorAbility {
+
+	public static class BirbBlade extends Item {
+
+		public int angle;
+
+			{
+				image = ItemSpriteSheet.BIRB;
+			}
+
+		@Override
+		public Emitter emitter() {
+			Emitter emitter = new Emitter();
+			emitter.pos(8, 4);
+			emitter.fillTarget = false;
+			emitter.pour((emitter1, index, x, y) -> {
+				BirbAfterimage p = emitter1.recycle( BirbAfterimage.class );
+				p.reset();
+				p.x = x - p.width / 2;
+				p.y = y - p.height / 2;
+				p.angularSpeed = 90f;
+			}, 0.06f );
+			return emitter;
+		}
+
+		public static class BirbAfterimage extends ItemSprite {
+
+			private static float LIFESPAN	= 0.33f;
+
+			private float timeLeft;
+
+			public BirbAfterimage(){
+				super(new BirbBlade());
+				origin.set( width / 2, height / 2 );
+				scale.set(0.75f);
+				acc.set( 0, 0 );
+			}
+
+			public void reset() {
+				revive();
+				timeLeft = LIFESPAN;
+				speed.set( 0, 0 );
+			}
+
+			@Override
+			public void update() {
+
+				super.update();
+
+				if ((timeLeft -= Game.elapsed) <= 0) {
+
+					kill();
+
+				} else {
+
+					float p = timeLeft / LIFESPAN;
+					scale.set( p );
+					alpha( p > 0.8f ? (1 - p) * 5f : p * 1.25f );
+
+				}
+			}
+		}
+	};
 
 	{
 		baseChargeUse = 25f;
@@ -131,7 +196,13 @@ public class SpectralBlades extends ArmorAbility {
 		hero.busy();
 	}
 
-	private static final Item PROTO = new Shuriken();
+	public static Item getBlade() {
+		if (Dungeon.hero.hasTalent(FUN)){
+			return new BirbBlade();
+		}
+		return new Shuriken();
+	}
+
 	public static void shoot(Hero hero,
 							 Char ch,
 							 float dmgMulti,
@@ -141,6 +212,7 @@ public class SpectralBlades extends ArmorAbility {
 							 HashSet<Callback> callbacks,
 							 Callback onComplete)
 	{
+		Item blade = getBlade();
 		Callback callback = new Callback() {
 			@Override public void call() {
 				if (hero.hasTalent(spiritBlades)) {
@@ -195,15 +267,23 @@ public class SpectralBlades extends ArmorAbility {
 //								hero.spend(-hero.cooldown());
 						}
 					}
+					if (hero.hasTalent(FUN)){
+						if (ch.isAlive()){
+							Buff.affect(ch, Vulnerable.class, 3f*hero.pointsInTalent(FUN));
+						}
+					}
 				};
 				callbacks.remove( this );
 				if (callbacks.isEmpty()) onComplete.call();
 			}
 		};
+
 		MissileSprite m = hero.sprite.parent.recycle( MissileSprite.class );
-		m.reset( hero.sprite, ch.pos, PROTO, callback );
-		m.hardlight(0.6f, 1f, 1f);
-		m.alpha(0.8f);
+		m.reset( hero.sprite, ch.pos, blade, callback );
+		if (blade instanceof Shuriken) {
+			m.hardlight(0.6f, 1f, 1f);
+			m.alpha(0.8f);
+		}
 		callbacks.add(callback);
 	}
 
