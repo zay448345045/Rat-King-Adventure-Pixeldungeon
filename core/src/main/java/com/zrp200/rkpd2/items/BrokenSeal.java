@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.buffs.ShieldBuff;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -76,7 +77,12 @@ public class BrokenSeal extends Item {
 		// noble cause is 0/1/2
 		// fixme verify that behavior has or hasn't changed.
 		int bonus = hero.pointsInTalent(Talent.NOBLE_CAUSE, Talent.IRON_WILL) + hero.shiftedPoints(Talent.IRON_WILL);
-		return armTier + armLvl + bonus;
+		int total = armTier + armLvl + bonus;
+		if (hero.hasTalent(Talent.IN_MY_MEMORIES)){
+			BrawlerBuff buff = hero.buff(BrawlerBuff.class);
+			total *= 1.2f + 0.1f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*buff.maxCharge();
+		}
+		return total;
 	}
 
 	@Override

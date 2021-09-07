@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -25,11 +26,21 @@ public class BrawlerBuff extends CounterBuff {
     @Override
     public boolean act() {
         if (count() < maxCharge()){
-            countUp(0.334f);
+            countUp(getInc());
         }
 
         spend(TICK);
         return true;
+    }
+
+    public float getInc() {
+        if (Dungeon.hero.pointsInTalent(Talent.IN_MY_MEMORIES) == 3){
+            BrokenSeal.WarriorShield shield = Dungeon.hero.buff(BrokenSeal.WarriorShield.class);
+            if (shield.maxShield() == shield.shielding()){
+                return 0.266f;
+            }
+        }
+        return 0.334f;
     }
 
     @Override
