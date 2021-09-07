@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Flail extends MeleeWeapon {
@@ -40,5 +42,27 @@ public class Flail extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(7*(tier+1)) +        //35 base, up from 25
 				lvl*Math.round(1.6f*(tier+1));  //+8 per level, up from +5
+	}
+
+	public static int slamDamageRoll(int level){
+		return Random.NormalIntRange(
+				Math.round(10 + 2.5f * level), //10 min, from 4
+				Math.round(87.5f + 10 * level) //87.5 max, from 25
+		);
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		int dmg = slamDamageRoll(buffedLvl());
+		for (int i = 1; i < 4; i++) {
+			int dmgReroll = slamDamageRoll(buffedLvl());
+			if (dmgReroll > dmg) dmg = dmgReroll;
+		}
+		return dmg;
+	}
+
+	@Override
+	public float warriorDelay() {
+		return 4f;
 	}
 }

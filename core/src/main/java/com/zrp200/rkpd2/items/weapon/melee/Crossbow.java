@@ -22,7 +22,12 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.DummyBuff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class Crossbow extends MeleeWeapon {
 	
@@ -40,5 +45,23 @@ public class Crossbow extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //20 base, down from 25
 				lvl*(tier);     //+4 per level, down from +5
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(Dungeon.hero, DartSpent.class, 15f);
+		return super.warriorAttack(damage, enemy);
+	}
+
+	public static class DartSpent extends DummyBuff {
+		@Override
+		public int icon() {
+			return BuffIndicator.MARK;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return ((15 - cooldown()) / 15);
+		}
 	}
 }

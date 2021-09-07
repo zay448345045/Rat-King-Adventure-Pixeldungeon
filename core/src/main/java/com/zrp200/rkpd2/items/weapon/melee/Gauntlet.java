@@ -21,8 +21,19 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+
+import java.util.ArrayList;
 
 public class Gauntlet extends MeleeWeapon {
 	
@@ -39,6 +50,40 @@ public class Gauntlet extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(2.5f*(tier+1)) +     //15 base, down from 30
 				lvl*Math.round(0.5f*(tier+1));  //+3 per level, down from +6
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		ArrayList<Char> affectedChars = new ArrayList<>();
+		Ballistica trajectory = new Ballistica(Dungeon.hero.pos, enemy.pos, Ballistica.STOP_TARGET);
+		ConeAOE cone = new ConeAOE(
+				trajectory,
+				5,
+				90,
+				Ballistica.MAGIC_BOLT
+		);
+		for (int cell : cone.cells){
+			CellEmitter.bottom(cell).burst(Speck.factory(Speck.STEAM), 10);
+			Char ch = Actor.findChar( cell );
+			if (ch != null && !ch.equals(enemy)) {
+				affectedChars.add(ch);
+			}
+		}
+		for (Char ch : affectedChars){
+			int dmg = Dungeon.hero.attackProc(ch, damage);
+			switch (Dungeon.level.distance(ch.pos, Dungeon.hero.pos)){
+				case 2: dmg *= 0.66f; break;
+				case 3: dmg *= 0.33f; break;
+				case 4: dmg *= 0.16f; break;
+				case 5: dmg *= 0.1f; break;
+			}
+			dmg -= ch.drRoll();
+			dmg = ch.defenseProc(Dungeon.hero, dmg);
+			ch.damage(dmg, Dungeon.hero);
+		}
+		Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+		Camera.main.shake( 3, 0.7f );
+		return super.warriorAttack(damage, enemy);
 	}
 
 }

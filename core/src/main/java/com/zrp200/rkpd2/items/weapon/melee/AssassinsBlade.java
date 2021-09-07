@@ -21,12 +21,16 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Blindness;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class AssassinsBlade extends MeleeWeapon {
 
@@ -63,6 +67,15 @@ public class AssassinsBlade extends MeleeWeapon {
 			}
 		}
 		return super.damageRoll(owner);
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(Dungeon.hero)){
+			Buff.prolong(enemy, Blindness.class, 4f);
+			Buff.prolong(enemy, Cripple.class, 4f);
+		}
+		return super.warriorAttack(damage, enemy);
 	}
 
 }

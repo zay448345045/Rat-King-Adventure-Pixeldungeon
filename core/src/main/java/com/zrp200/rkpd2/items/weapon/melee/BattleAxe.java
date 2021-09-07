@@ -22,6 +22,9 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Bleeding;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class BattleAxe extends MeleeWeapon {
@@ -39,6 +42,12 @@ public class BattleAxe extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //20 base, down from 25
 				lvl*(tier+1);   //scaling unchanged
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(enemy, Bleeding.class).set(Buff.affect(enemy, Bleeding.class).level()+damage/4f);
+		return damage*4/3;
 	}
 
 }

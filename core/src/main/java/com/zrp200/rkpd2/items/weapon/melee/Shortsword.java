@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Shortsword extends MeleeWeapon {
@@ -32,6 +33,16 @@ public class Shortsword extends MeleeWeapon {
 		hitSoundPitch = 1.1f;
 
 		tier = 2;
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		return damage;
+	}
+
+	@Override
+	public float warriorDelay() {
+		return 0f;
 	}
 
 }

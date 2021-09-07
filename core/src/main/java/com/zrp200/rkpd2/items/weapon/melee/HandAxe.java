@@ -22,6 +22,8 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class HandAxe extends MeleeWeapon {
@@ -39,6 +41,12 @@ public class HandAxe extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //12 base, down from 15
 				lvl*(tier+1);   //scaling unchanged
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		//deals more damage depending on hero's HP
+		return damage + damage * 2 * (1 - (Dungeon.hero.HP / Dungeon.hero.HT));
 	}
 
 }

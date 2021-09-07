@@ -378,4 +378,19 @@ public class RunicBladeMkII extends MeleeWeapon {
                 return e;
         }
     }
+
+    @Override
+    public int warriorAttack(int damage, Char enemy) {
+        //reapply runic's recharge to half it
+        RunicCooldown cooldown = Dungeon.hero.buff(RunicCooldown.class);
+        if (cooldown != null){
+            float cooldownNum = cooldown.cooldown();
+            //de hacquie: to not cause any effects, use detach from Buff.java
+            if (cooldown.target.sprite != null) cooldown.fx( false );
+            cooldown.target.remove( cooldown );
+            cooldownNum = Math.min(0, cooldownNum - 20*baseDelay(Dungeon.hero));
+            Buff.affect(curUser, RunicCooldown.class, cooldownNum);
+        }
+        return super.warriorAttack(damage, enemy);
+    }
 }

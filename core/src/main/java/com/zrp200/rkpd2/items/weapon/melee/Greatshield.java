@@ -21,7 +21,10 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ArcaneArmor;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -50,5 +53,16 @@ public class Greatshield extends MeleeWeapon {
 		} else {
 			return Messages.get(this, "typical_stats_desc", 6);
 		}
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(Dungeon.hero, ArcaneArmor.class).set(damage/4*3, 40);
+		return super.warriorAttack(damage, enemy)*3/2;
+	}
+
+
+	public float warriorDelay() {
+		return 2;
 	}
 }

@@ -146,8 +146,8 @@ public class MeleeWeapon extends Weapon {
 		return damage;
 	}
 
-	public float warriorDelay(float delay, Char enemy){
-		return delay*1.5f;
+	public float warriorDelay(){
+		return 1.5f;
 	}
 
 }

@@ -22,6 +22,9 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Vulnerable;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Sai extends MeleeWeapon {
@@ -39,6 +42,12 @@ public class Sai extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
 				lvl*Math.round(0.5f*(tier+1));  //+2 per level, down from +4
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.prolong(enemy, Vulnerable.class, damage);
+		return 0;
 	}
 
 }

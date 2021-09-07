@@ -21,7 +21,17 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
+import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.CellSelector;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Longsword extends MeleeWeapon {
@@ -33,5 +43,52 @@ public class Longsword extends MeleeWeapon {
 
 		tier = 4;
 	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		GameScene.selectCell(leaper);
+		return damage/3;
+	}
+
+	@Override
+	public float warriorDelay() {
+		return 0;
+	}
+
+	protected CellSelector.Listener leaper = new  CellSelector.Listener() {
+
+		@Override
+		public void onSelect( Integer target ) {
+			if (target != null && target != curUser.pos) {
+
+				Ballistica route = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
+				int cell = route.collisionPos;
+
+				//can't occupy the same cell as another char, so move back one.
+				if (Actor.findChar( cell ) != null && cell != curUser.pos)
+					cell = route.path.get(route.dist-1);
+
+				final int dest = cell;
+				Dungeon.hero.busy();
+				curUser.sprite.jump(Dungeon.hero.pos, cell, new Callback() {
+					@Override
+					public void call() {
+						Dungeon.hero.move(dest);
+						Dungeon.level.occupyCell(Dungeon.hero);
+						Dungeon.observe();
+						GameScene.updateFog();
+
+						Invisibility.dispel();
+						curUser.spendAndNext(Longsword.this.baseDelay(Dungeon.hero)*2);
+					}
+				});
+			}
+		}
+
+		@Override
+		public String prompt() {
+			return Messages.get(HeroicLeap.class, "prompt");
+		}
+	};
 
 }

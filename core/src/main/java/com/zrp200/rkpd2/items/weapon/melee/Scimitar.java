@@ -21,8 +21,16 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+
+import java.util.ArrayList;
 
 public class Scimitar extends MeleeWeapon {
 
@@ -39,6 +47,34 @@ public class Scimitar extends MeleeWeapon {
 	public int max(int lvl) {
 		return  4*(tier+1) +    //16 base, down from 20
 				lvl*(tier+1);   //scaling unchanged
+	}
+
+	static int targetNum = 0;
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		ArrayList<Char> targets = new ArrayList<>();
+
+		for (int i : PathFinder.NEIGHBOURS8){
+			if (Actor.findChar(Dungeon.hero.pos + i) != null) targets.add(Actor.findChar(Dungeon.hero.pos + i));
+		}
+
+		for (Char target : targets){
+			Dungeon.hero.attack(target);
+		}
+		targetNum = targets.size();
+
+		Dungeon.hero.sprite.centerEmitter().start( Speck.factory( Speck.CROWN ), 0.03f, 8 );
+		Sample.INSTANCE.play(Assets.Sounds.CHAINS, 3);
+
+		return 0;
+	}
+
+	@Override
+	public float warriorDelay() {
+		int tries = targetNum;
+		targetNum = 0;
+		return tries;
 	}
 
 }

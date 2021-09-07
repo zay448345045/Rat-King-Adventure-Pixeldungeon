@@ -21,7 +21,11 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Greataxe extends MeleeWeapon {
@@ -43,6 +47,16 @@ public class Greataxe extends MeleeWeapon {
 	@Override
 	public int STRReq(int lvl) {
 		return STRReq(tier+1, lvl); //20 base strength req, up from 18
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		int lvl = Math.max(0, Dungeon.hero.STR() - STRReq());
+		if (Random.Int(lvl + 12) >= 10) {
+			Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
+			return damage*2;
+		}
+		return damage;
 	}
 
 }

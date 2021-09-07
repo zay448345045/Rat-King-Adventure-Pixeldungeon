@@ -21,12 +21,13 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class Dagger extends MeleeWeapon {
 	
@@ -67,4 +68,13 @@ public class Dagger extends MeleeWeapon {
 		return super.damageRoll(owner);
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(Dungeon.hero)){
+			//doing same damage as YAPD's dagger
+			// 7.2-21.6 (+2.4/+4.8)
+			return Random.NormalIntRange(Math.round(7.2f + buffedLvl()*2.4f), Math.round(21.6f + buffedLvl() * 4.8f));
+		}
+		return super.warriorAttack(damage, enemy);
+	}
 }

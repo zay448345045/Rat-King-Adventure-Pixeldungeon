@@ -22,7 +22,10 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Barrier;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Quarterstaff extends MeleeWeapon {
@@ -44,5 +47,11 @@ public class Quarterstaff extends MeleeWeapon {
 	@Override
 	public int defenseFactor( Char owner ) {
 		return 2;	//2 extra defence
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(Dungeon.hero, Barrier.class).setShield(damage / 2 + 1 + Dungeon.hero.drRoll()/2);
+		return 0;
 	}
 }

@@ -22,6 +22,10 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class WarHammer extends MeleeWeapon {
@@ -41,4 +45,10 @@ public class WarHammer extends MeleeWeapon {
 				lvl*(tier+1);   //scaling unchanged
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(enemy, Viscosity.DeferedDamage.class).prolong(damage*2);
+		Buff.affect(enemy, Paralysis.class, 3.5f);
+		return super.warriorAttack(damage, enemy);
+	}
 }

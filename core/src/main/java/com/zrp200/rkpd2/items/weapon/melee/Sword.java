@@ -22,6 +22,9 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Sword extends MeleeWeapon {
@@ -34,4 +37,11 @@ public class Sword extends MeleeWeapon {
 		tier = 3;
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		if (enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
+			damage = enchantment.proc( this, Dungeon.hero, enemy, damage );
+		}
+		return super.warriorAttack(damage, enemy);
+	}
 }

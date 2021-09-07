@@ -121,12 +121,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         }
         Buff.affect(hero, BrawlingTracker.class);
 
-        if (hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY)){
-            ((MeleeWeapon)(Dungeon.hero.belongings.weapon())).warriorAttack(enemy);
-        }
+        hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
 
         Invisibility.dispel();
-        hero.spendAndNext(hero.attackDelay());
+        hero.spendAndNext(hero.attackDelay()*((MeleeWeapon)(hero.belongings.weapon())).warriorDelay());
 
         if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
             if (hero.hasTalent(Talent.HOLERIC_BURST)){

@@ -22,6 +22,9 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Glaive extends MeleeWeapon {
@@ -40,6 +43,12 @@ public class Glaive extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(6.67f*(tier+1)) +    //40 base, up from 30
 				lvl*Math.round(1.33f*(tier+1)); //+8 per level, up from +6
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(enemy, StoneOfAggression.Aggression.class, StoneOfAggression.Aggression.DURATION / 5);
+		return super.warriorAttack(damage, enemy);
 	}
 
 }

@@ -22,6 +22,10 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.items.weapon.enchantments.Kinetic;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Greatsword extends MeleeWeapon {
@@ -34,4 +38,25 @@ public class Greatsword extends MeleeWeapon {
 		tier=5;
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		int conservedDamage = 0;
+		if (Dungeon.hero.buff(Kinetic.ConservedDamage.class) != null) {
+			conservedDamage = Dungeon.hero.buff(Kinetic.ConservedDamage.class).damageBonus();
+			Dungeon.hero.buff(Kinetic.ConservedDamage.class).detach();
+		}
+
+		if (damage > enemy.HP){
+			int extraDamage = (damage - enemy.HP)*2;
+
+			Buff.affect(Dungeon.hero, Kinetic.ConservedDamage.class).setBonus(extraDamage);
+		}
+
+		return damage + conservedDamage;
+	}
+
+	@Override
+	public float warriorMod() {
+		return 1f;
+	}
 }

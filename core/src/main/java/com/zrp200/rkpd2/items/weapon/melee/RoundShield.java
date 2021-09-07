@@ -55,4 +55,6 @@ public class RoundShield extends MeleeWeapon {
 			return Messages.get(this, "typical_stats_desc", 4);
 		}
 	}
+
+
 }
