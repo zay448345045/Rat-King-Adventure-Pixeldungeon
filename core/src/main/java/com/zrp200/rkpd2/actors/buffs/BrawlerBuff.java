@@ -41,6 +41,9 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         if (count() < maxCharge()){
             countUp(getInc());
         }
+        if (count() >= 10){
+            ActionIndicator.setAction(this);
+        }
 
         spend(TICK);
         return true;
@@ -114,7 +117,6 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
             BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
             dmgBonus += 0.25f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
         }
-        dmgMulti = ((MeleeWeapon)(Dungeon.hero.belongings.weapon())).warriorMod();
 
         if (hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY)){
             ((MeleeWeapon)(Dungeon.hero.belongings.weapon())).warriorAttack(enemy);
