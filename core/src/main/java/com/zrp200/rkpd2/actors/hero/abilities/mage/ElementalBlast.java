@@ -252,7 +252,7 @@ public class ElementalBlast extends ArmorAbility {
 
 							//### Other Char Effects ###
 							if (mob != null && mob != hero){
-								if (Dungeon.hero.pointsInTalent(Talent.FUN) > 1 && cell != Dungeon.hero.pos){
+								if (Dungeon.hero.pointsInTalent(Talent.FUN) > 1 && cell != Dungeon.hero.pos && mob.alignment == Char.Alignment.ENEMY){
 									WandOfUnstable wand = new WandOfUnstable();
 									wand.upgrade(hero.lvl/3);
 									wand.fx(new Ballistica(hero.pos, cell, Ballistica.STOP_TARGET), () -> {
