@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
@@ -366,6 +367,8 @@ public class MusRexIra extends ArmorAbility {
             }
         }
     }
+
+    @Override public int icon() { return HeroIcon.MUS_REX; }
 
     @Override
     public Talent[] talents() {
