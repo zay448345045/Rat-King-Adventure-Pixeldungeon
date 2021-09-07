@@ -37,7 +37,6 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.TalentIcon;
 
 import java.util.ArrayList;
 
@@ -233,7 +232,7 @@ public class RKPD2Changes {
                                 "Added new extremely hard boss, which can be fought, when you try to talk with RK while having an amulet.\n\nHis attacks are based on hero classes and some bosses, and Rat King will frequently switch between them.\n\n_Beware of his power while doing challenge run._")
                 ),
                 new ChangeInfo("Talents", false, 0x44d1d3, "",
-                        new ChangeButton(new TalentIcon(NOBLE_CAUSE), "RK",
+                        new ChangeButton(NOBLE_CAUSE, "RK",
                                 "_-_ Changed every Rat King talent to have unique sprite.\n" +
                                         "_-_ Imperial Wrath now get both _Hold Fast_ and _Strongman_, to make it more relevant.\n" +
                                         "_-_ Added _Advanced Education_ talent as additional T4: allows to get bonus points for previous tiers.\n" +
@@ -248,7 +247,7 @@ public class RKPD2Changes {
                                         "_-_ _Shadowspec Blade_ buffs clone and hawk's offensive capabilities.\n" +
                                         "_-_ _Silva Range_ buffs nature's power and gives ranged attack to clone."
                         ),
-                        new ChangeButton(new TalentIcon(IRON_WILL), "Warrior",
+                        new ChangeButton(IRON_WILL, "Warrior",
                                 "_-_ Changed One Man Army and Skill to have unique sprite.\n" +
                                         "_-_ Replaced _Restored Willpower_ with _Willpower of Injured_: makes seal's shielding regenerate faster on low HP.\n" +
                                         "_-_ Added _Weapon Mastery_ talent as 5th T1: increases the minimum amount of weapons.\n"+
@@ -263,7 +262,7 @@ public class RKPD2Changes {
                                         "_-_ Reworked _Double Jump_: gives second jump for free at +2 and adjusts cost for third jump starting from +3.\n" +
                                         "_-_ Added _Cockatriocious_ to Shockwave: turns enemies caught in shockwave into stone.\n" +
                                         "_-_ Added _Demonshader_ to Endure: imbues endure-empowered attacks with fire damage and ability to generate rage and combo."),
-                        new ChangeButton(new TalentIcon(SORCERY), "Mage",
+                        new ChangeButton(SORCERY, "Mage",
                                 "_-_ Changed Sorcery and Warlock's Touch to have unique sprite.\n" +
                                         "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands not in staff.\n" +
                                         "_-_ Nerfed _Shield Battery_ by 17.3%.\n" +
@@ -274,7 +273,7 @@ public class RKPD2Changes {
                                         "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
                                         "_-_ Added _Eldritch Blessing_ to Wild Magic: makes all zaps cursed, cursed effects are safer and stronger while using the ability.\n" +
                                         "_-_ Added _Chrono Screw_ to Remote Beacon: gives time bubble after successful teleportation."),
-                        new ChangeButton(new TalentIcon(MENDING_SHADOWS), "Rogue",
+                        new ChangeButton(MYSTICAL_UPGRADE, "Rogue",
                                 "_-_ Changed Lethal Momentum and Marathon Runner to have unique sprite.\n" +
                                         "_-_ Added _Faraday Cage_ talent as 5th T1: protects hero from electricity.\n"+
                                         "_-_ Replaced _Rogue's Foresight_ with _Protein Infusion_: gives bonus speed and evasion depending on satiety.\n" +
@@ -285,7 +284,7 @@ public class RKPD2Changes {
                                         "_-_ Reworked _Double Mark_: gives second use for free at +2 and adjusts cost for third use starting from +3.\n" +
                                         "_-_ Added _Cataclysmic Energy_ to Death Mark: increases the duration of death mark and removes damage boost, but marked enemies at 0 HP will combust each turn.\n" +
                                         "_-_ Added _Dar Magic_ to Shadow Clone: gives various ranged capabilities to shadow clone."),
-                        new ChangeButton(new TalentIcon(NATURES_WRATH), "Huntress",
+                        new ChangeButton(NATURES_AID, "Huntress",
                                 "_-_ Changed Nature's Better Aid to have unique sprite.\n" +
                                         "_-_ Added _Greenfields_ talent as 5th T1: increases regeneration while in furrowed grass.\n"+
                                         "_-_ Replaced _Nature's Aid_ with _Scout's Barrier_: gives shielding for successful Super-Shots.\n" +
