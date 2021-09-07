@@ -21,12 +21,10 @@
 
 package com.zrp200.rkpd2.items.scrolls;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.MagicImmune;
-import com.zrp200.rkpd2.actors.buffs.ScrollEmpower;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
@@ -36,26 +34,12 @@ import com.zrp200.rkpd2.items.Recipe;
 import com.zrp200.rkpd2.items.artifacts.UnstableSpellbook;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.zrp200.rkpd2.items.stones.Runestone;
-import com.zrp200.rkpd2.items.stones.StoneOfAffection;
-import com.zrp200.rkpd2.items.stones.StoneOfAggression;
-import com.zrp200.rkpd2.items.stones.StoneOfAugmentation;
-import com.zrp200.rkpd2.items.stones.StoneOfBlast;
-import com.zrp200.rkpd2.items.stones.StoneOfBlink;
-import com.zrp200.rkpd2.items.stones.StoneOfClairvoyance;
-import com.zrp200.rkpd2.items.stones.StoneOfDeepenedSleep;
-import com.zrp200.rkpd2.items.stones.StoneOfDisarming;
-import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
-import com.zrp200.rkpd2.items.stones.StoneOfFlock;
-import com.zrp200.rkpd2.items.stones.StoneOfIntuition;
-import com.zrp200.rkpd2.items.stones.StoneOfShock;
+import com.zrp200.rkpd2.items.stones.*;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -283,43 +267,19 @@ public abstract class Scroll extends Item {
 	public static class ScrollToStone extends Recipe {
 		
 		private static HashMap<Class<?extends Scroll>, Class<?extends Runestone>> stones = new HashMap<>();
-		private static HashMap<Class<?extends Scroll>, Integer> amnts = new HashMap<>();
 		static {
 			stones.put(ScrollOfIdentify.class,      StoneOfIntuition.class);
-			amnts.put(ScrollOfIdentify.class,       3);
-			
-			stones.put(ScrollOfLullaby.class,       StoneOfDeepenedSleep.class);
-			amnts.put(ScrollOfLullaby.class,        3);
-			
+			stones.put(ScrollOfLullaby.class,       StoneOfDeepSleep.class);
 			stones.put(ScrollOfMagicMapping.class,  StoneOfClairvoyance.class);
-			amnts.put(ScrollOfMagicMapping.class,   3);
-			
 			stones.put(ScrollOfMirrorImage.class,   StoneOfFlock.class);
-			amnts.put(ScrollOfMirrorImage.class,    3);
-			
 			stones.put(ScrollOfRetribution.class,   StoneOfBlast.class);
-			amnts.put(ScrollOfRetribution.class,    2);
-			
 			stones.put(ScrollOfRage.class,          StoneOfAggression.class);
-			amnts.put(ScrollOfRage.class,           3);
-			
 			stones.put(ScrollOfRecharging.class,    StoneOfShock.class);
-			amnts.put(ScrollOfRecharging.class,     2);
-			
 			stones.put(ScrollOfRemoveCurse.class,   StoneOfDisarming.class);
-			amnts.put(ScrollOfRemoveCurse.class,    2);
-			
 			stones.put(ScrollOfTeleportation.class, StoneOfBlink.class);
-			amnts.put(ScrollOfTeleportation.class,  2);
-			
-			stones.put(ScrollOfTerror.class,        StoneOfAffection.class);
-			amnts.put(ScrollOfTerror.class,         3);
-			
+			stones.put(ScrollOfTerror.class,        StoneOfFear.class);
 			stones.put(ScrollOfTransmutation.class, StoneOfAugmentation.class);
-			amnts.put(ScrollOfTransmutation.class,  2);
-			
 			stones.put(ScrollOfUpgrade.class,       StoneOfEnchantment.class);
-			amnts.put(ScrollOfUpgrade.class,        2);
 		}
 		
 		@Override
@@ -347,7 +307,7 @@ public abstract class Scroll extends Item {
 			s.quantity(s.quantity() - 1);
 			s.identify();
 			
-			return Reflection.newInstance(stones.get(s.getClass())).quantity(amnts.get(s.getClass()));
+			return Reflection.newInstance(stones.get(s.getClass())).quantity(2);
 		}
 		
 		@Override
@@ -357,9 +317,9 @@ public abstract class Scroll extends Item {
 			Scroll s = (Scroll) ingredients.get(0);
 
 			if (!s.isKnown()){
-				return new Runestone.PlaceHolder();
+				return new Runestone.PlaceHolder().quantity(2);
 			} else {
-				return Reflection.newInstance(stones.get(s.getClass())).quantity(amnts.get(s.getClass()));
+				return Reflection.newInstance(stones.get(s.getClass())).quantity(2);
 			}
 		}
 	}

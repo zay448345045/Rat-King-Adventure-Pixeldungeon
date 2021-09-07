@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.bombs.Bomb;
@@ -33,30 +34,12 @@ import com.zrp200.rkpd2.items.potions.brews.BlizzardBrew;
 import com.zrp200.rkpd2.items.potions.brews.CausticBrew;
 import com.zrp200.rkpd2.items.potions.brews.InfernalBrew;
 import com.zrp200.rkpd2.items.potions.brews.ShockingBrew;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfAquaticRejuvenation;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfArcaneArmor;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfDragonsBlood;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfHoneyedHealing;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfIcyTouch;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfMight;
-import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfToxicEssence;
+import com.zrp200.rkpd2.items.potions.elixirs.*;
 import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.rkpd2.items.spells.Alchemize;
-import com.zrp200.rkpd2.items.spells.AquaBlast;
-import com.zrp200.rkpd2.items.spells.ArcaneCatalyst;
-import com.zrp200.rkpd2.items.spells.BeaconOfReturning;
-import com.zrp200.rkpd2.items.spells.CurseInfusion;
-import com.zrp200.rkpd2.items.spells.FeatherFall;
-import com.zrp200.rkpd2.items.spells.MagicalInfusion;
-import com.zrp200.rkpd2.items.spells.MagicalPorter;
-import com.zrp200.rkpd2.items.spells.PhaseShift;
-import com.zrp200.rkpd2.items.spells.ReclaimTrap;
-import com.zrp200.rkpd2.items.spells.Recycle;
-import com.zrp200.rkpd2.items.spells.WildEnergy;
-import com.zrp200.rkpd2.items.wands.Wand;
-import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.items.spells.*;
+import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
 
@@ -163,10 +146,15 @@ public abstract class Recipe {
 	//*******
 	// Static members
 	//*******
-	
+
+	private static Recipe[] variableRecipes = new Recipe[]{
+			new LiquidMetal.Recipe()
+	};
+
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
 		new AlchemistsToolkit.upgradeKit(),
 		new Scroll.ScrollToStone(),
+		new ArcaneResin.Recipe(),
 		new StewedMeat.oneMeat()
 	};
 	
@@ -209,7 +197,13 @@ public abstract class Recipe {
 	};
 	
 	public static Recipe findRecipe(ArrayList<Item> ingredients){
-		
+
+		for (Recipe recipe : variableRecipes){
+			if (recipe.testIngredients(ingredients)){
+				return recipe;
+			}
+		}
+
 		if (ingredients.size() == 1){
 			for (Recipe recipe : oneIngredientRecipes){
 				if (recipe.testIngredients(ingredients)){
@@ -237,8 +231,9 @@ public abstract class Recipe {
 	
 	public static boolean usableInRecipe(Item item){
 		return !item.cursed
-				&& (!(item instanceof EquipableItem) || (item instanceof AlchemistsToolkit && item.isIdentified()))
-				&& !(item instanceof Wand);
+				&& (!(item instanceof EquipableItem)
+					|| (item instanceof AlchemistsToolkit && item.isIdentified())
+					|| item instanceof MissileWeapon);
 	}
 }
 

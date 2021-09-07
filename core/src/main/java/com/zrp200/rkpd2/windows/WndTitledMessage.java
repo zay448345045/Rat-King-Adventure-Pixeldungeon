@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Component;
 
 public class WndTitledMessage extends Window {
 
@@ -57,6 +57,8 @@ public class WndTitledMessage extends Window {
 				&& text.bottom() > (PixelScene.MIN_HEIGHT_L - 10)
 				&& width < WIDTH_MAX){
 			width += 20;
+			titlebar.setRect(0, 0, width, 0);
+			text.setPos( titlebar.left(), titlebar.bottom() + 2*GAP );
 			text.maxWidth(width);
 		}
 

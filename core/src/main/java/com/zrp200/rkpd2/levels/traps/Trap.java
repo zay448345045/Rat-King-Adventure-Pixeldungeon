@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
 
 public abstract class Trap implements Bundlable {
 
@@ -58,9 +58,12 @@ public abstract class Trap implements Bundlable {
 
 	public boolean visible;
 	public boolean active = true;
+	public boolean disarmedByActivation = true;
 	
 	public boolean canBeHidden = true;
 	public boolean canBeSearched = true;
+
+	public boolean avoidsHallways = false; //whether this trap should avoid being placed in hallways
 
 	public Trap set(int pos){
 		this.pos = pos;
@@ -88,7 +91,7 @@ public abstract class Trap implements Bundlable {
 			if (Dungeon.level.heroFOV[pos]) {
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
 			}
-			disarm();
+			if (disarmedByActivation) disarm();
 			reveal();
 			activate();
 		}

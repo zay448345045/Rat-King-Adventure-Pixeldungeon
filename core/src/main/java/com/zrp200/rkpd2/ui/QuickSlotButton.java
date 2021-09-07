@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.mobs.Phantom;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
@@ -38,7 +39,7 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.windows.WndBag;
 
-public class QuickSlotButton extends Button implements WndBag.Listener {
+public class QuickSlotButton extends Button {
 	
 	private static QuickSlotButton[] instance = new QuickSlotButton[4];
 	private int slotNum;
@@ -167,27 +168,40 @@ public class QuickSlotButton extends Button implements WndBag.Listener {
 	
 	@Override
 	protected void onClick() {
-		GameScene.selectItem( this, WndBag.Mode.QUICKSLOT, Messages.get(this, "select_item") );
+		GameScene.selectItem( itemSelector );
 	}
 	
 	@Override
 	protected boolean onLongClick() {
-		GameScene.selectItem( this, WndBag.Mode.QUICKSLOT, Messages.get(this, "select_item") );
+		GameScene.selectItem( itemSelector );
 		return true;
 	}
+
+	private WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+		@Override
+		public String textPrompt() {
+			return Messages.get(QuickSlotButton.class, "select_item");
+		}
+
+		@Override
+		public boolean itemSelectable(Item item) {
+			return item.defaultAction != null;
+		}
+
+		@Override
+		public void onSelect(Item item) {
+			if (item != null) {
+				Dungeon.quickslot.setSlot( slotNum , item );
+				refresh();
+			}
+		}
+	};
 
 	private static Item select(int slotNum){
 		return Dungeon.quickslot.getItem( slotNum );
 	}
 
-	@Override
-	public void onSelect( Item item ) {
-		if (item != null) {
-			Dungeon.quickslot.setSlot( slotNum , item );
-			refresh();
-		}
-	}
-	
 	public void item( Item item ) {
 		slot.item( item );
 		enableSlot();
@@ -203,7 +217,9 @@ public class QuickSlotButton extends Button implements WndBag.Listener {
 	}
 	
 	private void enableSlot() {
-		slot.enable(Dungeon.quickslot.isNonePlaceholder( slotNum ));
+		//TODO check if item persists!
+		slot.enable(Dungeon.quickslot.isNonePlaceholder( slotNum )
+				&& (Dungeon.hero.buff(LostInventory.class) == null || Dungeon.quickslot.getItem(slotNum).keptThoughLostInvent));
 	}
 
 	public static void useTargeting(int idx){

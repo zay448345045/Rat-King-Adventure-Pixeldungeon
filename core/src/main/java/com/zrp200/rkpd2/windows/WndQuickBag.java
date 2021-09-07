@@ -1,9 +1,13 @@
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.QuickSlot;
+import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Generator;
@@ -20,10 +24,6 @@ import com.zrp200.rkpd2.ui.ItemSlot;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -198,6 +198,11 @@ public class WndQuickBag extends Window {
 					}
 				}
 
+				if (Dungeon.hero.buff(LostInventory.class) != null
+						&& !item.keptThoughLostInvent){
+					enable(false);
+				}
+
 			} else {
 				bg.color(NORMAL);
 			}
@@ -215,7 +220,7 @@ public class WndQuickBag extends Window {
 
 		@Override
 		protected void onClick() {
-			if (Dungeon.hero == null || !Dungeon.hero.isAlive()){
+			if (Dungeon.hero == null || !Dungeon.hero.isAlive() || !Dungeon.hero.belongings.contains(item)){
 				Game.scene().addToFront(new WndUseItem(WndQuickBag.this, item));
 				return;
 			}

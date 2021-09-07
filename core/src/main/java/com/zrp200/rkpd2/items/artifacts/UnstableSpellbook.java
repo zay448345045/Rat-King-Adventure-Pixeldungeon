@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.items.artifacts;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
@@ -31,13 +37,10 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.bags.Bag;
+import com.zrp200.rkpd2.items.bags.ScrollHolder;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
-import com.zrp200.rkpd2.items.scrolls.Scroll;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
+import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -46,12 +49,6 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndOptions;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,8 +71,6 @@ public class UnstableSpellbook extends Artifact {
 	public static final String AC_ADD = "ADD";
 
 	private final ArrayList<Class> scrolls = new ArrayList<>();
-
-	protected WndBag.Mode mode = WndBag.Mode.SCROLL;
 
 	public UnstableSpellbook() {
 		super();
@@ -173,7 +168,7 @@ public class UnstableSpellbook extends Artifact {
 			}
 
 		} else if (action.equals( AC_ADD )) {
-			GameScene.selectItem(itemSelector, mode, Messages.get(this, "prompt"));
+			GameScene.selectItem(itemSelector);
 		}
 	}
 
@@ -237,17 +232,6 @@ public class UnstableSpellbook extends Artifact {
 			scrolls.remove(0);
 
 		return super.upgrade();
-	}
-
-	public static boolean canUseScroll( Item item ){
-		if (item instanceof Scroll){
-			if (!(curItem instanceof UnstableSpellbook)){
-				return true;
-			} else {
-				return item.isIdentified() && ((UnstableSpellbook) curItem).scrolls.contains(item.getClass());
-			}
-		}
-		return false;
 	}
 
 	@Override
@@ -317,7 +301,23 @@ public class UnstableSpellbook extends Artifact {
 		}
 	}
 
-	protected WndBag.Listener itemSelector = new WndBag.Listener() {
+	protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+		@Override
+		public String textPrompt() {
+			return Messages.get(UnstableSpellbook.class, "prompt");
+		}
+
+		@Override
+		public Class<?extends Bag> preferredBag(){
+			return ScrollHolder.class;
+		}
+
+		@Override
+		public boolean itemSelectable(Item item) {
+			return item instanceof Scroll && scrolls.contains(item.getClass());
+		}
+
 		@Override
 		public void onSelect(Item item) {
 			if (item != null && item instanceof Scroll && item.isIdentified()){

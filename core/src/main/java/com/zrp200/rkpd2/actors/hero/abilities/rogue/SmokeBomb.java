@@ -44,6 +44,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.MobSprite;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -59,8 +60,8 @@ public class SmokeBomb extends ArmorAbility {
 		if (!hero.hasTalent(Talent.SHADOW_STEP) || hero.invisible <= 0){
 			return super.chargeUse(hero);
 		} else {
-			//reduced charge use by 24%/42%/56%/67%
-			return (float)(super.chargeUse(hero) * Math.pow(0.76, hero.pointsInTalent(Talent.SHADOW_STEP)));
+			//reduced charge use by 20%/36%/50%/60%
+			return (float)(super.chargeUse(hero) * Math.pow(0.795, hero.pointsInTalent(Talent.SHADOW_STEP)));
 		}
 	}
 
@@ -136,7 +137,7 @@ public class SmokeBomb extends ArmorAbility {
 				}
 
 				if (hero.hasTalent(Talent.HASTY_RETREAT)){
-					int duration = 1+hero.pointsInTalent(Talent.HASTY_RETREAT);
+					int duration = hero.pointsInTalent(Talent.HASTY_RETREAT);
 					Buff.affect(hero, Haste.class, duration);
 					Buff.affect(hero, Invisibility.class, duration);
 				}
@@ -158,6 +159,11 @@ public class SmokeBomb extends ArmorAbility {
 				hero.next();
 			}
 		}
+	}
+
+	@Override
+	public int icon() {
+		return HeroIcon.SMOKE_BOMB;
 	}
 
 	@Override
@@ -185,7 +191,7 @@ public class SmokeBomb extends ArmorAbility {
 		@Override
 		public int drRoll() {
 			return Random.NormalIntRange(Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE),
-					5*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE));
+					3*Dungeon.hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE));
 		}
 
 	}

@@ -23,6 +23,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.RatSprite;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -138,6 +139,11 @@ public class Ratmogrify extends ArmorAbility {
 	}
 
 	@Override
+	public int icon() {
+		return HeroIcon.RATMOGRIFY;
+	}
+
+	@Override
 	public Talent[] talents() {
 		ArrayList<Talent> talents = new ArrayList<>(Arrays.asList(Talent.RATSISTANCE, Talent.RATLOMACY, Talent.RATFORCEMENTS, Talent.DRRATEDON, Talent.HEROIC_ENERGY));
 		if (GamesInProgress.selectedClass == HeroClass.RAT_KING || (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.RAT_KING))
@@ -149,8 +155,6 @@ public class Ratmogrify extends ArmorAbility {
 
 		{
 			spriteClass = RatSprite.class;
-
-			maxLvl = -2;
 		}
 
 		private Mob original;
@@ -165,6 +169,7 @@ public class Ratmogrify extends ArmorAbility {
 			defenseSkill = original.defenseSkill;
 
 			EXP = original.EXP;
+			maxLvl = original.maxLvl;
 
 			if (original.state == original.SLEEPING) {
 				state = SLEEPING;
@@ -176,10 +181,37 @@ public class Ratmogrify extends ArmorAbility {
 
 		}
 
+		private float timeLeft = 6f;
+
+		@Override
+		protected boolean act() {
+			if (timeLeft <= 0){
+				original.HP = HP;
+				original.pos = pos;
+				original.clearTime();
+				GameScene.add(original);
+
+				destroy();
+				sprite.killAndErase();
+				CellEmitter.get(original.pos).burst(Speck.factory(Speck.WOOL), 4);
+				Sample.INSTANCE.play(Assets.Sounds.PUFF);
+				return true;
+			} else {
+				return super.act();
+			}
+		}
+
+		@Override
+		public void spend(float time) {
+			if (!allied) timeLeft -= time;
+			super.spend(time);
+		}
+
 		public void makeAlly() {
 			allied = true;
 			alignment = Alignment.ALLY;
 			if (drratedonEffect(this) > 4 && ChampionEnemy.isChampion(this)) ChampionEnemy.rollForChampionInstantly(this);
+			timeLeft = Float.POSITIVE_INFINITY;
 		}
 
 		public int attackSkill(Char target) {
@@ -190,13 +222,15 @@ public class Ratmogrify extends ArmorAbility {
 			return original.drRoll();
 		}
 
+		private static final float RESIST_FACTOR=.85f; // .9 in shpd
+
 		@Override
 		public int damageRoll() {
 			int damage = original.damageRoll();
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null && drratedonEffect(this) > 2) damage = berserk.damageFactor(damage);
 			if (!allied && (Dungeon.hero.hasTalent(Talent.RATSISTANCE) || Dungeon.hero.heroClass == HeroClass.RAT_KING)){
-				damage = Math.round(damage * (1f - .15f*Dungeon.hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATSISTANCE)));
+				damage *= Math.pow(RESIST_FACTOR, Dungeon.hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATSISTANCE));
 			}
 			return damage;
 		}
@@ -218,6 +252,11 @@ public class Ratmogrify extends ArmorAbility {
 		@Override
 		public float attackDelay() {
 			return original.attackDelay();
+		}
+
+		@Override
+		public void rollToDropLoot() {
+			original.rollToDropLoot();
 		}
 
 		@Override
@@ -249,7 +288,7 @@ public class Ratmogrify extends ArmorAbility {
 	}
 
 	// summons.
-	private static double getModifier() { return Math.max(1, Dungeon.getDepth() /5d); }
+	private static double getModifier() { return Math.max(1, (Dungeon.getDepth() /5d)*0.8f); }
 	public static class SummonedRat extends Rat {
 		{
 			HP = HT *= getModifier();

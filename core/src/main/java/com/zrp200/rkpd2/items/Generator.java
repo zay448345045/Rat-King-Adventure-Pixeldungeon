@@ -28,7 +28,6 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.armor.*;
 import com.zrp200.rkpd2.items.artifacts.*;
-import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.Pasty;
@@ -54,7 +53,7 @@ public class Generator {
 		WEP_T4	( 0,    MeleeWeapon.class),
 		WEP_T5	( 0,    MeleeWeapon.class),
 		WEP_T6  ( 0,     MeleeWeapon.class),
-		
+
 		ARMOR	( 3,    Armor.class ),
 		
 		MISSILE ( 3,    MissileWeapon.class ),
@@ -64,7 +63,7 @@ public class Generator {
 		MIS_T4  ( 0,    MissileWeapon.class ),
 		MIS_T5  ( 0,    MissileWeapon.class ),
 		MIS_T6  ( 0,    MissileWeapon.class ),
-		
+
 		WAND	( 2,    Wand.class ),
 		RING	( 1,    Ring.class ),
 		ARTIFACT( 1,    Artifact.class),
@@ -102,8 +101,9 @@ public class Generator {
 					return i;
 				}
 			}
-			
-			return item instanceof Bag ? Integer.MAX_VALUE : Integer.MAX_VALUE - 1;
+
+			//items without a category-defined order are sorted based on the spritesheet
+			return Short.MAX_VALUE+item.image();
 		}
 
 		static {
@@ -167,11 +167,11 @@ public class Generator {
 					StoneOfFlock.class,
 					StoneOfShock.class,
 					StoneOfBlink.class,
-					StoneOfDeepenedSleep.class,
+					StoneOfDeepSleep.class,
 					StoneOfClairvoyance.class,
 					StoneOfAggression.class,
 					StoneOfBlast.class,
-					StoneOfAffection.class,
+					StoneOfFear.class,
 					StoneOfAugmentation.class  //1 is sold in each shop
 			};
 			STONE.defaultProbs = new float[]{ 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0 };
@@ -313,7 +313,7 @@ public class Generator {
 					SteelAxe.class,
 			};
 			MIS_T6.probs = new float[]{ 9, 8, 7, 3 };
-			
+
 			FOOD.classes = new Class<?>[]{
 					Food.class,
 					Pasty.class,

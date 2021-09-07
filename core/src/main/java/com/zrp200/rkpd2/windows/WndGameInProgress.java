@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.ui.Button;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.FileUtils;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
@@ -31,15 +35,7 @@ import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.scenes.StartScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.ActionIndicator;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.ui.Button;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.FileUtils;
+import com.zrp200.rkpd2.ui.*;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -107,10 +103,11 @@ public class WndGameInProgress extends Window {
 		}
 		
 		pos += GAP;
-		
-		statSlot( Messages.get(this, "str"), info.str );
-		if (info.shld > 0) statSlot( Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht );
-		else statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
+
+		if (info.strBonus > 0)  statSlot( Messages.get(this, "str"), info.str + "+" + info.strBonus );
+		else                    statSlot( Messages.get(this, "str"), info.str );
+		if (info.shld > 0)  statSlot( Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht );
+		else                statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
 		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
 		
 		pos += GAP;

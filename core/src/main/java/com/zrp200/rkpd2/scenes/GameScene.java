@@ -37,17 +37,17 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.DemonSpawner;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.Snake;
 import com.zrp200.rkpd2.effects.*;
+import com.zrp200.rkpd2.items.Ankh;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
-import com.zrp200.rkpd2.items.bags.MagicalHolster;
-import com.zrp200.rkpd2.items.bags.PotionBandolier;
-import com.zrp200.rkpd2.items.bags.ScrollHolder;
-import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.RegularLevel;
@@ -61,7 +61,6 @@ import com.zrp200.rkpd2.tiles.*;
 import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.*;
-import com.zrp200.rkpd2.windows.WndBag.Mode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -139,7 +138,11 @@ public class GameScene extends PixelScene {
 	private LootIndicator loot;
 	private ActionIndicator action;
 	private ResumeIndicator resume;
-	
+
+	{
+		inGameScene = true;
+	}
+
 	@Override
 	public void create() {
 		
@@ -147,11 +150,14 @@ public class GameScene extends PixelScene {
 			ShatteredPixelDungeon.switchNoFade(TitleScene.class);
 			return;
 		}
-		
-		Music.INSTANCE.play( Assets.Music.GAME, true );
+
+		Music.INSTANCE.playTracks(
+				new String[]{Assets.Music.SEWERS_1, Assets.Music.SEWERS_2, Assets.Music.SEWERS_2},
+				new float[]{1, 1, 0.5f},
+				false);
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
-		
+
 		super.create();
 		Camera.main.zoom( GameMath.gate(minZoom, defaultZoom + SPDSettings.zoom(), maxZoom));
 
@@ -210,7 +216,7 @@ public class GameScene extends PixelScene {
 
 		heaps = new Group();
 		add( heaps );
-		
+
 		for ( Heap heap : Dungeon.level.heaps.valueList() ) {
 			addHeapSprite( heap );
 		}
@@ -286,7 +292,7 @@ public class GameScene extends PixelScene {
 		add( healthIndicators );
 		//always appears ontop of other health indicators
 		add( new TargetHealthIndicator() );
-		
+
 		add( cellSelector = new CellSelector( tiles ) );
 
 		pane = new StatusPane();
@@ -327,16 +333,20 @@ public class GameScene extends PixelScene {
 		busy.x = 1;
 		busy.y = pane.bottom() + 1;
 		add( busy );
-		
+
 		counter = new CircleArc(18, 4.25f);
 		counter.color( 0x808080, true );
 		counter.camera = uiCamera;
 		counter.show(this, busy.center(), 0f);
-		
+
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
-				ScrollOfTeleportation.appear( Dungeon.hero, Dungeon.level.entrance );
-				new Flare( 8, 32 ).color( 0xFFFF66, true ).show( hero, 2f ) ;
+				ScrollOfTeleportation.appear(Dungeon.hero, Dungeon.level.entrance);
+				new Flare(8, 32).color(0xFFFF66, true).show(hero, 2f);
+				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+				ScrollOfTeleportation.appear(Dungeon.hero, Dungeon.hero.pos);
+				SpellSprite.show(Dungeon.hero, SpellSprite.ANKH);
+				new Flare(5, 16).color(0xFFFF00, true).show(hero, 4f);
 				break;
 			case RETURN:
 				ScrollOfTeleportation.appear(  Dungeon.hero, Dungeon.hero.pos );
@@ -385,7 +395,7 @@ public class GameScene extends PixelScene {
 			}
 			Dungeon.droppedItems.remove(Dungeon.getDepth());
 		}
-		
+
 		ArrayList<Item> ported = Dungeon.portedItems.get(Dungeon.getDepth());
 		if (ported != null){
 			//TODO currently items are only ported to boss rooms, so this works well
@@ -424,7 +434,7 @@ public class GameScene extends PixelScene {
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
 				GLog.h(Messages.get(this, "descend"), Dungeon.depth);
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-				
+
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
 						((DriedRose.GhostHero) ch).sayAppeared();
@@ -447,26 +457,29 @@ public class GameScene extends PixelScene {
 						}
 					}
 				}
-				int points = Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN);
-				if (points > 0
-						&& Dungeon.level instanceof RegularLevel){
-					int reqSecrets = Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
-					for (Room r : ((RegularLevel) Dungeon.level).rooms()){
-						if (r instanceof SecretRoom) reqSecrets--;
-					}
-					//50%/75% chance for power within
-					//60/90% chance for
-					float chance =
-							.25f*(1+Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN));
-					if (reqSecrets <= 0 && Random.Float() < chance){
-						GLog.p(Messages.get(this, "secret_hint"));
-					}
-				}
-
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESET) {
 				GLog.h(Messages.get(this, "warp"));
+			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESURRECT) {
+				GLog.h(Messages.get(this, "resurrect"), Dungeon.depth);
 			} else {
 				GLog.h(Messages.get(this, "return"), Dungeon.depth);
+			}
+
+			if (Dungeon.hero.hasTalent(Talent.POWER_WITHIN)
+					&& Dungeon.level instanceof RegularLevel) {
+				int reqSecrets = Dungeon.level.feeling == Level.Feeling.SECRETS ? 2 : 1;
+				for (Room r : ((RegularLevel) Dungeon.level).rooms()) {
+					if (r instanceof SecretRoom) reqSecrets--;
+				}
+				//50%/75% chance for power within, use level's seed so that we get the same result for the same level
+				//60/90% chance for rogue's foresight
+					float chance =
+						.25f*(1+Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN));
+				Random.pushGenerator(Dungeon.seedCurDepth());
+				if (reqSecrets <= 0 && Random.Float() <= chance) {
+					GLog.p(Messages.get(this, "secret_hint"));
+				}
+				Random.popGenerator();
 			}
 
 			boolean unspentTalents = false;
@@ -501,11 +514,29 @@ public class GameScene extends PixelScene {
 
 			InterlevelScene.mode = InterlevelScene.Mode.NONE;
 
-			
+
 		}
-		
+
+		if (Rankings.INSTANCE.totalNumber > 0 && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_DIEING)) {
+			GLog.p(Messages.get(Guidebook.class, "hint"));
+			GameScene.flashForDocument(Document.GUIDE_DIEING);
+		}
+
 		fadeIn();
 
+		//re-show WndResurrect if needed
+		if (!Dungeon.hero.isAlive()) {
+			//check if hero has an unblessed ankh
+			boolean hasAnkh = false;
+			for (Ankh i : Dungeon.hero.belongings.getAllItems(Ankh.class)) {
+				if (!i.isBlessed()) {
+					hasAnkh = true;
+				}
+			}
+			if (hasAnkh) {
+				add(new WndResurrect());
+			}
+		}
 	}
 	
 	public void destroy() {
@@ -882,9 +913,10 @@ public class GameScene extends PixelScene {
 	public static void pickUpJournal( Item item, int pos ) {
 		if (scene != null) scene.pane.pickup( item, pos );
 	}
-	
-	public static void flashJournal(){
-		if (scene != null) scene.pane.flash();
+
+	//TODO currently only works with guidebooks
+	public static void flashForDocument( String page ){
+		if (scene != null) scene.pane.flashForPage( page );
 	}
 	
 	public static void updateKeyDisplay(){
@@ -1036,20 +1068,11 @@ public class GameScene extends PixelScene {
 		}
 	}
 	
-	public static WndBag selectItem( WndBag.Listener listener, WndBag.Mode mode, String title ) {
+	public static WndBag selectItem( WndBag.ItemSelector listener ) {
 		cancelCellSelector();
-		
-		WndBag wnd =
-				mode == Mode.SEED ?
-					WndBag.getBag( VelvetPouch.class, listener, mode, title ) :
-				mode == Mode.SCROLL ?
-					WndBag.getBag( ScrollHolder.class, listener, mode, title ) :
-				mode == Mode.POTION ?
-					WndBag.getBag( PotionBandolier.class, listener, mode, title ) :
-				mode == Mode.WAND ?
-					WndBag.getBag( MagicalHolster.class, listener, mode, title ) :
-				WndBag.lastBag( listener, mode, title );
-		
+
+		WndBag wnd = WndBag.getBag( listener );
+
 		if (scene != null) scene.addToFront( wnd );
 		
 		return wnd;
@@ -1148,6 +1171,10 @@ public class GameScene extends PixelScene {
 			GameScene.show( new WndHero() );
 		} else if ( o instanceof Mob ){
 			GameScene.show(new WndInfoMob((Mob) o));
+			if (o instanceof Snake && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_SURPRISE_ATKS)){
+				GLog.p(Messages.get(Guidebook.class, "hint"));
+				GameScene.flashForDocument(Document.GUIDE_SURPRISE_ATKS);
+			}
 		} else if ( o instanceof Heap ){
 			GameScene.show(new WndInfoItem((Heap)o));
 		} else if ( o instanceof Plant ){

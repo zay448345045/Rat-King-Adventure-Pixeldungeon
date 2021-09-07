@@ -90,7 +90,7 @@ public class WndDocument extends Window {
 		
 		pos += Math.max(ITEM_HEIGHT, title.height());
 		
-		for (String page : doc.pages()){
+		for (String page : doc.pageNames()){
 			docPage item = new docPage( doc, page );
 			
 			item.setRect( 0, pos, w, ITEM_HEIGHT );
@@ -119,7 +119,7 @@ public class WndDocument extends Window {
 			this.doc = doc;
 			
 			this.page = page;
-			found = doc.hasPage(page);
+			found = doc.isPageFound(page);
 			
 			if (!found) {
 				icon.hardlight( 0.5f, 0.5f, 0.5f);

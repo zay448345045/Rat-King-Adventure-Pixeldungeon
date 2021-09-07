@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Reflection;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
@@ -44,6 +44,9 @@ public class Buff extends Actor {
 	
 	//whether or not the buff announces its name
 	public boolean announced = false;
+
+	//whether a buff should persist through revive effects for the hero
+	public boolean revivePersists = false;
 	
 	protected HashSet<Class> resistances = new HashSet<>();
 	

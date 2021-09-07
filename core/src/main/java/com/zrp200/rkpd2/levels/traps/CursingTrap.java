@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -36,7 +37,6 @@ import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +74,7 @@ public class CursingTrap extends Trap {
 		//items the trap can curse if nothing else is available.
 		ArrayList<Item> canCurse = new ArrayList<>();
 
-		KindOfWeapon weapon = hero.belongings.weapon;
+		KindOfWeapon weapon = hero.belongings.weapon();
 		if (weapon instanceof Weapon && !(weapon instanceof MagesStaff)){
 			if (((Weapon) weapon).enchantment == null)
 				priorityCurse.add(weapon);
@@ -82,7 +82,7 @@ public class CursingTrap extends Trap {
 				canCurse.add(weapon);
 		}
 
-		Armor armor = hero.belongings.armor;
+		Armor armor = hero.belongings.armor();
 		if (armor != null){
 			if (armor.glyph == null)
 				priorityCurse.add(armor);

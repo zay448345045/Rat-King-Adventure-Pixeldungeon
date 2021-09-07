@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.ui.changelist;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
@@ -31,7 +32,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 
@@ -145,7 +145,7 @@ public class v0_2_X_Changes {
 				"_-_ Released November 3rd, 2014\n" +
 				"_-_ 21 days after Shattered v0.2.1\n" +
 				"\n" +
-				"v0.2.2 was Shattered's first update that didn't have a specific focus. Instead this update was forking on making a bunch of little improvements.\n" +
+				"v0.2.2 was Shattered's first update that didn't have a specific focus. Instead this update was focused on making a bunch of little improvements.\n" +
 				"\n" +
 				"The largest change was the integration of Pixel Dungeon's source code from v1.7.2, which included synchronous movement! It's something we take for granted now, but before this change every on-screen character had to move one at a time. This slowed the pace of the game to a crawl whenever enemies were on screen.\n" +
 				"\n" +

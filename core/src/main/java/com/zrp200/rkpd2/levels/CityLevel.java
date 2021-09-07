@@ -21,33 +21,19 @@
 
 package com.zrp200.rkpd2.levels;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
-import com.zrp200.rkpd2.levels.painters.CityPainter;
-import com.zrp200.rkpd2.levels.painters.Painter;
-import com.zrp200.rkpd2.levels.traps.BlazingTrap;
-import com.zrp200.rkpd2.levels.traps.CorrosionTrap;
-import com.zrp200.rkpd2.levels.traps.CursingTrap;
-import com.zrp200.rkpd2.levels.traps.DisarmingTrap;
-import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
-import com.zrp200.rkpd2.levels.traps.DistortionTrap;
-import com.zrp200.rkpd2.levels.traps.FlashingTrap;
-import com.zrp200.rkpd2.levels.traps.FrostTrap;
-import com.zrp200.rkpd2.levels.traps.GuardianTrap;
-import com.zrp200.rkpd2.levels.traps.PitfallTrap;
-import com.zrp200.rkpd2.levels.traps.RockfallTrap;
-import com.zrp200.rkpd2.levels.traps.StormTrap;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
-import com.zrp200.rkpd2.levels.traps.WarpingTrap;
-import com.zrp200.rkpd2.levels.traps.WeakeningTrap;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
+import com.zrp200.rkpd2.levels.painters.CityPainter;
+import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.levels.traps.*;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 public class CityLevel extends RegularLevel {
 
@@ -93,7 +79,7 @@ public class CityLevel extends RegularLevel {
 		return new Class[]{
 				FrostTrap.class, StormTrap.class, CorrosionTrap.class, BlazingTrap.class, DisintegrationTrap.class,
 				RockfallTrap.class, FlashingTrap.class, GuardianTrap.class, WeakeningTrap.class,
-				DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, PitfallTrap.class, DistortionTrap.class };
+				DisarmingTrap.class, SummoningTrap.class, WarpingTrap.class, CursingTrap.class, PitfallTrap.class, DistortionTrap.class, GatewayTrap.class, GeyserTrap.class };
 	}
 
 	@Override
@@ -101,7 +87,7 @@ public class CityLevel extends RegularLevel {
 		return new float[]{
 				4, 4, 4, 4, 4,
 				2, 2, 2, 2,
-				1, 1, 1, 1, 1, 1 };
+				1, 1, 1, 1, 1, 1, 1, 1 };
 	}
 	
 	@Override

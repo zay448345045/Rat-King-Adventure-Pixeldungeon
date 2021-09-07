@@ -21,9 +21,10 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.watabou.gltextures.SmartTexture;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.*;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Button;
@@ -43,15 +44,12 @@ public class TalentButton extends Button {
 	public static final int WIDTH = 20;
 	public static final int HEIGHT = 26;
 
-	private SmartTexture icons;
-	private TextureFilm film;
-
 	int tier;
 	Talent talent;
 	int pointsInTalent;
 	boolean upgradeEnabled;
 
-	Image icon;
+	TalentIcon icon;
 	Image bg;
 
 	ColorBlock fill;
@@ -66,24 +64,20 @@ public class TalentButton extends Button {
 		this.upgradeEnabled = upgradeEnabled;
 
 		bg.frame(20*(talent.maxPoints()-1), 0, WIDTH, HEIGHT);
-		icon.frame( film.get( talent.icon() ) );
+
+		icon = new TalentIcon( talent );
+		add(icon);
 	}
 
 	@Override
 	protected void createChildren() {
 		super.createChildren();
 
-		icons = TextureCache.get( Assets.Interfaces.TALENT_ICONS );
-		film = new TextureFilm( icons, 16, 16 );
-
 		fill = new ColorBlock(0, 4, 0xFFFFFF44);
 		add(fill);
 
 		bg = new Image(Assets.Interfaces.TALENT_BUTTON);
 		add(bg);
-
-		icon = new Image( icons );
-		add(icon);
 	}
 
 	@Override

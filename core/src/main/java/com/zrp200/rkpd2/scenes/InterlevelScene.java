@@ -29,12 +29,14 @@ import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.items.LostBackpack;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.services.updates.Updates;
 import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.windows.WndError;
 import com.zrp200.rkpd2.windows.WndStory;
 
@@ -75,7 +77,13 @@ public class InterlevelScene extends PixelScene {
 	private static Thread thread;
 	private static Exception error = null;
 	private float waitingTime;
-	
+
+	public static int lastRegion = -1;
+
+	{
+		inGameScene = true;
+	}
+
 	@Override
 	public void create() {
 		super.create();
@@ -122,12 +130,20 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = returnDepth > Dungeon.getDepth() ? 15 : -15;
 				break;
 		}
-		if (loadingDepth <= 5)          loadingAsset = Assets.Interfaces.LOADING_SEWERS;
-		else if (loadingDepth <= 10)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
-		else if (loadingDepth <= 15)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
-		else if (loadingDepth <= 20)    loadingAsset = Assets.Interfaces.LOADING_CITY;
-		else if (loadingDepth <= 25)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
-		else                            loadingAsset = Assets.Interfaces.SHADOW;
+
+		//flush the texture cache whenever moving between regions, helps reduce memory load
+		int region = (int)Math.ceil(loadingDepth / 5f);
+		if (region != lastRegion){
+			TextureCache.clear();
+			lastRegion = region;
+		}
+
+		if      (lastRegion == 1)    loadingAsset = Assets.Interfaces.LOADING_SEWERS;
+		else if (lastRegion == 2)    loadingAsset = Assets.Interfaces.LOADING_PRISON;
+		else if (lastRegion == 3)    loadingAsset = Assets.Interfaces.LOADING_CAVES;
+		else if (lastRegion == 4)    loadingAsset = Assets.Interfaces.LOADING_CITY;
+		else if (lastRegion == 5)    loadingAsset = Assets.Interfaces.LOADING_HALLS;
+		else                         loadingAsset = Assets.Interfaces.SHADOW;
 		
 		//slow down transition when displaying an install prompt
 		if (Updates.isInstallable()){
@@ -411,19 +427,33 @@ public class InterlevelScene extends PixelScene {
 		}
 	}
 	
-	private void resurrect() throws IOException {
+	private void resurrect() {
 		
 		Mob.holdAllies( Dungeon.level );
-		
+
+		Level level;
 		if (Dungeon.level.locked) {
-			Dungeon.hero.resurrect(Dungeon.depth);
-			Dungeon.depth = Dungeon.depth - 1;
-			Level level = Dungeon.newLevel();
-			Dungeon.switchLevel( level, level.entrance );
+			Dungeon.hero.resurrect();
+			Dungeon.depth--;
+			level = Dungeon.newLevel();
+			Dungeon.hero.pos = level.randomRespawnCell(Dungeon.hero);
+			level.drop(new LostBackpack(), level.randomRespawnCell(null));
 		} else {
-			Dungeon.hero.resurrect( -1 );
-			Dungeon.resetLevel();
+			Dungeon.hero.resurrect();
+			level = Dungeon.level;
+			BArray.setFalse(level.heroFOV);
+			BArray.setFalse(level.visited);
+			BArray.setFalse(level.mapped);
+			int invPos = Dungeon.hero.pos;
+			int tries = 0;
+			do {
+				Dungeon.hero.pos = level.randomRespawnCell(Dungeon.hero);
+				tries++;
+			} while (level.trueDistance(invPos, Dungeon.hero.pos) <= 30 - (tries/10));
+			level.drop(new LostBackpack(), invPos);
 		}
+
+		Dungeon.switchLevel( level, Dungeon.hero.pos );
 	}
 
 	private void reset() throws IOException {

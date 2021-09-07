@@ -4,8 +4,7 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.ui.TalentsPane;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.LinkedHashMap;
 public class WndInfoArmorAbility extends WndTitledMessage {
 
 	public WndInfoArmorAbility(HeroClass cls, ArmorAbility ability){
-		super( new ItemSprite( ItemSpriteSheet.CROWN, null ), Messages.titleCase(ability.name()), ability.desc());
+		super( new HeroIcon(ability), Messages.titleCase(ability.name()), ability.desc());
 
 		ArrayList<LinkedHashMap<Talent, Integer>> talentList = new ArrayList<>();
 		Talent.initArmorTalents(ability, talentList);

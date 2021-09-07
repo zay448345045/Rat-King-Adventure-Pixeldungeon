@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.scenes.GameScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.scenes.GameScene;
 
 import java.util.HashMap;
 
@@ -38,6 +38,7 @@ public class SpellSprite extends Image {
 	public static final int CHARGE		= 2;
 	public static final int MASTERY		= 3;
 	public static final int BERSERK     = 4;
+	public static final int ANKH        = 5;
 	
 	private static final int SIZE	= 16;
 	

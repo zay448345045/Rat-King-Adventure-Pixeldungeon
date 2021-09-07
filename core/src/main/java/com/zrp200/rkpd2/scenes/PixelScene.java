@@ -21,6 +21,14 @@
 
 package com.zrp200.rkpd2.scenes;
 
+import com.watabou.gltextures.TextureCache;
+import com.watabou.glwrap.Blending;
+import com.watabou.input.PointerEvent;
+import com.watabou.noosa.*;
+import com.watabou.noosa.BitmapText.Font;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.SPDSettings;
@@ -29,20 +37,6 @@ import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Blending;
-import com.watabou.input.PointerEvent;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.BitmapText.Font;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Gizmo;
-import com.watabou.noosa.Scene;
-import com.watabou.noosa.Visual;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -67,12 +61,20 @@ public class PixelScene extends Scene {
 	//stylized 3x5 bitmapped pixel font. Only latin characters supported.
 	public static BitmapText.Font pixelFont;
 
+	protected boolean inGameScene = false;
+
 	@Override
 	public void create() {
 
 		super.create();
 
 		GameScene.scene = null;
+
+		//flush the texture cache whenever moving from ingame to menu, helps reduce memory load
+		if (!inGameScene && InterlevelScene.lastRegion != -1){
+			InterlevelScene.lastRegion = -1;
+			TextureCache.clear();
+		}
 
 		float minWidth, minHeight;
 		if (landscape()) {
@@ -100,15 +102,11 @@ public class PixelScene extends Scene {
 		uiCamera = Camera.createFullscreen( uiZoom );
 		Camera.add( uiCamera );
 
-		if (pixelFont == null) {
-
-			// 3x5 (6)
-			pixelFont = Font.colorMarked(
-				TextureCache.get( Assets.Fonts.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL );
-			pixelFont.baseLine = 6;
-			pixelFont.tracking = -1;
-			
-		}
+		// 3x5 (6)
+		pixelFont = Font.colorMarked(
+			TextureCache.get( Assets.Fonts.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL );
+		pixelFont.baseLine = 6;
+		pixelFont.tracking = -1;
 		
 		//set up the texture size which rendered text will use for any new glyphs.
 		int renderedTextPageSize;
@@ -245,6 +243,7 @@ public class PixelScene extends Scene {
 			if ((time -= Game.elapsed) <= 0) {
 				alpha( 0f );
 				parent.remove( this );
+				destroy();
 			} else {
 				alpha( time / FADE_TIME );
 			}

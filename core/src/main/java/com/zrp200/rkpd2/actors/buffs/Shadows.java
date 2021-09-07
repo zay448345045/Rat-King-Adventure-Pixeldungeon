@@ -21,15 +21,15 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 public class Shadows extends Invisibility {
 	
@@ -93,11 +93,13 @@ public class Shadows extends Invisibility {
 			
 			if (--left <= 0) {
 				detach();
+				return true;
 			}
 
 			for (Mob m : Dungeon.level.mobs){
 				if (Dungeon.level.adjacent(m.pos, target.pos) && m.alignment != target.alignment){
 					detach();
+					return true;
 				}
 			}
 			

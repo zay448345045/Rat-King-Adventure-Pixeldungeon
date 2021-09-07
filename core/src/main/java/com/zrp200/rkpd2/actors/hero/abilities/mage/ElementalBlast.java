@@ -54,6 +54,7 @@ import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.ui.HeroIcon;
 
 import java.util.HashMap;
 
@@ -249,7 +250,7 @@ public class ElementalBlast extends ArmorAbility {
 
 							//### Deal damage ###
 							Char mob = Actor.findChar(cell);
-							int damage = Math.round(Random.NormalIntRange(10, 20)
+							int damage = Math.round(Random.NormalIntRange(15, 25)
 									* effectMulti
 									* damageFactors.get(finalWandCls[0]));
 
@@ -275,7 +276,7 @@ public class ElementalBlast extends ArmorAbility {
 								//*** Wand of Corrosion ***
 								} else if (finalWandCls[0] == WandOfCorrosion.class){
 									if (mob.isAlive() && mob.alignment != Char.Alignment.ALLY) {
-										Buff.affect( mob, Corrosion.class ).set(3, Math.round(6*effectMulti));
+										Buff.affect( mob, Corrosion.class ).set(4, Math.round(6*effectMulti));
 										charsHit++;
 									}
 
@@ -417,6 +418,11 @@ public class ElementalBlast extends ArmorAbility {
 		}
 		desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
 		return desc;
+	}
+
+	@Override
+	public int icon() {
+		return HeroIcon.ELEMENTAL_BLAST;
 	}
 
 	@Override

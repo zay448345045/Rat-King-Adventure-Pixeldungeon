@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.input.GameAction;
+import com.watabou.noosa.*;
+import com.watabou.noosa.ui.Button;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
@@ -33,16 +39,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.tiles.DungeonTerrainTilemap;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndQuickBag;
-import com.watabou.input.GameAction;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Gizmo;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.PointerArea;
-import com.watabou.noosa.ui.Button;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
 
 public class Toolbar extends Component {
 
@@ -143,7 +139,7 @@ public class Toolbar extends Component {
 
 			@Override
 			protected void onClick() {
-				GameScene.show(new WndBag(Dungeon.hero.belongings.backpack, null, WndBag.Mode.ALL, null));
+				GameScene.show(new WndBag(Dungeon.hero.belongings.backpack));
 			}
 			
 			@Override

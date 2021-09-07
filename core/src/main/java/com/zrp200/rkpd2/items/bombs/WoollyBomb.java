@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items.bombs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -30,9 +33,6 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.BArray;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class WoollyBomb extends Bomb {
 	
@@ -44,14 +44,14 @@ public class WoollyBomb extends Bomb {
 	public void explode(int cell) {
 		super.explode(cell);
 		
-		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 2 );
+		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), 4 );
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				if (Dungeon.level.insideMap(i)
 						&& Actor.findChar(i) == null
 						&& !(Dungeon.level.pit[i])) {
 					Sheep sheep = new Sheep();
-					sheep.lifespan = Random.NormalIntRange( 8, 16 );
+					sheep.lifespan = Random.NormalIntRange( 12, 16 );
 					sheep.pos = i;
 					Dungeon.level.occupyCell(sheep);
 					GameScene.add(sheep);

@@ -69,6 +69,7 @@ import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public enum Talent {
@@ -131,7 +132,7 @@ public enum Talent {
 	//Huntress T3
 	POINT_BLANK(105, 3), SEER_SHOT(106, 3),
 	//Sniper T3
-	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(137,3),
+	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(137,3) {{aliases = new String[]{"RANGER"};}},
 	//Warden T3
 	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3), NATURES_BETTER_AID(138,3),
 	//Spectral Blades T4
@@ -190,6 +191,8 @@ public enum Talent {
 	// Mus Rex Ira T4
 	BLOODFLARE_SKIN(60, 4), ASTRAL_CHARGE(61, 4), SHADOWSPEC_SLICE(62, 4), SILVA_RANGE(63, 4);
 
+	protected String[] aliases = new String[0];
+
 	public static abstract class Cooldown extends FlavourBuff {
 		public static <T extends Cooldown> void affectHero(Class<T> cls) {
 			if(cls == Cooldown.class) return;
@@ -209,13 +212,26 @@ public enum Talent {
 		public void tintIcon(Image icon) { icon.hardlight(0.15f, 0.2f, 0.5f); }
 	};
 	public static class BigRushTracker extends FlavourBuff{};
-	public static class LethalMomentumTracker extends FlavourBuff{};
+	public static class LethalMomentumTracker extends FlavourBuff{
+		public static void process() {
+			Hero hero = Dungeon.hero;
+			if(hero.hasTalent(LETHAL_MOMENTUM,PURSUIT,LETHAL_MOMENTUM_2)
+					&& Random.Float() < (
+							( hero.hasTalent(LETHAL_MOMENTUM) ? 2 : 1 )
+									+hero.pointsInTalent(LETHAL_MOMENTUM,PURSUIT,LETHAL_MOMENTUM_2))
+						/(hero.hasTalent(PURSUIT)?3f:4f)
+			)
+			Buff.affect(hero, LethalMomentumTracker.class, 1f);
+		}
+	};
+	public static class StrikingWaveTracker extends FlavourBuff{};
 	public static class WandPreservationCounter extends CounterBuff{};
 	public static class EmpoweredStrikeTracker extends FlavourBuff{};
 	public static class BountyHunterTracker extends FlavourBuff{};
 	public static class MysticalUpgradeWandTracker extends FlavourBuff{};
 	public static class MysticalUpgradeMissileTracker extends FlavourBuff{};
 	public static class RejuvenatingStepsCooldown extends Cooldown{
+		{ revivePersists = true; }
 		@Override public float duration() {
 			int points = Dungeon.hero.pointsInTalent(REJUVENATING_STEPS, POWER_WITHIN);
 			if(Dungeon.hero.pointsInTalent(Talent.REJUVENATING_STEPS) > 0) points++;
@@ -331,7 +347,9 @@ public enum Talent {
 				if (hero.pointsInTalent(LIGHT_CLOAK) == 1) {
 					for (Item item : Dungeon.hero.belongings.backpack) {
 						if (item instanceof CloakOfShadows) {
-							((CloakOfShadows) item).activate(Dungeon.hero);
+							if (hero.buff(LostInventory.class) == null || item.keptThoughLostInvent) {
+								((CloakOfShadows) item).activate(Dungeon.hero);
+							}
 						}
 					}
 				}
@@ -351,8 +369,8 @@ public enum Talent {
 
 	}
 
-	public static class CachedRationsDropped extends CounterBuff{};
-	public static class NatureBerriesAvailable extends CounterBuff{};
+	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}};
+	public static class NatureBerriesAvailable extends CounterBuff{{revivePersists = true;}};
 
 	public static void onFoodEaten( Hero hero, float foodVal, Item foodSource ){
 		if (hero.hasTalent(HEARTY_MEAL,ROYAL_PRIVILEGE)){
@@ -554,7 +572,7 @@ public enum Talent {
 
 	public static void onItemCollected( Hero hero, Item item ){
 		if(item.isIdentified()) return;
-		boolean id = false;
+		boolean id = false, curseID = false;
 		if (hero.heroClass == HeroClass.ROGUE || hero.hasTalent(THIEFS_INTUITION,ROYAL_INTUITION)){
 			int points = hero.pointsInTalent(THIEFS_INTUITION,ROYAL_INTUITION);
 			if(hero.heroClass == HeroClass.ROGUE) points++;
@@ -567,9 +585,7 @@ public enum Talent {
 					&& (item instanceof Ring || item instanceof Artifact)
 					&& !item.collected && item.cursed && !item.cursedKnown
 					&& Random.Int(2) == 0) {
-				item.cursedKnown = true;
-				id = true;
-				GLog.n(String.format("The %s is cursed!",item.name()));
+				id = curseID = item.cursedKnown = true;
 			}
 		}
 		if (hero.pointsInTalent(ARMSMASTERS_INTUITION) == 2 && Random.Int(2) == 0 && !item.collected &&
@@ -578,14 +594,20 @@ public enum Talent {
 			id = true;
 		}
 		if(!item.collected && !item.cursedKnown && (item instanceof EquipableItem && !(item instanceof MissileWeapon) || item instanceof Wand) && Random.Int(5) < hero.pointsInTalent(SURVIVALISTS_INTUITION)){
-			item.cursedKnown = true;
-			id = true;
+			id = curseID = item.cursedKnown = true;
 		}
 		if( (item instanceof Scroll || item instanceof Potion) && !item.isIdentified() && hero.hasTalent(SCHOLARS_INTUITION) ) {
 			if(!item.collected && Random.Int(4-hero.pointsInTalent(SCHOLARS_INTUITION)) == 0) {
 				item.identify();
 				id = true;
 			}
+		}
+
+		if(curseID) {
+			// fixme this doesn't use .properties file.
+			GLog.w("The %s is %s",
+					item.name(),
+					item.visiblyCursed() ? "cursed!" : "free of malevolent magic.");
 		}
 		if(id && hero.sprite.emitter() != null) hero.sprite.emitter().burst(Speck.factory(Speck.QUESTION),1);
 
@@ -624,7 +646,7 @@ public enum Talent {
 		}
 
 		if (hero.hasTalent(Talent.FOLLOWUP_STRIKE,KINGS_WISDOM)) {
-			if (hero.belongings.weapon instanceof MissileWeapon) {
+			if (hero.belongings.weapon() instanceof MissileWeapon) {
 				Buff.affect(enemy, FollowupStrikeTracker.class);
 			} else if (enemy.buff(FollowupStrikeTracker.class) != null){
 				int bonus = 1 + hero.pointsInTalent(FOLLOWUP_STRIKE,KINGS_WISDOM); // 2/3
@@ -842,13 +864,22 @@ public enum Talent {
 
 			if (tierBundle != null){
 				for (Talent talent : tier.keySet()){
-					if (tierBundle.contains(talent.name())){
-						tier.put(talent, Math.min(tierBundle.getInt(talent.name()), talent.maxPoints()));
-					}
-					if(tierBundle.contains("ranger")) tier.put(MULTISHOT, Math.min(tierBundle.getInt(talent.name()), MULTISHOT.maxPoints));
+					restoreTalentFromBundle(tierBundle,tier,talent);
 				}
 			}
 		}
+	}
+	private static void restoreTalentFromBundle(Bundle tierBundle, HashMap<Talent, Integer> tier, Talent talent) {
+		if(!restoreTalentFromBundle(tierBundle, tier, talent, talent.name())) {
+			for(String alias : talent.aliases) if(restoreTalentFromBundle(tierBundle, tier, talent, alias)) return;
+		};
+	}
+	private static boolean restoreTalentFromBundle(Bundle tierBundle, HashMap<Talent, Integer> tier, Talent talent, String alias) {
+		if (tierBundle.contains(alias)) {
+			tier.put(talent, Math.min(tierBundle.getInt(alias), talent.maxPoints()));
+			return true;
+		}
+		return false;
 	}
 
 }

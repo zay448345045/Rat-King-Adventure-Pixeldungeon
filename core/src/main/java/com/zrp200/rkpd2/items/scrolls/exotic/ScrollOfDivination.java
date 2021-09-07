@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items.scrolls.exotic;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.effects.Identification;
 import com.zrp200.rkpd2.items.Item;
@@ -36,9 +39,6 @@ import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.IconTitle;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,11 +61,6 @@ public class ScrollOfDivination extends ExoticScroll {
 		HashSet<Class<? extends Ring>> rings = Ring.getUnknown();
 		
 		int total = potions.size() + scrolls.size() + rings.size();
-		
-		if (total == 0){
-			GLog.n( Messages.get(this, "nothing_left") );
-			return;
-		}
 		
 		ArrayList<Item> IDed = new ArrayList<>();
 		int left = 4;
@@ -115,8 +110,12 @@ public class ScrollOfDivination extends ExoticScroll {
 			left --;
 			total --;
 		}
-		
-		GameScene.show(new WndDivination( IDed ));
+
+		if (total == 0){
+			GLog.n( Messages.get(this, "nothing_left") );
+		} else {
+			GameScene.show(new WndDivination(IDed));
+		}
 
 		readAnimation();
 		identify();

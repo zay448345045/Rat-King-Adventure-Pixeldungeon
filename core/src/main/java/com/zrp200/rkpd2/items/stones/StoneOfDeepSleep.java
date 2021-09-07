@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.stones;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -30,10 +32,8 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 
-public class StoneOfDeepenedSleep extends Runestone {
+public class StoneOfDeepSleep extends Runestone {
 	
 	{
 		image = ItemSpriteSheet.STONE_SLEEP;

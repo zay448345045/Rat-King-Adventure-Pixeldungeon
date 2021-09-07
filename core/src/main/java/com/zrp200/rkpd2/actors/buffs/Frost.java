@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -33,8 +35,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -61,9 +61,11 @@ public class Frost extends FlavourBuff {
 				Hero hero = (Hero)target;
 				ArrayList<Item> freezable = new ArrayList<>();
 				//does not reach inside of containers
-				for (Item i : hero.belongings.backpack.items){
-					if (!i.unique && (i instanceof Potion || i instanceof MysteryMeat)){
-						freezable.add(i);
+				if (hero.buff(LostInventory.class) != null) {
+					for (Item i : hero.belongings.backpack.items) {
+						if (!i.unique && (i instanceof Potion || i instanceof MysteryMeat)) {
+							freezable.add(i);
+						}
 					}
 				}
 				

@@ -85,7 +85,7 @@ public class SewerLevel extends RegularLevel {
 				new Class<?>[]{
 						ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, WornDartTrap.class,
 						AlarmTrap.class, OozeTrap.class,
-						ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class };
+						ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class, GatewayTrap.class };
 }
 
 	@Override
@@ -95,7 +95,7 @@ public class SewerLevel extends RegularLevel {
 				new float[]{
 						4, 4, 4, 4,
 						2, 2,
-						1, 1, 1, 1};
+						1, 1, 1, 1, 1};
 	}
 	
 	@Override

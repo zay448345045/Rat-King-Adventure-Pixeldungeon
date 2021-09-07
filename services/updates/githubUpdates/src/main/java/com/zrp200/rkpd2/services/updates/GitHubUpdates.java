@@ -32,7 +32,7 @@ import javax.net.ssl.SSLProtocolException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GitHubUpdates extends UpdateService {
+public class GitHubUpdates implements UpdateService {
 
 	private static Pattern descPattern = Pattern.compile("(.*?)(\r\n|\n|\r)(\r\n|\n|\r)---", Pattern.DOTALL + Pattern.MULTILINE);
 	private static Pattern versionCodePattern = Pattern.compile("internal version number: ([0-9]*)", Pattern.CASE_INSENSITIVE);
@@ -43,7 +43,12 @@ public class GitHubUpdates extends UpdateService {
 	}
 
 	@Override
-	public void checkForUpdate(boolean useMetered, UpdateResultCallback callback) {
+	public boolean supportsBetaChannel() {
+		return true;
+	}
+
+	@Override
+	public void checkForUpdate(boolean useMetered, boolean includeBetas, UpdateResultCallback callback) {
 
 		if (!useMetered && !Game.platform.connectedToUnmeteredNetwork()){
 			callback.onConnectionFailed();
@@ -61,15 +66,13 @@ public class GitHubUpdates extends UpdateService {
 					Bundle latestRelease = null;
 					int latestVersionCode = Game.versionCode;
 
-					boolean includePrereleases = Game.version.contains("-BETA-") || Game.version.contains("-RC-");
-
 					for (Bundle b : Bundle.read( httpResponse.getResultAsStream() ).getBundleArray()){
 						Matcher m = versionCodePattern.matcher(b.getString("body"));
 
 						if (m.find()){
 							int releaseVersion = Integer.parseInt(m.group(1));
 							if (releaseVersion > latestVersionCode
-									&& (includePrereleases || !b.getBoolean("prerelease"))){
+									&& (includeBetas || !b.getBoolean("prerelease"))){
 								latestRelease = b;
 								latestVersionCode = releaseVersion;
 							}
@@ -135,8 +138,18 @@ public class GitHubUpdates extends UpdateService {
 	}
 
 	@Override
+	public boolean supportsReviews() {
+		return false;
+	}
+
+	@Override
 	public void initializeReview(ReviewResultCallback callback) {
 		//does nothing, no review functionality here
 		callback.onComplete();
+	}
+
+	@Override
+	public void openReviewURI() {
+		//does nothing
 	}
 }

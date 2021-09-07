@@ -25,7 +25,7 @@ package com.zrp200.rkpd2.services.updates;
 import com.watabou.noosa.Game;
 import com.watabou.utils.DeviceCompat;
 
-public class DebugUpdates extends UpdateService {
+public class DebugUpdates implements UpdateService {
 
 	private static AvailableUpdateData debugUpdateInfo;
 
@@ -35,7 +35,12 @@ public class DebugUpdates extends UpdateService {
 	}
 
 	@Override
-	public void checkForUpdate(boolean useMetered, UpdateResultCallback callback) {
+	public boolean supportsBetaChannel() {
+		return true;
+	}
+
+	@Override
+	public void checkForUpdate(boolean useMetered, boolean includeBetas, UpdateResultCallback callback) {
 
 		if (!useMetered && !Game.platform.connectedToUnmeteredNetwork()){
 			callback.onConnectionFailed();
@@ -66,9 +71,18 @@ public class DebugUpdates extends UpdateService {
 	}
 
 	@Override
+	public boolean supportsReviews() {
+		return true;
+	}
+
+	@Override
 	public void initializeReview(ReviewResultCallback callback) {
 		//does nothing
 		callback.onComplete();
 	}
 
+	@Override
+	public void openReviewURI() {
+		DeviceCompat.openURI("https://www.google.com/");
+	}
 }

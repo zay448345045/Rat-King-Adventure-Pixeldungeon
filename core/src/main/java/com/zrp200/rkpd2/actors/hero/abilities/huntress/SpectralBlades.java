@@ -44,6 +44,7 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.MissileSprite;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.HashSet;
@@ -73,8 +74,7 @@ public class SpectralBlades extends ArmorAbility {
 		Ballistica b = new Ballistica(hero.pos, target, Ballistica.WONT_STOP);
 		final HashSet<Char> targets = new HashSet<>();
 
-		int wallPenetration = 1+2*hero.pointsInTalent(Talent.PROJECTING_BLADES);
-		Char enemy = findChar(b, hero, wallPenetration, targets);
+		Char enemy = findChar(b, hero, 2*hero.shiftedPoints(Talent.PROJECTING_BLADES), targets);
 
 		if (enemy == null){
 			GLog.w(Messages.get(this, "no_target"));
@@ -88,7 +88,7 @@ public class SpectralBlades extends ArmorAbility {
 			ConeAOE cone = new ConeAOE(b, degrees);
 			for (Ballistica ray : cone.rays){
 				// 1/3/5/7/9 up from 0/2/4/6/8
-				Char toAdd = findChar(ray, hero, wallPenetration, targets);
+				Char toAdd = findChar(ray, hero, 1+2*hero.pointsInTalent(Talent.PROJECTING_BLADES), targets);
 				if (toAdd != null && hero.fieldOfView[toAdd.pos]){
 					targets.add(toAdd);
 				}
@@ -120,7 +120,7 @@ public class SpectralBlades extends ArmorAbility {
 			Callback callback = new Callback() {
 				@Override
 				public void call() {
-					float dmgMulti = ch == enemy ? 1f : 0.5f;
+					float dmgMulti = ch == enemy ? 1f : 0.75f;
 					float accmulti = 1 + 1/3f*hero.shiftedPoints(Talent.PROJECTING_BLADES);
 					if (hero.hasTalent(Talent.SPIRIT_BLADES)){
 						Buff.affect(hero, Talent.SpiritBladesTracker.class, 0f);
@@ -194,12 +194,12 @@ public class SpectralBlades extends ArmorAbility {
 		for (int cell : path.path){
 			Char ch = Actor.findChar(cell);
 			if (ch != null){
-				if (ch == hero || existingTargets.contains(ch)){
+				if (ch == hero || existingTargets.contains(ch) || ch.alignment == Char.Alignment.ALLY){
 					continue;
 				} else if (ch.alignment != Char.Alignment.ALLY && !(ch instanceof NPC)){
 					return ch;
 				} else {
-					return null;
+					return ch;
 				}
 			}
 			if (Dungeon.level.solid[cell]){
@@ -210,6 +210,11 @@ public class SpectralBlades extends ArmorAbility {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public int icon() {
+		return HeroIcon.SPECTRAL_BLADES;
 	}
 
 	@Override

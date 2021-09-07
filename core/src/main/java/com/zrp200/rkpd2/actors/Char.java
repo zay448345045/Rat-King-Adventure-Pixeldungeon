@@ -50,7 +50,6 @@ import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.wands.WandOfFireblast;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
@@ -176,13 +175,13 @@ public abstract class Char extends Actor {
 		int curPos = pos;
 
 		//warp instantly with allies in this case
-		if (Dungeon.hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK)){
+		if (c == Dungeon.hero && Dungeon.hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK)){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
 			}
-			ScrollOfTeleportation.appear(this, Dungeon.hero.pos);
-			ScrollOfTeleportation.appear(Dungeon.hero, curPos);
+			ScrollOfTeleportation.appear(this, c.pos);
+			ScrollOfTeleportation.appear(c, curPos);
 			Dungeon.observe();
 			GameScene.updateFog();
 			return true;
@@ -193,15 +192,22 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
-		moveSprite( pos, Dungeon.hero.pos );
-		move( Dungeon.hero.pos );
+		moveSprite( pos, c.pos );
+		move( c.pos );
+
+		c.sprite.move( c.pos, curPos );
+		c.move( curPos );
 		
-		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
-		Dungeon.hero.move( curPos );
-		
-		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
-		Dungeon.hero.busy();
-		
+		c.spend( 1 / c.speed() );
+
+		if (c == Dungeon.hero){
+			if (Dungeon.hero.subClass == HeroSubClass.FREERUNNER){
+				Buff.affect(Dungeon.hero, Momentum.class).gainStack();
+			}
+
+			Dungeon.hero.busy();
+		}
+
 		return true;
 	}
 	
@@ -300,7 +306,7 @@ public abstract class Char extends Actor {
 					// warlock can soul mark by simply attacking with warlock's touch.
 					SoulMark.process(enemy,(wep != null ? wep.buffedLvl():0)+Math.max(0,h.pointsInTalent(Talent.WARLOCKS_TOUCH)-1),1,Random.Int(4) >= h.pointsInTalent(Talent.WARLOCKS_TOUCH));
 				}
-				if (h.belongings.weapon instanceof MissileWeapon
+				if (h.belongings.weapon() instanceof MissileWeapon
 						&& (h.subClass == HeroSubClass.SNIPER || h.hasTalent(Talent.RK_SNIPER))
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;
@@ -309,7 +315,7 @@ public abstract class Char extends Actor {
 			if (this instanceof RatKingBoss && ((RatKingBoss) this).phase == 4){
 				dr = 0;
 			}
-			
+
 			int dmg = 0;
 			Preparation prep = buff(Preparation.class);
 			while(rolls-- > 0) {
@@ -324,9 +330,22 @@ public abstract class Char extends Actor {
 			}
 
 			dmg = Math.round(dmg*dmgMulti);
+
+			Berserk berserk = buff(Berserk.class);
+			if (berserk != null) dmg = berserk.damageFactor(dmg);
+
+			if (buff( Fury.class ) != null) {
+				dmg *= 1.5f;
+			}
+
 			dmg += dmgBonus;
 
-			Endure.EndureTracker endure = enemy.buff(Endure.EndureTracker.class);
+			//friendly endure
+			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
+			if (endure != null) dmg = endure.damageFactor(dmg);
+
+			//enemy endure
+			endure = enemy.buff(Endure.EndureTracker.class);
 			if (endure != null){
 				dmg = endure.adjustDamageTaken(dmg);
 			}
@@ -376,7 +395,7 @@ public abstract class Char extends Actor {
 				} else {
 					//helps with triggering any on-damage effects that need to activate
 					enemy.damage(-1, this);
-					DeathMark.processFearTheReaper(enemy);
+					DeathMark.processFearTheReaper(enemy, true);
 				}
 				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
 			}
@@ -623,6 +642,7 @@ public abstract class Char extends Actor {
 		return dmg;
 	}
 	protected void onDamage(int dmg, Object src) {
+		int initialHP = HP;
 		// TODO change?
 		if(!(src instanceof Char) && Dungeon.hero.hasTalent(Talent.SOUL_SIPHON)) { // character damage is already handled before damage is dealt.
 			SoulMark soulMark = buff(SoulMark.class);
@@ -679,7 +699,7 @@ public abstract class Char extends Actor {
 		if (!isAlive()) {
 			die( src );
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
-			DeathMark.processFearTheReaper(this);
+			DeathMark.processFearTheReaper(this, initialHP != 0);
 		}
 	}
 
@@ -882,7 +902,7 @@ public abstract class Char extends Actor {
 	public float resistanceValue(Class effect){
 		return 0.5f;
 	}
-	
+
 	//returns percent effectiveness after resistances
 	//TODO currently resistances reduce effectiveness by a static 50%, and do not stack.
 	public float resist( Class effect ){
@@ -947,7 +967,7 @@ public abstract class Char extends Actor {
 
 	public enum Property{
 		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, GrimTrap.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class)),
-				new HashSet<Class>( Arrays.asList(Corruption.class, StoneOfAggression.Aggression.class) )),
+				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		MINIBOSS ( new HashSet<Class>(),
 				new HashSet<Class>( Arrays.asList(Corruption.class) )),
 		UNDEAD,

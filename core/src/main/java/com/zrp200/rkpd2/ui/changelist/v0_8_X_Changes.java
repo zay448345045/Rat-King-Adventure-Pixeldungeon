@@ -21,43 +21,27 @@
 
 package com.zrp200.rkpd2.ui.changelist;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.actors.mobs.DwarfKing;
 import com.zrp200.rkpd2.actors.mobs.DM300;
+import com.zrp200.rkpd2.actors.mobs.DwarfKing;
 import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.stones.StoneOfAugmentation;
-import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
-import com.zrp200.rkpd2.items.wands.WandOfCorruption;
-import com.zrp200.rkpd2.items.wands.WandOfFireblast;
-import com.zrp200.rkpd2.items.wands.WandOfFrost;
-import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
-import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
-import com.zrp200.rkpd2.items.wands.WandOfWarding;
+import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Flail;
 import com.zrp200.rkpd2.items.weapon.melee.Quarterstaff;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.sprites.DM100Sprite;
-import com.zrp200.rkpd2.sprites.DM300Sprite;
-import com.zrp200.rkpd2.sprites.ElementalSprite;
-import com.zrp200.rkpd2.sprites.GuardSprite;
-import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.sprites.KingSprite;
-import com.zrp200.rkpd2.sprites.NecromancerSprite;
-import com.zrp200.rkpd2.sprites.ShamanSprite;
-import com.zrp200.rkpd2.sprites.SpawnerSprite;
-import com.zrp200.rkpd2.sprites.StatueSprite;
-import com.zrp200.rkpd2.sprites.YogSprite;
+import com.zrp200.rkpd2.sprites.*;
+import com.zrp200.rkpd2.ui.BuffIcon;
+import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 
@@ -283,7 +267,7 @@ public class v0_8_X_Changes {
 				"_-_ Some misc sounds have also been added for: gas spewing, chains being thrown, magical effects charging up, and the player being hit to low health.\n\n" +
 				"I've also remastered the title and ending music tracks to improve their quality and volume."));
 
-		changes.addButton( new ChangeButton(new Image(Assets.Interfaces.BUFFS_LARGE, 0, 0, 16, 16), "Item and Buff Icons",
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.MIND_VISION, true), "Item and Buff Icons",
 				"_Buff icons now have a new fading behaviour_ that much more accurately communicates how much of their duration is left. Several duplicated buff icons have also been recolored so they are distinct.\n\n" +
 				"_Item icons have been added to rings!_ To accommodate this, item icons now appear in the top-right of an item's inventory slot. Several existing item icons have also been improved."));
 
@@ -682,7 +666,7 @@ public class v0_8_X_Changes {
 				"_-_ Doubled corruption resistance reduction from debuffs, as it was 50% weaker than intended. It is now as strong as listed in 0.7.5 changelog (50% for major debuffs, 25% for minor)\n\n" +
 				"Additionally, corruption is getting access to two of the new debuffs added in 0.8.0: _Hex,_ and _Weakness._"));
 
-		changes.addButton( new ChangeButton(new Image(Assets.Interfaces.BUFFS_LARGE, 80, 32, 16, 16), "Bless changes",
+		changes.addButton( new ChangeButton(new BuffIcon(BuffIndicator.BLESS, true), "Bless changes",
 				"Accuracy and evasion bonuses from blessed buff increased to 25% from 20%." ));
 
 		changes.addButton( new ChangeButton(new StoneOfAugmentation(),

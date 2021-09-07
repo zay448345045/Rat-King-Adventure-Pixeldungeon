@@ -21,6 +21,11 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Halo;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Wandmaker;
@@ -28,25 +33,9 @@ import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.painters.PrisonPainter;
 import com.zrp200.rkpd2.levels.rooms.Room;
-import com.zrp200.rkpd2.levels.traps.AlarmTrap;
-import com.zrp200.rkpd2.levels.traps.BurningTrap;
-import com.zrp200.rkpd2.levels.traps.ChillingTrap;
-import com.zrp200.rkpd2.levels.traps.ConfusionTrap;
-import com.zrp200.rkpd2.levels.traps.FlockTrap;
-import com.zrp200.rkpd2.levels.traps.GrippingTrap;
-import com.zrp200.rkpd2.levels.traps.OozeTrap;
-import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
-import com.zrp200.rkpd2.levels.traps.ShockingTrap;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
-import com.zrp200.rkpd2.levels.traps.TeleportationTrap;
-import com.zrp200.rkpd2.levels.traps.ToxicTrap;
+import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Halo;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -99,7 +88,7 @@ public class PrisonLevel extends RegularLevel {
 		return new Class[]{
 				ChillingTrap.class, ShockingTrap.class, ToxicTrap.class, BurningTrap.class, PoisonDartTrap.class,
 				AlarmTrap.class, OozeTrap.class, GrippingTrap.class,
-				ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class, };
+				ConfusionTrap.class, FlockTrap.class, SummoningTrap.class, TeleportationTrap.class, GatewayTrap.class, GeyserTrap.class };
 	}
 
 	@Override
@@ -107,7 +96,7 @@ public class PrisonLevel extends RegularLevel {
 		return new float[]{
 				4, 4, 4, 4, 4,
 				2, 2, 2,
-				1, 1, 1, 1 };
+				1, 1, 1, 1, 1, 1 };
 	}
 
 	@Override

@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.bags.Bag;
+import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.Weapon;
@@ -85,8 +86,8 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //8 base damage, down from 10
-				lvl*(tier+1);   //scaling unaffected
+		return  Math.round(3.5f*(tier+1)) + //7 base damage, down from 10
+				lvl*(tier+1);               //scaling unaffected
 	}
 
 	public MagesStaff(Wand wand){
@@ -110,7 +111,7 @@ public class MagesStaff extends MeleeWeapon {
 
 	@Override
 	public void activate( Char ch ) {
-		if(wand != null) wand.charge( ch, STAFF_SCALE_FACTOR );
+		applyWandChargeBuff(ch);
 	}
 
 	@Override
@@ -121,7 +122,7 @@ public class MagesStaff extends MeleeWeapon {
 		if (action.equals(AC_IMBUE)) {
 
 			curUser = hero;
-			GameScene.selectItem(itemSelector, WndBag.Mode.WAND, Messages.get(this, "prompt"));
+			GameScene.selectItem(itemSelector);
 
 		} else if (action.equals(AC_ZAP)){
 
@@ -184,8 +185,8 @@ public class MagesStaff extends MeleeWeapon {
 	@Override
 	public boolean collect( Bag container ) {
 		if (super.collect(container)) {
-			if (container.owner != null && wand != null) {
-				wand.charge(container.owner, STAFF_SCALE_FACTOR);
+			if (container.owner != null) {
+				applyWandChargeBuff(container.owner);
 			}
 			return true;
 		} else {
@@ -230,6 +231,9 @@ public class MagesStaff extends MeleeWeapon {
 
 		this.wand = null;
 
+		wand.resinBonus = 0;
+		wand.updateLevel();
+
 		//syncs the level of the two items.
 		int targetLevel = Math.max(this.level() - (curseInfusionBonus ? 1 : 0), wand.level());
 
@@ -267,6 +271,12 @@ public class MagesStaff extends MeleeWeapon {
 	public void gainCharge( float amt, boolean overcharge ){
 		if (wand != null){
 			wand.gainCharge(amt, overcharge);
+		}
+	}
+
+	public void applyWandChargeBuff(Char owner){
+		if (wand != null){
+			wand.charge(owner, STAFF_SCALE_FACTOR);
 		}
 	}
 
@@ -384,7 +394,23 @@ public class MagesStaff extends MeleeWeapon {
 		return super.enchant(ench);
 	}
 	
-	private final WndBag.Listener itemSelector = new WndBag.Listener() {
+	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+		@Override
+		public String textPrompt() {
+			return Messages.get(MagesStaff.class, "prompt");
+		}
+
+		@Override
+		public Class<?extends Bag> preferredBag(){
+			return MagicalHolster.class;
+		}
+
+		@Override
+		public boolean itemSelectable(Item item) {
+			return item instanceof Wand;
+		}
+
 		@Override
 		public void onSelect( final Item item ) {
 			if (item != null) {
@@ -401,9 +427,11 @@ public class MagesStaff extends MeleeWeapon {
 					applyWand((Wand)item);
 				} else {
 					int newLevel;
-					if (item.level() >= level()){
-						if (level() > 0)    newLevel = item.level() + 1;
-						else                newLevel = item.level();
+					int itemLevel = item.level();
+					itemLevel -= ((Wand)item).resinBonus;
+					if (itemLevel >= level()){
+						if (level() > 0)    newLevel = itemLevel + 1;
+						else                newLevel = itemLevel;
 					} else {
 						newLevel = level();
 					}

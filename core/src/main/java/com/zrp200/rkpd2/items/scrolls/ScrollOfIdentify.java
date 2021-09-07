@@ -27,17 +27,20 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.zrp200.rkpd2.windows.WndBag;
 
 public class ScrollOfIdentify extends InventoryScroll {
 
 	{
 		icon = ItemSpriteSheet.Icons.SCROLL_IDENTIFY;
-		mode = WndBag.Mode.UNIDENTIFED;
 
 		bones = true;
 	}
-	
+
+	@Override
+	protected boolean usableOnItem(Item item) {
+		return !item.isIdentified();
+	}
+
 	@Override
 	protected void onItemSelected( Item item ) {
 		

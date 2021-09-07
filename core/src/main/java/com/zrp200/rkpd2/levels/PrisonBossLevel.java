@@ -26,12 +26,7 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Challenges;
@@ -753,7 +748,7 @@ public class PrisonBossLevel extends Level {
 	public static class ExitVisual extends CustomTilemap {
 		
 		{
-			texture = Assets.Environment.PRISON_EXIT_NEW;
+			texture = Assets.Environment.PRISON_EXIT;
 			
 			tileW = 14;
 			tileH = 11;
@@ -799,7 +794,7 @@ public class PrisonBossLevel extends Level {
 	public static class ExitVisualWalls extends CustomTilemap {
 		
 		{
-			texture = Assets.Environment.PRISON_EXIT_NEW;
+			texture = Assets.Environment.PRISON_EXIT;
 			
 			tileW = 14;
 			tileH = 22;

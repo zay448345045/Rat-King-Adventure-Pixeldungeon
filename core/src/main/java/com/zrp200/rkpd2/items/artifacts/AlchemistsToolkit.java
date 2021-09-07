@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.items.artifacts;
 
+import com.watabou.noosa.Game;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -31,10 +34,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.AlchemyScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.zrp200.rkpd2.windows.WndBag;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
 
 import java.util.ArrayList;
 
@@ -52,8 +51,6 @@ public class AlchemistsToolkit extends Artifact {
 	}
 
 	public static final String AC_BREW = "BREW";
-	
-	protected WndBag.Mode mode = WndBag.Mode.POTION;
 	
 	private boolean alchemyReady = false;
 

@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.ui.HeroIcon;
 
 public class HeroicLeap extends ArmorAbility {
 
@@ -139,6 +140,11 @@ public class HeroicLeap extends ArmorAbility {
 
 	public static class DoubleJumpTracker extends FlavourBuff{};
 	public static class TripleJumpTracker extends FlavourBuff{};
+
+	@Override
+	public int icon() {
+		return HeroIcon.HEROIC_LEAP;
+	}
 
 	@Override
 	public Talent[] talents() {

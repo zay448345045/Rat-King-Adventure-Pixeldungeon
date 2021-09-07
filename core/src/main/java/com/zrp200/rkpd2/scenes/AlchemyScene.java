@@ -21,11 +21,13 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Chrome;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.glwrap.Blending;
+import com.watabou.noosa.*;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Item;
@@ -36,29 +38,10 @@ import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.ExitButton;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.ItemSlot;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndInfoItem;
 import com.zrp200.rkpd2.windows.WndJournal;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Blending;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.NoosaScriptNoLighting;
-import com.watabou.noosa.SkinnedBlock;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.ui.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,6 +63,10 @@ public class AlchemyScene extends PixelScene {
 	private RedButton btnCombine;
 	
 	private static final int BTN_SIZE	= 28;
+
+	{
+		inGameScene = true;
+	}
 	
 	@Override
 	public void create() {
@@ -151,7 +138,7 @@ public class AlchemyScene extends PixelScene {
 							slot.item(new WndBag.Placeholder(ItemSpriteSheet.SOMETHING));
 							updateState();
 						}
-						AlchemyScene.this.addToFront(WndBag.lastBag( itemSelector, WndBag.Mode.ALCHEMY, Messages.get(AlchemyScene.class, "select")));
+						AlchemyScene.this.addToFront(WndBag.getBag( itemSelector ));
 					}
 
 					@Override
@@ -315,7 +302,18 @@ public class AlchemyScene extends PixelScene {
 		Game.switchScene(GameScene.class);
 	}
 	
-	protected WndBag.Listener itemSelector = new WndBag.Listener() {
+	protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+		@Override
+		public String textPrompt() {
+			return Messages.get(AlchemyScene.class, "select");
+		}
+
+		@Override
+		public boolean itemSelectable(Item item) {
+			return Recipe.usableInRecipe(item);
+		}
+
 		@Override
 		public void onSelect( Item item ) {
 			synchronized (inputs) {

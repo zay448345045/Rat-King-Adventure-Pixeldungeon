@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -110,10 +111,12 @@ public class DeathMark extends ArmorAbility {
 
 	}
 
-	public static void processFearTheReaper( Char ch ){
+	public static void processFearTheReaper( Char ch, boolean killingBlow ){
 		if (ch.HP > 0 || ch.buff(DeathMarkTracker.class) == null){
 			return;
 		}
+
+		if(killingBlow) Talent.LethalMomentumTracker.process();
 
 		if (hero.hasTalent(Talent.FEAR_THE_REAPER)) {
 			if (hero.pointsInTalent(Talent.FEAR_THE_REAPER) >= 2) {
@@ -140,6 +143,11 @@ public class DeathMark extends ArmorAbility {
 
 	public static class DoubleMarkTracker extends FlavourBuff{};
 	public static class TripleMarkTracker extends FlavourBuff{};
+
+	@Override
+	public int icon() {
+		return HeroIcon.DEATH_MARK;
+	}
 
 	@Override
 	public Talent[] talents() {

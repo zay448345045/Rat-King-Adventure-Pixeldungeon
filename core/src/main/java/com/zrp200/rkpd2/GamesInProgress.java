@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.FileUtils;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.messages.Messages;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -130,6 +130,7 @@ public class GamesInProgress {
 		
 		info.level = hero.lvl;
 		info.str = hero.STR;
+		info.strBonus = hero.STR() - hero.STR;
 		info.exp = hero.exp;
 		info.hp = hero.HP;
 		info.ht = hero.HT;
@@ -161,6 +162,7 @@ public class GamesInProgress {
 		
 		public int level;
 		public int str;
+		public int strBonus;
 		public int exp;
 		public int hp;
 		public int ht;

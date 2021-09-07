@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Terror;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
@@ -36,7 +36,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 
 public class Dewdrop extends Item {
 	
@@ -106,7 +105,27 @@ public class Dewdrop extends Item {
 	}
 
 	@Override
+	public boolean isUpgradable() {
+		return false;
+	}
+
+	@Override
+	public boolean isIdentified() {
+		return true;
+	}
+
 	//max of one dew in a stack
+
+	@Override
+	public Item merge( Item other ){
+		if (isSimilar( other )){
+			quantity = 1;
+			other.quantity = 0;
+		}
+		return this;
+	}
+
+	@Override
 	public Item quantity(int value) {
 		quantity = Math.min( value, 1);
 		return this;

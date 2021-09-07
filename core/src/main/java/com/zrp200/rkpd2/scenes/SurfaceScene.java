@@ -21,6 +21,16 @@
 
 package com.zrp200.rkpd2.scenes;
 
+import com.watabou.gltextures.SmartTexture;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.glwrap.Matrix;
+import com.watabou.glwrap.Quad;
+import com.watabou.input.PointerEvent;
+import com.watabou.noosa.*;
+import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Point;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
@@ -31,32 +41,9 @@ import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
 import com.zrp200.rkpd2.items.wands.WandOfWarding;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.sprites.EarthGuardianSprite;
-import com.zrp200.rkpd2.sprites.GhostSprite;
-import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.sprites.RatSprite;
-import com.zrp200.rkpd2.sprites.WardSprite;
+import com.zrp200.rkpd2.sprites.*;
 import com.zrp200.rkpd2.ui.Archs;
 import com.zrp200.rkpd2.ui.RedButton;
-import com.watabou.gltextures.SmartTexture;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Matrix;
-import com.watabou.glwrap.Quad;
-import com.watabou.input.PointerEvent;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.PointerArea;
-import com.watabou.noosa.Visual;
-import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -85,8 +72,11 @@ public class SurfaceScene extends PixelScene {
 	public void create() {
 		
 		super.create();
-		
-		Music.INSTANCE.play( Assets.Music.SURFACE, true );
+
+		Music.INSTANCE.playTracks(
+				new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+				new float[]{1, 1},
+				false);
 		
 		uiCamera.visible = false;
 		

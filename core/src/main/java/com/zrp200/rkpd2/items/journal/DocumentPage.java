@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.journal;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
@@ -28,8 +30,6 @@ import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.windows.WndJournal;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 public abstract class DocumentPage extends Item {
 	
@@ -52,15 +52,26 @@ public abstract class DocumentPage extends Item {
 	@Override
 	public final boolean doPickUp(Hero hero) {
 		GameScene.pickUpJournal(this, hero.pos);
-		GameScene.flashJournal();
+		GameScene.flashForDocument(page());
 		if (document() == Document.ALCHEMY_GUIDE){
 			WndJournal.last_index = 1;
+			WndJournal.AlchemyTab.currentPageIdx = document().pageIdx(page());
 		} else {
 			WndJournal.last_index = 0;
 		}
-		document().addPage(page);
+		document().findPage(page);
 		Sample.INSTANCE.play( Assets.Sounds.ITEM );
 		hero.spendAndNext( TIME_TO_PICK_UP );
+		return true;
+	}
+
+	@Override
+	public boolean isUpgradable() {
+		return false;
+	}
+
+	@Override
+	public boolean isIdentified() {
 		return true;
 	}
 	

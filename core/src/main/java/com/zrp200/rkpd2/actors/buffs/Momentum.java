@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.ActionIndicator;
+import com.zrp200.rkpd2.ui.BuffIcon;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class Momentum extends Buff implements ActionIndicator.Action {
@@ -190,7 +191,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 
 	@Override
 	public Image getIcon() {
-		Image im = new Image(Assets.Interfaces.BUFFS_LARGE, 144, 32, 16, 16);
+		Image im = new BuffIcon(BuffIndicator.HASTE, true);
 		im.hardlight(0x99992E);
 		return im;
 	}

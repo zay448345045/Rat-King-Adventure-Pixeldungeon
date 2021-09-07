@@ -31,8 +31,6 @@ import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.levels.Level;
-import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
 
 public class FlashingTrap extends Trap {
@@ -40,19 +38,11 @@ public class FlashingTrap extends Trap {
 	{
 		color = GREY;
 		shape = STARS;
+
+		disarmedByActivation = false;
+		avoidsHallways = true;
 	}
-	
-	@Override
-	public void trigger() {
-		if (Dungeon.level.heroFOV[pos]){
-			Sample.INSTANCE.play(Assets.Sounds.TRAP);
-		}
-		//this trap is not disarmed by being triggered
-		reveal();
-		Level.set(pos, Terrain.TRAP);
-		activate();
-	}
-	
+
 	@Override
 	public void activate() {
 		

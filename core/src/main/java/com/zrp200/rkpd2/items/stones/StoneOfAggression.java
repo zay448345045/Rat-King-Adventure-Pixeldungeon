@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.stones;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -33,8 +35,6 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 public class StoneOfAggression extends Runestone {
 	
@@ -49,7 +49,7 @@ public class StoneOfAggression extends Runestone {
 		
 		if (ch != null) {
 			if (ch.alignment == Char.Alignment.ENEMY) {
-				Buff.prolong(ch, Aggression.class, Aggression.DURATION / 5f);
+				Buff.prolong(ch, Aggression.class, Aggression.DURATION / 4f);
 			} else {
 				Buff.prolong(ch, Aggression.class, Aggression.DURATION);
 			}
@@ -64,7 +64,7 @@ public class StoneOfAggression extends Runestone {
 		}
 		
 	}
-	
+
 	public static class Aggression extends FlavourBuff {
 		
 		public static final float DURATION = 20f;

@@ -48,6 +48,10 @@ public class AmuletScene extends PixelScene {
 
 	private Image amulet;
 
+	{
+		inGameScene = true;
+	}
+
 	@Override
 	public void create() {
 		super.create();

@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.items.weapon.enchantments.Projecting;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -282,7 +283,15 @@ abstract public class MissileWeapon extends Weapon {
 		if (!(this instanceof PhantomSpear))
 			super.onThrow(cell);
 	}
-	
+
+	public float durabilityLeft(){
+		return durability;
+	}
+
+	public void repair( float amount ){
+		durability += amount;
+	}
+
 	protected float durabilityPerUse(){
 		int level = level();
 		if(Dungeon.hero.heroClass == HeroClass.ROGUE && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class) != null) level++;
@@ -465,5 +474,22 @@ abstract public class MissileWeapon extends Weapon {
 		super.restoreFromBundle(bundle);
 		bundleRestoring = false;
 		durability = bundle.getInt(DURABILITY);
+	}
+
+	public static class PlaceHolder extends MissileWeapon {
+
+		{
+			image = ItemSpriteSheet.MISSILE_HOLDER;
+		}
+
+		@Override
+		public boolean isSimilar(Item item) {
+			return item instanceof MissileWeapon;
+		}
+
+		@Override
+		public String info() {
+			return "";
+		}
 	}
 }

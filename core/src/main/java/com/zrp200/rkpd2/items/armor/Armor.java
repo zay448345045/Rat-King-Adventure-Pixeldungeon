@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.armor;
 
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
@@ -35,27 +37,8 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.armor.curses.AntiEntropy;
-import com.zrp200.rkpd2.items.armor.curses.Bulk;
-import com.zrp200.rkpd2.items.armor.curses.Corrosion;
-import com.zrp200.rkpd2.items.armor.curses.Displacement;
-import com.zrp200.rkpd2.items.armor.curses.Metabolism;
-import com.zrp200.rkpd2.items.armor.curses.Multiplicity;
-import com.zrp200.rkpd2.items.armor.curses.Overgrowth;
-import com.zrp200.rkpd2.items.armor.curses.Stench;
-import com.zrp200.rkpd2.items.armor.glyphs.Affection;
-import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
-import com.zrp200.rkpd2.items.armor.glyphs.Brimstone;
-import com.zrp200.rkpd2.items.armor.glyphs.Camouflage;
-import com.zrp200.rkpd2.items.armor.glyphs.Entanglement;
-import com.zrp200.rkpd2.items.armor.glyphs.Flow;
-import com.zrp200.rkpd2.items.armor.glyphs.Obfuscation;
-import com.zrp200.rkpd2.items.armor.glyphs.Potential;
-import com.zrp200.rkpd2.items.armor.glyphs.Repulsion;
-import com.zrp200.rkpd2.items.armor.glyphs.Stone;
-import com.zrp200.rkpd2.items.armor.glyphs.Swiftness;
-import com.zrp200.rkpd2.items.armor.glyphs.Thorns;
-import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
+import com.zrp200.rkpd2.items.armor.curses.*;
+import com.zrp200.rkpd2.items.armor.glyphs.*;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
@@ -63,12 +46,6 @@ import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -284,7 +261,7 @@ public class Armor extends EquipableItem {
 	
 	@Override
 	public boolean isEquipped( Hero hero ) {
-		return hero.belongings.armor == this;
+		return hero.belongings.armor() == this;
 	}
 
 	public final int DRMax(){
@@ -489,7 +466,7 @@ public class Armor extends EquipableItem {
 		} else if (cursedKnown && cursed) {
 			info += "\n\n" + Messages.get(Armor.class, "cursed");
 		} else if (seal != null) {
-			info += "\n\n" + Messages.get(Armor.class, "seal_attached");
+			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
 		} else if (!isIdentified() && cursedKnown){
 			info += "\n\n" + Messages.get(Armor.class, "not_cursed");
 		}

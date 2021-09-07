@@ -21,17 +21,19 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Enchanting;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
 import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
-import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
@@ -66,7 +68,7 @@ public class Stylus extends Item {
 		if (action.equals(AC_INSCRIBE)) {
 
 			curUser = hero;
-			GameScene.selectItem( itemSelector, WndBag.Mode.ARMOR, Messages.get(this, "prompt") );
+			GameScene.selectItem( itemSelector );
 			
 		}
 	}
@@ -111,7 +113,23 @@ public class Stylus extends Item {
 		return 30 * quantity;
 	}
 
-	private final WndBag.Listener itemSelector = new WndBag.Listener() {
+	private final WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+		@Override
+		public String textPrompt() {
+			return Messages.get(Stylus.class, "prompt");
+		}
+
+		@Override
+		public Class<?extends Bag> preferredBag(){
+			return Belongings.Backpack.class;
+		}
+
+		@Override
+		public boolean itemSelectable(Item item) {
+			return item instanceof Armor;
+		}
+
 		@Override
 		public void onSelect( Item item ) {
 			if (item != null) {

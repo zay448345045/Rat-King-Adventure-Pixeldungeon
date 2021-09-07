@@ -21,31 +21,20 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Rankings;
-import com.zrp200.rkpd2.Statistics;
-import com.zrp200.rkpd2.actors.hero.Belongings;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.BadgesList;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.ItemSlot;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.ScrollPane;
-import com.zrp200.rkpd2.ui.TalentsPane;
-import com.zrp200.rkpd2.ui.Window;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
+import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.actors.hero.Belongings;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.sprites.HeroSprite;
+import com.zrp200.rkpd2.ui.*;
 
 import java.util.Locale;
 
@@ -219,8 +208,10 @@ public class WndRanking extends WndTabbed {
 			}
 
 			pos += GAP;
-			
-			pos = statSlot( this, Messages.get(this, "str"), Integer.toString( Dungeon.hero.STR() ), pos );
+
+			int strBonus = Dungeon.hero.STR() - Dungeon.hero.STR;
+			if (strBonus > 0)   pos = statSlot(this, Messages.get(this, "str"), Dungeon.hero.STR + "+" + strBonus, pos);
+			else                pos = statSlot(this, Messages.get(this, "str"), Integer.toString(Dungeon.hero.STR), pos);
 			pos = statSlot( this, Messages.get(this, "health"), Integer.toString( Dungeon.hero.HT ), pos );
 			
 			pos += GAP;

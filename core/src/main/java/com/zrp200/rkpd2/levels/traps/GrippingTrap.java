@@ -21,8 +21,6 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
-import com.watabou.noosa.audio.Sample;
-import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -30,25 +28,15 @@ import com.zrp200.rkpd2.actors.buffs.Bleeding;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.effects.Wound;
-import com.zrp200.rkpd2.levels.Level;
-import com.zrp200.rkpd2.levels.Terrain;
 
 public class GrippingTrap extends Trap {
 
 	{
 		color = GREY;
 		shape = DOTS;
-	}
-	
-	@Override
-	public void trigger() {
-		if (Dungeon.level.heroFOV[pos]){
-			Sample.INSTANCE.play(Assets.Sounds.TRAP);
-		}
-		//this trap is not disarmed by being triggered
-		reveal();
-		Level.set(pos, Terrain.TRAP);
-		activate();
+
+		disarmedByActivation = false;
+		avoidsHallways = true;
 	}
 
 	@Override

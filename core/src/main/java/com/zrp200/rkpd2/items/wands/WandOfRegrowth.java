@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.wands;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -47,13 +49,6 @@ import com.zrp200.rkpd2.plants.Sungrass;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.LotusSprite;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.ColorMath;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -458,7 +453,8 @@ public class WandOfRegrowth extends Wand {
 
 		@Override
 		public String description() {
-			return Messages.get(this, "desc", wandLvl, (int)(seedPreservation()*100), (int)(seedPreservation()*100) );
+			int preservation = Math.round(seedPreservation()*100);
+			return Messages.get(this, "desc", wandLvl, preservation, preservation);
 		}
 
 		private static final String WAND_LVL = "wand_lvl";

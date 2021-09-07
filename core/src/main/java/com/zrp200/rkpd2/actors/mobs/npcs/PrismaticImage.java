@@ -21,14 +21,13 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
-import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Corruption;
 import com.zrp200.rkpd2.actors.buffs.PrismaticGuard;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -39,9 +38,6 @@ import com.zrp200.rkpd2.items.armor.glyphs.Brimstone;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.PrismaticSprite;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class PrismaticImage extends AbstractMirrorImage {
 	
@@ -135,8 +131,8 @@ public class PrismaticImage extends AbstractMirrorImage {
 	@Override
 	public int defenseProc(Char enemy, int damage) {
 		damage = super.defenseProc(enemy, damage);
-		if (hero != null && hero.belongings.armor != null){
-			return hero.belongings.armor.proc( enemy, this, damage );
+		if (hero != null && hero.belongings.armor() != null){
+			return hero.belongings.armor().proc( enemy, this, damage );
 		} else {
 			return damage;
 		}
@@ -146,9 +142,9 @@ public class PrismaticImage extends AbstractMirrorImage {
 	public void damage(int dmg, Object src) {
 		
 		//TODO improve this when I have proper damage source logic
-		if (hero != null && hero.belongings.armor != null && hero.belongings.armor.hasGlyph(AntiMagic.class, this)
+		if (hero != null && hero.belongings.armor() != null && hero.belongings.armor().hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= AntiMagic.drRoll(hero.belongings.armor.buffedLvl());
+			dmg -= AntiMagic.drRoll(hero.belongings.armor().buffedLvl());
 		}
 		
 		super.damage(dmg, src);
@@ -156,8 +152,8 @@ public class PrismaticImage extends AbstractMirrorImage {
 	
 	@Override
 	public float speed() {
-		if (hero != null && hero.belongings.armor != null){
-			return hero.belongings.armor.speedFactor(this, super.speed());
+		if (hero != null && hero.belongings.armor() != null){
+			return hero.belongings.armor().speedFactor(this, super.speed());
 		}
 		return super.speed();
 	}
@@ -166,8 +162,8 @@ public class PrismaticImage extends AbstractMirrorImage {
 	public boolean isImmune(Class effect) {
 		if (effect == Burning.class
 				&& hero != null
-				&& hero.belongings.armor != null
-				&& hero.belongings.armor.hasGlyph(Brimstone.class, this)){
+				&& hero.belongings.armor() != null
+				&& hero.belongings.armor().hasGlyph(Brimstone.class, this)){
 			return true;
 		}
 		return super.isImmune(effect);

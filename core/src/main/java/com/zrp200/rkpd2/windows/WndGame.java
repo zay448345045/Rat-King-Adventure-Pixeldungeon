@@ -21,20 +21,16 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.scenes.HeroSelectScene;
-import com.zrp200.rkpd2.scenes.InterlevelScene;
-import com.zrp200.rkpd2.scenes.RankingsScene;
-import com.zrp200.rkpd2.scenes.TitleScene;
+import com.zrp200.rkpd2.scenes.*;
 import com.zrp200.rkpd2.services.updates.Updates;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Game;
 
 import java.io.IOException;
 
@@ -50,6 +46,7 @@ public class WndGame extends Window {
 		
 		super();
 
+		//settings
 		RedButton curBtn;
 		addButton( curBtn = new RedButton( Messages.get(this, "settings") ) {
 			@Override
@@ -109,41 +106,20 @@ public class WndGame extends Window {
 			curBtn.icon(Icons.get(Icons.RANKINGS));
 		}
 
-		addButtons(
-				// Main menu
-				new RedButton( Messages.get(this, "menu") ) {
-					@Override
-					protected void onClick() {
-						try {
-							Dungeon.saveAll();
-						} catch (IOException e) {
-							ShatteredPixelDungeon.reportException(e);
-						}
-						Game.switchScene(TitleScene.class);
-					}
-				},
-				// Quit
-				new RedButton( Messages.get(this, "exit") ) {
-					@Override
-					protected void onClick() {
-						try {
-							Dungeon.saveAll();
-						} catch (IOException e) {
-							ShatteredPixelDungeon.reportException(e);
-						}
-						Game.instance.finish();
-					}
-				}
-		);
-
-		// Cancel
-		addButton( new RedButton( Messages.get(this, "return") ) {
+		// Main menu
+		addButton(curBtn = new RedButton( Messages.get(this, "menu") ) {
 			@Override
 			protected void onClick() {
-				hide();
+				try {
+					Dungeon.saveAll();
+				} catch (IOException e) {
+					ShatteredPixelDungeon.reportException(e);
+				}
+				Game.switchScene(TitleScene.class);
 			}
 		} );
-		
+		curBtn.icon(Icons.get(Icons.DISPLAY));
+
 		resize( WIDTH, pos );
 	}
 	

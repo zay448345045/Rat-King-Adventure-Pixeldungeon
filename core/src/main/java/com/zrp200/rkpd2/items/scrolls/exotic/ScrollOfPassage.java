@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.items.scrolls.exotic;
 
 import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
@@ -49,12 +48,12 @@ public class ScrollOfPassage extends ExoticScroll {
 			return;
 			
 		}
-		
-		Buff buff = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-		if (buff != null) buff.detach();
-		buff = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-		if (buff != null) buff.detach();
-		
+
+		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+		if (timeFreeze != null) timeFreeze.disarmPressedTraps();
+		Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+		if (timeBubble != null) timeBubble.disarmPressedTraps();
+
 		InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 		InterlevelScene.returnDepth = Math.max(1, (Dungeon.getDepth() - 1 - (Dungeon.getDepth() -2)%5));
 		InterlevelScene.returnPos = -1;

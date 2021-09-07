@@ -21,31 +21,20 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
 import com.zrp200.rkpd2.levels.painters.CavesPainter;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
-import com.zrp200.rkpd2.levels.traps.BurningTrap;
-import com.zrp200.rkpd2.levels.traps.ConfusionTrap;
-import com.zrp200.rkpd2.levels.traps.CorrosionTrap;
-import com.zrp200.rkpd2.levels.traps.FrostTrap;
-import com.zrp200.rkpd2.levels.traps.GrippingTrap;
-import com.zrp200.rkpd2.levels.traps.GuardianTrap;
-import com.zrp200.rkpd2.levels.traps.PitfallTrap;
-import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
-import com.zrp200.rkpd2.levels.traps.RockfallTrap;
-import com.zrp200.rkpd2.levels.traps.StormTrap;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
-import com.zrp200.rkpd2.levels.traps.WarpingTrap;
+import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -98,7 +87,7 @@ public class CavesLevel extends RegularLevel {
 		return new Class[]{
 				BurningTrap.class, PoisonDartTrap.class, FrostTrap.class, StormTrap.class, CorrosionTrap.class,
 				GrippingTrap.class, RockfallTrap.class,  GuardianTrap.class,
-				ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, PitfallTrap.class };
+				ConfusionTrap.class, SummoningTrap.class, WarpingTrap.class, PitfallTrap.class, GatewayTrap.class, GeyserTrap.class };
 	}
 
 	@Override
@@ -106,7 +95,7 @@ public class CavesLevel extends RegularLevel {
 		return new float[]{
 				4, 4, 4, 4, 4,
 				2, 2, 2,
-				1, 1, 1, 1};
+				1, 1, 1, 1, 1, 1 };
 	}
 	
 	@Override

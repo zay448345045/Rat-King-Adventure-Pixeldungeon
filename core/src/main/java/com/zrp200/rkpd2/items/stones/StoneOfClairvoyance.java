@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.stones;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.effects.CheckedCell;
@@ -28,12 +30,10 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.mechanics.ShadowCaster;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Point;
 
 public class StoneOfClairvoyance extends Runestone {
 	
-	private static final int DIST = 12;
+	private static final int DIST = 20;
 	
 	{
 		image = ItemSpriteSheet.STONE_CLAIRVOYANCE;
