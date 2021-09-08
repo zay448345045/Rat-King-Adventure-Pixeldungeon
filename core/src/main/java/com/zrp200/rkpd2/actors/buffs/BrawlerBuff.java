@@ -48,6 +48,9 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         if (count() >= 10){
             ActionIndicator.setAction(this);
         }
+        if (count() > maxCharge()){
+            countDown(count()-maxCharge());
+        }
 
         spend(TICK);
         return true;
@@ -81,10 +84,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         if (Dungeon.hero.pointsInTalent(Talent.IN_MY_MEMORIES) == 3){
             BrokenSeal.WarriorShield shield = Dungeon.hero.buff(BrokenSeal.WarriorShield.class);
             if (shield.maxShield() == shield.shielding()){
-                return 0.266f;
+                return 0.532f;
             }
         }
-        return 0.334f;
+        return 0.4f;
     }
 
     @Override
