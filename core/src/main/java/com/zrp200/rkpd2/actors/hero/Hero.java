@@ -751,6 +751,9 @@ public class Hero extends Char {
 		if (subClass == HeroSubClass.BRAWLER && buff(BrawlerBuff.class) == null){
 			Buff.affect(this, BrawlerBuff.class);
 		}
+		if (subClass == HeroSubClass.SPIRITUALIST && buff(SpiritBuff.class) == null){
+			Buff.affect(this, SpiritBuff.class);
+		}
 
 		return actResult;
 	}
