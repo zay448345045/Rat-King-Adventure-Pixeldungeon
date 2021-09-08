@@ -105,6 +105,9 @@ public class MeleeWeapon extends Weapon {
 			info += " " + Messages.get(enchantment, "desc");
 		}
 
+		if ((Dungeon.hero.subClass == HeroSubClass.BRAWLER) && !Messages.get(this, "warrior_spec").equals("")) info += "\n\n" + Messages.get(MeleeWeapon.class, "warrior") + Messages.get(this, "warrior_spec");
+
+
 		if (cursed && isEquipped( Dungeon.hero )) {
 			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
 		} else if (cursedKnown && cursed) {
