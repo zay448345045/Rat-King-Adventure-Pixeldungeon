@@ -337,7 +337,7 @@ public abstract class Char extends Actor {
 			BrawlerBuff brawler = buff(BrawlerBuff.class);
 			if (brawler != null){
 				dmg = brawler.damageFactor(dmg);
-				brawler.countDown(brawler.count());
+				brawler.useCharge();
 				ActionIndicator.clearAction(brawler);
 			}
 

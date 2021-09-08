@@ -36,6 +36,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         return 0.04f;
     }
 
+    public void useCharge(){
+        countDown(Math.min(10, count()));
+    }
+
     @Override
     public boolean act() {
         if (count() < maxCharge()){

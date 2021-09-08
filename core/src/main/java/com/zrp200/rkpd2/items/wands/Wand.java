@@ -427,7 +427,7 @@ public abstract class Wand extends Item {
 		}
 		if (Dungeon.hero.hasTalent(Talent.ARCANITY_ENSUES) && this instanceof DamageWand) {
 			BrawlerBuff brawlerBuff = Dungeon.hero.buff(BrawlerBuff.class);
-			brawlerBuff.countDown(brawlerBuff.count());
+			brawlerBuff.useCharge();
 			ActionIndicator.clearAction(brawlerBuff);
 		}
 
