@@ -101,7 +101,7 @@ public class Wraith extends Mob {
 	@Override
 	public int defenseSkill(Char enemy) {
 		return (int) (super.defenseSkill(enemy)*
-				(buff(AllyBuff.class) != null ? (1f + 0.4f*Dungeon.hero.pointsInTalent(Talent.ECTOTOUGHNESS)) : 1f));
+				(buff(AllyBuff.class) != null ? (1f + 0.2f*Dungeon.hero.pointsInTalent(Talent.ECTOTOUGHNESS)) : 1f));
 	}
 
 	public void adjustStats(int level ) {
