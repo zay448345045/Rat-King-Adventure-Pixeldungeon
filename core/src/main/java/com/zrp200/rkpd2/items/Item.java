@@ -66,7 +66,7 @@ public class Item implements Bundlable {
 	public static final String AC_DROP		= "DROP";
 	public static final String AC_THROW		= "THROW";
 	
-	public String defaultAction;
+	public String defaultAction = "";
 	public boolean usesTargeting;
 
 	//TODO should these be private and accessed through methods?
@@ -634,6 +634,6 @@ public class Item implements Bundlable {
 	};
 
 	public String getDefaultAction() {
-		return defaultAction;
+		return !defaultAction.equals("") ? defaultAction : null;
 	}
 }
