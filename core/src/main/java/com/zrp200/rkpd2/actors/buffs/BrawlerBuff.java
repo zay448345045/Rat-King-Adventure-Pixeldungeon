@@ -82,10 +82,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
     }
 
     public float getInc() {
-        if (Dungeon.hero.pointsInTalent(Talent.IN_MY_MEMORIES) == 3){
+        if (Dungeon.hero.hasTalent(Talent.IN_MY_MEMORIES)){
             BrokenSeal.WarriorShield shield = Dungeon.hero.buff(BrokenSeal.WarriorShield.class);
             if (shield.maxShield() == shield.shielding()){
-                return 0.532f;
+                return 0.4f * (1.15f + Dungeon.hero.pointsInTalent(Talent.IN_MY_MEMORIES)*0.1f);
             }
         }
         return 0.4f;
@@ -129,9 +129,9 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         Hero hero = (Hero) target;
         float dmgMulti = 1f;
         int dmgBonus = 0;
-        if (hero.pointsInTalent(Talent.IN_MY_MEMORIES) > 1){
+        if (hero.pointsInTalent(Talent.IN_MY_MEMORIES) > 0){
             BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-            dmgBonus += 0.25f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
+            dmgBonus += 0.4f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
         }
 
         hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
