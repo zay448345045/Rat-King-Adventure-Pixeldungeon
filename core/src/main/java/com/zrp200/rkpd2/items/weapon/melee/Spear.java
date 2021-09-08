@@ -21,7 +21,10 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Spear extends MeleeWeapon {
@@ -40,6 +43,18 @@ public class Spear extends MeleeWeapon {
 	public int max(int lvl) {
 		return  Math.round(6.67f*(tier+1)) +    //20 base, up from 15
 				lvl*Math.round(1.33f*(tier+1)); //+4 per level, up from +3
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		if (Dungeon.hero.lastMovPos != -1 &&
+				Dungeon.level.distance(Dungeon.hero.lastMovPos, enemy.pos) >
+						Dungeon.level.distance(Dungeon.hero.pos, enemy.pos)){
+			Dungeon.hero.lastMovPos = -1;
+			Sample.INSTANCE.play(Assets.Sounds.HEALTH_WARN);
+			return damage*2;
+		}
+		return damage;
 	}
 
 }

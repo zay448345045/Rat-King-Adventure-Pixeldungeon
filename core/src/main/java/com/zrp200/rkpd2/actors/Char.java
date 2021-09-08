@@ -59,6 +59,7 @@ import com.zrp200.rkpd2.items.weapon.enchantments.Blocking;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
 import com.zrp200.rkpd2.items.weapon.enchantments.Shocking;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.items.weapon.melee.RoundShield;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.ShockingDart;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -437,7 +438,12 @@ public abstract class Char extends Actor {
 				enemy.sprite.showStatus( CharSprite.NEUTRAL, defense );
 
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when the parry
-				Sample.INSTANCE.play(Assets.Sounds.MISS);
+				if (enemy.buff(RoundShield.Block.class)!=null) {
+					enemy.buff(RoundShield.Block.class).detach();
+					Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1);
+				} else {
+					Sample.INSTANCE.play(Assets.Sounds.MISS);
+				}
 			}
 			
 			return false;
@@ -468,9 +474,10 @@ public abstract class Char extends Actor {
 		float acuStat = attacker.attackSkill( defender );
 		float defStat = defender.defenseSkill( attacker );
 
+
 		//if accuracy or evasion are large enough, treat them as infinite.
 		//note that infinite evasion beats infinite accuracy
-		if (defStat >= INFINITE_EVASION){
+		if (defStat >= INFINITE_EVASION || defender.buff(RoundShield.Block.class) != null){
 			return false;
 		} else if (acuStat >= INFINITE_ACCURACY){
 			return true;
@@ -508,8 +515,9 @@ public abstract class Char extends Actor {
 	public int defenseSkill( Char enemy ) {
 		return 0;
 	}
-	
+
 	public String defenseVerb() {
+		if (buff(RoundShield.Block.class) != null) return Messages.get(Hero.class, "absorbed");
 		return Messages.get(this, "def_verb");
 	}
 	

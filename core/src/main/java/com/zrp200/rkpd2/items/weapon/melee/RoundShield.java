@@ -21,10 +21,17 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.DummyBuff;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class RoundShield extends MeleeWeapon {
 
@@ -56,5 +63,35 @@ public class RoundShield extends MeleeWeapon {
 		}
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		if (Dungeon.hero.lastMovPos != -1 &&
+				Dungeon.level.distance(Dungeon.hero.lastMovPos, enemy.pos) >
+						Dungeon.level.distance(Dungeon.hero.pos, enemy.pos) && Dungeon.hero.buff(Block.class) == null){
+			Dungeon.hero.lastMovPos = -1;
+			//knock out target and get blocking
+			Ballistica trajectory = new Ballistica(Dungeon.hero.pos, enemy.pos, Ballistica.STOP_TARGET);
+			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
+			WandOfBlastWave.throwChar(enemy, trajectory, 1, true);
+			Buff.affect(Dungeon.hero, Block.class, 8f);
+		}
+		return 0;
+	}
 
+	public class Block extends DummyBuff {
+		@Override
+		public int icon() {
+			return BuffIndicator.ARMOR;
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0x94BCCC);
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (8 - visualcooldown()) / 8);
+		}
+	}
 }

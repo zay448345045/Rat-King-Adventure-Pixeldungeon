@@ -125,6 +125,7 @@ public class Hero extends Char {
 	private boolean damageInterrupt = true;
 	public HeroAction curAction = null;
 	public HeroAction lastAction = null;
+	public int lastMovPos = -1;
 
 	private Char enemy;
 	
@@ -225,6 +226,7 @@ public class Hero extends Char {
 	private static final String LEVEL		= "lvl";
 	private static final String EXPERIENCE	= "exp";
 	private static final String HTBOOST     = "htboost";
+	private static final String LASTMOVE = "last_move";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -245,6 +247,7 @@ public class Hero extends Char {
 		bundle.put( EXPERIENCE, exp );
 		
 		bundle.put( HTBOOST, HTBoost );
+		bundle.put( LASTMOVE, lastMovPos);
 
 		belongings.storeInBundle( bundle );
 	}
@@ -263,6 +266,7 @@ public class Hero extends Char {
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );
+		lastMovPos = bundle.getInt(LASTMOVE);
 		
 		attackSkill = bundle.getInt( ATTACK );
 		defenseSkill = bundle.getInt( DEFENSE );
@@ -1054,6 +1058,7 @@ public class Hero extends Char {
 			} else {
 
 				curAction = null;
+				lastMovPos = -1;
 
 				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
 				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
@@ -1117,6 +1122,7 @@ public class Hero extends Char {
 				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
 				Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
 				if (timeBubble != null) timeBubble.disarmPressedTraps();
+				lastMovPos = -1;
 
 				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
 				Game.switchScene( InterlevelScene.class );
@@ -1494,7 +1500,7 @@ public class Hero extends Char {
 					}
 				}
 			}
-
+			lastMovPos = pos;
 			sprite.move(pos, step);
 			move(step);
 
