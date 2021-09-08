@@ -144,7 +144,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
                 int heal = Math.min(hero.pointsInTalent(Talent.HOLERIC_BURST)*5, hero.HT-hero.HP);
                 hero.HP += heal;
                 Emitter e = hero.sprite.emitter();
-                if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/3)));
+                if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/5)));
             }
         }
         Buff.detach(hero, BrawlingTracker.class);
