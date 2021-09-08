@@ -124,6 +124,8 @@ public enum Talent {
 			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 184 : 142;
 		}
 	},
+	//Spirit Caller T3
+	ECTOTOUGHNESS(169, 3), I_HATE_ALL_ELEMENTS(170, 3), STAB_FROM_NOWHERE(171, 3), POWER_IN_NUMBERS(172, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), EMPOWERED_STRIKE_II(148, 4),
 	//Wild Magic T4
@@ -825,6 +827,9 @@ public enum Talent {
 				break;
 			case WARLOCK:
 				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, WARLOCKS_TOUCH);
+				break;
+			case SPIRITUALIST:
+				Collections.addAll(tierTalents, ECTOTOUGHNESS, I_HATE_ALL_ELEMENTS, STAB_FROM_NOWHERE, POWER_IN_NUMBERS);
 				break;
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER, LETHAL_MOMENTUM_2);
