@@ -9,6 +9,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
+import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -132,7 +133,6 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
             BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
             dmgBonus += 0.25f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
         }
-        Buff.affect(hero, BrawlingTracker.class);
 
         hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
 
@@ -148,6 +148,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
             }
         }
         Buff.detach(hero, BrawlingTracker.class);
+        Bomb.doNotDamageHero = false;
     }
 
     private class Selector extends CellSelector.TargetedListener {
@@ -177,6 +178,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         protected void action(Char enemy) {
             int leapPos = targets.get(enemy);
             ((Hero)target).busy();
+            Buff.affect(target, BrawlingTracker.class);
             if(leapPos != target.pos) {
                 target.sprite.jump(target.pos, leapPos, () -> {
                     target.move(leapPos);

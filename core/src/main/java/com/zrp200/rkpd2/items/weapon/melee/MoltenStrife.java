@@ -4,6 +4,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.bombs.ShrapnelBomb;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -40,5 +41,13 @@ public class MoltenStrife extends MeleeWeapon {
             return Messages.get(this, "stats_desc", new DecimalFormat("#.#").
                     format(100 * ((buffedLvl()+1f) / (5f+buffedLvl()))));
         return Messages.get(this, "stats_desc", new DecimalFormat("#.#").format(20));
+    }
+
+    @Override
+    public int warriorAttack(int damage, Char enemy) {
+        Bomb.doNotDamageHero = true;
+        new ShrapnelBomb().explode(enemy.pos);
+        new ShrapnelBomb().explode(enemy.pos);
+        return super.warriorAttack(damage, enemy);
     }
 }

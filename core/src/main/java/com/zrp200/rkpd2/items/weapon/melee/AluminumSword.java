@@ -22,6 +22,10 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AnkhInvulnerability;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class AluminumSword extends MeleeWeapon {
@@ -38,5 +42,11 @@ public class AluminumSword extends MeleeWeapon {
 	@Override
 	public int max(int lvl) {
 		return 5*(tier-1) + ((tier-1)*lvl); //same as longsword
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		Buff.affect(Dungeon.hero, AnkhInvulnerability.class, delayFactor(Dungeon.hero)*2);
+		return super.warriorAttack(damage, enemy);
 	}
 }

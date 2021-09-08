@@ -32,6 +32,7 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.RectF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.items.weapon.melee.ExoKnife;
@@ -104,10 +105,20 @@ public class HeroSprite extends CharSprite {
 	}
 
 	@Override
+	public void attack(int cell, Callback callback) {
+		cellToAttack = cell;
+		super.attack(cell, callback);
+	}
+
+	@Override
 	public void onComplete(Animation anim) {
 		if (ch instanceof Hero && anim == attack){
 			if (((Hero) ch).belongings.weapon instanceof ExoKnife) {
-				((MissileSprite) parent.recycle(MissileSprite.class)).
+				if ((ch.buff(BrawlerBuff.BrawlingTracker.class) != null)){
+					super.onComplete(anim);
+					return;
+				}
+				parent.recycle(MissileSprite.class).
 						reset(this, cellToAttack, new ExoKnife.RunicMissile(), new Callback() {
 							@Override
 							public void call() {

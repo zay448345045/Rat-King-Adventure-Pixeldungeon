@@ -81,6 +81,28 @@ public class ConstructWand extends MeleeWeapon {
         return super.proc(attacker, defender, damage);
     }
 
+    @Override
+    public int warriorAttack(int damage, Char enemy) {
+        for (int i : PathFinder.NEIGHBOURS9){
+
+            if (!Dungeon.level.solid[Dungeon.hero.pos + i]
+                    && !Dungeon.level.pit[Dungeon.hero.pos + i]
+                    && Actor.findChar(Dungeon.hero.pos + i) == null) {
+
+                GuardianKnight guardianKnight = new GuardianKnight();
+                guardianKnight.weapon = this;
+                guardianKnight.pos = Dungeon.hero.pos + i;
+                guardianKnight.HP = guardianKnight.HT = guardianKnight.HT / 2;
+                guardianKnight.aggro(enemy);
+                GameScene.add(guardianKnight);
+                Dungeon.level.occupyCell(guardianKnight);
+
+                CellEmitter.get(guardianKnight.pos).burst(Speck.factory(Speck.EVOKE), 4);
+            }
+        }
+        return 0;
+    }
+
     public static class GuardianKnight extends Statue {
         {
             state = WANDERING;

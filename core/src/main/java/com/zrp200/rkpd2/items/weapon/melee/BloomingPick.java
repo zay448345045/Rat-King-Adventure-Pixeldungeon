@@ -30,8 +30,10 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
@@ -39,6 +41,8 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class BloomingPick extends MeleeWeapon {
 
@@ -123,4 +127,13 @@ public class BloomingPick extends MeleeWeapon {
 		}
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		WandOfRegrowth regrowth = new WandOfRegrowth();
+		regrowth.upgrade(level());
+		regrowth.fx(new Ballistica(hero.pos, enemy.pos, Ballistica.MAGIC_BOLT), () -> {
+			regrowth.onZap(new Ballistica(hero.pos, enemy.pos, Ballistica.MAGIC_BOLT));
+		});
+		return super.warriorAttack(damage, enemy);
+	}
 }

@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.effects.Lightning;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -59,7 +60,7 @@ public class LuminousCutlass extends MeleeWeapon {
 			affected.clear();
 			arcs.clear();
 
-			arc(attacker, defender, 3, affected, arcs);
+			arc(attacker, defender, attacker.buff(BrawlerBuff.BrawlingTracker.class) != null ? 100000 : 3, affected, arcs);
 
 			affected.remove(defender); //defender isn't hurt by lightning
 			for (Char ch : affected) {
@@ -105,6 +106,11 @@ public class LuminousCutlass extends MeleeWeapon {
 	public ItemSprite.Glowing glowing() {
 		return enchantment != null && (cursedKnown || !enchantment.curse()) ?
 				new ItemSprite.Glowing(enchantment.glowing().color, 0.33f*enchantment.glowing().period) : WHITE;
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		return damage*2;
 	}
 
 	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF, 0.33f );

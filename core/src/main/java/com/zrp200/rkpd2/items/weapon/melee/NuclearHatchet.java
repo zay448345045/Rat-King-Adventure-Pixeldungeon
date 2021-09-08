@@ -22,6 +22,11 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class NuclearHatchet extends MeleeWeapon {
@@ -41,4 +46,9 @@ public class NuclearHatchet extends MeleeWeapon {
 				lvl*(tier-3);   //scaling unchanged
 	}
 
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		GameScene.add( Blob.seed( enemy.pos, 500, CorrosiveGas.class ).setStrength((int) (2 + Dungeon.getDepth() /2.5f)));
+		return super.warriorAttack(damage, enemy);
+	}
 }

@@ -78,7 +78,7 @@ public class RoundShield extends MeleeWeapon {
 		return 0;
 	}
 
-	public class Block extends DummyBuff {
+	public static class Block extends DummyBuff {
 		@Override
 		public int icon() {
 			return BuffIndicator.ARMOR;
