@@ -95,9 +95,15 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
     @Override
     public void tintIcon(Image icon) {
         float r,g,b;
-                r = 1;
-                g = 0.54f * (1 - Math.max(0, count()/maxCharge() - 0.4f));
-                b = 0.70f * (1 - count()/maxCharge()*1.2f);
+        if (count()<=15) {
+            r = 1;
+            g = 0.54f * (1 - Math.max(0, count() / 10 - 0.4f));
+            b = 0.70f * (1 - count() / 10 * 1.2f);
+        } else {
+            r = 1 * (1 - (count()-15)/maxCharge());
+            g = 0;
+            b = 0;
+        }
         icon.hardlight(r,g,b);
     }
 
