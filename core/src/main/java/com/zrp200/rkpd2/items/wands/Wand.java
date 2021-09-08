@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
+import com.zrp200.rkpd2.actors.mobs.Wraith;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
@@ -195,6 +196,14 @@ public abstract class Wand extends Item {
 			if(staff != null) {
 				if (Random.Int(isStaff ? 20 : 10) < sorcery) staff.procBM();
 				if (Random.Int(isStaff ? 12 :  6) < sorcery) staff.procWand(target, damage);
+			}
+		}
+		if (Dungeon.hero.hasTalent(Talent.POWER_IN_NUMBERS)){
+			for (Char ch : Actor.chars()){
+				if (ch instanceof Wraith && ch.alignment == Char.Alignment.ALLY){
+					((Wraith) ch).beckon(target.pos);
+					((Wraith) ch).aggro(target);
+				}
 			}
 		}
 
