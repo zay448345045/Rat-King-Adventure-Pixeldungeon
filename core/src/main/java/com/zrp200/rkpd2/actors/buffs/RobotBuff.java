@@ -39,7 +39,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         target.sprite.operate(target.pos, target.sprite::idle);
         ActionIndicator.updateIcon();
         Dungeon.level.occupyCell(target);
-        Dungeon.hero.spendAndNext(Actor.TICK*3);
+        Dungeon.hero.spendAndNext(Actor.TICK);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
     }
 
     public static boolean isVehicle(){
-        return Dungeon.hero.buff(RobotTransform.class) == null && Dungeon.hero.buff(RobotBuff.class) != null;
+        return Dungeon.hero.buff(RobotTransform.class) != null && Dungeon.hero.buff(RobotBuff.class) != null;
     }
 
     @Override

@@ -589,8 +589,8 @@ public class Hero extends Char {
 			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
 		if (buff(RobotTransform.class) != null){
-			((HeroSprite)sprite).sprint( 1.7f );
-			speed*=2;
+			((HeroSprite)sprite).sprint( 2f );
+			speed*=3;
 		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
