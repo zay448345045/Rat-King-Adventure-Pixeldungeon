@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.hero;
 
 import com.watabou.noosa.Game;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -116,6 +117,20 @@ public enum HeroSubClass {
 		return icon;
 
 		// fixme KING: new ItemSprite(ItemSpriteSheet.ARMOR_RAT_KING);
+	}
+
+	public Badges.Badge secretBadge() {
+		switch (this) {
+			case BRAWLER:
+				return Badges.Badge.WON_BRAWLER;
+			case SPIRITUALIST:
+				return Badges.Badge.WON_SPIRITCALLER;
+			case DECEPTICON:
+				return Badges.Badge.WON_DECEPTICON;
+			case WARLOCK:
+				return Badges.Badge.WON_WARLOCK;
+		}
+		return null;
 	}
 
 }

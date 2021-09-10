@@ -21,16 +21,12 @@
 
 package com.zrp200.rkpd2.items;
 
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.watabou.noosa.Game;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.scenes.AmuletScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.Game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -101,6 +97,7 @@ public class Amulet extends Item {
 				@Override
 				public void afterCreate() {
 					Badges.validateVictory();
+					Badges.validateSecretMastery();
 					Badges.validateChampion(Challenges.activeChallenges());
 					Badges.saveGlobal();
 				}

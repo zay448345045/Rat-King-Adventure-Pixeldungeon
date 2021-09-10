@@ -46,6 +46,10 @@ public class Badges {
 		MASTERY_HUNTRESS,
 		MASTERY_RAT_KING,
 		FOUND_RATMOGRIFY,
+		WON_BRAWLER,
+		WON_SPIRITCALLER,
+		WON_WARLOCK,
+		WON_DECEPTICON,
 
 		//bronze
 		UNLOCK_MAGE                 ( 1 ),
@@ -668,6 +672,16 @@ public class Badges {
 					}
 				}
 			}
+		}
+	}
+
+	public static void validateSecretMastery() {
+
+		Badge badge = Dungeon.hero.subClass.secretBadge();
+
+		if (!global.contains( badge ) && Dungeon.hero.subClass == Dungeon.hero.heroClass.secretSub()) {
+			global.add( badge );
+			saveNeeded = true;
 		}
 	}
 	
