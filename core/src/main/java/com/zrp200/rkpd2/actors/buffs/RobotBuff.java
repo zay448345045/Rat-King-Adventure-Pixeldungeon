@@ -7,6 +7,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
@@ -43,6 +44,9 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         target.sprite.operate(target.pos, target.sprite::idle);
         ActionIndicator.updateIcon();
         Dungeon.level.occupyCell(target);
+        if (Dungeon.hero.hasTalent(Talent.VOID_WRATH)){
+            Buff.affect(Dungeon.hero, ResistanceTracker.class, Dungeon.hero.cooldown());
+        }
         Dungeon.hero.spendAndNext(Actor.TICK);
     }
 
@@ -67,4 +71,6 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         spend(TICK);
         return true;
     }
+
+    public static class ResistanceTracker extends FlavourBuff{}
 }

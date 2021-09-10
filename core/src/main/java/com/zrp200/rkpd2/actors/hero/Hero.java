@@ -1319,6 +1319,9 @@ public class Hero extends Char {
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
+		if (buff(RobotBuff.ResistanceTracker.class) != null && pointsInTalent(Talent.VOID_WRATH) > 1){
+			Buff.affect(enemy, Burning.class).reignite(enemy);
+		}
 		
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
@@ -1380,6 +1383,10 @@ public class Hero extends Char {
 			int points = pointsInTalent(Talent.IRON_STOMACH,Talent.ROYAL_MEAL);
 			if (points == 1)    dmg = Math.round(dmg*0.25f);
 			if (points == 2)  	dmg = Math.round(dmg*0.00f);
+		}
+
+		if (buff(RobotBuff.ResistanceTracker.class) != null){
+			dmg /= 4;
 		}
 
 		int preHP = HP + shielding();
