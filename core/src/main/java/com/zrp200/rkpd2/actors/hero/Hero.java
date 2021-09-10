@@ -1235,6 +1235,13 @@ public class Hero extends Char {
 
 		if (RobotBuff.isVehicle()){
 			damage = Random.NormalIntRange(Math.max(0, STR()-15), Math.max(0, STR()-10));
+			int points = Dungeon.hero.pointsInTalent(Talent.ENERGON_FUSION);
+			if (points > 0){
+				for (Buff b : Dungeon.hero.buffs()){
+					if (b instanceof Artifact.ArtifactBuff) ((Artifact.ArtifactBuff) b).charge(Dungeon.hero, 0.33f + points/3f);
+					if (b instanceof Wand.Charger) ((Wand.Charger) b).charge(Dungeon.hero, 0.33f + points/3f);
+				}
+			}
 		}
 
 		// subclass logic here

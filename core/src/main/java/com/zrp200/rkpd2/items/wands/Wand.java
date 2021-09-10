@@ -764,6 +764,10 @@ public abstract class Wand extends Item {
 				}
 			}
 		}
+
+		public void charge(Char owner, float charge){
+			partialCharge += CHARGE_BUFF_BONUS*charge;
+		}
 		
 		public Wand wand(){
 			return Wand.this;

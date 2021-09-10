@@ -48,10 +48,7 @@ import com.zrp200.rkpd2.items.bags.PotionBandolier;
 import com.zrp200.rkpd2.items.bags.ScrollHolder;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
 import com.zrp200.rkpd2.items.food.Food;
-import com.zrp200.rkpd2.items.potions.PotionOfHealing;
-import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
-import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
-import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
+import com.zrp200.rkpd2.items.potions.*;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
@@ -131,6 +128,10 @@ public enum HeroClass {
 		new ScrollOfIdentify().identify();
 		new TengusMask().collect();
 		new KingsCrown().collect();
+		hero.STR = 15;
+		for (int ii = 0; ii < 15; ii++){
+			new PotionOfExperience().apply(hero);
+		}
 
 		switch (this) {
 			case WARRIOR:
