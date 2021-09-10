@@ -24,13 +24,10 @@
 
 package com.zrp200.rkpd2.items.wands;
 
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
-import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -54,12 +51,20 @@ public class WandOfUnstable extends Wand {
             WandOfMagicMissile.class,
             WandOfPrismaticLight.class,
             WandOfTransfusion.class,
-            WandOfWarding.class,
             WandOfFireblast.class,
             WandOfRegrowth.class
     };
 
     private Wand wand;
+
+    @Override
+    public int collisionProperties(int target) {
+        wand = Reflection.newInstance(Random.element(wands));
+        if (wand != null) {
+            return wand.collisionProperties(target);
+        }
+        return super.collisionProperties(target);
+    }
 
     @Override
     public void onZap(Ballistica attack) {
@@ -76,20 +81,9 @@ public class WandOfUnstable extends Wand {
 
     @Override
     public void fx(Ballistica bolt, Callback callback) {
-        wand = Reflection.newInstance(Random.element(wands));
         if (wand != null) {
             wand.level(level());
-            MagicMissile.boltFromChar(curUser.sprite.parent,
-                    MagicMissile.ELMO,
-                    curUser.sprite,
-                    bolt.collisionPos,
-                    new Callback() {
-                        @Override
-                        public void call() {
-                            wand.fx(bolt, callback);
-                        }
-                    });
-            Sample.INSTANCE.play( Assets.Sounds.ZAP );
+            wand.fx(bolt, callback);
         }
     }
 

@@ -54,12 +54,10 @@ import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
-import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.scrolls.*;
-import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfEnchantment;
-import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
+import com.zrp200.rkpd2.items.wands.WandOfUnstable;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger;
 import com.zrp200.rkpd2.items.weapon.melee.Gloves;
@@ -134,9 +132,7 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-		new RingOfForce().identify().collect();
-		new StoneOfEnchantment().collect();
-		new ScrollOfEnchantment().identify().collect();
+		new WandOfUnstable().identify().collect();
 
 		switch (this) {
 			case WARRIOR:
