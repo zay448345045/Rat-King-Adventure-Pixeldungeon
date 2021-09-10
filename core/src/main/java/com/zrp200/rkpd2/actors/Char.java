@@ -383,8 +383,14 @@ public abstract class Char extends Actor {
 			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
 				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
-			if (RobotBuff.isRobot()){
-
+			if (RobotBuff.isRobot() && this instanceof Hero){
+				float debuffBoost = 0f;
+				for (Buff buff : enemy.buffs()){
+					if (buff.type == Buff.buffType.NEGATIVE){
+						debuffBoost += RobotBuff.damageModifier();
+					}
+				}
+				effectiveDamage *= 1f + debuffBoost;
 			}
 
 			// If the enemy is already dead, interrupt the attack.

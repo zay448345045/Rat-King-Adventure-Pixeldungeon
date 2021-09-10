@@ -26,6 +26,10 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
             return HeroSprite.avatar(HeroClass.ROGUE, 8);
     }
 
+    public static float damageModifier(){
+        return 0.15f;
+    }
+
     @Override
     public void doAction() {
         if (target.buff(RobotTransform.class) == null){
