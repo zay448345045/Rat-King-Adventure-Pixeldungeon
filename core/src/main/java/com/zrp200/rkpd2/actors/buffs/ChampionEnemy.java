@@ -390,6 +390,10 @@ public abstract class ChampionEnemy extends Buff {
 			color = 0x0088FF;
 		}
 
+		{
+			properties.add(Char.Property.LARGE);
+		}
+
 		@Override
 		public float damageTakenFactor() {
 			return 0.25f;

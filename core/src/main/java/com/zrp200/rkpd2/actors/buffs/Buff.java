@@ -60,6 +60,12 @@ public class Buff extends Actor {
 		return new HashSet<>(immunities);
 	}
 
+	protected HashSet<Char.Property> properties = new HashSet<>();
+
+	public HashSet<Char.Property> properties() {
+		return new HashSet<>(properties);
+	}
+
 	// used during restoring, when true, is not attached afterwards.
 	public boolean attachAfterRestore = true;
 	
