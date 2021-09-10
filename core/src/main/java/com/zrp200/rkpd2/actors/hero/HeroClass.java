@@ -39,7 +39,9 @@ import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
-import com.zrp200.rkpd2.items.*;
+import com.zrp200.rkpd2.items.BrokenSeal;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
@@ -48,10 +50,12 @@ import com.zrp200.rkpd2.items.bags.PotionBandolier;
 import com.zrp200.rkpd2.items.bags.ScrollHolder;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
 import com.zrp200.rkpd2.items.food.Food;
-import com.zrp200.rkpd2.items.potions.*;
+import com.zrp200.rkpd2.items.potions.PotionOfHealing;
+import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
+import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
+import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.Wand;
-import com.zrp200.rkpd2.items.wands.WandOfCorruption;
 import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger;
@@ -127,13 +131,6 @@ public enum HeroClass {
 		waterskin.collect();
 
 		new ScrollOfIdentify().identify();
-		new TengusMask().collect();
-		new KingsCrown().collect();
-		hero.STR = 15;
-		new WandOfCorruption().upgrade(7).identify().collect();
-		for (int ii = 0; ii < 15; ii++){
-			new PotionOfExperience().apply(hero);
-		}
 
 		switch (this) {
 			case WARRIOR:
