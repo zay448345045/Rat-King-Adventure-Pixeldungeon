@@ -37,7 +37,7 @@ public class RingOfHaste extends Ring {
 
 	@Override
 	protected float cap() {
-		return 2f;
+		return 3f;
 	}
 
 	@Override

@@ -43,7 +43,7 @@ public class RingOfElements extends Ring {
 
 	@Override
 	protected float cap() {
-		return 0.4f;
+		return 0.33f;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class RingOfElements extends Ring {
 		
 		for (Class c : RESISTS){
 			if (c.isAssignableFrom(effect)){
-				return Math.max(0.4f, (float)Math.pow(0.825, getBuffedBonus(target, Resistance.class)));
+				return Math.max(0.33f, (float)Math.pow(0.825, getBuffedBonus(target, Resistance.class)));
 			}
 		}
 		

@@ -37,7 +37,7 @@ public class RingOfEvasion extends Ring {
 
 	@Override
 	protected float cap() {
-		return 2f;
+		return 2.75f;
 	}
 
 	@Override

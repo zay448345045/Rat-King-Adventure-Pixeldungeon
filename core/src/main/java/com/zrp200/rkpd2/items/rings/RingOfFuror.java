@@ -42,7 +42,7 @@ public class RingOfFuror extends Ring {
 
 	@Override
 	protected float cap() {
-		return 2.5f;
+		return 3f;
 	}
 
 	public static float attackSpeedMultiplier(Char target ){
