@@ -1234,12 +1234,18 @@ public class Hero extends Char {
 		float mult = Talent.SpiritBladesTracker.getProcModifier();
 
 		if (RobotBuff.isVehicle()){
-			damage = Random.NormalIntRange(Math.max(0, STR()-15), Math.max(0, STR()-10));
+			damage = Random.NormalIntRange(Math.max(0, STR()-12), Math.max(0, STR()-7));
 			int points = Dungeon.hero.pointsInTalent(Talent.ENERGON_FUSION);
 			if (points > 0){
 				for (Buff b : Dungeon.hero.buffs()){
 					if (b instanceof Artifact.ArtifactBuff) ((Artifact.ArtifactBuff) b).charge(Dungeon.hero, points/6f);
 					if (b instanceof Wand.Charger) ((Wand.Charger) b).charge(Dungeon.hero, points/6f);
+				}
+			}
+			if (Dungeon.hero.hasTalent(Talent.ERADICATING_CHARGE)){
+				Buff.affect(this, Barrier.class).incShield(Dungeon.hero.pointsInTalent(Talent.ERADICATING_CHARGE));
+				if (Random.Int(10) < Dungeon.hero.pointsInTalent(Talent.ERADICATING_CHARGE)){
+					Buff.affect(enemy, Slow.class, 3f);
 				}
 			}
 		}
