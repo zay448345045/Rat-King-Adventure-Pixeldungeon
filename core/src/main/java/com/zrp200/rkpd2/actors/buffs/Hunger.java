@@ -71,7 +71,7 @@ public class Hunger extends Buff implements Hero.Doom {
 			return true;
 		}
 
-		if (target.isAlive() && target instanceof Hero) {
+		if (target.isAlive() && target instanceof Hero && target.buff(RobotBuff.class) == null) {
 
 			Hero hero = (Hero)target;
 

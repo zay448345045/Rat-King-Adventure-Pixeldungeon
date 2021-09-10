@@ -21,26 +21,21 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Chrome;
-import com.zrp200.rkpd2.GamesInProgress;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.journal.Journal;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.Archs;
-import com.zrp200.rkpd2.ui.ExitButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
-import com.zrp200.rkpd2.windows.WndGameInProgress;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Button;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Chrome;
+import com.zrp200.rkpd2.GamesInProgress;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.journal.Journal;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.HeroSprite;
+import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.windows.WndGameInProgress;
 
 import java.util.ArrayList;
 
@@ -172,6 +167,9 @@ public class StartScene extends PixelScene {
 				
 				if (hero == null){
 					hero = HeroSprite.avatar(info.heroClass,info.armorTier);
+					if (info.subClass == HeroSubClass.DECEPTICON){
+						hero = HeroSprite.avatar(info.heroClass, 7);
+					}
 					add(hero);
 					
 					steps = new Image(Icons.get(Icons.DEPTH));

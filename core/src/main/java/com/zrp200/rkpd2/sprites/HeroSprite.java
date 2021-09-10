@@ -33,8 +33,10 @@ import com.watabou.utils.RectF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.weapon.melee.ExoKnife;
 import com.zrp200.rkpd2.scenes.GameScene;
 
@@ -77,8 +79,8 @@ public class HeroSprite extends CharSprite {
 		
 		die = new Animation( 20, false );
 		die.frames( film, 8, 9, 10, 11, 12, 11 );
-		
-		attack = new Animation( 15, false );
+
+		attack = new Animation(  Dungeon.hero.buff(RobotTransform.class) != null ? 50 : 15, false );
 		attack.frames( film, 13, 14, 15, 0 );
 		
 		zap = attack.clone();
@@ -125,6 +127,9 @@ public class HeroSprite extends CharSprite {
 								ch.onAttackComplete();
 							}
 						});
+			} else if (ch.buff(RobotTransform.class) != null){
+				parent.recycle(MissileSprite.class).
+						reset(this, cellToAttack, new RobotTransform.RunicMissile(), ch::onAttackComplete);
 			} else {
 				super.onComplete(anim);
 			}
@@ -142,7 +147,7 @@ public class HeroSprite extends CharSprite {
 	@Override
 	public void move( int from, int to ) {
 		super.move( from, to );
-		if (ch != null && ch.flying) {
+		if (ch != null && ch.flying && Dungeon.hero.subClass != HeroSubClass.DECEPTICON) {
 			play( fly );
 		}
 		Camera.main.panFollow(this, 20f);
@@ -151,7 +156,7 @@ public class HeroSprite extends CharSprite {
 	@Override
 	public void idle() {
 		super.idle();
-		if (ch != null && ch.flying) {
+		if (ch != null && ch.flying && Dungeon.hero.subClass != HeroSubClass.DECEPTICON) {
 			play( fly );
 		}
 	}
@@ -207,7 +212,6 @@ public class HeroSprite extends CharSprite {
 		SmartTexture texture = TextureCache.get( spritesheet );
 		return new TextureFilm( texture, texture.width, frameHeight );
 	}
-
 
 	public static Image avatar( HeroClass cl, int armorTier ) {
 		int frameHeight = FRAME_HEIGHT;

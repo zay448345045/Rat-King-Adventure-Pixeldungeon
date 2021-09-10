@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.windows;
 
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Button;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -60,7 +61,11 @@ public class WndGameInProgress extends Window {
 		}
 		
 		IconTitle title = new IconTitle();
-		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
+		Image avatar = HeroSprite.avatar(info.heroClass, info.armorTier);
+		if (info.subClass == HeroSubClass.DECEPTICON){
+			avatar = HeroSprite.avatar(info.heroClass, 7);
+		}
+		title.icon(avatar);
 		title.label((Messages.get(this, "title", info.level, className)).toUpperCase(Locale.ENGLISH));
 		title.color(Window.TITLE_COLOR);
 		title.setRect( 0, 0, WIDTH, 0 );

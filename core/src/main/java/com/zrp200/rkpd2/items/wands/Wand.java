@@ -122,6 +122,11 @@ public abstract class Wand extends Item {
 
 	public boolean tryToZap( Hero owner, int target ){
 
+		if (owner.buff(RobotTransform.class) != null){
+			GLog.w( Messages.get(this, "robot") );
+			return false;
+		}
+
 		if (owner.buff(MagicImmune.class) != null){
 			GLog.w( Messages.get(this, "no_magic") );
 			return false;

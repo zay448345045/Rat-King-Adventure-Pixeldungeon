@@ -406,6 +406,11 @@ public class Hero extends Char {
 	}
 	
 	public int tier() {
+		if (subClass != null && subClass == HeroSubClass.DECEPTICON){
+			if (buff(RobotTransform.class) != null)
+				return 8;
+			return 7;
+		}
 		if (belongings.armor() instanceof ClassArmor){
 			return 6;
 		} else if (belongings.armor() != null){
@@ -480,6 +485,9 @@ public class Hero extends Char {
 		if (paralysed > 0) {
 			evasion /= 2;
 		}
+		if (buff(RobotTransform.class) != null){
+			evasion *= 1.33f;
+		}
 
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
@@ -535,6 +543,10 @@ public class Hero extends Char {
 	
 	@Override
 	public int damageRoll() {
+		if (buff(RobotTransform.class) != null){
+			return 0;
+		}
+
 		KindOfWeapon wep = belongings.weapon();
 		int dmg;
 
@@ -576,6 +588,10 @@ public class Hero extends Char {
 			int hunger = buff(Hunger.class).hunger();
 			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
+		if (buff(RobotTransform.class) != null){
+			((HeroSprite)sprite).sprint( 1.7f );
+			speed*=2;
+		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
 		if (natStrength != null){
@@ -600,6 +616,9 @@ public class Hero extends Char {
 		if(super.canAttack(enemy)) return true;
 
 		KindOfWeapon wep = Dungeon.hero.belongings.weapon();
+		if (buff(RobotTransform.class) != null){
+			return KindOfWeapon.canReach(this, enemy.pos, 8);
+		}
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
@@ -771,6 +790,10 @@ public class Hero extends Char {
 		}
 		if (subClass == HeroSubClass.SPIRITUALIST && buff(SpiritBuff.class) == null){
 			Buff.affect(this, SpiritBuff.class);
+		}
+		if (subClass == HeroSubClass.DECEPTICON && buff(RobotBuff.class) == null){
+			Buff.affect(this, RobotBuff.class);
+			((HeroSprite)sprite).updateArmor();
 		}
 
 		return actResult;
@@ -1209,6 +1232,10 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.weapon();
 
 		float mult = Talent.SpiritBladesTracker.getProcModifier();
+
+		if (buff(RobotTransform.class) != null){
+			damage = Random.NormalIntRange(0, STR()-10);
+		}
 
 		// subclass logic here
         if (subClass == HeroSubClass.BATTLEMAGE || hasTalent(Talent.RK_BATTLEMAGE)) {

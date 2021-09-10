@@ -40,7 +40,7 @@ public class Regeneration extends Buff {
 	
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
+		if (target.isAlive() && target.buff(RobotBuff.class) == null) {
 
 			if (target.HP < regencap() && !((Hero)target).isStarving()) {
 				LockedFloor lock = target.buff(LockedFloor.class);

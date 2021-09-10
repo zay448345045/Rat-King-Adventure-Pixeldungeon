@@ -27,6 +27,7 @@ import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -93,6 +94,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(PhantomSpear.class,  0);
 		ANGULAR_SPEEDS.put(RunicBladeMkII.RunicMissile.class, 0);
 		ANGULAR_SPEEDS.put(ExoKnife.RunicMissile.class, 0);
+		ANGULAR_SPEEDS.put(RobotTransform.RunicMissile.class, 0);
 		
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
@@ -150,6 +152,9 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		}
 		
 		float speed = SPEED;
+		if (item instanceof RobotTransform.RunicMissile){
+			speed *= 4f;
+		}
 		if (item instanceof Dart && Dungeon.hero.belongings.weapon() instanceof Crossbow){
 			speed *= 3f;
 			
