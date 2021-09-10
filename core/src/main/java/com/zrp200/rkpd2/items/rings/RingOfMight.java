@@ -77,14 +77,14 @@ public class RingOfMight extends Ring {
 
 	@Override
 	protected float cap() {
-		return 2f;
+		return Integer.MAX_VALUE;
 	}
 
 	public String statsInfo() {
 		// if I want to get this working with innate boosts again, then I'll just have to
 		return Messages.get(this, isIdentified()?"stats":"typical_stats",
 				soloBonus(),
-				new DecimalFormat("#.##").format(100f * (Math.max(2f, Math.pow(1.035, soloBuffedBonus()) - 1f))));
+				new DecimalFormat("#.##").format(100f * Math.pow(1.07, soloBuffedBonus()) - 1f));
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class RingOfMight extends Ring {
 	}
 	
 	public static float HTMultiplier( Char target ){
-		return Math.min(2f, (float)Math.pow(1.035, getBuffedBonus(target, Might.class)));
+		return Math.min(2f, (float)Math.pow(1.07, getBuffedBonus(target, Might.class)));
 	}
 
 	public class Might extends RingBuff {
