@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.actors.hero;
 
 import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.buffs.RobotBuff;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
@@ -83,12 +82,7 @@ public enum HeroSubClass {
 
 	SPIRITUALIST(HeroIcon.SPIRITUALIST),
 	BRAWLER(HeroIcon.BRAWLER),
-	DECEPTICON(HeroIcon.DECEPTICON){
-		@Override
-		public int getBonus(Item item){
-			return RobotBuff.isVehicle() ? 0 : 1;
-		}
-	},
+	DECEPTICON(HeroIcon.DECEPTICON),
 
 	KING(HeroIcon.KING);
 
