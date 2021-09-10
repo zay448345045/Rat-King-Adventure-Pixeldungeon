@@ -23,8 +23,10 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 import java.text.DecimalFormat;
@@ -164,7 +166,9 @@ public class Buff extends Actor {
 	
 	public static<T extends FlavourBuff> T affect( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+		buff.spend( duration * target.resist(buffClass) *
+				(buff.type == buffType.NEGATIVE && Dungeon.hero.pointsInTalent(Talent.LASER_PRECISION) == 3
+						&& target.alignment == Char.Alignment.ENEMY ? 1.5f : 1));
 		return buff;
 	}
 

@@ -189,7 +189,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.bossLevel() && Dungeon.getDepth() > 25){
 			mobs *= 3;
 		}
-		return mobs;
+		return mobs*5;
 	}
 	
 	@Override

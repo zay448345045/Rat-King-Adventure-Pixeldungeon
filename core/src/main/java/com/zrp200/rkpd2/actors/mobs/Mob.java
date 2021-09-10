@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Surprise;
 import com.zrp200.rkpd2.effects.Wound;
+import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
@@ -57,6 +58,8 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.FunctionalStuff;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -171,6 +174,25 @@ public abstract class Mob extends Char {
 	protected boolean act() {
 
 		super.act();
+
+		if (Dungeon.hero.hasTalent(Talent.LASER_PRECISION)){
+			PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
+			Char ch;
+			for (int i = 0; i < PathFinder.distance.length; i++) {
+				if (PathFinder.distance[i] < Integer.MAX_VALUE && (ch = Actor.findChar(i)) != null && Random.Int(5) == 0) {
+					HashSet<Buff> debuffs = FunctionalStuff.extract(buffs(), (buff) -> buff.type == Buff.buffType.NEGATIVE);
+					if (!debuffs.isEmpty() && ch.alignment == alignment && ch != Dungeon.hero && ch != this){
+						Buff debuff = Random.element(debuffs);
+						if (ch.buff(debuff.getClass()) == null) {
+							if (debuff instanceof FlavourBuff) {
+								Buff.affect(ch, ((FlavourBuff) debuff).getClass(), debuff.cooldown());
+							} else Buff.affect(ch, debuff.getClass());
+							CellEmitter.get(i).burst(ElmoParticle.FACTORY, 12);
+						}
+					}
+				}
+			}
+		}
 
 		boolean justAlerted = updateAlert();
 

@@ -675,6 +675,9 @@ public abstract class Char extends Actor {
 			dmg = 0;
 		} else {
 			dmg = Math.round( dmg * resist( srcClass ));
+			if (hero.pointsInTalent(Talent.LASER_PRECISION) > 1 && src instanceof Buff){
+				dmg /= 2;
+			}
 		}
 
 		//TODO improve this when I have proper damage source logic
