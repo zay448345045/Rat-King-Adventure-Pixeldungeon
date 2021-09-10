@@ -38,6 +38,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         Sample.INSTANCE.play(Assets.Sounds.MASTERY, 1f, 0.8f);
         target.sprite.operate(target.pos, target.sprite::idle);
         ActionIndicator.updateIcon();
+        Dungeon.level.occupyCell(target);
         Dungeon.hero.spendAndNext(Actor.TICK*3);
     }
 
@@ -45,6 +46,10 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
     public boolean attachTo(Char target) {
         ActionIndicator.setAction(this);
         return super.attachTo(target);
+    }
+
+    public static boolean isVehicle(){
+        return Dungeon.hero.buff(RobotTransform.class) == null && Dungeon.hero.buff(RobotBuff.class) != null;
     }
 
     @Override

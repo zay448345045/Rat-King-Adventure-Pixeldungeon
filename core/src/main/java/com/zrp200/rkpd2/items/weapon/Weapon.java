@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
+import com.zrp200.rkpd2.actors.buffs.RobotBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -197,6 +198,7 @@ abstract public class Weapon extends KindOfWeapon {
 	public int reachFactor(Char owner) {
 		int reach = RCH;
 		if(hasEnchant(Projecting.class, owner)) reach++;
+		if(!RobotBuff.isVehicle()) reach++;
 		if(owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
