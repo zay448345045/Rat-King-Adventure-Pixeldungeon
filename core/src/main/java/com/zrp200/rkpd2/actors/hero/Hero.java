@@ -85,6 +85,7 @@ import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.StatusPane;
+import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndHero;
 import com.zrp200.rkpd2.windows.WndMessage;
@@ -451,6 +452,9 @@ public class Hero extends Char {
 				accuracy *= 1.5f;
 			}
 		}
+		if (wep == null && buff(RingOfForce.Force.class) != null){
+			accuracy *= buff(RingOfForce.Force.class).accuracyFactor();
+		}
 		
 		if (wep != null) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this ));
@@ -536,7 +540,6 @@ public class Hero extends Char {
 
 		if (wep != null) {
 			dmg = wep.damageRoll( this );
-			if (!(wep instanceof MissileWeapon)) dmg += RingOfForce.armedDamageBonus(this);
 		} else {
 			dmg = RingOfForce.damageRoll(this);
 		}
@@ -600,7 +603,22 @@ public class Hero extends Char {
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
-		} else {
+		} else if (wep == null && buff(RingOfForce.Force.class) != null){
+			RingOfForce.Force forceBuff = buff(RingOfForce.Force.class);
+			if (Dungeon.level.distance( pos, enemy.pos ) > forceBuff.reachFactor()){
+				return false;
+			} else {
+				boolean[] passable = BArray.not(Dungeon.level.solid, null);
+				for (Char ch : Actor.chars()) {
+					if (ch != this) passable[ch.pos] = false;
+				}
+
+				PathFinder.buildDistanceMap(enemy.pos, passable, forceBuff.reachFactor());
+
+				return PathFinder.distance[pos] <= forceBuff.reachFactor();
+			}
+		}
+		else {
 			MagesStaff staff = belongings.getItem(MagesStaff.class);
 			return distance(enemy) == 2 && staff != null && staff.wandClass() == WandOfDisintegration.class && Random.Int(3) < pointsInTalent(Talent.SORCERY);
 		}
@@ -1210,6 +1228,15 @@ public class Hero extends Char {
             }
         }
 		if (wep != null) damage = wep.proc( this, enemy, damage );
+		RingOfForce.Force forceBuff = buff(RingOfForce.Force.class);
+		if (forceBuff != null && !(wep instanceof MissileWeapon)) {
+			if (wep != null){
+				damage += RingOfForce.armedDamageBonus(this);
+			}
+			if (forceBuff.getEnchant() != null ) {
+				damage = forceBuff.getEnchant().proc(forceBuff, this, enemy, damage);
+			}
+		}
 
 		Talent.SpiritBladesTracker tracker = buff(Talent.SpiritBladesTracker.class, false);
 		if ( tracker != null && Random.Float() < 3*pointsInTalent(Talent.SPIRIT_BLADES, Talent.SEA_OF_BLADES) * mult ){

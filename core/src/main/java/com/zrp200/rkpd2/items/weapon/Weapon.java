@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
+import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.rings.RingOfFuror;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
 import com.zrp200.rkpd2.items.weapon.curses.*;
@@ -358,6 +359,30 @@ abstract public class Weapon extends KindOfWeapon {
 			
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 
+		public int proc( RingOfForce.Force weaponBuff, Char attacker, Char defender, int damage){
+			return proc(new Weapon() {
+				@Override
+				public int STRReq(int lvl) {
+					return attacker instanceof Hero ? ((Hero) attacker).STR() : 0;
+				}
+
+				@Override
+				public int min(int lvl) {
+					return 0;
+				}
+
+				@Override
+				public int max(int lvl) {
+					return 0;
+				}
+
+				@Override
+				public int level() {
+					return weaponBuff.level();
+				}
+			}, attacker, defender, damage);
+		}
+
 		public static float procChanceMultiplier( Char attacker ){
 			float multi = 1f;
 			Berserk rage = attacker.buff(Berserk.class);
@@ -371,6 +396,9 @@ abstract public class Weapon extends KindOfWeapon {
 			if (attacker.buff(Talent.StrikingWaveTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
 				multi += 0.2f;
+			}
+			if (attacker.buff(RingOfForce.Force.class) != null && attacker instanceof Hero && ((Hero) attacker).belongings.weapon() == null){
+				multi *= 1.5f;
 			}
 			return multi;
 		}
