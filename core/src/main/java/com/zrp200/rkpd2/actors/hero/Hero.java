@@ -1238,8 +1238,8 @@ public class Hero extends Char {
 			int points = Dungeon.hero.pointsInTalent(Talent.ENERGON_FUSION);
 			if (points > 0){
 				for (Buff b : Dungeon.hero.buffs()){
-					if (b instanceof Artifact.ArtifactBuff) ((Artifact.ArtifactBuff) b).charge(Dungeon.hero, 0.33f + points/3f);
-					if (b instanceof Wand.Charger) ((Wand.Charger) b).charge(Dungeon.hero, 0.33f + points/3f);
+					if (b instanceof Artifact.ArtifactBuff) ((Artifact.ArtifactBuff) b).charge(Dungeon.hero, points/6f);
+					if (b instanceof Wand.Charger) ((Wand.Charger) b).charge(Dungeon.hero, points/6f);
 				}
 			}
 		}
