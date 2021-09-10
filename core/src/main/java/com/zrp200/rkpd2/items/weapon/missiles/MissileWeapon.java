@@ -194,7 +194,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	protected void onThrow( int cell ) {
 		Char enemy = Actor.findChar( cell );
-		if (curUser.buff(RobotTransform.class) != null || enemy == null || enemy == curUser) {
+		if (enemy == null || enemy == curUser) {
 				parent = null;
 				super.onThrow( cell );
 		} else curUser.shoot(enemy, this);

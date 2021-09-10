@@ -26,7 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
-import com.zrp200.rkpd2.actors.buffs.RobotTransform;
+import com.zrp200.rkpd2.actors.buffs.RobotBuff;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KindOfWeapon;
@@ -81,7 +81,7 @@ public class Belongings implements Iterable<Item> {
 	// such as when equipping something, showing an interface, or dealing with items from a dead hero
 
 	public KindOfWeapon weapon(){
-		if (owner.buff(RobotTransform.class) != null) return null;
+		if (RobotBuff.isVehicle()) return null;
 		//no point in lost invent check, if it's assigned it must be usable
 		if (thrownWeapon != null) return thrownWeapon;
 
@@ -94,7 +94,7 @@ public class Belongings implements Iterable<Item> {
 	}
 
 	public Armor armor(){
-		if (owner.buff(RobotTransform.class) != null) return null;
+		if (RobotBuff.isVehicle()) return null;
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
 		if (!lostInvent || (armor != null && armor.keptThoughLostInvent)){
 			return armor;

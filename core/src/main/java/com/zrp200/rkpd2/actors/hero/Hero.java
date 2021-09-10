@@ -407,7 +407,7 @@ public class Hero extends Char {
 	
 	public int tier() {
 		if (subClass != null && subClass == HeroSubClass.DECEPTICON){
-			if (buff(RobotTransform.class) != null)
+			if (RobotBuff.isVehicle())
 				return 8;
 			return 7;
 		}
@@ -485,7 +485,7 @@ public class Hero extends Char {
 		if (paralysed > 0) {
 			evasion /= 2;
 		}
-		if (buff(RobotTransform.class) != null){
+		if (RobotBuff.isVehicle()){
 			evasion *= 1.33f;
 		}
 
@@ -543,7 +543,7 @@ public class Hero extends Char {
 	
 	@Override
 	public int damageRoll() {
-		if (buff(RobotTransform.class) != null){
+		if (RobotBuff.isVehicle()){
 			return 0;
 		}
 
@@ -588,7 +588,7 @@ public class Hero extends Char {
 			int hunger = buff(Hunger.class).hunger();
 			speed *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
-		if (buff(RobotTransform.class) != null){
+		if (RobotBuff.isVehicle()){
 			((HeroSprite)sprite).sprint( 2f );
 			speed*=3;
 		}
@@ -616,7 +616,7 @@ public class Hero extends Char {
 		if(super.canAttack(enemy)) return true;
 
 		KindOfWeapon wep = Dungeon.hero.belongings.weapon();
-		if (buff(RobotTransform.class) != null){
+		if (RobotBuff.isVehicle()){
 			return KindOfWeapon.canReach(this, enemy.pos, 8);
 		}
 
@@ -1233,8 +1233,8 @@ public class Hero extends Char {
 
 		float mult = Talent.SpiritBladesTracker.getProcModifier();
 
-		if (buff(RobotTransform.class) != null){
-			damage = Random.NormalIntRange(0, STR()-10);
+		if (RobotBuff.isVehicle()){
+			damage = Random.NormalIntRange(Math.max(0, STR()-15), Math.max(0, STR()-10));
 		}
 
 		// subclass logic here
@@ -1788,7 +1788,7 @@ public class Hero extends Char {
 		if (belongings.armor() != null){
 			stealth = belongings.armor().stealthFactor(this, stealth);
 		}
-		if (buff(RobotTransform.class) != null){
+		if (RobotBuff.isVehicle()){
 			stealth += 3;
 		}
 		

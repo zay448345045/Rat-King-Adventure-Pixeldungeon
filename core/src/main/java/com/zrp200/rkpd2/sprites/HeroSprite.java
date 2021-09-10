@@ -33,6 +33,7 @@ import com.watabou.utils.RectF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.buffs.RobotBuff;
 import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -80,7 +81,7 @@ public class HeroSprite extends CharSprite {
 		die = new Animation( 20, false );
 		die.frames( film, 8, 9, 10, 11, 12, 11 );
 
-		attack = new Animation(  Dungeon.hero.buff(RobotTransform.class) != null ? 50 : 15, false );
+		attack = new Animation(  RobotBuff.isVehicle() ? 50 : 15, false );
 		attack.frames( film, 13, 14, 15, 0 );
 		
 		zap = attack.clone();
@@ -127,7 +128,7 @@ public class HeroSprite extends CharSprite {
 								ch.onAttackComplete();
 							}
 						});
-			} else if (ch.buff(RobotTransform.class) != null){
+			} else if (RobotBuff.isVehicle()){
 				parent.recycle(MissileSprite.class).
 						reset(this, cellToAttack, new RobotTransform.RunicMissile(), ch::onAttackComplete);
 			} else {

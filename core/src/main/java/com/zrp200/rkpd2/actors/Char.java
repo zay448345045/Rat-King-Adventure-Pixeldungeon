@@ -383,6 +383,9 @@ public abstract class Char extends Actor {
 			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
 				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
+			if (RobotBuff.isRobot()){
+
+			}
 
 			// If the enemy is already dead, interrupt the attack.
 			// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.

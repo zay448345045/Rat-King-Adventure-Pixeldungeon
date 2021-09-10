@@ -52,6 +52,10 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         return Dungeon.hero.buff(RobotTransform.class) != null && Dungeon.hero.buff(RobotBuff.class) != null;
     }
 
+    public static boolean isRobot(){
+        return Dungeon.hero.buff(RobotTransform.class) == null && Dungeon.hero.buff(RobotBuff.class) != null;
+    }
+
     @Override
     public boolean act() {
         ActionIndicator.setAction(this);
