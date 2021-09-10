@@ -302,7 +302,7 @@ public enum Talent {
 
 		public static float getProcModifier() {
 			SpiritBladesTracker tracker = hero.buff(SpiritBladesTracker.class, false);
-			return tracker != null ? tracker.getModifier() : 0f;
+			return tracker != null ? tracker.getModifier() : 1f;
 		}
 	};
 

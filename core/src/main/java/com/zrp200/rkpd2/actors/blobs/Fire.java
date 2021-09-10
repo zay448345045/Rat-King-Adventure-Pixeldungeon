@@ -59,7 +59,7 @@ public class Fire extends Blob {
 						continue;
 					}
 
-					burn( cell );
+					burn( cell, fireClass );
 
 					fire = cur[cell] - 1;
 					if (fire <= 0 && flamable[cell]) {
