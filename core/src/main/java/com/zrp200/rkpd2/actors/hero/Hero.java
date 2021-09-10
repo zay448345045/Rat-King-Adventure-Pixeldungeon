@@ -1320,10 +1320,6 @@ public class Hero extends Char {
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
 		}
-
-		if (!RobotBuff.isVehicle()){
-			damage -= Random.NormalIntRange(STR()-8, STR()+2);
-		}
 		
 		return damage;
 	}
@@ -1350,9 +1346,6 @@ public class Hero extends Char {
 		// berserker gets rage from all sources. all hail viscosity!
 		// TODO change for 0.9.2?
 		if (!(src instanceof Char)) {
-			if (!RobotBuff.isVehicle()){
-				dmg *= 0.75f;
-			}
 			if (subClass == HeroSubClass.BERSERKER && hasTalent(Talent.ENDLESS_RAGE)) {
 				Buff.affect(this, Berserk.class).damage(Math.round(dmg * 0.2f * pointsInTalent(Talent.ENDLESS_RAGE)));
 			}

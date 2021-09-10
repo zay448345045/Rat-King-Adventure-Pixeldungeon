@@ -44,7 +44,7 @@ public class Regeneration extends Buff {
 
 			if (target.HP < regencap() && !((Hero)target).isStarving()) {
 				LockedFloor lock = target.buff(LockedFloor.class);
-				if (target.HP > 0 && ((lock == null || lock.regenOn()) && (target.buff(RobotBuff.class) == null || target.buff(RobotTransform.class) != null))) {
+				if (target.HP > 0 && ((lock == null || lock.regenOn()))) {
 					target.HP += 1;
 					if (target.HP == regencap()) {
 						((Hero) target).resting = false;
@@ -65,9 +65,6 @@ public class Regeneration extends Buff {
 			}
 			if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
 				delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.2f;
-			}
-			if (target.buff(RobotTransform.class) != null){
-				delay /= 3;
 			}
 			spend( delay );
 			
