@@ -54,6 +54,12 @@ public class WndHeroInfo extends WndTabbed {
 	private static int MIN_HEIGHT = 125;
 	private static int MARGIN = 2;
 
+	{
+		if (PixelScene.landscape()){
+			WIDTH *= 1.5f;
+		}
+	}
+
 	public WndHeroInfo( HeroClass cl ){
 
 		Image tabIcon;
@@ -159,6 +165,7 @@ public class WndHeroInfo extends WndTabbed {
 
 			for (int i = 0; i < desc_entries.length; i++){
 				info[i] = PixelScene.renderTextBlock(desc_entries[i], 6);
+
 				add(info[i]);
 			}
 
@@ -225,7 +232,7 @@ public class WndHeroInfo extends WndTabbed {
 				pos = info[i].bottom() + 4*MARGIN;
 			}
 
-			height = Math.max(height, pos - 4*MARGIN);
+			height = Math.max(height, pos - 2*MARGIN);
 
 		}
 	}
