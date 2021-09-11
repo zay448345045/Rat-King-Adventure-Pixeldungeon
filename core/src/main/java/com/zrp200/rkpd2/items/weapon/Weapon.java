@@ -198,7 +198,7 @@ abstract public class Weapon extends KindOfWeapon {
 	public int reachFactor(Char owner) {
 		int reach = RCH;
 		if(hasEnchant(Projecting.class, owner)) reach++;
-		if(!RobotBuff.isVehicle()) reach++;
+		if(RobotBuff.isRobot()) reach++;
 		if(owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
