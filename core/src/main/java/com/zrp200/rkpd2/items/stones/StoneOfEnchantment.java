@@ -54,7 +54,7 @@ public class StoneOfEnchantment extends InventoryStone {
 			
 			((Weapon)item).enchant();
 			
-		} if (item instanceof RingOfForce){
+		} else if (item instanceof RingOfForce){
 			((RingOfForce) item).enchant();
 		} else {
 			
