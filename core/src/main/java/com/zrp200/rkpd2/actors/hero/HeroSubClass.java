@@ -85,7 +85,8 @@ public enum HeroSubClass {
 	BRAWLER(HeroIcon.BRAWLER),
 	DECEPTICON(HeroIcon.DECEPTICON),
 
-	KING(HeroIcon.KING);
+	KING(HeroIcon.KING),
+	RK_CHAMPION(HeroIcon.MUS_REX);
 
 	public static void set(Hero hero, HeroSubClass subClass) {
 		hero.subClass = subClass;
@@ -129,6 +130,8 @@ public enum HeroSubClass {
 				return Badges.Badge.WON_DECEPTICON;
 			case WARLOCK:
 				return Badges.Badge.WON_WARLOCK;
+			case RK_CHAMPION:
+				return Badges.Badge.WON_RK_CHAMPION;
 		}
 		return null;
 	}

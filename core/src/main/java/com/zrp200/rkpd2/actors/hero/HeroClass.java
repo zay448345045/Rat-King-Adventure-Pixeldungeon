@@ -97,6 +97,8 @@ public enum HeroClass {
 				return HeroSubClass.DECEPTICON;
 			case MAGE:
 				return HeroSubClass.SPIRITUALIST;
+			case RAT_KING:
+				return HeroSubClass.RK_CHAMPION;
 			default:
 				return null;
 		}

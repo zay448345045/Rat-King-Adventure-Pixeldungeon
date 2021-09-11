@@ -50,6 +50,7 @@ public class Badges {
 		WON_SPIRITCALLER,
 		WON_WARLOCK,
 		WON_DECEPTICON,
+		WON_RK_CHAMPION,
 
 		//bronze
 		UNLOCK_MAGE                 ( 1 ),
