@@ -126,9 +126,9 @@ public class RKPD2Changes {
             NewContent(
                     new ChangeButton(new ItemSprite(MASK), "Secret Subs",
                             list(1,
-                                "_-_ Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
+                                "Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
                                        "_Rat King's sub is not finished._\n",
-                                    "_-_ You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
+                                    "You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
                     new ChangeButton(FUN, "Rat King's Wrath",
                             "_-_ Added new talent for Wrath, which makes ability more fun.\n\n" +
                                     "_-_ Old Wrath have been renamed to _Divine Fury_."),
@@ -140,7 +140,7 @@ public class RKPD2Changes {
                     misc("_-_ Added unique icons for Huntress's secret sub.\n\n"),
                     bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
                             "_-_ Fixed Heroic Endurance not working at all.\n" +
-                            "_-_ Fixed Burning and Red Burning conflicting between each other.\n" +
+                            "_-_ Fixed Burning and Red Burning conflicting between each other.\n\n" +
                             "RKPD2 bugs:\n\n" +
                             "_-_ Fixed talent window description having extra whitespace in title.\n" +
                             "_-_ Fixed miscolored icons for heroes and talents.\n")
