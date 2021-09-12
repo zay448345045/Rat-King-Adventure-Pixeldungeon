@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.TalentIcon;
 
 import java.util.ArrayList;
 
@@ -122,6 +123,29 @@ public class RKPD2Changes {
 
     final ChangeInfo[][] changes = {
         {
+            new ChangeInfo("DLC-1.3", true, TITLE_COLOR, "Warning! This build is unstable (like really). If you got a problem, let me know."),
+            NewContent(
+                    new ChangeButton(new ItemSprite(MASK), "Secret Subs",
+                            list(2,
+                                "_-_ Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
+                                       "_Rat King's sub is not finished.",
+                                    "_-_ You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
+                    new ChangeButton(new TalentIcon(FUN), "Rat King's Wrath",
+                            "_-_ Added new talent for Wrath, which makes ability more fun.\n\n" +
+                                    "_-_ Old Wrath have been renamed to _Divine Fury_."),
+                    new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Force rework",
+                            "_-_ Can hold enchantments and proc them.\n\n" +
+                                    "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%.")
+            ),
+            Changes(
+                    misc("_-_ Added unique icons for Huntress's secret sub.\n\n"),
+                    bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
+                            "_-_ Fixed Heroic Endurance not working at all.\n" +
+                            "_-_ Fixed Burning and Red Burning conflicting between each other.\n" +
+                            "RKPD2 bugs:\n\n" +
+                            "_-_ Fixed talent window description having extra whitespace in title.\n" +
+                            "_-_ Fixed miscolored icons for heroes and talents.\n")
+            ),
             new ChangeInfo("v0.2.0", true, TITLE_COLOR, ""),
             new ChangeInfo("From SHPD v1.0.1", false, SHPX_COLOR, "",
                     // alchemy stuff once it's added in.
