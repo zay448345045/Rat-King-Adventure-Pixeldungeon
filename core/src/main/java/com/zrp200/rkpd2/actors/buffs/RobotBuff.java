@@ -17,6 +17,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         immunities.add(Sleep.class);
         immunities.add(Drowsy.class);
         properties.add(Char.Property.INORGANIC);
+        revivePersists = true;
     }
 
     @Override

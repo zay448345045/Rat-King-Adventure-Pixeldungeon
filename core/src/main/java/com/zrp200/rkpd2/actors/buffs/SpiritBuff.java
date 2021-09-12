@@ -6,6 +6,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Wraith;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.messages.Messages;
@@ -18,6 +19,10 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
     private final int MAXCHARGE = 50;
 
+    {
+        revivePersists = true;
+    }
+
     @Override
     public boolean act() {
         if (count() < MAXCHARGE){
@@ -29,6 +34,14 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
         spend(TICK);
         return true;
+    }
+
+    @Override
+    public boolean attachTo(Char target) {
+        if (count() >= MAXCHARGE){
+            ActionIndicator.setAction(this);
+        }
+        return super.attachTo(target);
     }
 
     @Override

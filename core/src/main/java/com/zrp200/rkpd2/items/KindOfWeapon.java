@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.ActionIndicator;
@@ -65,8 +66,8 @@ abstract public class KindOfWeapon extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(KindOfWeapon.class, "equip_cursed") );
 			}
-			
-			hero.spendAndNext( TIME_TO_EQUIP );
+			if (Dungeon.hero.subClass != HeroSubClass.BRAWLER)
+				hero.spendAndNext( TIME_TO_EQUIP );
 			return true;
 			
 		} else {

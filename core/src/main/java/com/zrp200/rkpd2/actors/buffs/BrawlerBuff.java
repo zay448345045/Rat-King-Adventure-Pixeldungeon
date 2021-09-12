@@ -25,6 +25,10 @@ import java.util.HashMap;
 
 public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
 
+    {
+        revivePersists = true;
+    }
+
     public int maxCharge(){
         return 15 + Dungeon.hero.pointsInTalent(Talent.POWER_STABILIZER)*5;
     }
@@ -149,6 +153,12 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         }
         Buff.detach(hero, BrawlingTracker.class);
         Bomb.doNotDamageHero = false;
+    }
+
+    @Override
+    public boolean attachTo(Char target) {
+        if (count()>=10) ActionIndicator.setAction(this);
+        return super.attachTo(target);
     }
 
     private class Selector extends CellSelector.TargetedListener {
