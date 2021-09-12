@@ -35,8 +35,6 @@ import com.zrp200.rkpd2.ui.*;
 
 import java.util.ArrayList;
 
-import static com.zrp200.rkpd2.actors.hero.HeroClass.HUNTRESS;
-
 public class WndChooseSubclass extends Window {
 	
 	private static final int WIDTH		= 130;
@@ -116,7 +114,6 @@ public class WndChooseSubclass extends Window {
 
 			@Override protected boolean onLongClick() {
 				// this is how you access hidden subclasses, for now.
-				if(hero.heroClass == HUNTRESS) {
 					for(HeroSubClass subClass : subClasses) {
 						if(subClass == hero.heroClass.secretSub()) return false;
 					}
@@ -127,8 +124,6 @@ public class WndChooseSubclass extends Window {
 					Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
 					GameScene.show( new WndChooseSubclass(tome, hero, subs) );
 					return true;
-				}
-				return false;
 			}
 		};
 		btnCancel.setRect( 0, pos, WIDTH, 18 );
