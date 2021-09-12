@@ -37,7 +37,6 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.TalentIcon;
 
 import java.util.ArrayList;
 
@@ -126,11 +125,11 @@ public class RKPD2Changes {
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, "Warning! This build is unstable (like really). If you got a problem, let me know."),
             NewContent(
                     new ChangeButton(new ItemSprite(MASK), "Secret Subs",
-                            list(2,
+                            list(1,
                                 "_-_ Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
-                                       "_Rat King's sub is not finished.",
+                                       "_Rat King's sub is not finished._\n",
                                     "_-_ You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
-                    new ChangeButton(new TalentIcon(FUN), "Rat King's Wrath",
+                    new ChangeButton(FUN, "Rat King's Wrath",
                             "_-_ Added new talent for Wrath, which makes ability more fun.\n\n" +
                                     "_-_ Old Wrath have been renamed to _Divine Fury_."),
                     new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Force rework",
