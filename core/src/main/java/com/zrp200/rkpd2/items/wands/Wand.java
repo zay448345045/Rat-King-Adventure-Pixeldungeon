@@ -90,7 +90,7 @@ public abstract class Wand extends Item {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (curCharges > 0 || !curChargeKnown) {
+		if (curCharges > getMinCharges() || !curChargeKnown) {
 			actions.add( AC_ZAP );
 		}
 
@@ -127,7 +127,7 @@ public abstract class Wand extends Item {
 			return false;
 		}
 
-		if ( curCharges >= (cursed ? 1 : chargesPerCast()) - Dungeon.hero.pointsInTalent(Talent.HEROIC_WIZARDRY)){
+		if ( curCharges >= (cursed ? 1 : chargesPerCast()) + getMinCharges()){
 			return true;
 		} else {
 			GLog.w(Messages.get(this, "fizzles"));
@@ -401,6 +401,10 @@ public abstract class Wand extends Item {
 		particle.radiateXY(0.5f);
 	}
 
+	public int getMinCharges(){
+		return Dungeon.hero.hasTalent(Talent.HEROIC_WIZARDRY) ? -Dungeon.hero.pointsInTalent(Talent.HEROIC_WIZARDRY) : 0;
+	}
+
 	protected void wandUsed() {
 		if (!isIdentified()) {
 			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
@@ -448,7 +452,7 @@ public abstract class Wand extends Item {
 		if (charger != null
 				&& charger.target == Dungeon.hero) {
 			if (!Dungeon.hero.belongings.contains(this)) {
-				if (curCharges == 0 && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE)) {
+				if (curCharges == getMinCharges() && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE)) {
 					//grants 3/5 shielding
 					int shielding = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
 					if (Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER)) shielding = (int) Math.ceil(shielding * 1.5f);
@@ -458,7 +462,7 @@ public abstract class Wand extends Item {
 					Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
 				}
 			} else {
-				if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && curCharges == 0 &&
+				if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && curCharges == getMinCharges() &&
 						(Dungeon.hero.buff(Talent.EnergizingUpgradeCooldown.class) == null &&
 								Dungeon.hero.buff(Talent.EnergizingUpgradeTracker.class) == null)) {
 					Buff.affect(Dungeon.hero, Talent.EnergizingUpgradeTracker.class, 4f);
@@ -616,7 +620,7 @@ public abstract class Wand extends Item {
 				
 				if (target == curUser.pos || cell == curUser.pos) {
 					if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION)){
-						float shield = curUser.HT * (0.05f*curWand.curCharges);
+						float shield = curUser.HT * (0.05f*curWand.curCharges-curWand.getMinCharges());
 						if(curUser.hasTalent(Talent.SHIELD_BATTERY)) shield *= 1.25f; // bonus.
 						if (curUser.pointsInTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION) == 2) shield *= 1.5f;
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));

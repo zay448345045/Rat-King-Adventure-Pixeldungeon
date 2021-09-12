@@ -70,7 +70,7 @@ public class WildMagic extends ArmorAbility {
 		float chargeUsePerShot = (float)Math.pow(0.67f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
 
 		for (Wand w : wands.toArray(new Wand[0])){
-			if (w.curCharges < 1 - hero.pointsInTalent(Talent.HEROIC_WIZARDRY) && w.partialCharge < chargeUsePerShot){
+			if (w.curCharges < w.getMinCharges() + 1 && w.partialCharge < chargeUsePerShot){
 				wands.remove(w);
 			}
 		}

@@ -137,7 +137,8 @@ public class RKPD2Changes {
                                     "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%.")
             ),
             Changes(
-                    misc("_-_ Added unique icons for Huntress's secret sub.\n\n"),
+                    new ChangeButton(SOUL_SIPHON, "_-_ Added unique icons for Huntress's secret subclass."),
+                    new ChangeButton(HEROIC_WIZARDRY, "_-_ Changed Heroic Wizardry to properly act as additional max charges for every possible occasion."),
                     bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
                             "_-_ Fixed Heroic Endurance not working at all.\n" +
                             "_-_ Fixed Burning and Red Burning conflicting between each other.\n\n" +

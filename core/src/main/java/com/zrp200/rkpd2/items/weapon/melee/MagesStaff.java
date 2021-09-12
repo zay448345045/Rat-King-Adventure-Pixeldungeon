@@ -103,7 +103,7 @@ public class MagesStaff extends MeleeWeapon {
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add(AC_IMBUE);
-		if (wand!= null && wand.curCharges > -hero.pointsInTalent(Talent.HEROIC_WIZARDRY)) {
+		if (wand!= null && curCharges() > 0) {
 			actions.add( AC_ZAP );
 		}
 		return actions;
@@ -153,9 +153,9 @@ public class MagesStaff extends MeleeWeapon {
 			damage = Math.round( damage * (1f + Dungeon.hero.pointsInTalent(Talent.EMPOWERED_STRIKE)/4f));
 		}*/
 		int points = Dungeon.hero.shiftedPoints(Talent.EXCESS_CHARGE, Talent.RK_BATTLEMAGE);
-		if ((wand.curCharges >= wand.maxCharges || Dungeon.hero.canHaveTalent(Talent.EXCESS_CHARGE)) && Random.Int(5) < points){
+		if ((curCharges() >= wand.maxCharges || Dungeon.hero.canHaveTalent(Talent.EXCESS_CHARGE)) && Random.Int(5) < points){
 			Buff.affect(Dungeon.hero, Barrier.class).setShield((int) (buffedLvl()*
-								Dungeon.hero.byTalent(Talent.EXCESS_CHARGE, 1, Talent.RK_BATTLEMAGE, 2)*wand.curCharges/wand.maxCharges));
+								Dungeon.hero.byTalent(Talent.EXCESS_CHARGE, 1, Talent.RK_BATTLEMAGE, 2)* curCharges() /wand.maxCharges));
 		}
 		points = Dungeon.hero.shiftedPoints(Talent.MYSTICAL_CHARGE, Talent.RK_BATTLEMAGE);
 		if (points > 0){
@@ -164,9 +164,14 @@ public class MagesStaff extends MeleeWeapon {
 			}
 		}
 
-		if (wand.curCharges < wand.maxCharges) gainCharge(0.5f);
+		if (curCharges() < wand.maxCharges) gainCharge(0.5f);
 		ScrollOfRecharging.charge(Dungeon.hero);
 	}
+
+	public int curCharges() {
+		return wand.curCharges - wand.getMinCharges();
+	}
+
 	public void procWand(Char defender, int damage) {
 		wand.onHit(this,Dungeon.hero,defender,damage);
 	}
@@ -202,7 +207,7 @@ public class MagesStaff extends MeleeWeapon {
 	private int wastedUpgrades; // amount of upgrades wasted on initial imbue.
 	public Item imbueWand(Wand wand, Char owner){
 
-		int oldStaffcharges = this.wand.curCharges;
+		int oldStaffcharges = curCharges();
 
 		if (owner == Dungeon.hero) {
 			boolean preserve = false;
@@ -309,7 +314,7 @@ public class MagesStaff extends MeleeWeapon {
 	
 	public void updateWand(boolean levelled){
 		if (wand != null) {
-			int curCharges = wand.curCharges;
+			int curCharges = curCharges();
 			wand.level(level());
 			//gives the wand one additional max charge
 			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
