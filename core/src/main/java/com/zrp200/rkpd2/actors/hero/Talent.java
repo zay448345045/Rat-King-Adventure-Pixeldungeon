@@ -213,6 +213,10 @@ public enum Talent {
 	PURSUIT(136), // durable projectiles (5),silent steps(4),lethal momentum (3),shield battery(5)
 	// Rat King T3
 	RK_BERSERKER(27,3), RK_GLADIATOR(28,3), RK_BATTLEMAGE(29,3), RK_WARLOCK(30,3), RK_ASSASSIN(157,3), RK_FREERUNNER(31,3), RK_SNIPER(158,3), RK_WARDEN(159,3),
+	// RK Champion T3
+	RK_CHAMP_1(192, 3), RK_CHAMP_2(193, 3), RK_CHAMP_3(194, 3),
+	RK_CHAMP_4(195, 3), RK_CHAMP_5(196, 3), RK_CHAMP_6(197, 3),
+	RK_CHAMP_7(198, 3), RK_CHAMP_8(199, 3),
 	// Wrath T4
 	AURIC_TESLA(92, 4), QUANTUM_POSITION(93, 4), RAT_AGE(94, 4), AVALON_POWER_UP(95, 4),
 	// Mus Rex Ira T4
@@ -849,7 +853,9 @@ public enum Talent {
 				Collections.addAll(tierTalents, DURABLE_TIPS, BARKSKIN, SHIELDING_DEW, NATURES_BETTER_AID);
 				break;
 			case KING: // this should be *lovely*
-				Collections.addAll(tierTalents, RK_BERSERKER, RK_BATTLEMAGE, RK_ASSASSIN, RK_SNIPER, RK_GLADIATOR, RK_WARLOCK, RK_FREERUNNER, RK_WARDEN);
+				Collections.addAll(tierTalents, RK_BERSERKER, RK_BATTLEMAGE, RK_ASSASSIN, RK_SNIPER, RK_GLADIATOR, RK_WARLOCK, RK_FREERUNNER, RK_WARDEN); break;
+			case RK_CHAMPION:
+				Collections.addAll(tierTalents, RK_CHAMP_1, RK_CHAMP_2, RK_CHAMP_3, RK_CHAMP_4, RK_CHAMP_5, RK_CHAMP_6, RK_CHAMP_7, RK_CHAMP_8); break;
 		}
 		for (Talent talent : tierTalents){
 			talents.get(2).put(talent, 0);

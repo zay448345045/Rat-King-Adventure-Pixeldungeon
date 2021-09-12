@@ -86,7 +86,7 @@ public enum HeroSubClass {
 	DECEPTICON(HeroIcon.DECEPTICON),
 
 	KING(HeroIcon.KING),
-	RK_CHAMPION(HeroIcon.MUS_REX);
+	RK_CHAMPION(HeroIcon.CHAMP);
 
 	public static void set(Hero hero, HeroSubClass subClass) {
 		hero.subClass = subClass;

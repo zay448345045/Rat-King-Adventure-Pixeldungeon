@@ -27,7 +27,8 @@ public class HeroIcon extends Image {
 							KING		= 22;
 	public static final int SPIRITUALIST = 26,
 							BRAWLER     = 27,
-							DECEPTICON = 28;
+							DECEPTICON = 28,
+							CHAMP = 21;
 
 	//abilities
 	public static final int HEROIC_LEAP     = 8;
