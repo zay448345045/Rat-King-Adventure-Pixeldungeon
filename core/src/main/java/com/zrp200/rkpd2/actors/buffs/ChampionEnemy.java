@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Bestiary;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.ThreadRipper;
@@ -171,14 +172,37 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
+			if (target instanceof Hero){
+				boolean doubleFire = ((Hero) target).pointsInTalent(Talent.RK_FIRE) == 3;
+				if (Random.Int(7) < ((Hero) target).pointsInTalent(Talent.RK_FIRE)){
+					Buff.affect(enemy, GodSlayerBurning.class).reignite(enemy, doubleFire ? 11 : 7);
+				}
+				else Buff.affect(enemy, Burning.class).reignite(enemy, doubleFire ? 11 : 7);
+			}
 			Buff.affect(enemy, Burning.class).reignite(enemy);
 		}
 
 		@Override
+		public float damageTakenFactor() {
+			if (target instanceof Hero){
+				if (Random.Int(4) < ((Hero) target).pointsInTalent(Talent.RK_FIRE)){
+					for (int i : PathFinder.NEIGHBOURS9) {
+						if (!Dungeon.level.solid[target.pos + i]) {
+							GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));
+						}
+					}
+				}
+			}
+			return super.damageTakenFactor();
+		}
+
+		@Override
 		public void detach() {
-			for (int i : PathFinder.NEIGHBOURS9){
-				if (!Dungeon.level.solid[target.pos+i]){
-					GameScene.add(Blob.seed(target.pos+i, 2, Fire.class));
+			if (target instanceof Mob) {
+				for (int i : PathFinder.NEIGHBOURS9) {
+					if (!Dungeon.level.solid[target.pos + i]) {
+						GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));
+					}
 				}
 			}
 			super.detach();
