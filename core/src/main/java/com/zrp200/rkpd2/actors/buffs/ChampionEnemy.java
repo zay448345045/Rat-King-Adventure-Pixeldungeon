@@ -186,6 +186,9 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
+			if (target instanceof Hero){
+				return 1.0f;
+			}
 			return 1.25f;
 		}
 
@@ -207,6 +210,9 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float damageTakenFactor() {
+			if (target instanceof Hero){
+				return 1.0f;
+			}
 			return 0.5f;
 		}
 	}
@@ -231,6 +237,9 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float meleeDamageFactor() {
+			if (target instanceof Hero){
+				return 1.0f;
+			}
 			return 1.25f;
 		}
 
@@ -304,6 +313,9 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float damageTakenFactor() {
+			if (target instanceof Hero){
+				return 1.0f;
+			}
 			return 0.75f;
 		}
 
@@ -404,6 +416,9 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float damageTakenFactor() {
+			if (target instanceof Hero){
+				return 0.5f;
+			}
 			return 0.25f;
 		}
 
