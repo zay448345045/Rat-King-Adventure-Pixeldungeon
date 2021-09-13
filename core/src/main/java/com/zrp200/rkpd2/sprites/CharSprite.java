@@ -90,6 +90,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected PosTweener motion;
 
 	protected Emitter burning;
+	protected Emitter red_burning;
 	protected Emitter chilled;
 	protected Emitter marked;
 	protected Emitter levitation;
@@ -367,10 +368,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				}
 				break;
 			case GODBURNING:
-				burning = emitter();
-				burning.pour( GodfireParticle.FACTORY, 0.02f );
+				red_burning = emitter();
+				red_burning.pour( GodfireParticle.FACTORY, 0.02f );
 				if (visible) {
-					Sample.INSTANCE.play( Assets.Sounds.BURNING );
+					Sample.INSTANCE.play( Assets.Sounds.BURNING, 1f, 0.75f );
 				}
 				break;
 			case SPIRIT:
@@ -452,10 +453,15 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public void remove( State state ) {
 		switch (state) {
 			case BURNING:
-			case GODBURNING:
 				if (burning != null) {
 					burning.on = false;
 					burning = null;
+				}
+				break;
+			case GODBURNING:
+				if (red_burning != null) {
+					red_burning.on = false;
+					red_burning = null;
 				}
 				break;
 			case SPIRIT:

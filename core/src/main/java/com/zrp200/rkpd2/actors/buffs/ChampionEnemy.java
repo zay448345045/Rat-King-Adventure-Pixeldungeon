@@ -179,7 +179,7 @@ public abstract class ChampionEnemy extends Buff {
 				}
 				else Buff.affect(enemy, Burning.class).reignite(enemy, doubleFire ? 11 : 7);
 			}
-			Buff.affect(enemy, Burning.class).reignite(enemy);
+			else Buff.affect(enemy, Burning.class).reignite(enemy);
 		}
 
 		@Override
