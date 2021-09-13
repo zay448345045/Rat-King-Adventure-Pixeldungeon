@@ -106,6 +106,7 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 			}
 			int damage = Random.Int( 4 + abyssLevel()*4, 10 + abyssLevel()*8 );
 			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) damage *= 0.6f;
+			ChampionEnemy.AntiMagic.effect(enemy, this);
 
 			int dmg = Math.round(damage * multiplier);
 

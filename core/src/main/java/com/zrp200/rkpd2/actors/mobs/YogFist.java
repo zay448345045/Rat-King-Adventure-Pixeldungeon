@@ -21,21 +21,16 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
-import com.zrp200.rkpd2.actors.buffs.Bleeding;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.Light;
-import com.zrp200.rkpd2.actors.buffs.Ooze;
-import com.zrp200.rkpd2.actors.buffs.Roots;
-import com.zrp200.rkpd2.actors.buffs.Sleep;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
@@ -49,9 +44,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.FistSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public abstract class YogFist extends Mob {
 
@@ -233,6 +225,7 @@ public abstract class YogFist extends Mob {
 			} else {
 				Buff.affect( enemy, Burning.class ).reignite( enemy );
 			}
+			ChampionEnemy.AntiMagic.effect(enemy, this);
 
 			for (int i : PathFinder.NEIGHBOURS9){
 				if (!Dungeon.level.water[enemy.pos+i] && !Dungeon.level.solid[enemy.pos+i]){
@@ -309,6 +302,7 @@ public abstract class YogFist extends Mob {
 
 				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
 			}
+			ChampionEnemy.AntiMagic.effect(enemy, this);
 
 			for (int i : PathFinder.NEIGHBOURS9){
 				int cell = enemy.pos + i;
@@ -384,6 +378,7 @@ public abstract class YogFist extends Mob {
 		protected void zap() {
 			spend( 1f );
 			GameScene.add(Blob.seed(enemy.pos, 100, ToxicGas.class));
+			ChampionEnemy.AntiMagic.effect(enemy, this);
 		}
 
 		@Override
@@ -434,6 +429,7 @@ public abstract class YogFist extends Mob {
 		protected void zap() {
 			spend( 1f );
 			Buff.affect(enemy, Cripple.class, 4f);
+			ChampionEnemy.AntiMagic.effect(enemy, this);
 		}
 
 	}
@@ -461,7 +457,7 @@ public abstract class YogFist extends Mob {
 			spend( 1f );
 
 			if (hit( this, enemy, true )) {
-
+				ChampionEnemy.AntiMagic.effect(enemy, this);
 				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
@@ -524,7 +520,7 @@ public abstract class YogFist extends Mob {
 			spend( 1f );
 
 			if (hit( this, enemy, true )) {
-
+				ChampionEnemy.AntiMagic.effect(enemy, this);
 				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt() );
 
 				Light l = enemy.buff(Light.class);

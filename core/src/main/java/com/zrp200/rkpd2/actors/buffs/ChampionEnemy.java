@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -39,8 +40,10 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.ThreadRipper;
 import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
 import com.zrp200.rkpd2.effects.Pushing;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.wands.CursedWand;
+import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -341,6 +344,35 @@ public abstract class ChampionEnemy extends Buff {
 				return 1.0f;
 			}
 			return 0.75f;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (target instanceof Hero){
+				resistances.addAll(com.zrp200.rkpd2.items.armor.glyphs.AntiMagic.RESISTS);
+				immunities.remove(com.zrp200.rkpd2.items.armor.glyphs.AntiMagic.RESISTS);
+			}
+			return super.attachTo(target);
+		}
+
+		public static void effect(Char enemy, Char hero){
+			if (hero instanceof Hero && hero.buff(AntiMagic.class) != null){
+				int dmg = 1 + ((Hero) hero).pointsInTalent(Talent.RK_ANTIMAGIC) * 2;
+
+				int heal = Math.min(dmg, hero.HT-hero.HP);
+				hero.HP += heal;
+				Emitter e = hero.sprite.emitter();
+				if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/5)));
+
+				if (dmg > 0)
+					enemy.damage(dmg + Dungeon.hero.pointsInTalent(Talent.RK_ANTIMAGIC), null);
+
+				if (((Hero) hero).pointsInTalent(Talent.RK_ANTIMAGIC) == 3){
+					for (Wand.Charger c : hero.buffs(Wand.Charger.class)){
+						c.gainCharge(0.25f);
+					}
+				}
+			}
 		}
 
 		{

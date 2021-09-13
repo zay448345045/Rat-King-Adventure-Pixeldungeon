@@ -280,6 +280,7 @@ public class Dragon extends AbyssalMob {
                 candidates.add( n );
             }
         }
+        ChampionEnemy.AntiMagic.effect(enemy, this);
 
         if (candidates.size() > 0) {
 

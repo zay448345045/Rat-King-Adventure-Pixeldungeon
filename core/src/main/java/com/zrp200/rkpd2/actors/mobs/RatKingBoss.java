@@ -642,6 +642,7 @@ public class RatKingBoss extends Mob {
                     int finalDest = dest;
                         sprite.zap(dest, () -> MagicMissile.boltFromChar(sprite.parent, attack.boltType, sprite, finalDest,
                                 () -> {
+                                    ChampionEnemy.AntiMagic.effect(enemy, RatKingBoss.this);
                                     sprite.idle();
                                     Char ch = Actor.findChar(finalDest);
                                     switch (attack) {

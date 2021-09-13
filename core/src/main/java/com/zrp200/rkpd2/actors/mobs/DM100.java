@@ -21,8 +21,14 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.Camera;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
+import com.zrp200.rkpd2.actors.buffs.Shrink;
+import com.zrp200.rkpd2.actors.buffs.TimedShrink;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -30,9 +36,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.DM100Sprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Camera;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 public class DM100 extends Mob implements Callback {
 
@@ -90,6 +93,8 @@ public class DM100 extends Mob implements Callback {
 			
 			if (hit( this, enemy, true )) {
 				int dmg = Random.NormalIntRange(3, 10);
+				if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
+				ChampionEnemy.AntiMagic.effect(enemy, this);
 				enemy.damage( dmg, new LightningBolt() );
 
 				if (enemy.sprite.visible) {

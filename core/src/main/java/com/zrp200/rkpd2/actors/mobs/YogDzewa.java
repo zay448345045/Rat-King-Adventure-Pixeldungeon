@@ -21,20 +21,13 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Amok;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.actors.buffs.Frost;
-import com.zrp200.rkpd2.actors.buffs.Light;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.buffs.Paralysis;
-import com.zrp200.rkpd2.actors.buffs.Sleep;
-import com.zrp200.rkpd2.actors.buffs.Terror;
-import com.zrp200.rkpd2.actors.buffs.Vertigo;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Pushing;
@@ -52,11 +45,6 @@ import com.zrp200.rkpd2.sprites.YogSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -214,6 +202,7 @@ public class YogDzewa extends Mob {
 					} else {
 						ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
 					}
+					ChampionEnemy.AntiMagic.effect(enemy, this);
 
 					if (Dungeon.level.heroFOV[pos]) {
 						ch.sprite.flash();
