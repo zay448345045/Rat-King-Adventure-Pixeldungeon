@@ -795,6 +795,9 @@ public class Hero extends Char {
 			Buff.affect(this, RobotBuff.class);
 			((HeroSprite)sprite).updateArmor();
 		}
+		if (subClass == HeroSubClass.RK_CHAMPION && buff(RKChampionBuff.class) == null){
+			Buff.affect(this, RKChampionBuff.class);
+		}
 
 		return actResult;
 	}

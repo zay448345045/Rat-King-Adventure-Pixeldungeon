@@ -31,9 +31,12 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.mobs.Bestiary;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.ThreadRipper;
+import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.wands.CursedWand;
@@ -75,7 +78,13 @@ public abstract class ChampionEnemy extends Buff {
 
 	@Override
 	public String desc() {
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.RAT_KING)
+			return Messages.get(this, "desc_rk");
 		return Messages.get(this, "desc");
+	}
+
+	public String descRK() {
+		return Messages.get(this, "desc_rk");
 	}
 
 	public void onAttackProc(Char enemy ){
@@ -122,55 +131,31 @@ public abstract class ChampionEnemy extends Buff {
 		}
 	}
 
+	public static Class[] championTitles = {
+		Blazing.class, Projecting.class, AntiMagic.class, Giant.class,
+		Blessed.class, Growing.class, Cursed.class, Splintering.class,
+		Stone.class, Flowing.class, Voodoo.class, Explosive.class,
+		Swiftness.class, Reflective.class, Paladin.class
+	};
+
+	public static Class[] heroTitles = {
+			Blazing.class, Projecting.class, AntiMagic.class,
+			Giant.class, Blessed.class, Cursed.class,
+			Splintering.class, Paladin.class
+	};
+
+	public static String getRKDesc(Class<? extends ChampionEnemy> title){
+		ChampionEnemy titleBuff = Reflection.newInstance(title);
+		return "_" + Messages.titleCase(titleBuff.toString()) + "_\n" + titleBuff.descRK();
+	}
+
+	public static int getTitleColor(Class<? extends ChampionEnemy> title){
+		ChampionEnemy titleBuff = Reflection.newInstance(title);
+		return titleBuff.color;
+	}
+
 	private static void makeChampion(Mob m) {
-		switch (Random.Int(15)) {
-			case 0:
-			default:
-				Buff.affect(m, Blazing.class);
-				break;
-			case 1:
-				Buff.affect(m, Projecting.class);
-				break;
-			case 2:
-				Buff.affect(m, AntiMagic.class);
-				break;
-			case 3:
-				Buff.affect(m, Giant.class);
-				break;
-			case 4:
-				Buff.affect(m, Blessed.class);
-				break;
-			case 5:
-				Buff.affect(m, Growing.class);
-				break;
-			case 6:
-				Buff.affect(m, Cursed.class);
-				break;
-			case 7:
-				Buff.affect(m, Splintering.class);
-				break;
-			case 8:
-				Buff.affect(m, Stone.class);
-				break;
-			case 9:
-				Buff.affect(m, Flowing.class);
-				break;
-			case 10:
-				Buff.affect(m, Voodoo.class);
-				break;
-			case 11:
-				Buff.affect(m, Explosive.class);
-				break;
-			case 12:
-				Buff.affect(m, Swiftness.class);
-				break;
-			case 13:
-				Buff.affect(m, Reflective.class);
-				break;
-			case 14:
-				Buff.affect(m, Paladin.class);
-				break;
-		}
+		Buff.affect(m, Random.element(championTitles));
 	}
 
 	public static void rollForChampionInstantly(Mob m){
@@ -275,19 +260,34 @@ public abstract class ChampionEnemy extends Buff {
 				}
 
 				if (candidates.size() > 0) {
+					if (target instanceof Hero){
+						MirrorImage clone = new MirrorImage();
+						if (target.HP > 0) {
+							clone.duplicate((Hero) target);
+							clone.HP = clone.HT = target.HP / 4;
+							clone.pos = Random.element(candidates);
+							clone.state = clone.HUNTING;
 
-					Mob clone = (Mob) Reflection.newInstance(target.getClass());
-					if (target.HP > 0) {
-						clone.HP = target.HP / 2;
-						clone.pos = Random.element(candidates);
-						clone.state = clone.HUNTING;
+							Dungeon.level.occupyCell(clone);
 
-						Dungeon.level.occupyCell(clone);
+							GameScene.add(clone, 1f);
+							Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
+						}
+					}
+	    			else {
+						Mob clone = (Mob) Reflection.newInstance(target.getClass());
+						if (target.HP > 0) {
+							clone.HP = target.HP / 2;
+							clone.pos = Random.element(candidates);
+							clone.state = clone.HUNTING;
 
-						GameScene.add(clone, 1f);
-						Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
+							Dungeon.level.occupyCell(clone);
 
-						target.HP -= clone.HP;
+							GameScene.add(clone, 1f);
+							Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
+
+							target.HP -= clone.HP;
+						}
 					}
 				}
 			}
@@ -392,6 +392,14 @@ public abstract class ChampionEnemy extends Buff {
 
 		{
 			properties.add(Char.Property.LARGE);
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (target instanceof Hero){
+				properties.remove(Char.Property.LARGE);
+			}
+			return super.attachTo(target);
 		}
 
 		@Override
