@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.mechanics;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.levels.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class Ballistica {
 	public Integer sourcePos = null;
 	public Integer collisionPos = null;
 	public Integer dist = 0;
+	protected Level level;
 
 	//parameters to specify the colliding cell
 	public static final int STOP_TARGET = 1;    //ballistica will stop at the target cell
@@ -51,12 +53,31 @@ public class Ballistica {
 
 
 	public Ballistica( int from, int to, int params ){
+		this(from, to, params, Dungeon.level, false);
+	}
+	public Ballistica( int from, int to, int params, boolean precise ){
+		this(from, to, params, Dungeon.level, precise);
+	}
+	public Ballistica( int from, int to, int params, Level level ){
+		this(from, to, params, level, false);
+	}
+	public Ballistica( int from, int to, int params, Level level, boolean precise ){
+		this.level = level;
 		sourcePos = from;
-		build(from, to,
+		Ballistica b = this;
+		if(precise && getClass() != PreciseBallistica.class){
+			b = new PreciseBallistica(from,to,params,level);
+		}
+		b.build(from, to,
 				(params & STOP_TARGET) > 0,
 				(params & STOP_CHARS) > 0,
 				(params & STOP_SOLID) > 0,
 				(params & IGNORE_SOFT_SOLID) > 0);
+
+		this.path = b.path;
+		this.sourcePos = b.sourcePos;
+		this.collisionPos = b.collisionPos;
+		this.dist = b.dist;
 
 		if (collisionPos != null) {
 			dist = path.indexOf(collisionPos);
@@ -69,8 +90,8 @@ public class Ballistica {
 		}
 	}
 
-	private void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid ) {
-		int w = Dungeon.level.width();
+	protected void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid ) {
+		int w = level.width();
 
 		int x0 = from % w;
 		int x1 = to % w;
@@ -110,18 +131,18 @@ public class Ballistica {
 		int cell = from;
 
 		int err = dA / 2;
-		while (Dungeon.level.insideMap(cell)) {
+		while (level.insideMap(cell)) {
 
 			//if we're in a wall, collide with the previous cell along the path.
 			//we don't use solid here because we don't want to stop short of closed doors
-			if (stopTerrain && cell != sourcePos && !Dungeon.level.passable[cell] && !Dungeon.level.avoid[cell]) {
+			if (stopTerrain && cell != sourcePos && !level.passable[cell] && !level.avoid[cell]) {
 				collide(path.get(path.size() - 1));
 			}
 
 			path.add(cell);
 
-			if (stopTerrain && cell != sourcePos && Dungeon.level.solid[cell]) {
-				if (ignoreSoftSolid && (Dungeon.level.passable[cell] || Dungeon.level.avoid[cell])) {
+			if (stopTerrain && cell != sourcePos && level.solid[cell]) {
+				if (ignoreSoftSolid && (level.passable[cell] || level.avoid[cell])) {
 					//do nothing
 				} else {
 					collide(cell);
@@ -143,7 +164,7 @@ public class Ballistica {
 	}
 
 	//we only want to record the first position collision occurs at.
-	private void collide(int cell){
+	protected void collide(int cell){
 		if (collisionPos == null)
 			collisionPos = cell;
 	}

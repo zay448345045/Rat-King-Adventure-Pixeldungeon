@@ -168,8 +168,11 @@ abstract public class MissileWeapon extends Weapon {
 			MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 			projecting = staff != null && staff.wand() instanceof WandOfDisintegration;
 		}
+		if (!projecting && Dungeon.hero.buff(ChampionEnemy.Projecting.class) != null){
+			projecting = true;
+		}
 
-		if (projecting && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4){
+		if (projecting && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4 + Dungeon.hero.pointsInTalent(Talent.RK_PROJECT)){
 			return dst;
 		} else {
 			return super.throwPos(user, dst);

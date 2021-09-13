@@ -65,6 +65,7 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.Flail;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.melee.NuclearHatchet;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.journal.Document;
@@ -561,6 +562,9 @@ public class Hero extends Char {
 			if (shield != null && shield.maxShield() > 0){
 				dmg += pointsInTalent(Talent.BIG_RUSH)/3f*shield.maxShield();
 			}
+		}
+		if (buff(ChampionEnemy.Projecting.class) != null && wep instanceof MeleeWeapon){
+			dmg *= 1f + (pointsInTalent(Talent.RK_PROJECT))/11f;
 		}
 
 		return dmg;

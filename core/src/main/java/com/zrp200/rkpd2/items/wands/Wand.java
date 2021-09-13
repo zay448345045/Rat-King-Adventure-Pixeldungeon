@@ -615,7 +615,8 @@ public abstract class Wand extends Item {
 					return;
 				}
 
-				final Ballistica shot = new Ballistica( curUser.pos, target, curWand.collisionProperties(target));
+				final Ballistica shot = new Ballistica( curUser.pos, target, curWand.collisionProperties(target),
+						curUser.buff(ChampionEnemy.Projecting.class) != null && curUser.pointsInTalent(Talent.RK_PROJECT) == 3);
 				int cell = shot.collisionPos;
 				
 				if (target == curUser.pos || cell == curUser.pos) {
