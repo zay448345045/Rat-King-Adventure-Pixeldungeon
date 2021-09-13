@@ -21,14 +21,14 @@
 
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
 public class Kinetic extends Weapon.Enchantment {
 	
@@ -79,6 +79,10 @@ public class Kinetic extends Weapon.Enchantment {
 		
 		public void setBonus(int bonus){
 			preservedDamage = bonus;
+		}
+
+		public void addBonus(int bonus){
+			preservedDamage += bonus;
 		}
 		
 		public int damageBonus(){

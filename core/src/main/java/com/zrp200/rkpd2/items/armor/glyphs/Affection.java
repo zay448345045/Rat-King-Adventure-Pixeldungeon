@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Charm;
@@ -29,7 +30,6 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.Armor.Glyph;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
-import com.watabou.utils.Random;
 
 public class Affection extends Glyph {
 	
@@ -38,7 +38,7 @@ public class Affection extends Glyph {
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 
-		int level = Math.max(0, armor.buffedLvl());
+		int level = Math.max(0, armor.glyphEffectLevel(defender));
 		
 		// lvl 0 - 15%
 		// lvl 1 ~ 19%

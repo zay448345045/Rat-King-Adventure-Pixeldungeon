@@ -54,10 +54,7 @@ import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
 import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
-import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
-import com.zrp200.rkpd2.items.weapon.enchantments.Blocking;
-import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
-import com.zrp200.rkpd2.items.weapon.enchantments.Shocking;
+import com.zrp200.rkpd2.items.weapon.enchantments.*;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.melee.RoundShield;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
@@ -400,6 +397,11 @@ public abstract class Char extends Actor {
 			}
 
 			enemy.damage( effectiveDamage, this );
+			if (this instanceof Hero){
+				if (Random.Int(15) < hero.pointsInTalent(Talent.RK_GIANT)){
+					Buff.affect(enemy, Paralysis.class, 5);
+				}
+			}
 
 			if (buff(FireImbue.class) != null)
 				buff(FireImbue.class).proc(enemy);
@@ -631,6 +633,14 @@ public abstract class Char extends Actor {
 
 	// splitting damage into different parts.
 	protected int modifyDamage(int dmg, Object src) {
+
+		if (buff(ChampionEnemy.Giant.class) != null && this instanceof Hero){
+			int points = ((Hero)this).pointsInTalent(Talent.RK_GIANT);
+			if (points > 0){
+				Buff.affect(this, Kinetic.ConservedDamage.class).addBonus((int) (0.25f*points*dmg));
+			}
+		}
+
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 		}

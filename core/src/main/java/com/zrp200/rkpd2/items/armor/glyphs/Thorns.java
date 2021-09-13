@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Bleeding;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 public class Thorns extends Armor.Glyph {
 
@@ -35,7 +35,7 @@ public class Thorns extends Armor.Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 
-		int level = Math.max(0, armor.buffedLvl());
+		int level = Math.max(0, armor.glyphEffectLevel(defender));
 
 		// lvl 0 - 16.7%
 		// lvl 1 - 23.1%

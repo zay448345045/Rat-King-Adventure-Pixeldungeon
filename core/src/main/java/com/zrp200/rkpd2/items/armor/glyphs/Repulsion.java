@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 public class Repulsion extends Armor.Glyph {
 
@@ -37,7 +37,7 @@ public class Repulsion extends Armor.Glyph {
 		// lvl 0 - 20%
 		// lvl 1 - 33%
 		// lvl 2 - 43%
-		int level = Math.max( 0, armor.buffedLvl() );
+		int level = Math.max( 0, armor.glyphEffectLevel(defender) );
 
 		if (Random.Int( level + 5 ) >= 4){
 			int oppositeHero = attacker.pos + (attacker.pos - defender.pos);

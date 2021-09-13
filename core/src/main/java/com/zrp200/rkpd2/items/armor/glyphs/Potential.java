@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.particles.EnergyParticle;
@@ -28,7 +29,6 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.Armor.Glyph;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
-import com.watabou.utils.Random;
 
 public class Potential extends Glyph {
 	
@@ -37,7 +37,7 @@ public class Potential extends Glyph {
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 
-		int level = Math.max( 0, armor.buffedLvl() );
+		int level = Math.max( 0, armor.glyphEffectLevel(defender) );
 		
 		// lvl 0 - 16.7%
 		// lvl 1 - 28.6%

@@ -197,6 +197,7 @@ abstract public class Weapon extends KindOfWeapon {
 		if(hasEnchant(Projecting.class, owner)) reach++;
 		if(RobotBuff.isRobot()) reach++;
 		if(owner.buff(ChampionEnemy.Projecting.class) != null) reach += 2;
+		if(owner.buff(ChampionEnemy.Giant.class) != null) reach += 1;
 		if(owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);

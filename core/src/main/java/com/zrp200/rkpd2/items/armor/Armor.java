@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.Momentum;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -338,15 +339,19 @@ public class Armor extends EquipableItem {
 					break;
 				}
 			}
-			if (!enemyNear) speed *= (1.2f + 0.04f * buffedLvl());
+			if (!enemyNear) speed *= (1.2f + 0.04f * glyphEffectLevel(owner));
 		} else if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
-			speed *= (2f + 0.25f*buffedLvl());
+			speed *= (2f + 0.25f* glyphEffectLevel(owner));
 		}
-		
-		if (hasGlyph(Bulk.class, owner) &&
-				(Dungeon.level.map[owner.pos] == Terrain.DOOR
-						|| Dungeon.level.map[owner.pos] == Terrain.OPEN_DOOR )) {
-			speed /= 3f;
+
+		if (Dungeon.level.map[owner.pos] == Terrain.DOOR
+				|| Dungeon.level.map[owner.pos] == Terrain.OPEN_DOOR) {
+			if (hasGlyph(Bulk.class, owner)) {
+				speed /= 3f;
+			}
+			if (owner.buff(ChampionEnemy.Giant.class) != null){
+				speed /= 6f;
+			}
 		}
 		
 		return speed;
@@ -356,7 +361,7 @@ public class Armor extends EquipableItem {
 	public float stealthFactor( Char owner, float stealth ){
 		
 		if (hasGlyph(Obfuscation.class, owner)){
-			stealth += 1 + buffedLvl()/3f;
+			stealth += 1 +  glyphEffectLevel(owner)/3f;
 		}
 		
 		return stealth;
@@ -538,6 +543,11 @@ public class Armor extends EquipableItem {
 		}*/
 
 		return req;
+	}
+
+	public int glyphEffectLevel(Char owner){
+		return buffedLvl()*(owner.buff(ChampionEnemy.Giant.class) != null && owner instanceof Hero &&
+				Dungeon.hero.pointsInTalent(Talent.RK_GIANT) == 3 ? 2 : 1);
 	}
 	
 	@Override

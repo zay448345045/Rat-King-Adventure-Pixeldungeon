@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.noosa.Camera;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -30,8 +32,6 @@ import com.zrp200.rkpd2.items.armor.Armor.Glyph;
 import com.zrp200.rkpd2.plants.Earthroot;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
-import com.watabou.noosa.Camera;
-import com.watabou.utils.Random;
 
 public class Entanglement extends Glyph {
 	
@@ -40,7 +40,7 @@ public class Entanglement extends Glyph {
 	@Override
 	public int proc(Armor armor, Char attacker, final Char defender, final int damage ) {
 
-		final int level = Math.max( 0, armor.buffedLvl() );
+		final int level = Math.max( 0, armor.glyphEffectLevel(defender) );
 		
 		if (Random.Int( 4 ) == 0) {
 			

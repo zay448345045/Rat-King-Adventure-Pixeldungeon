@@ -1383,7 +1383,7 @@ public class Hero extends Char {
 		//TODO improve this when I have proper damage source logic
 		if (belongings.armor() != null && belongings.armor().hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= AntiMagic.drRoll(belongings.armor().buffedLvl());
+			dmg -= AntiMagic.drRoll(belongings.armor(). glyphEffectLevel(this));
 		}
 
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
