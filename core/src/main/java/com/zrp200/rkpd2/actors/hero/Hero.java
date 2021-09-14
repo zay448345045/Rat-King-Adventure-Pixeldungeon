@@ -1510,6 +1510,10 @@ public class Hero extends Char {
 			Camera.main.shake( 1, 1f );
 			return false;
 		}
+
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		
 		int step = -1;
 		

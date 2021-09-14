@@ -230,6 +230,17 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
+		public boolean act() {
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+				if (mob.alignment == target.alignment && mob.buff(Paladin.class) == null && target.fieldOfView[mob.pos]){
+					Buff.prolong(mob, invulnerability.class, 2f);
+				}
+			}
+			spend(TICK);
+			return true;
+		}
+
+		@Override
 		public boolean attachTo(Char target) {
 			target.viewDistance = 8;
 			return super.attachTo(target);
@@ -242,6 +253,8 @@ public abstract class ChampionEnemy extends Buff {
 			}
 			return 0.5f;
 		}
+
+		public static class invulnerability extends FlavourBuff{}
 	}
 
 	public static class Cursed extends ChampionEnemy {

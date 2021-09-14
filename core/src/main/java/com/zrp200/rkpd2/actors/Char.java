@@ -39,7 +39,6 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.Elemental;
-import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
@@ -1005,13 +1004,7 @@ public abstract class Char extends Actor {
 	//similar to isImmune, but only factors in damage.
 	//Is used in AI decision-making
 	public boolean isInvulnerable( Class effect ){
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-			if (mob.fieldOfView != null && mob.fieldOfView[pos] && mob.buff(ChampionEnemy.Paladin.class) != null
-					&& mob != this) {
-				return true;
-			}
-		}
-		return false;
+		return buff(ChampionEnemy.Paladin.invulnerability.class) != null;
 	}
 
 	protected HashSet<Property> properties = new HashSet<>();
