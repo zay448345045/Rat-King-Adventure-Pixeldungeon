@@ -110,7 +110,7 @@ public class RingOfWealth extends Ring {
 
 		//reset (if needed), decrement, and store counts
 		if (triesToDrop == Float.MIN_VALUE) {
-			triesToDrop = Random.NormalIntRange(0, 25);
+			triesToDrop = Math.max(1, Random.NormalIntRange(0, (int) (25 - bonus*1.5f)));
 			dropsToEquip = Random.NormalIntRange(4, 8);
 		}
 
@@ -134,7 +134,7 @@ public class RingOfWealth extends Ring {
 				drops.add(i);
 				dropsToEquip--;
 			}
-			triesToDrop += Random.NormalIntRange(0, 25);
+			triesToDrop += Math.max(1, Random.NormalIntRange(0, (int) (25 - bonus*1.5f)));
 		}
 
 		//store values back into rings
