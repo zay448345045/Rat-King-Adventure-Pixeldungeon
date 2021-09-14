@@ -27,8 +27,10 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.journal.Guidebook;
+import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -120,11 +122,14 @@ public abstract class EquipableItem extends Item {
 			GLog.w(Messages.get(EquipableItem.class, "unequip_cursed"));
 			return false;
 		}
-
-		if (single) {
-			hero.spendAndNext( time2equip( hero ) );
+		if (this instanceof Weapon && hero.subClass == HeroSubClass.BRAWLER) {
+			//do nothing
 		} else {
-			hero.spend( time2equip( hero ) );
+			if (single) {
+				hero.spendAndNext(time2equip(hero));
+			} else {
+				hero.spend(time2equip(hero));
+			}
 		}
 
 		//temporarily keep this item so it can be collected
