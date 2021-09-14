@@ -36,10 +36,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
-import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.CheckedCell;
-import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.Heap.Type;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
@@ -1293,6 +1290,22 @@ public class Hero extends Char {
 		}
 
 		damage = Talent.onAttackProc( this, enemy, damage );
+
+		if (buff(ChampionEnemy.Blessed.class) != null && hasTalent(Talent.RK_BLESSED) && wep instanceof MeleeWeapon){
+			PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null), pointsInTalent(Talent.RK_BLESSED) == 3 ? 3 : 1);
+			for (Char ch : Actor.chars()) {
+				if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
+						&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
+					int aoeHit = Math.round(damage * Math.max(0.33f, pointsInTalent(Talent.RK_BLESSED)/7f));
+					aoeHit -= ch.drRoll();
+					if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+					ch.damage(aoeHit, this);
+					ch.sprite.bloodBurstA(sprite.center(), aoeHit);
+					ch.sprite.flash();
+					new Flare( 7, 20 ).color( 0xFFFF00, true ).show( ch.sprite, 1f );
+				}
+			}
+		}
 
         if (subClass == HeroSubClass.SNIPER || hasTalent(Talent.RK_SNIPER)) {
             if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
