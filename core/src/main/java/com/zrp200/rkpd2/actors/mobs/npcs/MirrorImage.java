@@ -25,6 +25,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Fury;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.messages.Messages;
@@ -63,7 +64,15 @@ public class MirrorImage extends AbstractMirrorImage {
 	public boolean canAttack(Char enemy) {
 		return super.canAttack(enemy) || (hero.belongings.weapon() != null && hero.belongings.weapon().canReach(this, enemy.pos));
 	}
-	
+
+	@Override
+	public void damage(int dmg, Object src) {
+		super.damage(dmg, src);
+		if (HP * 2 < HT){
+			Buff.affect(this, Fury.class);
+		}
+	}
+
 	@Override
 	public int drRoll() {
 		if (hero != null && hero.belongings.weapon() != null){

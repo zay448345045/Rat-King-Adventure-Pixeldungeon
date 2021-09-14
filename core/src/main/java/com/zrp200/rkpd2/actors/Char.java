@@ -340,7 +340,7 @@ public abstract class Char extends Actor {
 			}
 
 			if (buff( Fury.class ) != null) {
-				dmg *= 1.5f;
+				dmg *= 1.75f;
 			}
 
 			dmg += dmgBonus;

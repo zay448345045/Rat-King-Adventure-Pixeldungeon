@@ -304,13 +304,13 @@ public abstract class ChampionEnemy extends Buff {
 						MirrorImage clone = new MirrorImage();
 						if (target.HP > 0) {
 							clone.duplicate((Hero) target);
-							clone.HP = clone.HT = target.HP / 4;
+							clone.HP = clone.HT = target.HP / (Dungeon.hero.pointsInTalent(Talent.RK_SPLINT) == 3 ? 4 : 5);
 							clone.pos = Random.element(candidates);
 							clone.state = clone.HUNTING;
 
 							Dungeon.level.occupyCell(clone);
 
-							GameScene.add(clone, 1f);
+							GameScene.add(clone,  Dungeon.hero.hasTalent(Talent.RK_SPLINT) ? 0 : 1);
 							Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
 						}
 					}
