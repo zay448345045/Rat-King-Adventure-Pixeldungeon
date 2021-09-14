@@ -290,11 +290,11 @@ public abstract class ChampionEnemy extends Buff {
 		public float damageTakenFactor() {
 			if (target.HP >= 2) {
 				ArrayList<Integer> candidates = new ArrayList<>();
-				boolean[] solid = Dungeon.level.solid;
 
 				int[] neighbours = {target.pos + 1, target.pos - 1, target.pos + Dungeon.level.width(), target.pos - Dungeon.level.width()};
 				for (int n : neighbours) {
-					if (!solid[n] && Actor.findChar( n ) == null) {
+					//TODO: port to summoning
+					if (Dungeon.level.passable[n] && Actor.findChar( n ) == null) {
 						candidates.add( n );
 					}
 				}
