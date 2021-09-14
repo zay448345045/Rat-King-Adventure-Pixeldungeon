@@ -637,7 +637,7 @@ public abstract class Char extends Actor {
 		if (buff(ChampionEnemy.Giant.class) != null && this instanceof Hero){
 			int points = ((Hero)this).pointsInTalent(Talent.RK_GIANT);
 			if (points > 0){
-				Buff.affect(this, Kinetic.ConservedDamage.class).addBonus((int) (0.25f*points*dmg));
+				Buff.affect(this, Kinetic.ConservedDamage.class).setBonus((int) (0.25f*points*dmg));
 			}
 		}
 
