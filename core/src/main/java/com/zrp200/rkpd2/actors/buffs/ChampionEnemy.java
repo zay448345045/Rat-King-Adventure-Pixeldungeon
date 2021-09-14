@@ -252,7 +252,11 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void onAttackProc(Char enemy) {
+			if (target instanceof Hero && ((Hero) target).hasTalent(Talent.RK_CURSED)) {
+				CursedWand.eldritchLevel = ((Hero) target).pointsInTalent(Talent.RK_CURSED);
+			}
 			CursedWand.cursedEffect(null, target, enemy);
+			CursedWand.eldritchLevel = 0;
 		}
 	}
 
