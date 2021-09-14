@@ -44,6 +44,7 @@ import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -148,13 +149,20 @@ public abstract class Char extends Actor {
 			return true;
 		} else if (c instanceof Hero
 				&& alignment == Alignment.ALLY
-				&& Dungeon.level.distance(pos, c.pos) <= Math.max(4* hero.pointsInTalent(Talent.ALLY_WARP), 2* hero.pointsInTalent(Talent.RK_WARLOCK))){
+				&& Dungeon.level.distance(pos, c.pos) <= getMaxDistance()){
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
+	public int getMaxDistance() {
+		if (hero.pointsInTalent(Talent.RK_PALADIN) == 3){
+			return 3;
+		}
+		return Math.max(4* hero.pointsInTalent(Talent.ALLY_WARP), 2* hero.pointsInTalent(Talent.RK_WARLOCK));
+	}
+
 	//swaps places by default
 	public boolean interact(Char c){
 
@@ -173,7 +181,7 @@ public abstract class Char extends Actor {
 		int curPos = pos;
 
 		//warp instantly with allies in this case
-		if (c == hero && hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK)){
+		if (c == hero && (hero.pointsInTalent(Talent.RK_PALADIN) == 3 || hero.hasTalent(Talent.ALLY_WARP,Talent.RK_WARLOCK))){
 			PathFinder.buildDistanceMap(c.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (PathFinder.distance[pos] == Integer.MAX_VALUE){
 				return true;
@@ -286,6 +294,13 @@ public abstract class Char extends Actor {
 				enemy.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "invulnerable") );
 
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1f, Random.Float(0.96f, 1.05f));
+			}
+
+			if (enemy.alignment == Alignment.ALLY && hero.buff(ChampionEnemy.Paladin.class) != null && hero.hasTalent(Talent.RK_PALADIN)){
+				Buff.affect(hero, Barrier.class).incShield(2 + hero.pointsInTalent(Talent.RK_PALADIN)/3);
+				if (Random.Int(20) < hero.pointsInTalent(Talent.RK_PALADIN)){
+					Talent.onFoodEaten(hero, 300, new Food());
+				}
 			}
 
 			return false;
