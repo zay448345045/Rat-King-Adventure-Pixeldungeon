@@ -38,7 +38,7 @@ public class GhostChicken extends AbyssalMob {
 	{
 		spriteClass = GhostChickenSprite.class;
 
-		HP = HT = 4;
+		HP = HT = 3;
 		defenseSkill = 40;
 		baseSpeed = 3f;
 
@@ -54,12 +54,11 @@ public class GhostChicken extends AbyssalMob {
 
 	@Override
 	public int damageRoll() {
-		return Random.NormalIntRange( 1 + abyssLevel()*2, 4 + abyssLevel()*4 );
+		return Random.NormalIntRange( 1 + abyssLevel()*2, 3 + abyssLevel()*4 );
 	}
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		damage += enemy.drRoll()/2;
 		Buff.prolong(enemy, TimedShrink.class, 2.5f + abyssLevel()*2.5f);
 		return super.attackProc(enemy, damage);
 	}
