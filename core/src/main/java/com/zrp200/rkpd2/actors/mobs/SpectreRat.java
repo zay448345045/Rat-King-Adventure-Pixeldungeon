@@ -103,7 +103,7 @@ public class SpectreRat extends AbyssalMob implements Callback {
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
 
-			int dmg = Random.NormalIntRange( 19 + abyssLevel()*6, 25 + abyssLevel()*9 );
+			int dmg = Random.NormalIntRange( 14 + abyssLevel()*6, 20 + abyssLevel()*9 );
 			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 			ChampionEnemy.AntiMagic.effect(enemy, this);
 			enemy.damage( dmg, new DarkBolt() );
