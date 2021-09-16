@@ -436,7 +436,7 @@ public class RatKingBoss extends Mob {
 
                 int spawnPos = -1;
                 for (int i : PathFinder.NEIGHBOURS8){
-                    if (Actor.findChar(pos+i) == null){
+                    if (Actor.findChar(pos+i) == null && Dungeon.level.passable[pos+i]){
                         if (spawnPos == -1 || Dungeon.level.trueDistance(Dungeon.hero.pos, spawnPos) > Dungeon.level.trueDistance(Dungeon.hero.pos, pos+i)){
                             spawnPos = pos + i;
                         }
