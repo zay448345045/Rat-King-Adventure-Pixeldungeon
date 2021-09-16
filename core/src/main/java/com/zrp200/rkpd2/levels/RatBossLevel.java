@@ -105,7 +105,7 @@ public class RatBossLevel extends Level {
 
 		}
 
-		boolean[] patch = Patch.generate(width, height, 0.20f, 0, true);
+		boolean[] patch = Patch.generate(width, height, 0.10f, 0, true);
 		for (int i = 0; i < length(); i++) {
 			if (map[i] == Terrain.EMPTY && patch[i]) {
 				map[i] = Terrain.STATUE;
@@ -116,7 +116,7 @@ public class RatBossLevel extends Level {
 
 		Painter.fill(this, ROOM_LEFT-1, ROOM_TOP-1, 11, 11, Terrain.EMPTY );
 
-		patch = Patch.generate(width, height, 0.30f, 3, true);
+		patch = Patch.generate(width, height, 0.20f, 3, true);
 		for (int i = 0; i < length(); i++) {
 			if ((map[i] == Terrain.EMPTY || map[i] == Terrain.STATUE) && patch[i]) {
 				map[i] = Terrain.WATER;
