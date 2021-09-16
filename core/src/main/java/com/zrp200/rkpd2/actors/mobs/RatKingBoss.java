@@ -409,6 +409,32 @@ public class RatKingBoss extends Mob {
     }
 
     @Override
+    protected boolean getCloser(int target) {
+        boolean result = super.getCloser(target);
+        if (!result){
+            int count = 32;
+            int newPos;
+            do {
+                newPos = Dungeon.level.randomRespawnCell( this );
+                if (count-- <= 0) {
+                    break;
+                }
+            } while (newPos == -1 || Dungeon.level.distance(newPos, pos) < (count/3));
+
+            if (newPos != -1) {
+
+                if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
+                pos = newPos;
+                sprite.place( pos );
+                sprite.visible = Dungeon.level.heroFOV[pos];
+                if (Dungeon.level.heroFOV[pos]) CellEmitter.get(pos).burst(Speck.factory(Speck.WOOL), 6);
+
+            }
+        }
+        return result;
+    }
+
+    @Override
     public int attackSkill(Char target) {
         if (phase3()){
             return INFINITE_ACCURACY;
@@ -1006,11 +1032,6 @@ public class RatKingBoss extends Mob {
                 RockfallTrap.class, FlashingTrap.class,
                 DisarmingTrap.class, CursingTrap.class, GrimTrap.class, DistortionTrap.class };
 
-        public boolean doEmperor(){
-            spend(TICK);
-            return true;
-        }
-
         //prevents rare infinite loop cases
         private boolean recursing = false;
 
@@ -1043,8 +1064,20 @@ public class RatKingBoss extends Mob {
                 return doSniper();
             }
 
-            spend( TICK );
-            return true;
+            int oldPos = pos;
+            if (target != -1 && getCloser( target ) && phase3()) {
+
+                if (Dungeon.level.water[pos] && buff(ChampionEnemy.Flowing.class) != null){
+                    spend(0.01f / speed());
+                }
+                else spend( 1 / speed() );
+                return moveSprite( oldPos,  pos );
+
+            } else {
+
+                spend( TICK );
+                return true;
+            }
         }
 
     }
