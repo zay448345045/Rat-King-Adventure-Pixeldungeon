@@ -684,35 +684,37 @@ public abstract class Char extends Actor {
 				}
 			}
 		}
-		if (this.buff(Doom.class) != null && !isImmune(Doom.class)){
-			dmg *= 2;
-		}
-		if (buff(Petrified.class) != null){
-			dmg *= 0.5f;
-		}
-		if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null){
-			dmg *= DeathMark.damageMultiplier();
-		}
-		Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
-		//reduce damage here if it isn't coming from a chacter (if it is we already reduced it)
-		if (endure != null && !(src instanceof Char)){
-			dmg = endure.adjustDamageTaken(dmg);
-		}
-
-		Class<?> srcClass = src.getClass();
-		if (isImmune( srcClass )) {
-			dmg = 0;
-		} else {
-			dmg = Math.round( dmg * resist( srcClass ));
-			if (hero.pointsInTalent(Talent.LASER_PRECISION) > 1 && src instanceof Buff && !(src instanceof DwarfKing.KingDamager)){
-				dmg /= 2;
+		if (!(src instanceof DwarfKing.KingDamager)) {
+			if (this.buff(Doom.class) != null && !isImmune(Doom.class)) {
+				dmg *= 2;
 			}
-		}
+			if (buff(Petrified.class) != null) {
+				dmg *= 0.5f;
+			}
+			if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null) {
+				dmg *= DeathMark.damageMultiplier();
+			}
+			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
+			//reduce damage here if it isn't coming from a chacter (if it is we already reduced it)
+			if (endure != null && !(src instanceof Char)) {
+				dmg = endure.adjustDamageTaken(dmg);
+			}
 
-		//TODO improve this when I have proper damage source logic
-		if (AntiMagic.RESISTS.contains(src.getClass()) && buff(ArcaneArmor.class) != null){
-			dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
-			if (dmg < 0) dmg = 0;
+			Class<?> srcClass = src.getClass();
+			if (isImmune(srcClass)) {
+				dmg = 0;
+			} else {
+				dmg = Math.round(dmg * resist(srcClass));
+				if (hero.pointsInTalent(Talent.LASER_PRECISION) > 1 && src instanceof Buff && !(src instanceof DwarfKing.KingDamager)) {
+					dmg /= 2;
+				}
+			}
+
+			//TODO improve this when I have proper damage source logic
+			if (AntiMagic.RESISTS.contains(src.getClass()) && buff(ArcaneArmor.class) != null) {
+				dmg -= Random.NormalIntRange(0, buff(ArcaneArmor.class).level());
+				if (dmg < 0) dmg = 0;
+			}
 		}
 		return dmg;
 	}
