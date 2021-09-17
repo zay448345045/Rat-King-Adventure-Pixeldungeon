@@ -152,7 +152,8 @@ public class RKPD2Changes {
                             "_-_ Fixed DK getting stuck if his progression damage is affected by some modifier.\n\n" +
                             "RKPD2 bugs:\n\n" +
                             "_-_ Fixed talent window description having extra whitespace in title.\n" +
-                            "_-_ Fixed miscolored icons for heroes and talents.\n")
+                            "_-_ Fixed miscolored icons for heroes and talents.\n" +
+                            "_-_ Fixed ItemStatusHandler items (potions, rings, etc) being shown as identified while on ground.")
             ),
             new ChangeInfo("v0.2.0", true, TITLE_COLOR, ""),
             new ChangeInfo("From SHPD v1.0.1", false, SHPX_COLOR, "",
