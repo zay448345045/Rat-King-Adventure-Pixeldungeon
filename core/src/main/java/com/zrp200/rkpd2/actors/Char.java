@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
+import com.zrp200.rkpd2.actors.mobs.DwarfKing;
 import com.zrp200.rkpd2.actors.mobs.Elemental;
 import com.zrp200.rkpd2.actors.mobs.GhostChicken;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
@@ -703,7 +704,7 @@ public abstract class Char extends Actor {
 			dmg = 0;
 		} else {
 			dmg = Math.round( dmg * resist( srcClass ));
-			if (hero.pointsInTalent(Talent.LASER_PRECISION) > 1 && src instanceof Buff){
+			if (hero.pointsInTalent(Talent.LASER_PRECISION) > 1 && src instanceof Buff && !(src instanceof DwarfKing.KingDamager)){
 				dmg /= 2;
 			}
 		}
