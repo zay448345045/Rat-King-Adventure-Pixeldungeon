@@ -1099,6 +1099,7 @@ public class RatKingBoss extends Mob {
         resistances.add(Vertigo.class);
         resistances.add(Cripple.class);
         resistances.add(Paralysis.class);
+        resistances.add(Corrosion.class);
         resistances.add(Chill.class);
         resistances.add(Frost.class);
         resistances.add(Roots.class);

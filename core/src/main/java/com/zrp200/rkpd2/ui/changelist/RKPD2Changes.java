@@ -137,6 +137,11 @@ public class RKPD2Changes {
                                     "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%.")
             ),
             Changes(
+                    new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
+                            "_-_ RK boss will teleport if he is stuck.\n\n" +
+                                    "_-_ RK boss will move in emperor phase 3 state.\n\n" +
+                                    "_-_ Reduced amount of statues and water on level 0.\n\n" +
+                                    "_-_ RK boss is resistant to corrosion."),
                     new ChangeButton(SOUL_SIPHON, "_-_ Added unique icons for Huntress's secret subclass."),
                     new ChangeButton(HEROIC_WIZARDRY, "_-_ Changed Heroic Wizardry to properly act as additional max charges for every possible occasion."),
                     new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Wealth change",
