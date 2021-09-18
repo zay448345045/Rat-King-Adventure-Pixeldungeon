@@ -729,6 +729,7 @@ public class Tengu extends Mob {
 					Buff.append(throwingChar, BombAbility.class).bombPos = cell;
 					throwingChar = null;
 				} else {
+					curUser = Dungeon.hero;
 					Buff.append(curUser, BombAbility.class).bombPos = cell;
 				}
 			}
@@ -1104,6 +1105,7 @@ public class Tengu extends Mob {
 					Buff.append(throwingChar, ShockerAbility.class).shockerPos = cell;
 					throwingChar = null;
 				} else {
+					curUser = Dungeon.hero;
 					Buff.append(curUser, ShockerAbility.class).shockerPos = cell;
 				}
 			}

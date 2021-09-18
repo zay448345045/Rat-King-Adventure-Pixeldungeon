@@ -39,6 +39,7 @@ import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.FunctionalStuff;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -399,6 +400,15 @@ public class RatKingBoss extends Mob {
                     }
                 }
             }
+            for (Blob blob : Dungeon.level.blobs.values()){
+                if (blob instanceof Tengu.ShockerAbility.ShockerBlob || blob instanceof Tengu.BombAbility.BombBlob){
+                    blob.fullyClear();
+                    Dungeon.level.blobs.remove(blob.getClass());
+                }
+            }
+            FunctionalStuff.forEach(FunctionalStuff.extract(Dungeon.hero.buffs(),
+                    (buff) -> buff instanceof Tengu.ShockerAbility || buff instanceof Tengu.BombAbility),
+                    Buff::detach);
         }
     }
 
@@ -1064,20 +1074,10 @@ public class RatKingBoss extends Mob {
                 return doSniper();
             }
 
-            int oldPos = pos;
-            if (target != -1 && getCloser( target ) && phase3()) {
+            if (phase3()) return doCharging();
 
-                if (Dungeon.level.water[pos] && buff(ChampionEnemy.Flowing.class) != null){
-                    spend(0.01f / speed());
-                }
-                else spend( 1 / speed() );
-                return moveSprite( oldPos,  pos );
-
-            } else {
-
-                spend( TICK );
-                return true;
-            }
+            spend( TICK );
+            return true;
         }
 
     }

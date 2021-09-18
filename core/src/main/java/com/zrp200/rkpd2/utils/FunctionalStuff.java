@@ -7,6 +7,10 @@ public class FunctionalStuff {
         T ret();
     }
 
+    public interface HandlerFunc<T>{
+        void doStuff(T object);
+    }
+
     public interface ConditionFunc<T>{
         boolean check(T type);
     }
@@ -19,5 +23,11 @@ public class FunctionalStuff {
             }
         }
         return newSet;
+    }
+
+    public static <E> void forEach(HashSet<E> set, HandlerFunc<E> func){
+        for (E element : set){
+            func.doStuff(element);
+        }
     }
 }

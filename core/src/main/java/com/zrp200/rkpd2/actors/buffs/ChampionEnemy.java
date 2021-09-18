@@ -232,7 +232,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public boolean act() {
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob.alignment == target.alignment && mob.buff(Paladin.class) == null && target.fieldOfView[mob.pos]){
+				if (mob.alignment == target.alignment && mob.buff(Paladin.class) == null && target.fieldOfView != null && target.fieldOfView[mob.pos]){
 					Buff.prolong(mob, invulnerability.class, 2f);
 				}
 			}
