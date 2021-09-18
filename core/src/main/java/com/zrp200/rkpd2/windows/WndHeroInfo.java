@@ -54,6 +54,8 @@ public class WndHeroInfo extends WndTabbed {
 	{
 		if (PixelScene.landscape()){
 			WIDTH = 180;
+		} else {
+			WIDTH = 120;
 		}
 	}
 
