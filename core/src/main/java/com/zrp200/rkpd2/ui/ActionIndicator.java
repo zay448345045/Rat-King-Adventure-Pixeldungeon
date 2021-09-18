@@ -121,7 +121,7 @@ public class ActionIndicator extends Tag {
 	}
 
 	// list of action buffs that we should replace it with.
-	private static final Class<?extends Buff>[] actionBuffClasses = new Class[]{Preparation.class, SnipersMark.class, Combo.class, Momentum.class};
+	private static final Class<?extends Buff>[] actionBuffClasses = new Class[]{Preparation.class, SnipersMark.class, Combo.class, Momentum.class, SpiritBuff.class, RobotBuff.class, RKChampionBuff.class, BrawlerBuff.class};
 	private static boolean findAction(boolean cycle) {
 		if(action == null) cycle = false;
 		int start = -1;
