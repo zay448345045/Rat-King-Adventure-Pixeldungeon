@@ -26,7 +26,10 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.buffs.Corruption;
+import com.zrp200.rkpd2.actors.buffs.Poison;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
@@ -126,9 +129,6 @@ public class Swarm extends Mob {
 		}
 		if (buff(Corruption.class ) != null) {
 			Buff.affect( clone, Corruption.class);
-		}
-		for (Buff b : buffs(ChampionEnemy.class)){
-			Buff.affect( clone, b.getClass());
 		}
 		return clone;
 	}
