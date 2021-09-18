@@ -159,6 +159,7 @@ public class RKPD2Changes {
                     bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
                             "_-_ Fixed Heroic Endurance not working at all.\n" +
                             "_-_ Fixed Burning and Red Burning conflicting between each other.\n" +
+                            "_-_ Fixed Big Rush killing quest givers and shopkeepers.\n" +
                             "_-_ Fixed DK getting stuck if his progression damage is affected by some modifier.\n\n" +
                             "RKPD2 bugs:\n\n" +
                             "_-_ Fixed talent window description having extra whitespace in title.\n" +
