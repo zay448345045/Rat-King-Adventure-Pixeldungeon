@@ -74,11 +74,11 @@ public class ScoutArmor extends Armor {
     }
 
     public static float startingBoost(){
-        return 1.32f + 0.08f * Dungeon.hero.pointsInTalent(Talent.POINT_BLANK);
+        return 1.32f + 0.07f * Dungeon.hero.pointsInTalent(Talent.SEER_SHOT);
     }
 
     public static float distanceMultiplier(){
-        return 1.13f + 0.04f * Dungeon.hero.pointsInTalent(Talent.SEER_SHOT);
+        return 1.13f + 0.035f * Dungeon.hero.pointsInTalent(Talent.SEER_SHOT);
     }
 
     public static float maxDamage(){

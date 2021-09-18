@@ -232,6 +232,11 @@ public enum Talent {
 			T buff = Buff.affect(hero, cls);
 			buff.spend( buff.duration() );
 		}
+		public static <T extends Cooldown> void affectHero(Class<T> cls, float extraDuration) {
+			if(cls == Cooldown.class) return;
+			T buff = Buff.affect(hero, cls);
+			buff.spend( buff.duration() + extraDuration );
+		}
 		public abstract float duration();
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / duration()); }
 		public String toString() { return Messages.get(this, "name"); }
@@ -292,10 +297,10 @@ public enum Talent {
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{};
 	public static class SeerShotCooldown extends Cooldown{
-		@Override public float duration() { return hero.hasTalent(SEER_SHOT) ? 5 : 20; }
+		@Override public float duration() { return 20; }
 		public int icon() {
 			// changed cooldown behavior to be more stacking-friendly.
-			return target.buff(RevealedArea.class) != null && !hero.hasTalent(SEER_SHOT) ? BuffIndicator.NONE : BuffIndicator.TIME;
+			return target.buff(RevealedArea.class) != null ? BuffIndicator.NONE : BuffIndicator.TIME;
 		}
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
 	};
@@ -396,10 +401,6 @@ public enum Talent {
 			case BERSERKING_STAMINA: // takes immediate effect
 				Berserk berserk = hero.buff(Berserk.class);
 				if(berserk != null) berserk.recover(Berserk.STAMINA_REDUCTION);
-				break;
-			case SEER_SHOT:
-				float mod = points == 1 ? 0 : 1f/(points-1);
-				for(RevealedArea buff : hero.buffs(RevealedArea.class)) buff.postpone(buff.cooldown() * mod);
 				break;
 			case FARSIGHT: case RK_SNIPER: case HEIGHTENED_SENSES: case KINGS_VISION:
 				Dungeon.observe();

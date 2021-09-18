@@ -518,14 +518,14 @@ public class SpiritBow extends Weapon {
 				
 			} else {
 
-				if (user.hasTalent(Talent.SEER_SHOT, Talent.RK_WARDEN)
+				if ((user.hasTalent(Talent.RK_WARDEN) || user.heroClass == HeroClass.HUNTRESS)
 						&& user.buff(Talent.SeerShotCooldown.class) == null){
 					int shotPos = throwPos(user, dst);
 					if (Actor.findChar(shotPos) == null) {
-						RevealedArea a = Buff.append(user, RevealedArea.class, 5 * user.pointsInTalent(Talent.SEER_SHOT,Talent.RK_WARDEN));
+						RevealedArea a = Buff.append(user, RevealedArea.class, user.heroClass == HeroClass.HUNTRESS ? 5 : 5 * user.pointsInTalent(Talent.RK_WARDEN));
 						a.depth = Dungeon.getDepth();
 						a.pos = shotPos;
-						Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class);
+						Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class, Dungeon.hero.heroClass == HeroClass.HUNTRESS ? 5 : 0);
 					}
 				}
 				if (!doNotDelay)

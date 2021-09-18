@@ -21,13 +21,14 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
 public class RevealedArea extends FlavourBuff{
 
@@ -55,7 +56,9 @@ public class RevealedArea extends FlavourBuff{
 
 	@Override
 	public float iconFadePercent() {
-		float max = 5*Dungeon.hero.pointsInTalent(Talent.SEER_SHOT,Talent.RK_WARDEN);
+		float max = 5;
+		if (Dungeon.hero.subClass == HeroSubClass.KING)
+			max = 5*Dungeon.hero.pointsInTalent(Talent.RK_WARDEN);
 		return Math.max(0, (max-visualcooldown()) / max);
 	}
 

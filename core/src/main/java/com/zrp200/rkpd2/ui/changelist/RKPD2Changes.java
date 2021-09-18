@@ -42,7 +42,7 @@ import java.util.ArrayList;
 
 import static com.zrp200.rkpd2.Assets.Interfaces.TALENT_ICONS;
 import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
-import static com.zrp200.rkpd2.actors.hero.HeroSubClass.BATTLEMAGE;
+import static com.zrp200.rkpd2.actors.hero.HeroSubClass.*;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 import static com.zrp200.rkpd2.messages.Messages.get;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
@@ -125,9 +125,8 @@ public class RKPD2Changes {
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, "Warning! This build is unstable (like really). If you got a problem, let me know."),
             NewContent(
                     new ChangeButton(new ItemSprite(MASK), "Secret Subs",
-                            list(1,
+                            list(2,
                                 "Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
-                                       "_Rat King's sub is not finished._\n",
                                     "You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
                     new ChangeButton(FUN, "Rat King's Wrath",
                             "_-_ Added new talent for Wrath, which makes ability more fun.\n\n" +
@@ -142,9 +141,20 @@ public class RKPD2Changes {
                                     "_-_ RK boss will move in emperor phase 3 state.\n\n" +
                                     "_-_ Reduced amount of statues and water on level 0.\n\n" +
                                     "_-_ RK boss is resistant to corrosion."),
+                    new ChangeButton(BERSERKER, "_-_ Buffed rage damage boost to up +100% on 90% rage."),
+                    new ChangeButton(KING, "Reintoduced certain perks for Rat King subclass:\n\n" +
+                            "_-_ Berserker's rage\n" +
+                            "_-_ Warlock's soulmark\n" +
+                            "_-_ Assassin's preparation\n" +
+                            "_-_ Sniper's armor penetration\n" +
+                            "_-_ Warden's seed effects"),
                     new ChangeButton(SOUL_SIPHON, "_-_ Added unique icons for Huntress's secret subclass."),
                     new ChangeButton(HEROIC_WIZARDRY, "_-_ Changed Heroic Wizardry to properly act as additional max charges for every possible occasion."),
-                    new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Wealth change",
+                    new ChangeButton(SEER_SHOT, "Previously was Seer Shot.\n\n" +
+                            "_-_ Removed and replaced by _Like a Bullet_. Point Blank's Super-shot buffs were moved here, with very mild nerf.\n" +
+                            "_-_ Seer Shot is now Huntress's innate ability.\n" +
+                            "_-_ Natural Dominance still has Seer Shot part."),
+                    new ChangeButton(new ItemSprite(RING_AMETHYST), "Ring of Wealth change",
                             "_-_ Upgrades affect drop rates, at +16 it maxes out at 1 item per kill."),
                     bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
                             "_-_ Fixed Heroic Endurance not working at all.\n" +

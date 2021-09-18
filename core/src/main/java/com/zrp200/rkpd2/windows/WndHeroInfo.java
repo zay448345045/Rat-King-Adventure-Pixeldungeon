@@ -34,10 +34,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.TalentsPane;
+import com.zrp200.rkpd2.ui.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -196,6 +193,7 @@ public class WndHeroInfo extends WndTabbed {
 							new ItemSprite(ItemSpriteSheet.ARTIFACT_TALISMAN),
 							new ItemSprite(ItemSpriteSheet.GLOVES),
 							new ItemSprite(ItemSpriteSheet.ARMOR_SCOUT),
+							new BuffIcon(BuffIndicator.MIND_VISION, true),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
 				case RAT_KING:
