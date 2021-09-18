@@ -1589,7 +1589,7 @@ public class Hero extends Char {
 			float speed = speed();
 			if (hasTalent(Talent.BIG_RUSH)){
 				for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-					if (mob.alignment != Char.Alignment.ALLY && Dungeon.level.heroFOV[mob.pos]
+					if (mob.alignment == Char.Alignment.ENEMY && Dungeon.level.heroFOV[mob.pos]
 							&& mob.pos == step) {
 						Buff.affect(this, Talent.BigRushTracker.class, 0f);
 						enemy = mob;
