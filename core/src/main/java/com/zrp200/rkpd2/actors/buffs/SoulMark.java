@@ -76,7 +76,7 @@ public class SoulMark extends FlavourBuff {
 				&& Random.Float() > .1f*(1+hero.pointsInTalent(Talent.WARLOCKS_TOUCH));
 
 		if (defender != hero
-				&& (hero.subClass == HeroSubClass.WARLOCK || hero.hasTalent(Talent.RK_WARLOCK))
+				&& (hero.subClass == HeroSubClass.WARLOCK || hero.subClass == HeroSubClass.KING)
 				&& Random.Float() < chance) {
 			affect(defender, SoulMark.class, DURATION+bonusDuration).delayed = afterDamage;
 			// see Char#damage

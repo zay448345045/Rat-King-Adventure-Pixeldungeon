@@ -294,7 +294,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 				target.invisible++;
 				if (target instanceof Hero
 						&& (((Hero) target).subClass == HeroSubClass.ASSASSIN
-						|| ((Hero)target).hasTalent(Talent.RK_ASSASSIN))) {
+						|| ((Hero) target).subClass == HeroSubClass.KING)) {
 					Buff.affect(target, Preparation.class);
 				}
 				return true;

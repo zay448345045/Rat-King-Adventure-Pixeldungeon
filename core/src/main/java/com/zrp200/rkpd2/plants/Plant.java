@@ -114,7 +114,7 @@ public abstract class Plant implements Bundlable {
 	public String desc() {
 		String desc = Messages.get(this, "desc");
 		HeroSubClass subClass = Dungeon.hero.subClass;
-		if (subClass == HeroSubClass.WARDEN || Dungeon.hero.hasTalent(Talent.RK_WARDEN)){
+		if (subClass == HeroSubClass.WARDEN || subClass == HeroSubClass.KING){
 			desc += "\n\n" + wardenDesc(subClass);
 		}
 		return desc;
@@ -158,7 +158,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
-				if (Dungeon.hero.subClass == HeroSubClass.WARDEN || Dungeon.hero.hasTalent(Talent.RK_WARDEN)) {
+				if (Dungeon.hero.subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
 						if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
@@ -216,7 +216,7 @@ public abstract class Plant implements Bundlable {
 		public String desc() {
 			String desc = Messages.get(plantClass, "desc");
 			HeroSubClass subClass = Dungeon.hero.subClass;
-			if (subClass == HeroSubClass.WARDEN || Dungeon.hero.hasTalent(Talent.RK_WARDEN)){
+			if (subClass == HeroSubClass.WARDEN || subClass == HeroSubClass.KING){
 				desc += "\n\n" + Reflection.newInstance(plantClass).wardenDesc(subClass);
 			}
 			return desc;

@@ -1335,7 +1335,7 @@ public class Hero extends Char {
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
-		if (damage > 0 && (subClass == HeroSubClass.BERSERKER || hasTalent(Talent.RK_BERSERKER))){
+		if (damage > 0 && (subClass == HeroSubClass.BERSERKER || subClass == HeroSubClass.KING)){
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}

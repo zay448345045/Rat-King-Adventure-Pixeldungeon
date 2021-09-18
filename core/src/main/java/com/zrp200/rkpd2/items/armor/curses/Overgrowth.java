@@ -25,7 +25,6 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Generator;
@@ -52,7 +51,7 @@ public class Overgrowth extends Armor.Glyph {
 			
 			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
 			if (defender instanceof Hero && ((Hero) defender).subClass == HeroSubClass.WARDEN
-					|| ((Hero)defender).hasTalent(Talent.RK_WARDEN)){
+					|| ((Hero)defender).subClass == HeroSubClass.KING){
 				HeroSubClass subclass = ((Hero)defender).subClass;
 				((Hero) defender).subClass = HeroSubClass.NONE;
 				p.activate( defender );
