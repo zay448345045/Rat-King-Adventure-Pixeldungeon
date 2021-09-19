@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.items.weapon.missiles;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -236,6 +237,15 @@ abstract public class MissileWeapon extends Weapon {
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public void cast(Hero user, int dst) {
+		super.cast(user, dst);
+		if (Dungeon.hero.buff(Crossbow.DartSpent.class) != null && this instanceof Dart){
+			MissileWeapon thing = Reflection.newInstance(getClass());
+			thing.collect();
+		}
 	}
 	
 	@Override
