@@ -40,7 +40,7 @@ import com.zrp200.rkpd2.ui.StyledButton;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_2;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_3;
 
 	@Override
 	public void create() {

@@ -35,6 +35,7 @@ public class ShatteredPixelDungeon extends Game {
 
 	//variable constants for specific older versions of shattered, used for data conversion
 	public static final int
+			vDLC_1_3=575,
 			vDLC_1_2=560,
 			v0_1_1=559,
 			v0_1_0=557,
