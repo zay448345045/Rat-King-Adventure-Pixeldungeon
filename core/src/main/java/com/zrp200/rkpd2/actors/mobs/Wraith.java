@@ -163,15 +163,15 @@ public class Wraith extends Mob {
 	public boolean isImmune(Class effect) {
 		if (Dungeon.hero.hasTalent(Talent.I_HATE_ALL_ELEMENTS) && alignment == Alignment.ALLY){
 			HashSet<Class> immunes = new HashSet<>();
-			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) == 1){
+			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) > 0){
 				immunes.add(Burning.class);
 				immunes.add(Poison.class);
 			}
-			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) == 2){
+			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) > 1){
 				immunes.add(ToxicGas.class);
 				immunes.add(Electricity.class);
 			}
-			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) == 3){
+			if (Dungeon.hero.pointsInTalent(Talent.I_HATE_ALL_ELEMENTS) > 2){
 				immunes.add(Corrosion.class);
 				immunes.add(Paralysis.class);
 			}
