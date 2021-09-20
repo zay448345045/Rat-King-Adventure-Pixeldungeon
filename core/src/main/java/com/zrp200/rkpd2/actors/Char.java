@@ -45,6 +45,7 @@ import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
+import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
@@ -660,8 +661,10 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
-			dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+		if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)) {
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
+				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
+			}
 		}
 
 		if (!(src instanceof LifeLink) && buff(LifeLink.class) != null){
