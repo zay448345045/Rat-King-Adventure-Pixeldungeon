@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -29,8 +31,6 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Corruption;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.BeeSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
@@ -153,7 +153,7 @@ public class Bee extends Mob {
 				
 				//find all mobs near the pot
 				HashSet<Char> enemies = new HashSet<>();
-				for (Mob mob : Dungeon.level.mobs) {
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 					if (!(mob == this)
 							&& Dungeon.level.distance(mob.pos, potPos) <= 3
 							&& mob.alignment != Alignment.NEUTRAL

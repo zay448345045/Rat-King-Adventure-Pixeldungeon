@@ -4,7 +4,9 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -66,6 +68,9 @@ public class RatKingBossSprite extends CharSprite {
             ((GameScene) Game.scene()).tint.changeColor(phaseColor(
                     ((RatKingBoss) ch).phase
             ));
+            if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
+                alpha(0.5f);
+            }
         }
     }
 

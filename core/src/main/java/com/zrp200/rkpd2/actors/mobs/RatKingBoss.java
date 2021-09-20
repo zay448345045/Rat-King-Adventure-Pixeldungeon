@@ -13,6 +13,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
@@ -85,6 +86,9 @@ public class RatKingBoss extends Mob {
 
     {
         HP = HT = 1500 + Challenges.activeChallenges()*165;
+        if (rkMode()){
+            HP = HT = 2550 + Challenges.activeChallenges()*290;
+        }
         spriteClass = RatKingBossSprite.class;
 
         HUNTING = new Hunting();
@@ -93,6 +97,9 @@ public class RatKingBoss extends Mob {
 
         viewDistance = 12;
         defenseSkill = 35;
+        if (rkMode()){
+            defenseSkill = 40;
+        }
 
         properties.add(Property.BOSS);
         properties.add(Property.MINIBOSS);
@@ -170,6 +177,8 @@ public class RatKingBoss extends Mob {
         }
         return speed;
     }
+
+    public boolean rkMode() {return Dungeon.hero.heroClass == HeroClass.RAT_KING;}
 
     public boolean phase3(){
         return phase3Notice;
@@ -343,6 +352,7 @@ public class RatKingBoss extends Mob {
 
     public boolean isChallenged( int mask ) {
         if (phase3()) return true;
+        if (mask == Challenges.STRONGER_BOSSES && rkMode()) return true;
         return (Dungeon.challenges & mask) != 0;
     }
 

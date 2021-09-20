@@ -141,7 +141,9 @@ public class RKPD2Changes {
                                     "_-_ RK boss will move in emperor phase 3 state.\n\n" +
                                     "_-_ Reduced amount of statues and water on level 0.\n\n" +
                                     "_-_ Fixed issues with Tengu's tricks used by RK.\n\n" +
-                                    "_-_ RK boss is resistant to corrosion."),
+                                    "_-_ RK boss is resistant to corrosion.\n\n" +
+                                    "_-_ Any rat will attack you during the fight.\n\n" +
+                                    "_-_ Rat King (class) can fight Rat King (boss) now. Throw something very important on the ground."),
                     new ChangeButton(BERSERKER, "_-_ Buffed rage damage boost to up +100% on 90% rage."),
                     new ChangeButton(KING, "Reintoduced certain perks for Rat King subclass:\n\n" +
                             "_-_ Berserker's rage\n" +

@@ -22,10 +22,15 @@
 package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.scenes.AmuletScene;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.io.IOException;
@@ -55,6 +60,22 @@ public class Amulet extends Item {
 
 		if (action.equals(AC_END)) {
 			showAmuletScene( false );
+		}
+	}
+
+	@Override
+	protected void onThrow(int cell) {
+		if (Dungeon.level.pit[cell] || Dungeon.hero.heroClass != HeroClass.RAT_KING){
+			super.onThrow( cell );
+		} else {
+			Dungeon.level.pressCell( cell );
+			Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+			GameScene.flash(0xFFFFFF, true);
+			Dungeon.depth = -1;
+			Statistics.deepestFloor = -1;
+			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+			Game.switchScene(InterlevelScene.class);
+			Invisibility.dispel();
 		}
 	}
 	
