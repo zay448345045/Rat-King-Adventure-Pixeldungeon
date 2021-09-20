@@ -44,14 +44,22 @@ public class Rat extends Mob {
 
 	@Override
 	public String name() {
+		Alignment alignment1 = alignment;
+		if (Dungeon.depth == 0){
+			alignment1 = alignment == Alignment.ENEMY ? Alignment.ALLY : Alignment.ENEMY;
+		}
 		String name = super.name();
-		String prefixed = Messages.get(this, alignment.toString().toLowerCase(), name);
+		String prefixed = Messages.get(this, alignment1.toString().toLowerCase(), name);
 		return prefixed.isEmpty() ? name : prefixed;
 	}
 
 	@Override
 	public String description() {
-		String bonus_desc = Messages.get(this,"desc_"+alignment.toString().toLowerCase(), false);
+		Alignment alignment1 = alignment;
+		if (Dungeon.depth == 0){
+			alignment1 = alignment == Alignment.ENEMY ? Alignment.ALLY : Alignment.ENEMY;
+		}
+		String bonus_desc = Messages.get(this,"desc_"+alignment1.toString().toLowerCase(), false);
 		String desc = super.description();
 		if(!bonus_desc.isEmpty()) desc += "\n\n" + bonus_desc;
 		return desc;
@@ -59,7 +67,9 @@ public class Rat extends Mob {
 
 	@Override
 	protected boolean act() {
-		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.armorAbility instanceof Ratmogrify){
+		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.armorAbility instanceof Ratmogrify &&
+				!(this instanceof RatKingBoss.EmperorRat)
+				|| !(this instanceof RatKingBoss.EmperorAlbinoRat)){
 			alignment = Alignment.ALLY;
 			if (state == SLEEPING) state = WANDERING;
 		}

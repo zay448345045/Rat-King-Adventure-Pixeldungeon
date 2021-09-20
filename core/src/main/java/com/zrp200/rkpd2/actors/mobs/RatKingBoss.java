@@ -400,12 +400,14 @@ public class RatKingBoss extends Mob {
                     }
                 }
             }
-            for (Blob blob : Dungeon.level.blobs.values()){
+            for (Blob blob : Dungeon.level.blobs.values()/*.toArray(new Blob[0])*/){
                 if (blob instanceof Tengu.ShockerAbility.ShockerBlob || blob instanceof Tengu.BombAbility.BombBlob){
                     blob.fullyClear();
-                    Dungeon.level.blobs.remove(blob.getClass());
                 }
             }
+            FunctionalStuff.forEach(FunctionalStuff.extract(target.buffs(),
+                    (buff) -> buff instanceof Tengu.ShockerAbility || buff instanceof Tengu.BombAbility),
+                    Buff::detach);
             FunctionalStuff.forEach(FunctionalStuff.extract(Dungeon.hero.buffs(),
                     (buff) -> buff instanceof Tengu.ShockerAbility || buff instanceof Tengu.BombAbility),
                     Buff::detach);
