@@ -300,8 +300,7 @@ public abstract class Char extends Actor {
 			}
 
 			if (enemy.alignment == Alignment.ALLY && hero.buff(ChampionEnemy.Paladin.class) != null && hero.hasTalent(Talent.RK_PALADIN)){
-				Buff.affect(hero, Barrier.class).incShield(2 + hero.pointsInTalent(Talent.RK_PALADIN)/3);
-				if (Random.Int(20) < hero.pointsInTalent(Talent.RK_PALADIN)){
+				if (Random.Int(30) < hero.pointsInTalent(Talent.RK_PALADIN)){
 					Talent.onFoodEaten(hero, 300, new Food());
 				}
 			}
