@@ -73,6 +73,8 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
         boolean attach = super.attachTo(target);
         if (target.buff(ChampionCooldown.class) == null)
             ActionIndicator.setAction(this);
+        else
+            ActionIndicator.clearAction(this);
         return attach;
     }
 
@@ -80,6 +82,8 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
     public boolean act() {
         if (target.buff(ChampionCooldown.class) == null)
             ActionIndicator.setAction(this);
+        else
+            ActionIndicator.clearAction(this);
 
         spend(TICK);
         return true;
