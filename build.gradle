@@ -15,8 +15,8 @@ allprojects {
         appName = 'RKPD2 DLC'
         appPackageName = 'com.zrp200.rkpd2abyssal'
 
-        appVersionCode = 578
-        appVersionName = 'DLC-1.3.3'
+        appVersionCode = 579
+        appVersionName = 'DLC-1.3.4'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
