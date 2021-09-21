@@ -472,6 +472,7 @@ public enum Talent {
 			ScrollOfRecharging.charge( hero );
 		}, ROYAL_MEAL, MYSTICAL_MEAL );
 
+		// TODO: palkia why
 		// 4.5/6 tiles -> 3/5 turns
 		hero.byTalent( (talent, points) -> Buff.affect(hero, Adrenaline.class, 2+2*points),
 				INVIGORATING_MEAL);
