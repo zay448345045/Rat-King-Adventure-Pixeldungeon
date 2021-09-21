@@ -186,8 +186,10 @@ public abstract class Wand extends Item {
 	//TODO Consider externalizing char awareness buff
 	public static void wandProc(Char target, int wandLevel, int chargesUsed, boolean delay, int damage, boolean isStaff){
 		if (Dungeon.hero.hasTalent(Talent.ARCANE_VISION,Talent.KINGS_VISION)) {
-			int dur = 5 + 5*Dungeon.hero.pointsInTalent(Talent.ARCANE_VISION,Talent.KINGS_VISION);
-			if(Dungeon.hero.hasTalent(Talent.ARCANE_VISION)) dur *= 2;
+			float dur = 5*Dungeon.hero.byTalent(
+					true, true,
+					Talent.KINGS_VISION, 1,
+					Talent.ARCANE_VISION,2);
 			Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, dur).charID = target.id();
 		}
 		int sorcery = Dungeon.hero.pointsInTalent(Talent.SORCERY);
@@ -454,9 +456,13 @@ public abstract class Wand extends Item {
 			if (!Dungeon.hero.belongings.contains(this)) {
 				if (curCharges == getMinCharges() && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE)) {
 					//grants 3/5 shielding
-					int shielding = 1 + 2 * Dungeon.hero.pointsInTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
-					if (Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER)) shielding = (int) Math.ceil(shielding * 1.5f);
-					Buff.affect(Dungeon.hero, Barrier.class).setShield(shielding);
+					final int[] total = new int[1];
+				// currently this stacks.
+				Dungeon.hero.byTalent( (talent, points) -> {int shielding = 1 + 2 * points;
+					if (talent == Talent.BACKUP_BARRIER)
+						 shielding = (int) Math.ceil(shielding * 1.5f);total[0] += shielding;
+				}, Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
+					Buff.affect(Dungeon.hero, Barrier.class).setShield(total[0]);
 				}
 				if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE, Talent.RK_BATTLEMAGE)) {
 					Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
@@ -773,7 +779,7 @@ public abstract class Wand extends Item {
 		public void charge(Char owner, float charge){
 			partialCharge += CHARGE_BUFF_BONUS*charge;
 		}
-		
+
 		public Wand wand(){
 			return Wand.this;
 		}

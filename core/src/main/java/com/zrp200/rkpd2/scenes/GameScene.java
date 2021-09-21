@@ -473,8 +473,10 @@ public class GameScene extends PixelScene {
 				}
 				//50%/75% chance for power within, use level's seed so that we get the same result for the same level
 				//60/90% chance for rogue's foresight
-					float chance =
-						.25f*(1+Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN));
+				float chance = Dungeon.hero.byTalent(
+						false, false,
+						Talent.ROGUES_FORESIGHT,.30f,
+						Talent.POWER_WITHIN, .25f);
 				Random.pushGenerator(Dungeon.seedCurDepth());
 				if (reqSecrets <= 0 && Random.Float() <= chance) {
 					GLog.p(Messages.get(this, "secret_hint"));
