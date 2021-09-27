@@ -97,7 +97,7 @@ public class BloomingPick extends MeleeWeapon {
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 
 				final int pos = hero.pos + PathFinder.NEIGHBOURS8[i];
-				if (Dungeon.level.map[pos] == Terrain.WALL || Dungeon.level.map[pos] == Terrain.DOOR) {
+				if (Dungeon.level.insideMap(pos) && (Dungeon.level.map[pos] == Terrain.WALL || Dungeon.level.map[pos] == Terrain.DOOR)) {
 
 					hero.spend( TIME_TO_MINE );
 					hero.busy();
