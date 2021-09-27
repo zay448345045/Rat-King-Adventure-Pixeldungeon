@@ -17,6 +17,10 @@ import com.zrp200.rkpd2.windows.WndRkChampion;
 
 public class RKChampionBuff extends Buff implements ActionIndicator.Action {
 
+    {
+        actPriority = BUFF_PRIO - 1;
+    }
+
     public static class RainbowRat extends Image{
 
         private float phase;
@@ -100,11 +104,12 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
     }
 
     public void useTitle(Class<? extends ChampionEnemy> title){
-        ActionIndicator.clearAction(this);
         Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.STAR), 20);
         Sample.INSTANCE.play(Assets.Sounds.READ, 1f, 0.66f);
+        Dungeon.hero.busy();
         Dungeon.hero.sprite.operate(Dungeon.hero.pos, () -> {
             Dungeon.hero.sprite.idle();
+            Dungeon.hero.ready();
             for (Buff buff : Dungeon.hero.buffs().toArray(new Buff[0])){
                 if (buff instanceof ChampionEnemy){
                     buff.detach();
@@ -115,8 +120,14 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
             }
             Dungeon.hero.sprite.resetColor();
             Talent.Cooldown.affectHero(ChampionCooldown.class);
+            ActionIndicator.clearAction(this);
+            ActionIndicator.updateIcon();
             Dungeon.hero.spendAndNext(1f);
         });
     }
 
+    @Override
+    public boolean usable() {
+        return target.buff(ChampionCooldown.class) == null;
+    }
 }
