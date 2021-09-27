@@ -23,10 +23,14 @@ package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.FireImbue;
+import com.zrp200.rkpd2.actors.buffs.FrostImbue;
+import com.zrp200.rkpd2.actors.buffs.Vulnerable;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -60,8 +64,25 @@ public class Scimitar extends MeleeWeapon {
 		}
 
 		for (Char target : targets){
-			Dungeon.hero.attack(target);
+			int dmg = damage;
+			dmg = target.defenseProc(Dungeon.hero, dmg);
+			dmg -= target.drRoll();
+			if ( target.buff( Vulnerable.class ) != null){
+				dmg *= 1.33f;
+			}
+
+			dmg = Dungeon.hero.attackProc(target, dmg);
+			target.damage( dmg, Dungeon.hero );
+			if (Dungeon.hero.buff(FireImbue.class) != null)
+				Dungeon.hero.buff(FireImbue.class).proc(target);
+			if (Dungeon.hero.buff(FrostImbue.class) != null)
+				Dungeon.hero.buff(FrostImbue.class).proc(target);
+			Dungeon.hero.hitSound(Random.Float(0.87f, 1.15f));
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			target.sprite.bloodBurstA( Dungeon.hero.sprite.center(), dmg );
+			target.sprite.flash();
 		}
+
 		targetNum = targets.size();
 
 		Dungeon.hero.sprite.centerEmitter().start( Speck.factory( Speck.CROWN ), 0.03f, 8 );
