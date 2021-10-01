@@ -178,13 +178,13 @@ public class RatBossLevel extends Level {
 
 	@Override
 	public int randomRespawnCell( Char ch ) {
-		int pos = entrance;
 		int cell;
 		do {
-			cell = pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		} while (!passable[cell]
+			cell = Random.Int( length() );
+		} while ((Dungeon.level == this && heroFOV[cell])
+				|| !passable[cell]
 				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar(cell) != null);
+				|| Actor.findChar( cell ) != null);
 		return cell;
 	}
 
