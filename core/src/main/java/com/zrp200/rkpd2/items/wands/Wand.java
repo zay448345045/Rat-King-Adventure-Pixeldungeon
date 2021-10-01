@@ -627,11 +627,11 @@ public abstract class Wand extends Item {
 				
 				if (target == curUser.pos || cell == curUser.pos) {
 					if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION)){
-						float shield = curUser.HT * (0.05f*curWand.curCharges-curWand.getMinCharges());
-						if(curUser.hasTalent(Talent.SHIELD_BATTERY)) shield *= 1.25f; // bonus.
-						if (curUser.pointsInTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION) == 2) shield *= 1.5f;
+						float shield = curUser.HT * (curWand.curCharges-curWand.getMinCharges()) *
+								curUser.byTalent(Talent.SHIELD_BATTERY, 0.0625f, Talent.RESTORATION, 0.5f);
+						shield *= Math.pow(1.5f, curUser.pointsInTalent(Talent.SHIELD_BATTERY, Talent.RESTORATION)-1);
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
-						curWand.curCharges = 0;
+						curWand.curCharges = curWand.getMinCharges();
 						curUser.sprite.operate(curUser.pos);
 						Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 						ScrollOfRecharging.charge(curUser);
