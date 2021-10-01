@@ -464,6 +464,9 @@ public class RatKingBoss extends Mob {
         if (HP < HT * 0.5f && phase == SNIPER){
             return INFINITE_ACCURACY;
         }
+        if (target instanceof Wraith){
+            return 160;
+        }
         return 45;
     }
 
