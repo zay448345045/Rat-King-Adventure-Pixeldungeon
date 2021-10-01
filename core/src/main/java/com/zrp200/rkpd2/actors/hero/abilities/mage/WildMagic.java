@@ -135,7 +135,7 @@ public class WildMagic extends ArmorAbility {
 
 		hero.sprite.zap(target);
 
-		if (!cur.cursed || !hero.hasTalent(Talent.ELDRITCH_BLESSING)) {
+		if (!hero.hasTalent(Talent.ELDRITCH_BLESSING) && !cur.cursed) {
 			cur.fx(aim, new Callback() {
 				@Override
 				public void call() {
