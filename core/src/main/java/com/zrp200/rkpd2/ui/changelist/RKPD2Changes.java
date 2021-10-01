@@ -143,6 +143,7 @@ public class RKPD2Changes {
                                     "_-_ Fixed issues with Tengu's tricks used by RK.\n\n" +
                                     "_-_ RK boss is resistant to corrosion.\n\n" +
                                     "_-_ Any rat will attack you during the fight.\n\n" +
+                                    "_-_ RK boss has far better accuracy against wraiths and kills all of them while switching to new phase.\n\n" +
                                     "_-_ Rat King (class) can fight Rat King (boss) now. Throw something very important on the ground."),
                     new ChangeButton(BERSERKER, "_-_ Buffed rage damage boost to up +100% on 90% rage."),
                     new ChangeButton(KING, "Reintoduced certain perks for Rat King subclass:\n\n" +
@@ -163,11 +164,11 @@ public class RKPD2Changes {
                             "_-_ Fixed Heroic Endurance not working at all.\n" +
                             "_-_ Fixed Burning and Red Burning conflicting between each other.\n" +
                             "_-_ Fixed Big Rush killing quest givers and shopkeepers.\n" +
+                            "_-_ Fixed Eldritch Blessing not working properly.\n" +
                             "_-_ Fixed DK getting stuck if his progression damage is affected by some modifier.\n\n" +
                             "RKPD2 bugs:\n\n" +
                             "_-_ Fixed talent window description having extra whitespace in title.\n" +
-                            "_-_ Fixed miscolored icons for heroes and talents.\n" +
-                            "_-_ Fixed ItemStatusHandler items (potions, rings, etc) being shown as identified while on ground.")
+                            "_-_ Fixed miscolored icons for heroes and talents.")
             ),
             new ChangeInfo("v0.2", true, TITLE_COLOR, ""),
             new ChangeInfo("v0.2.1", false, "",
