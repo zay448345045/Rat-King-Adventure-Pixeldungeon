@@ -89,7 +89,7 @@ public class WildMagic extends ArmorAbility {
 					seconds.remove(w);
 				}
 				if (totalCharge < 3*chargeUsePerShot - 3*hero.pointsInTalent(Talent.HEROIC_WIZARDRY)
-					|| Random.Int(4) > Dungeon.hero.pointsInTalent(Talent.CONSERVED_MAGIC)){
+					|| Dungeon.hero.hasTalent(Talent.ELDRITCH_BLESSING) || Random.Int(4) > Dungeon.hero.pointsInTalent(Talent.CONSERVED_MAGIC)){
 					thirds.remove(w);
 				}
 			}
