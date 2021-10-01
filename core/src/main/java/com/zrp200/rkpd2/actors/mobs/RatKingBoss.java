@@ -415,6 +415,9 @@ public class RatKingBoss extends Mob {
                     blob.fullyClear();
                 }
             }
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+                if (mob instanceof Wraith) mob.die(null);
+            }
             FunctionalStuff.forEach(FunctionalStuff.extract(target.buffs(),
                     (buff) -> buff instanceof Tengu.ShockerAbility || buff instanceof Tengu.BombAbility),
                     Buff::detach);
