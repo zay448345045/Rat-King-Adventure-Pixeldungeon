@@ -50,6 +50,7 @@ import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class ChampionEnemy extends Buff {
 
@@ -364,6 +365,22 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
+		public HashSet<Class> resistances() {
+			if (target instanceof Hero){
+				return com.zrp200.rkpd2.items.armor.glyphs.AntiMagic.RESISTS;
+			}
+			return super.resistances();
+		}
+
+		@Override
+		public HashSet<Class> immunities() {
+			if (target instanceof Hero){
+				return new HashSet<>();
+			}
+			return super.immunities;
+		}
+
+		@Override
 		public boolean attachTo(Char target) {
 			if (target instanceof Hero){
 				resistances.addAll(com.zrp200.rkpd2.items.armor.glyphs.AntiMagic.RESISTS);
@@ -373,7 +390,7 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		public static void effect(Char enemy, Char hero){
-			if (hero instanceof Hero && hero.buff(AntiMagic.class) != null){
+			if (hero instanceof Hero && hero.buff(AntiMagic.class) != null && ((Hero) hero).pointsInTalent(Talent.RK_ANTIMAGIC) > 0){
 				int dmg = 1 + ((Hero) hero).pointsInTalent(Talent.RK_ANTIMAGIC) * 2;
 
 				int heal = Math.min(dmg, hero.HT-hero.HP);
