@@ -323,7 +323,7 @@ public abstract class ChampionEnemy extends Buff {
 
 							Dungeon.level.occupyCell(clone);
 
-							GameScene.add(clone,  Dungeon.hero.hasTalent(Talent.RK_SPLINT) ? 0 : 1);
+							GameScene.add(clone, Dungeon.hero.hasTalent(Talent.RK_SPLINT) ? 0 : 1);
 							Actor.addDelayed(new Pushing(clone, target.pos, clone.pos), -1);
 						}
 					}

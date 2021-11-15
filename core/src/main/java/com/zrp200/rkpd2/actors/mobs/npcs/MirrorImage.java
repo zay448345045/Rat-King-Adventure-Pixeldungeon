@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Fury;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
@@ -68,7 +69,7 @@ public class MirrorImage extends AbstractMirrorImage {
 	@Override
 	public void damage(int dmg, Object src) {
 		super.damage(dmg, src);
-		if (HP * 2 < HT){
+		if (HP * 2 < HT && Dungeon.hero.pointsInTalent(Talent.RK_SPLINT) >= 2){
 			Buff.affect(this, Fury.class);
 		}
 	}
