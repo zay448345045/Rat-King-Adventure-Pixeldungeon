@@ -429,6 +429,8 @@ public abstract class Char extends Actor {
 			if (buff(FrostImbue.class) != null)
 				buff(FrostImbue.class).proc(enemy);
 
+			boolean assassinated = false;
+
 			if (enemy.isAlive() && prep != null && prep.canKO(enemy)){
 				enemy.HP = 0;
 				if (!enemy.isAlive()) {
@@ -438,11 +440,17 @@ public abstract class Char extends Actor {
 					enemy.damage(-1, this);
 					DeathMark.processFearTheReaper(enemy, true);
 				}
+				assassinated = true;
 				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+			}
+			if (this instanceof Hero && ((Hero) this).hasTalent(Talent.ENHANCED_LETHALITY) && assassinated){
+				Preparation.bloodbathProc((Hero) this, enemy, effectiveDamage);
 			}
 
 			enemy.sprite.bloodBurstA( sprite.center(), effectiveDamage );
 			enemy.sprite.flash();
+
+
 
 			if (!enemy.isAlive() && visibleFight) {
 				if (enemy == hero) {

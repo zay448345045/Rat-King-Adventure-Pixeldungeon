@@ -32,11 +32,14 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroAction;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Effects;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.particles.BloodParticle;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -81,7 +84,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		};
 
 		public float KOThreshold(){
-			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.ENHANCED_LETHALITY,Talent.RK_ASSASSIN)];
+			if (Dungeon.hero.heroClass == HeroClass.ROGUE){
+				return KOThresholds[ordinal()][2];
+			}
+			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.RK_ASSASSIN)];
 		}
 
 		//1st index is prep level, 2nd is talent level, third is type.
@@ -230,6 +236,33 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 		
 		return desc;
+	}
+
+	public static void bloodbathProc(Hero attacker, Char enemy, int damage){
+		WandOfBlastWave.BlastWave.blast(enemy.pos);
+		PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null),
+				1 + attacker.pointsInTalent(Talent.ENHANCED_LETHALITY));
+		for (int i = 0; i < PathFinder.distance.length; i++) {
+			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+				CellEmitter.bottom(i).burst(BloodParticle.BURST, 12);
+			}
+		}
+		for (Char ch : Actor.chars()) {
+			if (ch != enemy && ch.alignment == Char.Alignment.ENEMY
+					&& PathFinder.distance[ch.pos] < Integer.MAX_VALUE) {
+				int aoeHit = Math.round(attacker.damageRoll());
+				aoeHit *= 0.6f;
+				aoeHit -= ch.drRoll();
+				if (ch.buff(Vulnerable.class) != null) aoeHit *= 1.33f;
+				ch.damage(aoeHit, attacker);
+				ch.sprite.bloodBurstA(attacker.sprite.center(), aoeHit);
+				ch.sprite.flash();
+
+				if (!ch.isAlive()) {
+
+				}
+			}
+		}
 	}
 	
 	private static final String TURNS = "turnsInvis";
