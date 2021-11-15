@@ -99,6 +99,9 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		};
 
 		public int blinkDistance(){
+			if (Dungeon.hero.heroClass == HeroClass.ROGUE){
+				return blinkRanges[1][1][ordinal()];
+			}
 			return blinkRanges[Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH,Talent.RK_ASSASSIN)][Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH)?1:0][ordinal()];
 		}
 		
@@ -132,7 +135,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 	}
 	
-	private int turnsInvis = 0;
+	public int turnsInvis = 0;
 	
 	@Override
 	public boolean act() {

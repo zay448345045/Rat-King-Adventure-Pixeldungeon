@@ -27,6 +27,7 @@ import com.watabou.noosa.ui.Button;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.scenes.PixelScene;
 
 public class ActionIndicator extends Tag {
@@ -121,7 +122,7 @@ public class ActionIndicator extends Tag {
 	}
 
 	// list of action buffs that we should replace it with.
-	private static final Class<?extends Buff>[] actionBuffClasses = new Class[]{Preparation.class, SnipersMark.class, Combo.class, Momentum.class, SpiritBuff.class, RobotBuff.class, RKChampionBuff.class, BrawlerBuff.class};
+	private static final Class<?extends Buff>[] actionBuffClasses = new Class[]{Preparation.class, CloakOfShadows.cloakRecharge.class, SnipersMark.class, Combo.class, Momentum.class, SpiritBuff.class, RobotBuff.class, RKChampionBuff.class, BrawlerBuff.class};
 	private static boolean findAction(boolean cycle) {
 		if(action == null) cycle = false;
 		int start = -1;

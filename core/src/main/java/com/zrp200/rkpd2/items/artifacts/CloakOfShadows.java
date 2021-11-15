@@ -22,8 +22,10 @@
 package com.zrp200.rkpd2.items.artifacts;
 
 
+import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
@@ -33,12 +35,17 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.TargetedCell;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.CellSelector;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -65,13 +72,19 @@ public class CloakOfShadows extends Artifact {
 	public static final float ROGUE_BOOST = 1.5f;
 
 	public static final String AC_STEALTH = "STEALTH";
+	public static final String AC_TELEPORT = "TELEPORT";
 
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER))
-				&& !cursed && (charge > 0 || activeBuff != null)) {
-			actions.add(AC_STEALTH);
+		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER)) && !cursed) {
+			if ((charge > 0 || activeBuff != null)) {
+
+				actions.add(AC_STEALTH);
+			}
+			if (charge > 0 && hero.hasTalent(Talent.ASSASSINS_REACH)){
+				actions.add(AC_TELEPORT);
+			}
 		}
 		return actions;
 	}
@@ -106,7 +119,67 @@ public class CloakOfShadows extends Artifact {
 			}
 
 		}
+
+		if (action.equals(AC_TELEPORT)){
+			GameScene.selectCell(caster);
+		}
 	}
+
+	private CellSelector.Listener caster = new CellSelector.Listener() {
+
+		@Override
+		public void onSelect(Integer target) {
+			if (target != null && (Dungeon.level.visited[target] || Dungeon.level.mapped[target]) && Dungeon.level.passable[target]){
+				int maxDistance = (int) (charge * (getChargeEfficiency()));
+				if (Dungeon.level.distance(target, Dungeon.hero.pos) > maxDistance){
+					GLog.w( Messages.get(CloakOfShadows.class, "cant_reach") );
+				} else {
+					float chargeCost = maxDistance / (getChargeEfficiency());
+					CloakOfShadows.this.charge -= chargeCost;
+					if (Dungeon.hero.invisible > 0){
+						Preparation prep = Dungeon.hero.buff(Preparation.class);
+						if (prep != null){
+							prep.turnsInvis += (stealthDuration() / 2 * chargeCost);
+							prep.act();
+							BuffIndicator.refreshHero();
+						}
+					}
+					ActionIndicator.clearAction((ActionIndicator.Action) passiveBuff);
+					ScrollOfTeleportation.teleportToLocation(Dungeon.hero, target);
+					//target hero level is 1 + 2*cloak level
+					int lvlDiffFromTarget = Dungeon.hero.lvl - (1+level()*2);
+					//plus an extra one for each level after 6
+					if (level() >= 7){
+						lvlDiffFromTarget -= level()-6;
+					}
+					if (lvlDiffFromTarget >= 0){
+						exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget))*chargeCost;
+					} else {
+						exp += Math.round(10f * Math.pow(0.75f, -lvlDiffFromTarget))*chargeCost;
+					}
+
+					if (exp >= (level() + 1) * 50 && level() < levelCap) {
+						upgrade();
+						exp -= level() * 50;
+						GLog.p(Messages.get(cloakStealth.class, "levelup"));
+					}
+					updateQuickslot();
+				}
+			}
+		}
+
+		@Override
+		public String prompt() {
+			int maxDistance = (int) (charge * (getChargeEfficiency()));
+			PathFinder.buildDistanceMap( Dungeon.hero.pos, Dungeon.level.passable, maxDistance );
+			for (int i = 0; i < PathFinder.distance.length; i++) {
+				if (PathFinder.distance[i] < Integer.MAX_VALUE && !Dungeon.level.solid[i]) {
+					Dungeon.hero.sprite.parent.addToBack(new TargetedCell(i, 0xb47ffe));
+				}
+			}
+			return Messages.get(CloakOfShadows.class, "prompt");
+		}
+	};
 
 	@Override
 	public void activate(Char ch){
@@ -220,7 +293,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 		return 0;
 	}
 
-	public class cloakRecharge extends ArtifactBuff{
+	public class cloakRecharge extends ArtifactBuff implements ActionIndicator.Action {
 		@Override
 		public boolean act() {
 			if (charge < chargeCap) {
@@ -256,12 +329,55 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 				cooldown --;
 
 			updateQuickslot();
+			if ((int) (charge * getChargeEfficiency()) >= 1
+					&& Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH)){
+				ActionIndicator.setAction(this);
+			} else {
+				ActionIndicator.clearAction(this);
+			}
 
 			spend( TICK );
 
 			return true;
 		}
 
+		@Override
+		public Image getIcon() {
+			Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
+			actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.SCROLL_TELEPORT));
+			actionIco.scale.set(2f);
+			actionIco.hardlight(0xc44dd6);
+			return actionIco;
+		}
+
+		@Override
+		public void doAction() {
+			execute(Dungeon.hero, AC_TELEPORT);
+		}
+
+		@Override
+		public boolean usable() {
+			return (int) (charge * getChargeEfficiency()) >= 1
+					&& Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH);
+		}
+
+	}
+
+	public float getChargeEfficiency() {
+		switch (Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH)){
+			case 1: default:
+				return 0.75f;
+			case 2:
+				return 0.87f;
+			case 3:
+				return 1f;
+		}
+	}
+
+	public static float stealthDuration(){
+		return 4f +
+				(Dungeon.hero.hasTalent(Talent.EFFICIENT_SHADOWS) ? 1f : 0) +
+				Dungeon.hero.pointsInTalent(Talent.EFFICIENT_SHADOWS);
 	}
 
 	public class cloakStealth extends ArtifactBuff{
@@ -275,12 +391,6 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 		@Override
 		public int icon() {
 			return BuffIndicator.INVISIBLE;
-		}
-
-		public float stealthDuration(){
-			return 4f +
-					(Dungeon.hero.hasTalent(Talent.EFFICIENT_SHADOWS) ? 1f : 0) +
-						Dungeon.hero.pointsInTalent(Talent.EFFICIENT_SHADOWS);
 		}
 
 		@Override
