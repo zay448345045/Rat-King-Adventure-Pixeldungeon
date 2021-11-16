@@ -133,7 +133,14 @@ public class RKPD2Changes {
                                     "_-_ Old Wrath have been renamed to _Divine Fury_."),
                     new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Force rework",
                             "_-_ Can hold enchantments and proc them.\n\n" +
-                                    "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%.")
+                                    "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%."),
+                    new ChangeButton(ASSASSIN,
+                            list(2,
+                                    "All 3 Shattered's assassin talents got replaced by new ones.",
+                                    "_Bloodbath_ allows for AoE damage from assassinations.",
+                                    "_Thinking with Portals_ gives Assassin an ability to teleport and gain preparation instantly.",
+                                    "_Adapt and Overcome_ patches Assassin's weaknesses such as no synergy with wands, bad damage rolls and unsuccessful attacks.",
+                                    "Old Enhanced Lethality and Assassin's Reach are now innate abilities."))
             ),
             Changes(
                     new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
