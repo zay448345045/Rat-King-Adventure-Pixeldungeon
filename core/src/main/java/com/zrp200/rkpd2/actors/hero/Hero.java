@@ -1262,7 +1262,7 @@ public class Hero extends Char {
 
 		float mult = Talent.SpiritBladesTracker.getProcModifier();
 
-		if (RobotBuff.isVehicle()){
+		if (RobotBuff.isVehicle() && Dungeon.hero.belongings.thrownWeapon == null){
 			damage = Random.NormalIntRange(Math.max(0, STR()-12), Math.max(0, STR()-7));
 			int points = Dungeon.hero.pointsInTalent(Talent.ENERGON_FUSION);
 			if (points > 0){
