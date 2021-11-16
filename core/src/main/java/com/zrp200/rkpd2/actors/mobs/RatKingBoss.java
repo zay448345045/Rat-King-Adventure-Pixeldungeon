@@ -105,8 +105,8 @@ public class RatKingBoss extends Mob {
         properties.add(Property.MINIBOSS);
     }
     private float summonCooldown;
-    private static final int MIN_SUMMON_CD = 4;
-    private static final int MAX_SUMMON_CD = 7;
+    private static final int MIN_SUMMON_CD = 7;
+    private static final int MAX_SUMMON_CD = 13;
 
     private float abilityCooldown = 0;
     private static final int MIN_ABILITY_CD = 7;

@@ -62,6 +62,7 @@ public class DistortionTrap extends Trap{
 				nMobs++;
 			}
 		}
+		if (Dungeon.depth == 0) nMobs = Random.IntRange(1, 2);
 
 		ArrayList<Integer> candidates = new ArrayList<>();
 
