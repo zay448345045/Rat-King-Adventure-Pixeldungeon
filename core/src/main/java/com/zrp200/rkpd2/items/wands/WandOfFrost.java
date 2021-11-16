@@ -80,6 +80,7 @@ public class WandOfFrost extends DamageWand {
 
 			wandProc(ch, chargesPerCast(), damage);
 			ch.damage(damage, this);
+			procKO(ch);
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 1.1f * Random.Float(0.87f, 1.15f) );
 
 			if (ch.isAlive()){

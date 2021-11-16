@@ -102,6 +102,7 @@ public class WandOfPrismaticLight extends DamageWand {
 		}
 		wandProc(ch, chargesPerCast(), dmg);
 		ch.damage(dmg, this);
+		procKO(ch);
 
 	}
 

@@ -55,6 +55,7 @@ public class WandOfFirebolt extends DamageWand {
             int dmg = damageRoll();
             wandProc(ch,1,dmg);
             ch.damage(dmg, this);
+            procKO(ch);
             if(ch.isAlive()) Buff.affect(ch, Burning.class).reignite(ch);
             ch.sprite.emitter().burst(FlameParticle.FACTORY, 5);
         }

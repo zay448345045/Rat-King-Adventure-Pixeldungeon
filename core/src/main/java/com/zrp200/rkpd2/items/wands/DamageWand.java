@@ -25,7 +25,9 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.buffs.Preparation;
 import com.zrp200.rkpd2.actors.buffs.RobotBuff;
 import com.zrp200.rkpd2.actors.buffs.WandEmpower;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -76,6 +78,14 @@ public abstract class DamageWand extends Wand{
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG, 0.75f, 1.2f);
 		}
 		return dmg;
+	}
+
+	public void procKO(Char enemy){
+		if (Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER) >= 2 &&
+				Dungeon.hero.buff(Preparation.class) != null){
+			boolean result = Dungeon.hero.buff(Preparation.class).procKO(Dungeon.hero, enemy);
+			if (result) Dungeon.hero.buff(Preparation.class).detach();
+		}
 	}
 
 	@Override

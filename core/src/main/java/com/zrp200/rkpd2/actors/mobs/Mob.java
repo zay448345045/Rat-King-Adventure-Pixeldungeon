@@ -794,8 +794,7 @@ public abstract class Mob extends Char {
 		if (hero.buff(Talent.BountyHunterTracker.class) != null) {
 			Preparation prep = hero.buff(Preparation.class);
 			if (prep != null && Random.Float() < 0.25f * prep.attackLevel()) {
-				int value = 15 * hero.pointsInTalent(Talent.BOUNTY_HUNTER, Talent.RK_ASSASSIN);
-				if(hero.hasTalent(Talent.BOUNTY_HUNTER)) value *= 3; // 45 / 90 / 135
+				int value = 15 * hero.pointsInTalent(Talent.RK_ASSASSIN);
 				Dungeon.level.drop(new Gold(value), pos).sprite.drop();
 			}
 		}

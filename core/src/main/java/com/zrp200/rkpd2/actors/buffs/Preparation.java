@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroAction;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Effects;
@@ -43,6 +44,7 @@ import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
@@ -116,7 +118,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		
 		public int damageRoll( Char attacker ){
 			int dmg = attacker.damageRoll();
-			for( int i = 1; i < damageRolls; i++){
+			for(int i = 1; i < getDamageRolls(); i++){
 				int newDmg = attacker.damageRoll();
 				if (newDmg > dmg) dmg = newDmg;
 			}
@@ -132,6 +134,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				}
 			}
 			return LVL_1;
+		}
+
+		public int getDamageRolls() {
+			return damageRolls + (Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER) ? 2 : 0);
 		}
 	}
 	
@@ -167,6 +173,27 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 
 	public boolean canKO( Char defender ){
 		return !defender.isInvulnerable(target.getClass()) && AttackLevel.getLvl(turnsInvis).canKO(defender);
+	}
+
+	public boolean procKO(Char attacker, Char enemy){
+		boolean assassinated = false;
+
+		if (enemy.isAlive() && canKO(enemy)){
+			enemy.HP = 0;
+			if (!enemy.isAlive()) {
+				enemy.die(this);
+			} else {
+				//helps with triggering any on-damage effects that need to activate
+				enemy.damage(-1, this);
+				DeathMark.processFearTheReaper(enemy, true);
+			}
+			assassinated = true;
+			enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+		}
+		if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.ENHANCED_LETHALITY) && assassinated){
+			Preparation.bloodbathProc((Hero) attacker, enemy);
+		}
+		return assassinated;
 	}
 	
 	@Override
@@ -223,7 +250,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				(int)(lvl.KOThreshold()*100),
 				(int)(lvl.KOThreshold()*20));
 		
-		if (lvl.damageRolls > 1){
+		if (lvl.getDamageRolls() > 1){
 			desc += " " + Messages.get(this, "desc_dmg_likely");
 		}
 		
@@ -241,7 +268,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		return desc;
 	}
 
-	public static void bloodbathProc(Hero attacker, Char enemy, int damage){
+	public static void bloodbathProc(Hero attacker, Char enemy){
 		WandOfBlastWave.BlastWave.blast(enemy.pos);
 		PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null),
 				1 + attacker.pointsInTalent(Talent.ENHANCED_LETHALITY));

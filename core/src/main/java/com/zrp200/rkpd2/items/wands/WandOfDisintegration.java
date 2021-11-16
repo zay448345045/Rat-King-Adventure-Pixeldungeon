@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.wands;
 
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -36,8 +38,6 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -114,6 +114,7 @@ public class WandOfDisintegration extends DamageWand {
 			int damage = damageRoll(lvl);
 			wandProc(ch, chargesPerCast(), damage);
 			ch.damage( damage, this );
+			procKO(ch);
 			ch.sprite.centerEmitter().burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
 			ch.sprite.flash();
 		}

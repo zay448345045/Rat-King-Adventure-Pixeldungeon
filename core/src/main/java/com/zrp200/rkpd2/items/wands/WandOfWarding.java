@@ -306,6 +306,7 @@ public class WandOfWarding extends Wand {
 			Wand.wandProc(enemy, wandLevel, 1, true, dmg,
 					staff != null && staff.wandClass() == WandOfWarding.class && Dungeon.hero.belongings.getItem(WandOfWarding.class) == null); // damage was already done.
 			enemy.damage( dmg, this );
+			(new WandOfDisintegration()).procKO(enemy);
 
 			if (!enemy.isAlive() && enemy == Dungeon.hero) {
 				Dungeon.fail( getClass() );

@@ -108,6 +108,7 @@ public class WandOfLivingEarth extends DamageWand {
 
 				wandProc(ch, chargesPerCast(), damage);
 				ch.damage(damage, this);
+				procKO(ch);
 
 				int closest = -1;
 				boolean[] passable = Dungeon.level.passable;

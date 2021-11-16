@@ -85,6 +85,7 @@ public class WandOfBlastWave extends DamageWand {
 			if (ch != null){
 				int damage = damageRoll();
 				wandProc(ch, chargesPerCast(), damage);
+				procKO(ch);
 				if (ch.alignment != Char.Alignment.ALLY) ch.damage(damage, this);
 
 				if (ch.pos == bolt.collisionPos + i) {
@@ -101,6 +102,7 @@ public class WandOfBlastWave extends DamageWand {
 		if (ch != null){
 			wandProc(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
+			procKO(ch);
 
 			if (bolt.path.size() > bolt.dist+1 && ch.pos == bolt.collisionPos) {
 				Ballistica trajectory = new Ballistica(ch.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
