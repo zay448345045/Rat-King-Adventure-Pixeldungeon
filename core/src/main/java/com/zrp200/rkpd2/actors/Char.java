@@ -449,6 +449,11 @@ public abstract class Char extends Actor {
 				} else if (this == hero) {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
+
+				if (this instanceof Hero && ((Hero) this).hasTalent(Talent.ENHANCED_LETHALITY) &&
+						buff(Preparation.class) != null && Random.Float() < 0.4f){
+					Preparation.bloodbathProc((Hero) this, enemy);
+				}
 			}
 			
 			return true;
