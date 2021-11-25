@@ -413,7 +413,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =.13f;
 			}
 		}
 
-		private float incHeal = 1, incShield = 1;
+		protected float incHeal = 1, incShield = 1;
 
 		@Override
 		public boolean act(){

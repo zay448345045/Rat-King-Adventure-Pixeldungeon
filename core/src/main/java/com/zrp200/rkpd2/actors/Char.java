@@ -56,6 +56,7 @@ import com.zrp200.rkpd2.items.wands.WandOfFireblast;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
 import com.zrp200.rkpd2.items.wands.WandOfLightning;
+import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
@@ -324,6 +325,9 @@ public abstract class Char extends Actor {
 						&& (hero.subClass == HeroSubClass.SNIPER || hero.subClass == HeroSubClass.KING)
 						&& !Dungeon.level.adjacent(hero.pos, enemy.pos)){
 					dr = 0;
+				}
+				if (hero.belongings.weapon() instanceof Slingshot.Stone){
+					dr = Random.Int(0, dr);
 				}
 			}
 			if (this instanceof RatKingBoss && ((RatKingBoss) this).phase == 4){

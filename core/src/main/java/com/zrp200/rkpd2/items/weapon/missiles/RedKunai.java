@@ -46,7 +46,7 @@ public class RedKunai extends MissileWeapon {
 	private Char enemy;
 	
 	@Override
-	protected void onThrow(int cell) {
+    public void onThrow(int cell) {
 		enemy = Actor.findChar(cell);
 		super.onThrow(cell);
 		GameScene.add(Blob.seed(cell, 2, GodSlayerFire.class));

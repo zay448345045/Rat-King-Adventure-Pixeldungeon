@@ -132,7 +132,7 @@ public class SteelAxe extends MissileWeapon {
     boolean cloakBoost;
 
     @Override
-    protected void onThrow(int cell) {
+    public void onThrow(int cell) {
         updateCrossbow();
         if (Dungeon.level.pit[cell]){
             super.onThrow(cell);

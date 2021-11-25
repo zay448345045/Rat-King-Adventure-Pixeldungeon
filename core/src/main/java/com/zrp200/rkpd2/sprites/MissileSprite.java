@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
 import com.zrp200.rkpd2.items.weapon.melee.ExoKnife;
@@ -161,7 +162,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		} else if (item instanceof SpiritBow.SpiritArrow
 				|| item instanceof ScorpioSprite.ScorpioShot
 				|| item instanceof TenguSprite.TenguShuriken
-				|| item instanceof ExoKnife.RunicMissile){
+				|| item instanceof ExoKnife.RunicMissile
+				|| item instanceof Slingshot.Stone){
 			speed *= 1.5f;
 		} else if (item instanceof SpectralBlades.BirbBlade){
 			speed *= 0.66f;

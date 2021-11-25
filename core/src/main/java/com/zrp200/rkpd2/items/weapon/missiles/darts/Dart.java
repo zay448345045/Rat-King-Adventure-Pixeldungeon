@@ -128,7 +128,7 @@ public class Dart extends MissileWeapon {
 	}
 	
 	@Override
-	protected void onThrow(int cell) {
+    public void onThrow(int cell) {
 		updateCrossbow();
 		super.onThrow(cell);
 	}

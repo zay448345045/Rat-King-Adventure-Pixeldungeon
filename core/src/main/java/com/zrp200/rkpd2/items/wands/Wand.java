@@ -45,6 +45,7 @@ import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.weapon.Weapon;
+import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -198,6 +199,7 @@ public abstract class Wand extends Item {
 			if(staff != null) {
 				if (Random.Int(isStaff ? 20 : 10) < sorcery) staff.procBM();
 				if (Random.Int(isStaff ? 12 :  6) < sorcery) staff.procWand(target, damage);
+				if (staff instanceof KromerStaff) ((KromerStaff) staff).kromerProc(Dungeon.hero, target);
 			}
 		}
 		if (Dungeon.hero.hasTalent(Talent.POWER_IN_NUMBERS)){

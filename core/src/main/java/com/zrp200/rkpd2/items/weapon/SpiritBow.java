@@ -440,7 +440,7 @@ public class SpiritBow extends Weapon {
 		}
 
 		@Override
-		protected void onThrow( int cell ) {
+        public void onThrow(int cell) {
 			Char enemy = Actor.findChar( cell );
 			boolean hitGround;
 			if (enemy == null || enemy == curUser) {
@@ -536,8 +536,8 @@ public class SpiritBow extends Weapon {
 	}
 
 	public static boolean superShot = false;
-	
-	private CellSelector.Listener shooter = new CellSelector.Listener() {
+
+	public CellSelector.Listener shooter = new CellSelector.Listener() {
 		@Override
 		public void onSelect( Integer target ) {
 			if (target != null) {

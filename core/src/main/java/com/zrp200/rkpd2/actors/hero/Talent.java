@@ -329,7 +329,7 @@ public enum Talent {
 			if (Dungeon.hero.pointsInTalent(HEROIC_RATINESS) >= tier) max += 1;
 		}
 		if (hero != null && hero.talents.get(tier - 1).size() > 4 + tier)
-			max += 2 * hero.talents.get(tier - 1).size() - (4+tier);
+			max += 2 * (hero.talents.get(tier - 1).size() - (4+tier));
 		return max;
 	}
 

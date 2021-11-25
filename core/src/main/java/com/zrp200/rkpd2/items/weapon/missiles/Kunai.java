@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.items.weapon.missiles;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class Kunai extends MissileWeapon {
 	
@@ -43,7 +43,7 @@ public class Kunai extends MissileWeapon {
 	private Char enemy;
 	
 	@Override
-	protected void onThrow(int cell) {
+    public void onThrow(int cell) {
 		enemy = Actor.findChar(cell);
 		super.onThrow(cell);
 	}

@@ -58,7 +58,7 @@ import java.util.ArrayList;
 
 public class MagesStaff extends MeleeWeapon {
 
-	private Wand wand;
+	protected Wand wand;
 	public Wand wand() { return wand; }
 
 	public static final String AC_IMBUE = "IMBUE";
@@ -204,7 +204,7 @@ public class MagesStaff extends MeleeWeapon {
 		if (wand != null) wand.stopCharging();
 	}
 
-	private int wastedUpgrades; // amount of upgrades wasted on initial imbue.
+	protected int wastedUpgrades; // amount of upgrades wasted on initial imbue.
 	public Item imbueWand(Wand wand, Char owner){
 
 		int oldStaffcharges = curCharges();
