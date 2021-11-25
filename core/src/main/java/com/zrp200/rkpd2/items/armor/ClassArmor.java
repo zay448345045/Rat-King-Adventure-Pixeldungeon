@@ -200,7 +200,8 @@ abstract public class ClassArmor extends Armor {
 	}
 
 	public void useCharge() {
-		charge -= hero.armorAbility.chargeUse(hero);
+		if (hero.armorAbility != null)
+			charge -= hero.armorAbility.chargeUse(hero);
 		updateQuickslot();
 	}
 

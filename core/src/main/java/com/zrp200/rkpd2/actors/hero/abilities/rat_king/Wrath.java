@@ -75,7 +75,8 @@ public class Wrath extends ArmorAbility {
     private int target;
     private boolean[] stages;
 
-    @Override protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    @Override
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
         if(target == null) return;
         this.armor = armor;
         this.hero = hero;

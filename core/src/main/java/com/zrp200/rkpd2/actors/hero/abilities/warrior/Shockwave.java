@@ -140,7 +140,7 @@ public class Shockwave extends ArmorAbility {
 	// this prevents stun from being broken during wrath.
 	public static class ShockForceStunHold extends FlavourBuff {{ actPriority = VFX_PRIO; }}
 
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+	public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target == null){
 			return;
 		}

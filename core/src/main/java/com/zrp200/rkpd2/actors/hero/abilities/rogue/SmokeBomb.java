@@ -138,7 +138,7 @@ public class SmokeBomb extends ArmorAbility {
 	}
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target != null) {
 			if(!isValidTarget(hero, target, 8)) return;
 			armor.useCharge();

@@ -127,7 +127,7 @@ public class SpectralBlades extends ArmorAbility {
 	}
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target == null){
 			return;
 		}

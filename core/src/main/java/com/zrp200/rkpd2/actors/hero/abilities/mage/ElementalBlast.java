@@ -400,7 +400,7 @@ public class ElementalBlast extends ArmorAbility {
 		return true;
 	}
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if(MagesStaff.getWandClass() == null) return; // prevents the callback by catching it now.
 
 		activate(hero, () -> hero.spendAndNext(Actor.TICK) );

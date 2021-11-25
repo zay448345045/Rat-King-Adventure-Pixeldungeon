@@ -43,7 +43,7 @@ public class NaturesPower extends ArmorAbility {
 	}
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 
 		Buff.prolong(hero, naturesPowerTracker.class, naturesPowerTracker.DURATION);
 		hero.buff(naturesPowerTracker.class).extensionsLeft = 2;

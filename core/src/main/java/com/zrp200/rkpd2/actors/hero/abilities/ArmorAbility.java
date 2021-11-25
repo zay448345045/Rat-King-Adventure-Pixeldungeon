@@ -78,7 +78,7 @@ public abstract class ArmorAbility implements Bundlable {
 		return chargeUse;
 	}
 
-	protected abstract void activate( ClassArmor armor, Hero hero, Integer target );
+	public abstract void activate(ClassArmor armor, Hero hero, Integer target);
 
 	public String name(){
 		return Messages.get(this, "name");

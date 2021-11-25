@@ -91,7 +91,7 @@ public class ShadowClone extends ArmorAbility {
 	}
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 		ShadowAlly ally = getShadowAlly();
 
 		if (ally != null){

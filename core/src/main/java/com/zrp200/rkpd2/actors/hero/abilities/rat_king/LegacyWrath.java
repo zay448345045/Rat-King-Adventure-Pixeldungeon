@@ -57,7 +57,7 @@ public class LegacyWrath extends ArmorAbility {
     private static final float JUMP_DELAY=2f;
 
     @Override
-    protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
         if(target == null) return;
 
         boolean[] stages = new boolean[3]; // jump/molten/blades

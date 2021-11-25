@@ -79,7 +79,7 @@ public class SpiritHawk extends ArmorAbility {
 	}
 
 	@Override
-	protected void activate(ClassArmor armor, Hero hero, Integer target) {
+    public void activate(ClassArmor armor, Hero hero, Integer target) {
 		HawkAlly ally = getHawk();
 
 		if (ally != null){
