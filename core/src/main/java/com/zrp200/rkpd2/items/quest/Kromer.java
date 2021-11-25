@@ -18,7 +18,11 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.RatKingArmor;
+import com.zrp200.rkpd2.items.wands.CursedWand;
+import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -32,19 +36,21 @@ import java.util.ArrayList;
 public class Kromer extends Item {
 
     public static final String AC_USE	= "USE";
+    public static final String AC_FOCUS	= "FOCUS";
 
     {
         image = ItemSpriteSheet.KROMER;
         stackable = true;
         cursed = true;
         cursedKnown = true;
-        defaultAction = AC_USE;
+        defaultAction = AC_FOCUS;
     }
 
     @Override
     public ArrayList<String> actions(Hero hero ) {
         ArrayList<String> actions = super.actions( hero );
         actions.add( AC_USE );
+        actions.add( AC_FOCUS);
         return actions;
     }
 
@@ -83,8 +89,47 @@ public class Kromer extends Item {
                     detach(Dungeon.hero.belongings.backpack);
                 }
             });
+        } else if (action.equals(AC_FOCUS)){
+            GameScene.selectCell(focus);
         }
     }
+
+    private CellSelector.Listener focus = new CellSelector.Listener() {
+
+        private int t = -1;
+
+        @Override
+        public void onSelect(Integer cell) {
+            if (cell != null) {
+                GLog.n(Messages.get(Kromer.class, "no_way_back"));
+                Dungeon.hero.sprite.zap(cell, () -> {
+                    t = cell;
+                    final Ballistica shot = new Ballistica(curUser.pos, cell, Ballistica.PROJECTILE);
+                    CursedWand.cursedZap(Kromer.this, Dungeon.hero, shot, this::shoot);
+                });
+            }
+        }
+
+        public void shoot() {
+            Ballistica shot = new Ballistica(Dungeon.hero.pos, t, Ballistica.PROJECTILE);
+            Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+            Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + 2);
+            curUser.busy();
+            curUser.spendAndNext(1f);
+            if (curUser.HP >= curUser.HT*0.5f){
+                Dungeon.hero.sprite.zap(t, () -> {
+                    CursedWand.cursedZap(Kromer.this, Dungeon.hero, shot, this::shoot);
+                });
+            } else {
+                Dungeon.hero.ready();
+            }
+        }
+
+        @Override
+        public String prompt() {
+            return Messages.get(Wand.class, "prompt");
+        }
+    };
 
     @Override
     public ItemSprite.Glowing glowing() {
