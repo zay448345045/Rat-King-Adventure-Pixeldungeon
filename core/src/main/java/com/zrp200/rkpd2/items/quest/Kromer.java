@@ -1,30 +1,90 @@
 package com.zrp200.rkpd2.items.quest;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
+import com.zrp200.rkpd2.effects.Enchanting;
 import com.zrp200.rkpd2.effects.Pushing;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.RatKingArmor;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.TalentsPane;
+import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.windows.WndOptions;
+
+import java.util.ArrayList;
 
 public class Kromer extends Item {
+
+    public static final String AC_USE	= "USE";
 
     {
         image = ItemSpriteSheet.KROMER;
         stackable = true;
         cursed = true;
         cursedKnown = true;
+        defaultAction = AC_USE;
+    }
+
+    @Override
+    public ArrayList<String> actions(Hero hero ) {
+        ArrayList<String> actions = super.actions( hero );
+        actions.add( AC_USE );
+        return actions;
     }
 
     private static final ItemSprite.Glowing CHAOTIC = new ItemSprite.Glowing( 0.2f  );
+
+    @Override
+    public void execute(Hero hero, String action) {
+        super.execute(hero, action);
+
+        if (action.equals(AC_USE)){
+            GameScene.show(new WndOptions(Icons.get(Icons.TALENT), Messages.get(Kromer.class, "wnd_title"),
+                    Messages.get(Kromer.class, "wnd_message"),
+                        Messages.get(TalentsPane.class, "tier", 1), Messages.get(TalentsPane.class, "tier", 2)
+                    ){
+                @Override
+                protected boolean enabled(int index) {
+                    return Dungeon.hero.lvl >= Talent.tierLevelThresholds[index+1];
+                }
+
+                @Override
+                protected void onSelect(int index) {
+                    if (Dungeon.hero.talents.get(index).size() > 7) {
+                        GLog.n(Messages.get(Kromer.class, "too_many"));
+                        return;
+                    }
+                    HeroClass cls;
+                    do {
+                        cls = Random.element(HeroClass.values());
+                    } while (cls == Dungeon.hero.heroClass);
+                    Talent randomTalent = Random.element(Talent.talentList(cls, index+1));
+                    Dungeon.hero.talents.get(index).put(randomTalent, 0);
+                    Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
+                    Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.STAR), 40);
+                    Enchanting.show(Dungeon.hero, Kromer.this);
+                    GLog.p(Messages.get(Kromer.class, "new_talent"));
+                    detach(Dungeon.hero.belongings.backpack);
+                }
+            });
+        }
+    }
 
     @Override
     public ItemSprite.Glowing glowing() {

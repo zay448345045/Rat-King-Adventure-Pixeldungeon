@@ -328,6 +328,8 @@ public enum Talent {
 		if (Dungeon.hero != null){
 			if (Dungeon.hero.pointsInTalent(HEROIC_RATINESS) >= tier) max += 1;
 		}
+		if (hero != null && hero.talents.get(tier - 1).size() > 4 + tier)
+			max += 2 * hero.talents.get(tier - 1).size() - (4+tier);
 		return max;
 	}
 
@@ -747,6 +749,39 @@ public enum Talent {
 
 	public static final int MAX_TALENT_TIERS = 4;
 
+	public static Talent[] talentList(HeroClass cl, int tier){
+		switch (tier){
+			case 1: default:
+				switch (cl){
+					case WARRIOR: default:
+						return new Talent[]{HEARTY_MEAL, ARMSMASTERS_INTUITION, TEST_SUBJECT, IRON_WILL, WEAPON_MASTERY};
+					case MAGE:
+						return new Talent[]{ENERGIZING_MEAL_I, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, BACKUP_BARRIER, ARCANE_BOOST};
+					case ROGUE:
+						return new Talent[]{CACHED_RATIONS, THIEFS_INTUITION, SUCKER_PUNCH, MENDING_SHADOWS, FARADAY_CAGE};
+					case HUNTRESS:
+						return new Talent[]{NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, NATURES_AID, NATURE_AID_2};
+					case RAT_KING:
+						return new Talent[]{ROYAL_PRIVILEGE, ROYAL_INTUITION, KINGS_WISDOM, NOBLE_CAUSE};
+				}
+			case 2:
+				switch (cl){
+					case WARRIOR: default:
+						return new Talent[]{IRON_STOMACH, RESTORED_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES, BIG_RUSH};
+					case MAGE:
+						return new Talent[]{ENERGIZING_MEAL_II, ENERGIZING_UPGRADE, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY, PYROMANIAC};
+					case ROGUE:
+						return new Talent[]{MYSTICAL_MEAL, MYSTICAL_UPGRADE, WIDE_SEARCH, SILENT_STEPS, ROGUES_FORESIGHT, EFFICIENT_SHADOWS};
+					case HUNTRESS:
+						return new Talent[]{INVIGORATING_MEAL, RESTORED_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, SCOURGING_THE_UNIVERSE};
+					case RAT_KING:
+						return new Talent[]{ROYAL_MEAL, RESTORATION, POWER_WITHIN, KINGS_VISION, PURSUIT};
+				}
+		}
+	}
+
+
+
 	public static void initClassTalents( Hero hero ){
 		initClassTalents( hero.heroClass, hero.talents );
 	}
@@ -759,45 +794,14 @@ public enum Talent {
 		ArrayList<Talent> tierTalents = new ArrayList<>();
 
 		//tier 1
-		switch (cls){
-			case WARRIOR: default:
-				Collections.addAll(tierTalents, HEARTY_MEAL, ARMSMASTERS_INTUITION, TEST_SUBJECT, IRON_WILL, WEAPON_MASTERY);
-				break;
-			case MAGE:
-				Collections.addAll(tierTalents, ENERGIZING_MEAL_I, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, BACKUP_BARRIER, ARCANE_BOOST);
-				break;
-			case ROGUE:
-				Collections.addAll(tierTalents, CACHED_RATIONS, THIEFS_INTUITION, SUCKER_PUNCH, MENDING_SHADOWS, FARADAY_CAGE);
-				break;
-			case HUNTRESS:
-				Collections.addAll(tierTalents, NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, NATURES_AID, NATURE_AID_2);
-				break;
-			case RAT_KING:
-				Collections.addAll(tierTalents, ROYAL_PRIVILEGE, ROYAL_INTUITION, KINGS_WISDOM, NOBLE_CAUSE);
-				break;
-		}
+		Collections.addAll(tierTalents, talentList(cls, 1));
 		for (Talent talent : tierTalents){
 			talents.get(0).put(talent, 0);
 		}
 		tierTalents.clear();
 
 		//tier 2
-		switch (cls){
-			case WARRIOR: default:
-				Collections.addAll(tierTalents, IRON_STOMACH, RESTORED_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES, BIG_RUSH);
-				break;
-			case MAGE:
-				Collections.addAll(tierTalents, ENERGIZING_MEAL_II, ENERGIZING_UPGRADE, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY, PYROMANIAC);
-				break;
-			case ROGUE:
-				Collections.addAll(tierTalents, MYSTICAL_MEAL, MYSTICAL_UPGRADE, WIDE_SEARCH, SILENT_STEPS, ROGUES_FORESIGHT, EFFICIENT_SHADOWS);
-				break;
-			case HUNTRESS:
-				Collections.addAll(tierTalents, INVIGORATING_MEAL, RESTORED_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, SCOURGING_THE_UNIVERSE);
-				break;
-			case RAT_KING:
-				Collections.addAll(tierTalents, ROYAL_MEAL, RESTORATION, POWER_WITHIN, KINGS_VISION, PURSUIT);
-		}
+		Collections.addAll(tierTalents, talentList(cls, 2));
 		for (Talent talent : tierTalents){
 			talents.get(1).put(talent, 0);
 		}
@@ -913,9 +917,7 @@ public enum Talent {
 			Bundle tierBundle = new Bundle();
 
 			for (Talent talent : tier.keySet()){
-				if (tier.get(talent) > 0){
-					tierBundle.put(talent.name(), tier.get(talent));
-				}
+				tierBundle.put(talent.name(), tier.get(talent));
 				if (tierBundle.contains(talent.name())){
 					tier.put(talent, Math.min(tierBundle.getInt(talent.name()), talent.maxPoints()));
 				}
@@ -930,15 +932,18 @@ public enum Talent {
 		if (hero.armorAbility != null)  initArmorTalents(hero);
 
 		for (int i = 0; i < MAX_TALENT_TIERS; i++){
+			hero.talents.add(new LinkedHashMap<>());
 			LinkedHashMap<Talent, Integer> tier = hero.talents.get(i);
 			Bundle tierBundle = bundle.contains(TALENT_TIER+(i+1)) ? bundle.getBundle(TALENT_TIER+(i+1)) : null;
-			//pre-0.9.1 saves
-			if (tierBundle == null && i == 0 && bundle.contains("talents")){
-				tierBundle = bundle.getBundle("talents");
-			}
 
 			if (tierBundle != null){
-				for (Talent talent : tier.keySet()){
+				ArrayList<Talent> t = new ArrayList<>();
+				for (Talent talent : Talent.values()){
+					if (tierBundle.contains(talent.name())){
+						t.add(talent);
+					}
+				}
+				for (Talent talent : t/*tier.keySet()*/){
 					restoreTalentFromBundle(tierBundle,tier,talent);
 				}
 			}

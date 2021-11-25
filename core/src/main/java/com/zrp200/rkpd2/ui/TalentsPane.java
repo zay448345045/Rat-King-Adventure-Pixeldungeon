@@ -223,9 +223,9 @@ public class TalentsPane extends ScrollPane {
 				PixelScene.align(star);
 				left += 6;
 			}
-			int rows = ((buttons.size()-1)/6);
+			int rows = ((buttons.size()-1)/7);
 			// this assumes that there's an even number of talents all around. THIS IS VERY BRITTLE
-			int buttonsPerRow = buttons.size() / (rows+1);
+			int buttonsPerRow = buttons.size() > 7 ? 4 : buttons.size();
 			float gap = (width - buttonsPerRow*TalentButton.WIDTH)/(buttonsPerRow+1);
 			float bottom = title.bottom();
 			int placed = 0;
