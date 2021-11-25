@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.items.bags.*;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
@@ -177,6 +178,7 @@ public class ShopRoom extends SpecialRoom {
 		while(w.cursed) w = (MeleeWeapon) w.random();
 		w.identify();
 		itemsToSpawn.add(w);
+		itemsToSpawn.add(new Kromer());
 
 		do { a = (Armor) a.random(); } while(a.cursed);
 		itemsToSpawn.add(a.identify());

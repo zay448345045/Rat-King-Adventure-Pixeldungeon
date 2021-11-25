@@ -185,6 +185,7 @@ public abstract class Recipe {
 		new ReclaimTrap.Recipe(),
 		new Recycle.Recipe(),
 		new WildEnergy.Recipe(),
+		new DoNotDieElixir.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

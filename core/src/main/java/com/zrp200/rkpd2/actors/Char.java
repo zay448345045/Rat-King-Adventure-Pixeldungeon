@@ -766,7 +766,7 @@ public abstract class Char extends Actor {
 					Integer.toString(dmg + shielded));
 		}
 
-		if (HP < 0) HP = 0;
+		if (HP < 0 && buff(NoDeath.class) == null) HP = 0;
 
 		if (!isAlive()) {
 			die( src );

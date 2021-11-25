@@ -380,6 +380,7 @@ public class Hero extends Char {
 	}
 
 	public int talentPointsAvailable(int tier){
+		if (tier >= Talent.tierLevelThresholds.length) return 0;
 		if (lvl < Talent.tierLevelThresholds[tier]
 			|| (tier == 3 && subClass == HeroSubClass.NONE)
 			|| (tier == 4 && armorAbility == null)){
@@ -1992,15 +1993,17 @@ public class Hero extends Char {
 	//This is relevant because we call isAlive during drawing, which has both performance
 	//and thread coordination implications if that method calls buff(...) frequently
 	private Berserk berserk;
+	private NoDeath noDeath;
 
 	@Override
 	public boolean isAlive() {
-		
 		if (HP <= 0){
+			if (noDeath == null) noDeath = buff(NoDeath.class);
 			if (berserk == null) berserk = buff(Berserk.class);
-			return berserk != null && berserk.berserking();
+			return (berserk != null && berserk.berserking()) || (noDeath != null && noDeath.visualcooldown() > 0);
 		} else {
 			berserk = null;
+			noDeath = null;
 			return super.isAlive();
 		}
 	}
