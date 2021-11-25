@@ -23,10 +23,12 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
 
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Scam;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Heap;
@@ -98,7 +100,11 @@ public class Shopkeeper extends NPC {
 	// TODO really what should have been done is define a "base value" method so I don't have to duplicate things over and over.
 	public static int sellPrice(Item item){
 		int basePrice = Reflection.newInstance(item.getClass()).quantity(item.quantity()).value();
-		return (int)Math.ceil((basePrice*2+item.value())/3f * 5 * (Dungeon.getDepth() / 5 + 1));
+		int price = (int) Math.ceil((basePrice * 2 + item.value()) / 3f * 5 * (Dungeon.getDepth() / 5 + 1));
+		if (Dungeon.hero.buff(Scam.class) != null){
+			price = Random.Int(1, (int) (price*1.25f));
+		}
+		return price;
 	}
 	
 	public static WndBag sell() {

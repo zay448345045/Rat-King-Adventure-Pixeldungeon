@@ -186,6 +186,7 @@ public abstract class Recipe {
 		new Recycle.Recipe(),
 		new WildEnergy.Recipe(),
 		new DoNotDieElixir.Recipe(),
+		new ScammingSpell.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

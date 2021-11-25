@@ -352,6 +352,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new AquaBlast.Recipe()));
 				result.add(new QuickRecipe(new FeatherFall.Recipe()));
 				result.add(new QuickRecipe(new ReclaimTrap.Recipe()));
+				result.add(new QuickRecipe(new ScammingSpell.Recipe()));
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new CurseInfusion.Recipe()));
