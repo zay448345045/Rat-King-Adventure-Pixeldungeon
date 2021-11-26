@@ -291,6 +291,7 @@ public abstract class Recipe {
 		new KromerCloak.Recipe(),
 		new KromerStaff.Recipe(),
 		new Slingshot.Recipe(),
+		new KromerScroll.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

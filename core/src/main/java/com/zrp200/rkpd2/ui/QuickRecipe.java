@@ -372,6 +372,9 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new MagicalInfusion.Recipe()));
 				result.add(new QuickRecipe(new Alchemize.Recipe()));
 				result.add(new QuickRecipe(new Recycle.Recipe()));
+				result.add(null);
+				result.add(null);
+				result.add(new QuickRecipe(new KromerScroll.Recipe()));
 				return result;
 		}
 	}

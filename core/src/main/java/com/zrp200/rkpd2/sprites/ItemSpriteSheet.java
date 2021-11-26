@@ -522,6 +522,7 @@ public class ItemSpriteSheet {
 	public static final int EXOTIC_BERKANAN = EXOTIC_SCROLLS+9;
 	public static final int EXOTIC_ODAL     = EXOTIC_SCROLLS+10;
 	public static final int EXOTIC_TIWAZ    = EXOTIC_SCROLLS+11;
+	public static final int EXOTIC_KROMER   = EXOTIC_SCROLLS+12;
 	static {
 		for (int i = EXOTIC_SCROLLS; i < EXOTIC_SCROLLS+16; i++)
 			assignItemRect(i, 15, 14);
@@ -541,7 +542,7 @@ public class ItemSpriteSheet {
 	public static final int STONE_INTUITION     = STONES+10;
 	public static final int STONE_SHOCK         = STONES+11;
 	static {
-		for (int i = STONES; i < STONES+16; i++)
+		for (int i = STONES; i < STONES+17; i++)
 			assignItemRect(i, 14, 12);
 	}
 
