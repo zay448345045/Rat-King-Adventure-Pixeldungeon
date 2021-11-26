@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
+import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
 import com.zrp200.rkpd2.items.weapon.enchantments.Unstable;
 import com.zrp200.rkpd2.items.weapon.missiles.PhantomSpear;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -1104,6 +1105,9 @@ public class RatKingBoss extends Mob {
     public float resistanceValue(Class effect) {
         if (effect == Paralysis.class){
             return 0.33f;
+        }
+        if (effect == Grim.class){
+            return 0.1f;
         }
         return super.resistanceValue(effect);
     }
