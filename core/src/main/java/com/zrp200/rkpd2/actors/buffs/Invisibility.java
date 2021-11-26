@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
+import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Swiftthistle;
@@ -121,6 +122,10 @@ public class Invisibility extends FlavourBuff {
 		CloakOfShadows.cloakStealth cloakBuff = Dungeon.hero.buff( CloakOfShadows.cloakStealth.class );
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
+		}
+		KromerCloak.cloakStealth kromerBuff = Dungeon.hero.buff(KromerCloak.cloakStealth.class );
+		if (kromerBuff != null) {
+			kromerBuff.dispel();
 		}
 
 		//these aren't forms of invisibilty, but do dispel at the same time as it.
