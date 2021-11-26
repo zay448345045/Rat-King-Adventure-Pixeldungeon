@@ -5,6 +5,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.RingOfSharpshooting;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -78,5 +79,19 @@ public class KromerBow extends SpiritBow {
             }
             return super.proc(attacker, defender, damage);
         }
+    }
+
+    public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipeBundled {
+
+        {
+            inputs =  new Class[]{SpiritBow.class, Kromer.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 20;
+
+            output = KromerBow.class;
+            outQuantity = 1;
+        }
+
     }
 }

@@ -21,9 +21,12 @@
 
 package com.zrp200.rkpd2.items;
 
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
+import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Blandfruit;
 import com.zrp200.rkpd2.items.food.MeatPie;
@@ -39,6 +42,9 @@ import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
+import com.zrp200.rkpd2.items.weapon.KromerBow;
+import com.zrp200.rkpd2.items.weapon.Slingshot;
+import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
@@ -141,6 +147,100 @@ public abstract class Recipe {
 			}
 		}
 	}
+
+	//variation of simple recipe that preserves nbt
+	public static abstract class SimpleRecipeBundled extends Recipe {
+
+		//*** These elements must be filled in by subclasses
+		protected Class<?extends Item>[] inputs; //each class should be unique
+		protected int[] inQuantity;
+
+		protected int cost;
+
+		protected Class<?extends Item> output;
+		protected int outQuantity;
+		//***
+
+		//gets a simple list of items based on inputs
+		public ArrayList<Item> getIngredients() {
+			ArrayList<Item> result = new ArrayList<>();
+			for (int i = 0; i < inputs.length; i++) {
+				Item ingredient = Reflection.newInstance(inputs[i]);
+				ingredient.quantity(inQuantity[i]);
+				result.add(ingredient);
+			}
+			return result;
+		}
+
+		@Override
+		public final boolean testIngredients(ArrayList<Item> ingredients) {
+
+			int[] needed = inQuantity.clone();
+
+			for (Item ingredient : ingredients){
+				if (!ingredient.isIdentified()) return false;
+				for (int i = 0; i < inputs.length; i++){
+					if (ingredient.getClass() == inputs[i]){
+						needed[i] -= ingredient.quantity();
+						break;
+					}
+				}
+			}
+
+			for (int i : needed){
+				if (i > 0){
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public final int cost(ArrayList<Item> ingredients){
+			return cost;
+		}
+
+		@Override
+		public final Item brew(ArrayList<Item> ingredients) {
+			if (!testIngredients(ingredients)) return null;
+
+			int[] needed = inQuantity.clone();
+			ArrayList<Item> equipList = new ArrayList<>();
+
+			for (Item ingredient : ingredients){
+				for (int i = 0; i < inputs.length; i++) {
+					if (ingredient.getClass() == inputs[i] && needed[i] > 0) {
+						if (ingredient instanceof EquipableItem) equipList.add(Bundlable.clone(ingredient));
+						if (needed[i] <= ingredient.quantity()) {
+							ingredient.quantity(ingredient.quantity() - needed[i]);
+							needed[i] = 0;
+						} else {
+							needed[i] -= ingredient.quantity();
+							ingredient.quantity(0);
+						}
+					}
+				}
+			}
+
+			//sample output and real output are identical in this case.
+			return sampleOutput(equipList);
+		}
+
+		//ingredients are ignored, as output doesn't vary
+		public Item sampleOutput(ArrayList<Item> ingredients){
+			try {
+				Item result = Reflection.newInstance(output);
+				Bundle bundle = new Bundle();
+				ingredients.get(0).storeInBundle(bundle);
+				result.restoreFromBundle(bundle);
+				result.identify();
+				return result;
+			} catch (Exception e) {
+				ShatteredPixelDungeon.reportException( e );
+				return null;
+			}
+		}
+	}
 	
 	
 	//*******
@@ -187,6 +287,10 @@ public abstract class Recipe {
 		new WildEnergy.Recipe(),
 		new DoNotDieElixir.Recipe(),
 		new ScammingSpell.Recipe(),
+		new KromerBow.Recipe(),
+		new KromerCloak.Recipe(),
+		new KromerStaff.Recipe(),
+		new Slingshot.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

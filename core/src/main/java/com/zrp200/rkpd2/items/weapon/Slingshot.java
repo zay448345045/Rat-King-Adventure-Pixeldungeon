@@ -7,8 +7,11 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
+import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -46,12 +49,12 @@ public class Slingshot extends Weapon {
 
     @Override
     public int min(int lvl) {
-        return (STRReq() - 10)*4 + 5 + (curseInfusionBonus ? 1 : 0);
+        return (STRReq() - 10)*6 + 8 + (curseInfusionBonus ? 1 : 0);
     }
 
     @Override
     public int max(int lvl) {
-        return 7 + (STRReq() - 10)*4 + (curseInfusionBonus ? 2 : 0);
+        return 10 + (STRReq() - 10)*6 + (curseInfusionBonus ? 2 : 0);
     }
 
     @Override
@@ -169,7 +172,7 @@ public class Slingshot extends Weapon {
         String info = desc();
 
         info += "\n\n" + Messages.get( Slingshot.class, "stats",
-                Math.round(augment.damageFactor((STRReq() - 10)*4 + 6 + (curseInfusionBonus ? 1 : 0))),
+                Math.round(augment.damageFactor((STRReq() - 10)*6 + 9 + (curseInfusionBonus ? 1 : 0))),
                 STRReq());
 
         switch (augment) {
@@ -303,6 +306,26 @@ public class Slingshot extends Weapon {
             hero.spendAndNext( TIME_TO_PICK_UP );
 
             return true;
+        }
+    }
+
+    public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipeBundled {
+
+        {
+            inputs =  new Class[]{ThrowingStone.class, Kromer.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 20;
+
+            output = Slingshot.class;
+            outQuantity = 1;
+        }
+
+        @Override
+        public Item sampleOutput(ArrayList<Item> ingredients) {
+            Slingshot item = (Slingshot) super.sampleOutput(ingredients);
+            item.charge = 1;
+            return item;
         }
     }
 }

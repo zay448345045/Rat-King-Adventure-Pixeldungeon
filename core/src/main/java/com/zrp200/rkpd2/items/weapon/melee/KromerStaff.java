@@ -8,6 +8,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Doom;
 import com.zrp200.rkpd2.actors.buffs.Scam;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfUnstable;
@@ -82,5 +83,19 @@ public class KromerStaff extends MagesStaff {
         if (wand != null) {
             wand.maxCharges = Math.min(wand.maxCharges*2, 20);
         }
+    }
+
+    public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipeBundled {
+
+        {
+            inputs =  new Class[]{MagesStaff.class, Kromer.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 20;
+
+            output = KromerStaff.class;
+            outQuantity = 1;
+        }
+
     }
 }

@@ -8,6 +8,7 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -176,5 +177,19 @@ public class KromerCloak extends CloakOfShadows {
 
             return true;
         }
+    }
+
+    public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipeBundled {
+
+        {
+            inputs =  new Class[]{CloakOfShadows.class, Kromer.class};
+            inQuantity = new int[]{1, 1};
+
+            cost = 20;
+
+            output = KromerCloak.class;
+            outQuantity = 1;
+        }
+
     }
 }

@@ -30,6 +30,7 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.*;
+import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.*;
 import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
@@ -45,6 +46,9 @@ import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
 import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.weapon.KromerBow;
+import com.zrp200.rkpd2.items.weapon.Slingshot;
+import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
@@ -68,7 +72,11 @@ public class QuickRecipe extends Component {
 	public QuickRecipe(Recipe.SimpleRecipe r){
 		this(r, r.getIngredients(), r.sampleOutput(null));
 	}
-	
+
+	public QuickRecipe(Recipe.SimpleRecipeBundled r){
+		this(r, r.getIngredients(), r.sampleOutput(r.getIngredients()));
+	}
+
 	public QuickRecipe(Recipe r, ArrayList<Item> inputs, final Item output) {
 		
 		ingredients = inputs;
@@ -301,6 +309,11 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new ArcaneResin.Recipe(),
 						new ArrayList<Item>(Arrays.asList(new Wand.PlaceHolder())),
 						new ArcaneResin()));
+				result.add(null);
+				result.add(new QuickRecipe(new KromerBow.Recipe()));
+				result.add(new QuickRecipe(new KromerStaff.Recipe()));
+				result.add(new QuickRecipe(new KromerCloak.Recipe()));
+				result.add(new QuickRecipe(new Slingshot.Recipe()));
 				return result;
 			case 5:
 				r = new ExoticPotion.PotionToExotic();
