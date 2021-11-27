@@ -354,6 +354,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new ElixirOfToxicEssence.Recipe()));
 				result.add(new QuickRecipe(new ElixirOfArcaneArmor.Recipe()));
 				result.add(new QuickRecipe(new DoNotDieElixir.Recipe()));
+				result.add(new QuickRecipe(new KromerPotion.Recipe()));
 				return result;
 			case 9:
 				result.add(new QuickRecipe(new MagicalPorter.Recipe()));

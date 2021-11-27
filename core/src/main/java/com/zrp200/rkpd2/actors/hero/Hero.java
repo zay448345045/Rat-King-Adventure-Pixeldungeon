@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.effects.*;
+import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.Heap.Type;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
@@ -51,6 +52,8 @@ import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfMight;
+import com.zrp200.rkpd2.items.potions.elixirs.KromerPotion;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
@@ -1354,6 +1357,36 @@ public class Hero extends Char {
                 });
             }
         }
+
+        if (buff(KromerPotion.Effect.class) != null){
+			if (enemy != null) {
+				int dmg = Random.Int(0, damage*2);
+				Char toHeal, toDamage;
+
+				if (Random.Int(2) == 0){
+					toHeal = this;
+					toDamage = enemy;
+				} else {
+					toHeal = enemy;
+					toDamage = this;
+				}
+				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + dmg);
+				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
+				toDamage.damage(dmg, toHeal);
+				toDamage.sprite.emitter().start(ExoParticle.FACTORY, 0.05f, 10);
+
+				if (toDamage == Dungeon.hero) {
+					Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1f, 2f);
+					if (!toDamage.isAlive()) {
+						Dungeon.fail(Kromer.class);
+						GLog.n(Messages.get(Kromer.class, "on_death"));
+					}
+				} else {
+					Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 1f, 2.5f);
+				}
+			}
+
+		}
 		
 		return damage;
 	}
