@@ -741,6 +741,17 @@ public enum Talent {
 			}
 		}
 
+		if (hero.hasTalent(BEAR_PAW) && hero.HP <= hero.HT / 4){
+			Buff.affect(enemy, Bleeding.class).set(dmg / 3f);
+			if (hero.pointsInTalent(BEAR_PAW) > 2){
+				int healAmt = Math.round(dmg * 0.33f);
+				healAmt = Math.min( healAmt, hero.HT - hero.HP );
+				hero.HP += healAmt;
+				hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 1 );
+				hero.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healAmt ) );
+			}
+		}
+
 		return dmg;
 	}
 
