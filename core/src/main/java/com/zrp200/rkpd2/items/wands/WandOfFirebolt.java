@@ -8,11 +8,14 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Fire;
+import com.zrp200.rkpd2.actors.blobs.FrostFire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.buffs.FrostBurn;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
+import com.zrp200.rkpd2.effects.particles.FrostfireParticle;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
@@ -47,7 +50,12 @@ public class WandOfFirebolt extends DamageWand {
         Char ch = Actor.findChar(attack.collisionPos);
         boolean found = ch != null;
         for(int cell : attack.subPath(1,found ? attack.dist-1 : attack.dist)) {
-            if(Dungeon.level.flamable[cell] || cell == attack.collisionPos) GameScene.add(Fire.seed(cell,1,Fire.class));
+            if(Dungeon.level.flamable[cell] || cell == attack.collisionPos){
+                if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 1)
+                    GameScene.add(Fire.seed(cell,1, FrostFire.class));
+                else
+                    GameScene.add(Fire.seed(cell,1,Fire.class));
+            }
             Heap heap = Dungeon.level.heaps.get(cell);
             if(heap != null) heap.burn();
         }
@@ -56,15 +64,23 @@ public class WandOfFirebolt extends DamageWand {
             wandProc(ch,1,dmg);
             ch.damage(dmg, this);
             procKO(ch);
-            if(ch.isAlive()) Buff.affect(ch, Burning.class).reignite(ch);
-            ch.sprite.emitter().burst(FlameParticle.FACTORY, 5);
+            if(ch.isAlive()){
+                if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 1)
+                    Buff.affect(ch,  FrostBurn.class).reignite(ch);
+                else
+                    Buff.affect(ch,  Burning.class).reignite(ch);
+            }
+            if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 1)
+                ch.sprite.emitter().burst(FrostfireParticle.FACTORY, 5);
+            else
+                ch.sprite.emitter().burst(FlameParticle.FACTORY, 5);
         }
     }
 
     @Override
     public void fx(Ballistica bolt, Callback callback) {
         MagicMissile.boltFromChar( curUser.sprite.parent,
-                MagicMissile.FIRE,
+                curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 1 ? MagicMissile.FROST : MagicMissile.FIRE,
                 curUser.sprite,
                 bolt.collisionPos,
                 callback);
@@ -80,13 +96,24 @@ public class WandOfFirebolt extends DamageWand {
         int level = Math.max(0,staff.buffedLvl());
         if (Weapon.Enchantment.proc(attacker, level, 1, 3)) {
 
-            if (Random.Int( 2 ) == 0) {
-                Buff.affect( defender, Burning.class ).reignite( defender );
-            }
-            if(!defender.isImmune(getClass())) defender.damage(
-                    (int) (Random.Int( 1, level+2 ) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f)), this);
+            if (Dungeon.hero.pointsInTalent(Talent.CRYONIC_SPELL) > 2){
+                if (Random.Int( 2 ) == 0) {
+                    Buff.affect( defender, FrostBurn.class ).reignite( defender );
+                }
+                if(!defender.isImmune(getClass())) defender.damage(
+                        (int) (Random.Int( 1, level+2 ) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f)), this);
 
-            defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
+                defender.sprite.emitter().burst( FrostfireParticle.FACTORY, level + 1 );
+            } else {
+
+                if (Random.Int(2) == 0) {
+                    Buff.affect(defender, Burning.class).reignite(defender);
+                }
+                if (!defender.isImmune(getClass())) defender.damage(
+                        (int) (Random.Int(1, level + 2) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC) * 0.085f)), this);
+
+                defender.sprite.emitter().burst(FlameParticle.FACTORY, level + 1);
+            }
 
         }
     }

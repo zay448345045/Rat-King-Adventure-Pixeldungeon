@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.items.wands;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
@@ -33,6 +34,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Chill;
 import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.buffs.Frost;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.weapon.Weapon;
@@ -57,12 +59,22 @@ public class WandOfFrost extends DamageWand {
 	@Override
 	public void onZap(Ballistica bolt) {
 
-		Heap heap = Dungeon.level.heaps.get(bolt.collisionPos);
+		Integer collisionPos = bolt.collisionPos;
+		if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 2){
+			for (int i : PathFinder.NEIGHBOURS8){
+				effect(collisionPos + i);
+			}
+		}
+		effect(collisionPos);
+	}
+
+	public void effect(int collisionPos) {
+		Heap heap = Dungeon.level.heaps.get(collisionPos);
 		if (heap != null) {
 			heap.freeze();
 		}
 
-		Char ch = Actor.findChar(bolt.collisionPos);
+		Char ch = Actor.findChar(collisionPos);
 		if (ch != null){
 
 			int damage = damageRoll();
@@ -84,13 +96,20 @@ public class WandOfFrost extends DamageWand {
 			Sample.INSTANCE.play( Assets.Sounds.HIT_MAGIC, 1, 1.1f * Random.Float(0.87f, 1.15f) );
 
 			if (ch.isAlive()){
-				if (Dungeon.level.water[ch.pos])
-					Buff.affect(ch, Chill.class, 4+buffedLvl());
-				else
-					Buff.affect(ch, Chill.class, 2+buffedLvl());
+				if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 1 && Random.Int(2) == 0){
+					if (Dungeon.level.water[ch.pos])
+						Buff.affect(ch, Frost.class, 4+buffedLvl());
+					else
+						Buff.affect(ch, Frost.class, 2+buffedLvl());
+				} else {
+					if (Dungeon.level.water[ch.pos])
+						Buff.affect(ch, Chill.class, 4 + buffedLvl());
+					else
+						Buff.affect(ch, Chill.class, 2 + buffedLvl());
+				}
 			}
 		} else {
-			Dungeon.level.pressCell(bolt.collisionPos);
+			Dungeon.level.pressCell(collisionPos);
 		}
 	}
 

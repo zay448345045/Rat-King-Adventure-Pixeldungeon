@@ -25,19 +25,19 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.blobs.FrostFire;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
 import com.zrp200.rkpd2.effects.MagicMissile;
+import com.zrp200.rkpd2.effects.particles.FrostfireParticle;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
@@ -94,7 +94,10 @@ public class WandOfFireblast extends DamageWand {
 			if (Dungeon.level.adjacent(bolt.sourcePos, cell) && !Dungeon.level.flamable[cell]){
 				adjacentCells.add(cell);
 			} else {
-				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+				if (curUser.hasTalent(Talent.CRYONIC_SPELL))
+					GameScene.add( Blob.seed( cell, 1+chargesPerCast(), FrostFire.class ) );
+				else
+					GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
 			}
 
 			Char ch = Actor.findChar( cell );
@@ -107,7 +110,14 @@ public class WandOfFireblast extends DamageWand {
 		//This prevents short-range casts not igniting barricades or bookshelves
 		for (int cell : adjacentCells){
 			for (int i : PathFinder.NEIGHBOURS4){
-				if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
+				if (curUser.hasTalent(Talent.CRYONIC_SPELL)){
+					if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
+							&& Dungeon.level.flamable[cell+i]
+							&& Fire.volumeAt(cell+i, FrostFire.class) == 0){
+						GameScene.add( Blob.seed( cell+i, 1+chargesPerCast(), FrostFire.class ) );
+					}
+				}
+				else if (Dungeon.level.trueDistance(cell+i, bolt.sourcePos) > Dungeon.level.trueDistance(cell, bolt.sourcePos)
 						&& Dungeon.level.flamable[cell+i]
 						&& Fire.volumeAt(cell+i, Fire.class) == 0){
 					GameScene.add( Blob.seed( cell+i, 1+chargesPerCast(), Fire.class ) );
@@ -121,7 +131,10 @@ public class WandOfFireblast extends DamageWand {
 			ch.damage(damage, this);
 			procKO(ch);
 			if (ch.isAlive()) {
-				Buff.affect(ch, Burning.class).reignite(ch);
+				if (curUser.hasTalent(Talent.CRYONIC_SPELL))
+					Buff.affect(ch,  FrostBurn.class).reignite(ch);
+				else
+					Buff.affect(ch,  Burning.class).reignite(ch);
 				switch (chargesPerCast()) {
 					case 1:
 						break; //no effects
@@ -138,6 +151,21 @@ public class WandOfFireblast extends DamageWand {
 
 	@Override
 	public void onHit(Weapon staff, Char attacker, Char defender, int damage) {
+		if (Dungeon.hero.pointsInTalent(Talent.CRYONIC_SPELL) > 2){
+			if (Random.Int( Dungeon.hero.lvl/3 + 3 ) >= 2) {
+
+				if (defender.buff(FrostBurn.class) != null){
+					Buff.affect(defender, FrostBurn.class).reignite(defender, 8f);
+					int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.depth/5 );
+					defender.damage( Math.round(burnDamage * 0.67f), this );
+				} else {
+					Buff.affect(defender, FrostBurn.class).reignite(defender, 8f);
+				}
+
+				defender.sprite.emitter().burst( FrostfireParticle.FACTORY, Dungeon.hero.lvl/3 + 1 );
+
+			}
+		} else
 		//acts like blazing enchantment
 		new Blazing().proc( staff, attacker, defender, damage);
 	}
@@ -158,7 +186,7 @@ public class WandOfFireblast extends DamageWand {
 		//cast to cells at the tip, rather than all cells, better performance.
 		for (Ballistica ray : cone.outerRays){
 			((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
-					MagicMissile.FIRE_CONE,
+					curUser.hasTalent(Talent.CRYONIC_SPELL) ? MagicMissile.FROST_CONE : MagicMissile.FIRE_CONE,
 					curUser.sprite,
 					ray.path.get(ray.dist),
 					null
@@ -167,7 +195,7 @@ public class WandOfFireblast extends DamageWand {
 
 		//final zap at half distance, for timing of the actual wand effect
 		MagicMissile.boltFromChar( curUser.sprite.parent,
-				MagicMissile.FIRE_CONE,
+				curUser.hasTalent(Talent.CRYONIC_SPELL) ? MagicMissile.FROST_CONE : MagicMissile.FIRE_CONE,
 				curUser.sprite,
 				bolt.path.get(dist/2),
 				callback );

@@ -26,11 +26,6 @@ public class KromerStaff extends MagesStaff {
         wand = null;
     }
 
-    @Override
-    public int level() {
-        return (int) (super.level()*1.5f);
-    }
-
     public KromerStaff(Wand wand){
         super(wand);
     }
@@ -39,7 +34,7 @@ public class KromerStaff extends MagesStaff {
     public void updateWand(boolean levelled){
         if (wand != null) {
             int curCharges = curCharges();
-            wand.level(level());
+            wand.level((int) (level()));
             //gives the wand one additional max charge
             wand.maxCharges = Math.min(wand.maxCharges*2, 20);
             wand.curCharges = Math.min(curCharges + (levelled ? 2 : 0), wand.maxCharges);
