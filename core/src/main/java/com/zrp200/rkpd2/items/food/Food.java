@@ -21,11 +21,8 @@
 
 package com.zrp200.rkpd2.items.food;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.watabou.noosa.audio.Sample;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -35,7 +32,6 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
@@ -95,7 +91,8 @@ public class Food extends Item {
 				|| hero.hasTalent(Talent.ENERGIZING_MEAL_II)
 				|| hero.hasTalent(Talent.MYSTICAL_MEAL)
 				|| hero.hasTalent(Talent.INVIGORATING_MEAL)
-				|| hero.hasTalent(Talent.ROYAL_MEAL) ? 2
+				|| hero.hasTalent(Talent.ROYAL_MEAL)
+				|| hero.hasTalent(Talent.EFFICIENT_TRAINING) ? 2
 				: 0;
 		return TIME_TO_EAT - reduction;
 	}

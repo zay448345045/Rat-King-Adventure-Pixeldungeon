@@ -101,7 +101,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		}
 		incCombo();
 	}
-	void incCombo() {
+	public void incCombo() {
 		count++;
 		initialComboTime = comboTime;
 

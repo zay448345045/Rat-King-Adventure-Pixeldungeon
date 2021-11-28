@@ -10,6 +10,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -149,6 +150,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
                 hero.HP += heal;
                 Emitter e = hero.sprite.emitter();
                 if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/5)));
+            }
+            if (hero.pointsInTalent(Talent.PRIDE_OF_STEEL) > 1){
+                Dungeon.level.drop(RingOfWealth.genConsumableDrop(hero.lvl/2), enemy.pos).sprite.drop();
+                RingOfWealth.showFlareForBonusDrop(enemy.sprite);
             }
         }
         Buff.detach(hero, BrawlingTracker.class);

@@ -83,11 +83,11 @@ public enum Talent {
 	//Warrior T3
 	HOLD_FAST(9, 3), STRONGMAN(10, 3), BEAR_PAW(200, 3),
 	//Berserker T3
-	ENDLESS_RAGE(11, 3), BERSERKING_STAMINA(12, 3), ENRAGED_CATALYST(13, 3), ONE_MAN_ARMY(139,3),
+	ENDLESS_RAGE(11, 3), BERSERKING_STAMINA(12, 3), ENRAGED_CATALYST(13, 3), ONE_MAN_ARMY(139,3), BRAVERY(205, 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(140,3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(140,3), EFFICIENT_TRAINING(204, 3),
 	//Brawler T3
-	POWER_STABILIZER(173, 3), ARCANITY_ENSUES(174, 3), IN_MY_MEMORIES(175, 3), HOLERIC_BURST(176, 3),
+	POWER_STABILIZER(173, 3), ARCANITY_ENSUES(174, 3), IN_MY_MEMORIES(175, 3), HOLERIC_BURST(176, 3), PRIDE_OF_STEEL(206, 3),
 	//Heroic Leap T4
 	BODY_SLAM(17, 4), IMPACT_WAVE(18, 4), DOUBLE_JUMP(19, 4), ALICE_GAMBIT(145, 4),
 	//Shockwave T4
@@ -509,6 +509,13 @@ public enum Talent {
 			Buff.prolong( hero, Haste.class, 0.67f+points);
 			hero.sprite.emitter().burst(Speck.factory(Speck.JET), 4*points);
 		}, ROYAL_MEAL);
+		if (hero.hasTalent(EFFICIENT_TRAINING)){
+			for (int i = 0; i < hero.pointsInTalent(EFFICIENT_TRAINING)-1; i++){
+				Buff.affect(hero, Combo.class).incCombo();
+			}
+			if (hero.buff(Combo.class) != null)
+				Buff.affect(hero, Combo.class).addTime(8f);
+		}
 	}
 
 	public static class WarriorFoodImmunity extends FlavourBuff{
@@ -885,13 +892,13 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, BERSERKING_STAMINA, ENRAGED_CATALYST, ONE_MAN_ARMY);
+				Collections.addAll(tierTalents, ENDLESS_RAGE, BERSERKING_STAMINA, ENRAGED_CATALYST, ONE_MAN_ARMY, BRAVERY);
 				break;
 			case BRAWLER:
-				Collections.addAll(tierTalents, POWER_STABILIZER, ARCANITY_ENSUES, IN_MY_MEMORIES, HOLERIC_BURST);
+				Collections.addAll(tierTalents, POWER_STABILIZER, ARCANITY_ENSUES, IN_MY_MEMORIES, HOLERIC_BURST, PRIDE_OF_STEEL);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL);
+				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL, EFFICIENT_TRAINING);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, SORCERY);

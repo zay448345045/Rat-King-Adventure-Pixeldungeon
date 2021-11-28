@@ -52,6 +52,7 @@ import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.wands.WandOfFireblast;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
@@ -388,19 +389,34 @@ public abstract class Char extends Actor {
 				dr = 0;
 			}
 			effectiveDamage = Math.max( effectiveDamage - dr, 0 );
+			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero) {
+				if (hero.hasTalent(Talent.PRIDE_OF_STEEL)) {
+					effectiveDamage += dr;
+				}
+			}
+			if (enemy instanceof Hero && (((Hero) enemy).hasTalent(Talent.BRAVERY))){
+				Berserk b = Buff.affect(enemy, Berserk.class);
+				b.damage(Math.round(
+							(0.5f+((Hero) enemy).pointsInTalent(Talent.BRAVERY)/2f) *effectiveDamage));
+			}
+
 			
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
 			
 			effectiveDamage = attackProc( enemy, effectiveDamage );
-			
+
+
 			if (visibleFight) {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
 				}
 			}
 			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
+				if (hero.pointsInTalent(Talent.PRIDE_OF_STEEL) > 2) {
+					Buff.affect(enemy, StoneOfAggression.Aggression.class, 4f);
+				}
 				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
 			if (RobotBuff.isRobot() && this instanceof Hero){
