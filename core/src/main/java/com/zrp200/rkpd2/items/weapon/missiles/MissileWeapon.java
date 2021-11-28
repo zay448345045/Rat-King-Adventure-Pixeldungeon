@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.LiquidMetal;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
@@ -147,6 +148,12 @@ abstract public class MissileWeapon extends Weapon {
 	public boolean collect(Bag container) {
 		if (container instanceof MagicalHolster) holster = true;
 		return super.collect(container);
+	}
+
+	@Override
+	public int buffedLvl() {
+		return super.buffedLvl() +
+				(Dungeon.hero.buff(Talent.AutoReloadBuff.class) != null && !(this instanceof SpiritBow.SpiritArrow) ? 1 : 0);
 	}
 
 	@Override
@@ -349,8 +356,20 @@ abstract public class MissileWeapon extends Weapon {
 		//unless a weapon is about to break, then break the one being thrown
 		if (parent != null){
 			if (parent.durability <= parent.durabilityPerUse()){
-				durability = 0;
-				parent.durability = MAX_DURABILITY;
+				if (Dungeon.hero.hasTalent(Talent.AUTO_RELOAD)){
+					LiquidMetal metal = Dungeon.hero.belongings.getItem(LiquidMetal.class);
+					if (metal != null){
+						metal.useToRepair(parent);
+						if (Dungeon.hero.pointsInTalent(Talent.AUTO_RELOAD) > 1)
+							Buff.affect(Dungeon.hero, Talent.AutoReloadBuff.class, 3f);
+					} else {
+						durability = 0;
+						parent.durability = MAX_DURABILITY;
+					}
+				} else {
+					durability = 0;
+					parent.durability = MAX_DURABILITY;
+				}
 			} else {
 				parent.durability -= parent.durabilityPerUse();
 				if (parent.durability > 0 && parent.durability <= parent.durabilityPerUse()){
@@ -364,6 +383,14 @@ abstract public class MissileWeapon extends Weapon {
 			if (durability > 0 && durability <= durabilityPerUse()){
 				if (level() <= 0)GLog.w(Messages.get(this, "about_to_break"));
 				else             GLog.n(Messages.get(this, "about_to_break"));
+			}
+			if (Dungeon.hero.hasTalent(Talent.AUTO_RELOAD) && durability <= 0){
+				LiquidMetal metal = Dungeon.hero.belongings.getItem(LiquidMetal.class);
+				if (metal != null){
+					metal.useToRepair(this);
+					if (Dungeon.hero.pointsInTalent(Talent.AUTO_RELOAD) > 1)
+						Buff.affect(Dungeon.hero, Talent.AutoReloadBuff.class, 3f);
+				}
 			}
 		}
 	}

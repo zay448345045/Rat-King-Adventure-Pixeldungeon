@@ -158,7 +158,7 @@ public enum Talent {
 	//Huntress T2
 	INVIGORATING_MEAL(132), RESTORED_NATURE(101), REJUVENATING_STEPS(102), HEIGHTENED_SENSES(103), DURABLE_PROJECTILES(104), SCOURGING_THE_UNIVERSE(91),
 	//Huntress T3
-	POINT_BLANK(105, 3), SEER_SHOT(106, 3), AUTO_RELOAD(202, 3),
+	POINT_BLANK(105, 3), SEER_SHOT(106, 3), AUTO_RELOAD(203, 3),
 	//Sniper T3
 	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(137,3) {{aliases = new String[]{"RANGER"};}},
 	//Warden T3
@@ -327,6 +327,7 @@ public enum Talent {
 		}
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
 	};
+	public static class AutoReloadBuff extends FlavourBuff{};
 	public static class SpiritBladesTracker extends FlavourBuff{
 		// todo should I have enchant have increased proc chances for Wrath?
 		public float getModifier() {
