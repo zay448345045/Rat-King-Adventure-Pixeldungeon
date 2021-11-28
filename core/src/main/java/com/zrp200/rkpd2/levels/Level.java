@@ -44,12 +44,14 @@ import com.zrp200.rkpd2.actors.mobs.Bestiary;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.YogFist;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.FlowParticle;
 import com.zrp200.rkpd2.effects.particles.WindParticle;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.potions.PotionOfStrength;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.stones.StoneOfIntuition;
@@ -1032,8 +1034,19 @@ public abstract class Level implements Bundlable {
 				if (Dungeon.hero.pos == cell) {
 					Dungeon.hero.interrupt();
 				}
-
-				trap.trigger();
+				if (Dungeon.hero.pos == cell && Dungeon.hero.hasTalent(Talent.TRAPPER_MASTERY) &&
+					Dungeon.hero.buff(Talent.TrapperMasteryCooldown.class) == null){
+					Talent.ReclaimedTrapper reclaim = new Talent.ReclaimedTrapper();
+					trap.disarm();
+					Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
+					ScrollOfRecharging.charge(Dungeon.hero);
+					Dungeon.hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);
+					reclaim.storedTrap = trap.getClass();
+					reclaim.collect(Dungeon.hero.belongings.backpack);
+					Talent.Cooldown.affectHero(Talent.TrapperMasteryCooldown.class);
+				}
+				else
+					trap.trigger();
 
 			}
 		}
