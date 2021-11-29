@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Shrink;
 import com.zrp200.rkpd2.actors.buffs.TimedShrink;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -74,6 +75,9 @@ public class DM100 extends Mob implements Callback {
 	
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.canAttack(enemy);
+		}
 		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 	

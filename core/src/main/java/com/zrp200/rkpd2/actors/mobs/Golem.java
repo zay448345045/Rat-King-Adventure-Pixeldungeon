@@ -21,19 +21,20 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.sprites.GolemSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Golem extends Mob {
 	
@@ -176,7 +177,7 @@ public class Golem extends Mob {
 			if (target != -1 && getCloser( target )) {
 				spend( 1 / speed() );
 				return moveSprite( oldPos, pos );
-			} else if (!Dungeon.bossLevel() && target != -1 && target != pos && selfTeleCooldown <= 0) {
+			} else if (!Dungeon.bossLevel() && target != -1 && target != pos && selfTeleCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
 				((GolemSprite)sprite).teleParticles(true);
 				teleporting = true;
 				spend( 2*TICK );
@@ -202,7 +203,7 @@ public class Golem extends Mob {
 				int oldPos = pos;
 
 				if (enemyTeleCooldown <= 0 && distance(enemy) >= 1 && Random.Int(100/distance(enemy)) == 0
-						&& !Char.hasProp(enemy, Property.IMMOVABLE)){
+						&& !Char.hasProp(enemy, Property.IMMOVABLE) && buff(Talent.AntiMagicBuff.class) == null){
 					if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
 						sprite.zap( enemy.pos );
 						return false;
@@ -215,7 +216,7 @@ public class Golem extends Mob {
 					spend( 1 / speed() );
 					return moveSprite( oldPos,  pos );
 
-				} else if (enemyTeleCooldown <= 0 && !Char.hasProp(enemy, Property.IMMOVABLE)) {
+				} else if (enemyTeleCooldown <= 0 && !Char.hasProp(enemy, Property.IMMOVABLE) && buff(Talent.AntiMagicBuff.class) == null) {
 					if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
 						sprite.zap( enemy.pos );
 						return false;

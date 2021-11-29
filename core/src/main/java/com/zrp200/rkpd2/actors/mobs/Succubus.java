@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Charm;
 import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
@@ -102,7 +103,7 @@ public class Succubus extends Mob {
 	
 	@Override
 	protected boolean getCloser( int target ) {
-		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0) {
+		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			
 			blink( target );
 			spend( -1 / speed() );

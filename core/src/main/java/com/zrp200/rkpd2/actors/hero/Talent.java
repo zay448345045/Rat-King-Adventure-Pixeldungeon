@@ -36,9 +36,10 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
-import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
@@ -146,11 +147,11 @@ public enum Talent {
 	//Rogue T3
 	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3), TRAPPER_MASTERY(202, 3),
 	//Assassin T3
-	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(144,3),
+	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(144,3), DARKENING_STEPS(211, 3),
 	//Freerunner T3
-	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(143,3),
+	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(143,3), OLYMPIC_STATS(212, 3),
 	//Shadowflare T3
-	ENERGON_FUSION(177, 3), LASER_PRECISION(178, 3), ERADICATING_CHARGE(179, 3), VOID_WRATH(180, 3),
+	ENERGON_FUSION(177, 3), LASER_PRECISION(178, 3), ERADICATING_CHARGE(179, 3), VOID_WRATH(180, 3), MECHANICAL_POWER(213, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(81, 4), BODY_REPLACEMENT(82, 4), SHADOW_STEP(83, 4), FRIGID_TOUCH(151, 4),
 	//Death Mark T4
@@ -803,11 +804,23 @@ public enum Talent {
 			}
 		}
 
+		if (hero.pointsInTalent(MECHANICAL_POWER) > 2 && RobotBuff.isRobot() &&
+				(enemy instanceof FinalFroggit || enemy instanceof DM100 || enemy instanceof Warlock ||
+				enemy instanceof Dragon || enemy instanceof Succubus || enemy instanceof Eye ||
+				enemy instanceof LostSpirit || enemy instanceof SpectreRat || enemy instanceof Shaman ||
+				enemy instanceof Necromancer || enemy instanceof Phantom || enemy instanceof Golem ||
+				enemy instanceof Elemental || enemy instanceof DarkestElf || enemy instanceof YogFist)){
+				enemy.sprite.emitter().burst(ExoParticle.FACTORY, 25);
+				Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 1f, 2.5f);
+				Buff.affect(enemy, AntiMagicBuff.class, 3f);
+		}
+
 		return dmg;
 	}
 
 	public static class SuckerPunchTracker extends Buff{};
 	public static class FollowupStrikeTracker extends Buff{};
+	public static class AntiMagicBuff extends FlavourBuff{};
 
 	public static final int MAX_TALENT_TIERS = 4;
 
@@ -928,13 +941,13 @@ public enum Talent {
 				Collections.addAll(tierTalents, ECTOTOUGHNESS, I_HATE_ALL_ELEMENTS, STAB_FROM_NOWHERE, POWER_IN_NUMBERS, MIND_BREAKER);
 				break;
 			case ASSASSIN:
-				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER, LETHAL_MOMENTUM_2);
+				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER, LETHAL_MOMENTUM_2, DARKENING_STEPS);
 				break;
 			case FREERUNNER:
-				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, FAST_RECOVERY);
+				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, FAST_RECOVERY, OLYMPIC_STATS);
 				break;
 			case DECEPTICON:
-				Collections.addAll(tierTalents, ENERGON_FUSION, LASER_PRECISION, ERADICATING_CHARGE, VOID_WRATH);
+				Collections.addAll(tierTalents, ENERGON_FUSION, LASER_PRECISION, ERADICATING_CHARGE, VOID_WRATH, MECHANICAL_POWER);
 				break;
 			case SNIPER:
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, MULTISHOT);

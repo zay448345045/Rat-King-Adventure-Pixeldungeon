@@ -30,6 +30,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.wands.WandOfPrismaticLight;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
@@ -76,6 +77,9 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.canAttack(enemy);
+		}
 		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 

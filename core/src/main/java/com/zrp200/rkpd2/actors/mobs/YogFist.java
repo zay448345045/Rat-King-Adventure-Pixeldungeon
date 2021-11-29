@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
@@ -85,7 +86,7 @@ public abstract class YogFist extends Mob {
 
 	@Override
 	public boolean canAttack(Char enemy) {
-		if (rangedCooldown <= 0){
+		if (rangedCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null){
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		} else {
 			return super.canAttack(enemy);
@@ -111,7 +112,7 @@ public abstract class YogFist extends Mob {
 	@Override
 	protected boolean doAttack( Char enemy ) {
 
-		if (Dungeon.level.adjacent( pos, enemy.pos ) && (!canRangedInMelee || rangedCooldown > 0)) {
+		if (Dungeon.level.adjacent( pos, enemy.pos ) && (!canRangedInMelee || rangedCooldown > 0 && buff(Talent.AntiMagicBuff.class) == null)) {
 
 			return super.doAttack( enemy );
 

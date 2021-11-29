@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
@@ -74,10 +75,16 @@ public class SpectreRat extends AbyssalMob implements Callback {
 
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.canAttack(enemy);
+		}
 		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
 	protected boolean doAttack( Char enemy ) {
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.doAttack(enemy);
+		}
 		if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
 			sprite.zap( enemy.pos );
 			return false;

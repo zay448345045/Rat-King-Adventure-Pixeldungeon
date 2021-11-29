@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.buffs.Adrenaline;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Corruption;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.Speck;
@@ -246,7 +247,7 @@ public class Necromancer extends Mob {
 			}
 			
 			//if enemy is seen, and enemy is within range, and we haven no skeleton, summon a skeleton!
-			if (enemySeen && Dungeon.level.distance(pos, enemy.pos) <= 4 && mySkeleton == null){
+			if (enemySeen && Dungeon.level.distance(pos, enemy.pos) <= 4 && mySkeleton == null && buff(Talent.AntiMagicBuff.class) == null){
 				
 				summoningPos = -1;
 				for (int c : PathFinder.NEIGHBOURS8){
@@ -271,7 +272,7 @@ public class Necromancer extends Mob {
 				
 				return true;
 			//otherwise, if enemy is seen, and we have a skeleton...
-			} else if (enemySeen && mySkeleton != null){
+			} else if (enemySeen && mySkeleton != null && buff(Talent.AntiMagicBuff.class) == null){
 				
 				target = enemy.pos;
 				spend(TICK);

@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Miasma;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -145,7 +146,7 @@ public class Phantom extends AbyssalMob {
 
 				int oldPos = pos;
 
-				if (ventCooldown <= 0 && distance(enemy) >= 1 && Random.Int(40/distance(enemy)) == 0){
+				if (ventCooldown <= 0 && distance(enemy) >= 1 && Random.Int(40/distance(enemy)) == 0 && buff(Talent.AntiMagicBuff.class) == null){
 					if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
 						sprite.zap( enemy.pos );
 						return false;

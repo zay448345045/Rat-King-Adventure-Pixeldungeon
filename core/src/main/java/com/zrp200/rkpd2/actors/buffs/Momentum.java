@@ -59,7 +59,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		if(freerunCooldown > 0 && freerunTurns == 0 && target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH) >= 2) freerunCooldown--; // reduce an extra time.
 
 		if (freerunCooldown == 0 && target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH,Talent.RK_FREERUNNER) >= 1){
-			momentumStacks = Math.min(momentumStacks + (Dungeon.hero.hasTalent(Talent.SPEEDY_STEALTH)?3:2), 10);
+			momentumStacks = Math.min(momentumStacks + (Dungeon.hero.hasTalent(Talent.SPEEDY_STEALTH)?3:2), getMaxMomentum());
 			movedLastTurn = true;
 		}
 
@@ -85,9 +85,13 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		movedLastTurn = true;
 		if (freerunCooldown <= 0){
 			postpone(target.cooldown()+(1/target.speed()));
-			momentumStacks = Math.min(momentumStacks + 1, 10);
+			momentumStacks = Math.min(momentumStacks + 1, getMaxMomentum());
 			ActionIndicator.setAction(this);
 		}
+	}
+
+	public int getMaxMomentum() {
+		return 10 + (Dungeon.hero.pointsInTalent(Talent.OLYMPIC_STATS) > 2 ? 5 : 0);
 	}
 
 	public boolean freerunning(){
@@ -96,7 +100,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 
 	public float speedMultiplier(){
 		if (freerunning()){
-			return 2;
+			return 2 + (Dungeon.hero.hasTalent(Talent.OLYMPIC_STATS) ? 1 : 0);
 		} else if (target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH,Talent.RK_FREERUNNER) == 3){
 			return 2;
 		} else {
@@ -126,19 +130,21 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		} else if (freerunCooldown > 0){
 			icon.hardlight(0.5f,0.5f,1);
 		} else {
-			icon.hardlight(1f - (momentumStacks /10f),1,1f - (momentumStacks /10f));
+			icon.hardlight(1f - (momentumStacks /(getMaxMomentum() * 1f)),1,
+					1f - (momentumStacks /(getMaxMomentum() * 1f)));
 		}
 	}
 
 	@Override
 	public float iconFadePercent() {
 		if (freerunTurns > 0){
-			int duration = (int)Math.ceil(20*(1+Dungeon.hero.pointsInTalent(Talent.FAST_RECOVERY)/6f));
+			int duration = (int)Math.ceil((20+(Dungeon.hero.pointsInTalent(Talent.OLYMPIC_STATS) > 2 ? 10 : 0))
+					*(1+Dungeon.hero.pointsInTalent(Talent.FAST_RECOVERY)/6f));
 			return (duration - freerunTurns) / (float)duration;
 		} else if (freerunCooldown > 0){
-			return (freerunCooldown) / 30f;
+			return (freerunCooldown) / (30f*cooldownScaling());
 		} else {
-			return (10 - momentumStacks) / 10f;
+			return (getMaxMomentum() - momentumStacks) / (getMaxMomentum() * 1f);
 		}
 	}
 
@@ -157,7 +163,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 	public String desc() {
 		String cls = Messages.titleCase(Dungeon.hero.heroClass.title());
 		if (freerunTurns > 0){
-			return Messages.get(this, "running_desc", cls, freerunTurns);
+			return Messages.get(this, "running_desc", cls, freerunTurns, Dungeon.hero.hasTalent(Talent.OLYMPIC_STATS) ? 3 : 2);
 		} else if (freerunCooldown > 0){
 			return Messages.get(this, "resting_desc", cls, freerunCooldown);
 		} else {
@@ -196,12 +202,19 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		return im;
 	}
 
+	public float cooldownScaling(){
+		if (Dungeon.hero.hasTalent(Talent.OLYMPIC_STATS)){
+			return 1 + (0.6f - 0.1f*Dungeon.hero.pointsInTalent(Talent.OLYMPIC_STATS));
+		}
+		return 1f;
+	}
+
 	@Override
 	public void doAction() {
 		// 20 / 24 / 27 / 30 at max.
 		freerunTurns = (int)Math.ceil(2*momentumStacks*(1+Dungeon.hero.pointsInTalent(Talent.FAST_RECOVERY)/6f));
 		//cooldown is functionally 10+2*stacks when active effect ends
-		freerunCooldown = 10 + 2*momentumStacks + freerunTurns;
+		freerunCooldown = Math.round((10 + 2*momentumStacks + freerunTurns)*cooldownScaling());
 		Sample.INSTANCE.play(Assets.Sounds.MISS, 1f, 0.8f);
 		target.sprite.emitter().burst(Speck.factory(Speck.JET), 5+ momentumStacks);
 		momentumStacks = 0;

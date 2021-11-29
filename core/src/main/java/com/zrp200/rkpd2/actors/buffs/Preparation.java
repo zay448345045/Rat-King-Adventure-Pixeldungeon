@@ -190,8 +190,13 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			assassinated = true;
 			enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
 		}
-		if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.ENHANCED_LETHALITY) && assassinated){
-			Preparation.bloodbathProc((Hero) attacker, enemy);
+		if (attacker instanceof Hero && assassinated) {
+			if (((Hero) attacker).hasTalent(Talent.ENHANCED_LETHALITY)) {
+				Preparation.bloodbathProc((Hero) attacker, enemy);
+			}
+			if (((Hero) attacker).hasTalent(Talent.DARKENING_STEPS)){
+				Buff.affect(attacker, ArtifactRecharge.class).prolong(Dungeon.hero.pointsInTalent(Talent.DARKENING_STEPS)*2);
+			}
 		}
 		return assassinated;
 	}

@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
@@ -78,7 +79,7 @@ public class Warlock extends Mob implements Callback {
 	
 	protected boolean doAttack( Char enemy ) {
 
-		if (Dungeon.level.adjacent( pos, enemy.pos )) {
+		if (Dungeon.level.adjacent( pos, enemy.pos ) || buff(Talent.AntiMagicBuff.class) != null) {
 			
 			return super.doAttack( enemy );
 			

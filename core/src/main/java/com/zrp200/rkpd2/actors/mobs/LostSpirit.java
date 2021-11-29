@@ -5,6 +5,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.RainbowParticle;
@@ -32,6 +33,9 @@ public class LostSpirit extends AbyssalMob implements Callback {
 
     @Override
     public boolean canAttack(Char enemy) {
+        if (buff(Talent.AntiMagicBuff.class) != null){
+            return super.canAttack(enemy);
+        }
         return new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET).collisionPos == enemy.pos;
     }
 

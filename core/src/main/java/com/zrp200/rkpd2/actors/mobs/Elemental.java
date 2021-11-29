@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Lightning;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.potions.PotionOfFrost;
@@ -85,7 +86,7 @@ public abstract class Elemental extends Mob {
 	
 	@Override
 	public boolean canAttack(Char enemy) {
-		if (rangedCooldown <= 0) {
+		if (rangedCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
 		} else {
 			return super.canAttack( enemy );
@@ -94,7 +95,7 @@ public abstract class Elemental extends Mob {
 	
 	protected boolean doAttack( Char enemy ) {
 		
-		if (Dungeon.level.adjacent( pos, enemy.pos ) || rangedCooldown > 0) {
+		if (Dungeon.level.adjacent( pos, enemy.pos ) || (rangedCooldown > 0 && buff(Talent.AntiMagicBuff.class) == null)) {
 			
 			return super.doAttack( enemy );
 			

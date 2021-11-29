@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -66,6 +67,9 @@ public abstract class Shaman extends Mob {
 	
 	@Override
 	public boolean canAttack( Char enemy ) {
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.canAttack(enemy);
+		}
 		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 

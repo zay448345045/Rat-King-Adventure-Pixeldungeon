@@ -38,10 +38,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
-import com.zrp200.rkpd2.actors.mobs.DwarfKing;
-import com.zrp200.rkpd2.actors.mobs.Elemental;
-import com.zrp200.rkpd2.actors.mobs.GhostChicken;
-import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
+import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Heap;
@@ -420,14 +417,18 @@ public abstract class Char extends Actor {
 				}
 				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
-			if (RobotBuff.isRobot() && this instanceof Hero){
-				float debuffBoost = 0f;
-				for (Buff buff : enemy.buffs()){
-					if (buff.type == Buff.buffType.NEGATIVE){
-						debuffBoost += RobotBuff.damageModifier();
+			if (RobotBuff.isRobot()) {
+				if (this instanceof Hero) {
+					float debuffBoost = 0f;
+					for (Buff buff : enemy.buffs()) {
+						if (buff.type == Buff.buffType.NEGATIVE) {
+							debuffBoost += RobotBuff.damageModifier();
+						}
 					}
+					effectiveDamage *= 1f + debuffBoost;
+				} else if (this instanceof Mob && hero.hasTalent(Talent.MECHANICAL_POWER)){
+					effectiveDamage *= 0.75f;
 				}
-				effectiveDamage *= 1f + debuffBoost;
 			}
 
 			// If the enemy is already dead, interrupt the attack.
@@ -474,6 +475,10 @@ public abstract class Char extends Actor {
 				if (this instanceof Hero && ((Hero) this).hasTalent(Talent.ENHANCED_LETHALITY) &&
 						buff(Preparation.class) != null && Random.Float() < 0.4f){
 					Preparation.bloodbathProc((Hero) this, enemy);
+				}
+				if (this instanceof Hero && ((Hero) this).hasTalent(Talent.DARKENING_STEPS) &&
+						buff(Preparation.class) != null && Random.Float() < 0.4f){
+					Buff.affect(this, ArtifactRecharge.class).prolong(Dungeon.hero.pointsInTalent(Talent.DARKENING_STEPS)*2);
 				}
 			}
 			

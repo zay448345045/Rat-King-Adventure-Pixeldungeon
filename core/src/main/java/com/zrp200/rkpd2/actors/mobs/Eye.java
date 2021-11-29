@@ -21,10 +21,14 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
 import com.zrp200.rkpd2.items.Dewdrop;
@@ -37,9 +41,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.EyeSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Eye extends Mob {
 	
@@ -86,7 +87,7 @@ public class Eye extends Mob {
 	@Override
 	public boolean canAttack(Char enemy) {
 
-		if (beamCooldown == 0) {
+		if (beamCooldown == 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID);
 
 			if (enemy.invisible == 0 && !isCharmedBy(enemy) && fieldOfView[enemy.pos] && aim.subPath(1, aim.dist).contains(enemy.pos)){
@@ -120,7 +121,7 @@ public class Eye extends Mob {
 	@Override
 	protected boolean doAttack( Char enemy ) {
 
-		if (beamCooldown > 0) {
+		if (beamCooldown > 0 || buff(Talent.AntiMagicBuff.class) != null) {
 			return super.doAttack(enemy);
 		} else if (!beamCharged){
 			((EyeSprite)sprite).charge( enemy.pos );
