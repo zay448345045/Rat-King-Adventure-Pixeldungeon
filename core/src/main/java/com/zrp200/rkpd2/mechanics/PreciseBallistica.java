@@ -2,6 +2,8 @@ package com.zrp200.rkpd2.mechanics;
 
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.mobs.npcs.AbstractMirrorImage;
 import com.zrp200.rkpd2.levels.Level;
 
 import java.util.ArrayList;
@@ -123,7 +125,9 @@ class PreciseBallistica extends Ballistica {
                     if ((stopTerrain && level.solid[cell]) && !(ignoreSoftSolid && soft(cell))) {
                         collided = true;
                     } else if (cell != from && stopChars && Actor.findChar(cell) != null) {
-                        collided = true;
+                        if (!(Actor.findChar(cell) instanceof AbstractMirrorImage) || !Dungeon.hero.hasTalent(Talent.SPECTRE_ALLIES)) {
+                            collided = true;
+                        }
                     }
                 }
             }

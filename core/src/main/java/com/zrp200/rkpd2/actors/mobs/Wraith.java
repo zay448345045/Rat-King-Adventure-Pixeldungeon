@@ -21,10 +21,12 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -32,6 +34,7 @@ import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -92,6 +95,8 @@ public class Wraith extends Mob {
 		}
 		return dmg;
 	}
+
+
 	
 	@Override
 	public int attackSkill( Char target ) {
@@ -119,6 +124,19 @@ public class Wraith extends Mob {
 	public boolean reset() {
 		state = WANDERING;
 		return true;
+	}
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		if (buff(AllyBuff.class) != null && Random.Int(15) < Dungeon.hero.pointsInTalent(Talent.MIND_BREAKER)){
+			destroy();
+			CellEmitter.bottom(pos).burst(ShadowParticle.MISSILE, 30);
+			sprite.killAndErase();
+			Corruption.corrupt(enemy);
+			Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1f, 0.75f);
+			return -1;
+		}
+		return super.attackProc(enemy, damage);
 	}
 
 	@Override

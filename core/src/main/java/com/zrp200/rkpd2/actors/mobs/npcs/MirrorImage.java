@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.buffs.Fury;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
@@ -53,6 +54,7 @@ public class MirrorImage extends AbstractMirrorImage {
 		} else {
 			damage = hero.damageRoll(); //handles ring of force
 		}
+		damage *= 1f + 0.2f*hero.pointsInTalent(Talent.SPECTRE_ALLIES);
 		return (damage+1)/2; //half hero damage, rounded up
 	}
 	
@@ -63,7 +65,9 @@ public class MirrorImage extends AbstractMirrorImage {
 	
 	@Override
 	public boolean canAttack(Char enemy) {
-		return super.canAttack(enemy) || (hero.belongings.weapon() != null && hero.belongings.weapon().canReach(this, enemy.pos));
+		return super.canAttack(enemy) ||
+				(hero.belongings.weapon() != null && hero.belongings.weapon().canReach(this, enemy.pos)) ||
+				(hero.hasTalent(Talent.SPECTRE_ALLIES) && KindOfWeapon.canReach(this, enemy.pos, 1 + hero.pointsInTalent(Talent.SPECTRE_ALLIES)));
 	}
 
 	@Override

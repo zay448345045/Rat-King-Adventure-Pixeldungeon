@@ -20,19 +20,23 @@
      */
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
-import com.watabou.utils.Bundle;
-import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
-import com.zrp200.rkpd2.actors.blobs.ToxicGas;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Corruption;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.sprites.MirrorSprite;
+    import com.watabou.utils.Bundle;
+    import com.watabou.utils.Random;
+    import com.zrp200.rkpd2.Dungeon;
+    import com.zrp200.rkpd2.actors.Actor;
+    import com.zrp200.rkpd2.actors.Char;
+    import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
+    import com.zrp200.rkpd2.actors.blobs.ToxicGas;
+    import com.zrp200.rkpd2.actors.buffs.Burning;
+    import com.zrp200.rkpd2.actors.buffs.Corruption;
+    import com.zrp200.rkpd2.actors.hero.Hero;
+    import com.zrp200.rkpd2.actors.hero.Talent;
+    import com.zrp200.rkpd2.actors.mobs.Mob;
+    import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+    import com.zrp200.rkpd2.sprites.CharSprite;
+    import com.zrp200.rkpd2.sprites.MirrorSprite;
 
-public abstract class AbstractMirrorImage extends NPC {
+    public abstract class AbstractMirrorImage extends NPC {
     {
         spriteClass = MirrorSprite.class;
 
@@ -116,6 +120,27 @@ public abstract class AbstractMirrorImage extends NPC {
 
         if (enemy instanceof Mob) {
             ((Mob)enemy).aggro( this );
+        }
+        if (hero.belongings.weapon() instanceof MagesStaff){
+            if (hero.pointsInTalent(Talent.SPECTRE_ALLIES) == 2) {
+                ((MagesStaff) hero.belongings.weapon()).procWand(enemy, damage);
+            }
+            if (hero.pointsInTalent(Talent.SPECTRE_ALLIES) == 3) {
+                MagesStaff staff = (MagesStaff) hero.belongings.weapon();
+                if ((hero.hasTalent(Talent.SORCERY))) {
+                    if (Random.Int(5) < hero.pointsInTalent(Talent.SORCERY)) {
+                        staff.procBM();
+                    }
+                    if (Random.Int(3) < hero.pointsInTalent(Talent.SORCERY))
+                        if (buff(Talent.EmpoweredStrikeTracker.class) != null) {
+                            buff(Talent.EmpoweredStrikeTracker.class).detach();
+                            damage = Math.round(damage * (1f + Math.max(
+                                    Dungeon.hero.pointsInTalent(Talent.EMPOWERED_STRIKE) / 3f,
+                                    Dungeon.hero.pointsInTalent(Talent.RK_BATTLEMAGE) / 4f)));
+                        }
+                }
+                staff.procWand(enemy, damage);
+            }
         }
         return damage;
     }

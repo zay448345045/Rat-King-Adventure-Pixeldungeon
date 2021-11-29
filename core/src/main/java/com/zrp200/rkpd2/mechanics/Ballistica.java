@@ -24,6 +24,8 @@ package com.zrp200.rkpd2.mechanics;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.mobs.npcs.AbstractMirrorImage;
 import com.zrp200.rkpd2.levels.Level;
 
 import java.util.ArrayList;
@@ -147,8 +149,10 @@ public class Ballistica {
 				} else {
 					collide(cell);
 				}
-			} else if (cell != sourcePos && stopChars && Actor.findChar( cell ) != null) {
-				collide(cell);
+			} else if (cell != sourcePos && stopChars && (Actor.findChar( cell ) != null)) {
+				if (!(Actor.findChar(cell) instanceof AbstractMirrorImage) || !Dungeon.hero.hasTalent(Talent.SPECTRE_ALLIES)) {
+					collide(cell);
+				}
 			} else if  (cell == to && stopTarget){
 				collide(cell);
 			}

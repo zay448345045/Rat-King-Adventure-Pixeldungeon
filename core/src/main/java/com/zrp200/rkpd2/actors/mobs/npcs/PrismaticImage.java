@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
 import com.zrp200.rkpd2.actors.buffs.PrismaticGuard;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -112,11 +113,14 @@ public class PrismaticImage extends AbstractMirrorImage {
 	
 	@Override
 	public int damageRoll() {
+		int i;
 		if (hero != null) {
-			return Random.NormalIntRange( 1 + hero.lvl/8, 4 + hero.lvl/2 );
+			i = Random.NormalIntRange(1 + hero.lvl / 8, 4 + hero.lvl / 2);
 		} else {
-			return Random.NormalIntRange( 1, 4 );
+			i = Random.NormalIntRange(1, 4);
 		}
+		i *= 1f + 0.2f*hero.pointsInTalent(Talent.SPECTRE_ALLIES);
+		return i;
 	}
 
 	@Override
@@ -127,7 +131,12 @@ public class PrismaticImage extends AbstractMirrorImage {
 			return 0;
 		}
 	}
-	
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		return super.attackProc(enemy, damage);
+	}
+
 	@Override
 	public int defenseProc(Char enemy, int damage) {
 		damage = super.defenseProc(enemy, damage);

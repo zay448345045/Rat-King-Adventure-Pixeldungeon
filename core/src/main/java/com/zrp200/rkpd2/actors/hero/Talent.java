@@ -102,7 +102,7 @@ public enum Talent {
 	//Mage T3
 	EMPOWERING_SCROLLS(41, 3), ALLY_WARP(42, 3), CRYONIC_SPELL(201, 3),
 	//Battlemage T3
-	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(141,3),
+	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(141,3), SPECTRE_ALLIES(207, 3),
 	//Warlock T3
 	SOUL_EATER(46, 3){
 		@Override
@@ -124,9 +124,14 @@ public enum Talent {
 		public int icon() {
 			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 184 : 142;
 		}
+	}, BANISHED (208, 3){
+		@Override
+		public int icon() {
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? 209 : 208;
+		}
 	},
 	//Spirit Caller T3
-	ECTOTOUGHNESS(169, 3), I_HATE_ALL_ELEMENTS(170, 3), STAB_FROM_NOWHERE(171, 3), POWER_IN_NUMBERS(172, 3),
+	ECTOTOUGHNESS(169, 3), I_HATE_ALL_ELEMENTS(170, 3), STAB_FROM_NOWHERE(171, 3), POWER_IN_NUMBERS(172, 3), MIND_BREAKER(210, 3),
 	//Elemental Blast T4
 	BLAST_RADIUS(49, 4), ELEMENTAL_POWER(50, 4), REACTIVE_BARRIER(51, 4), EMPOWERED_STRIKE_II(148, 4),
 	//Wild Magic T4
@@ -262,6 +267,19 @@ public enum Talent {
 			}
 		}
 		public int icon() { return BuffIndicator.THORNS; }
+	};
+	public static class BanishedCooldown extends Cooldown {
+		public float duration() {
+			switch (hero.pointsInTalent(BANISHED)){
+				case 1: default:
+					return 250;
+				case 2:
+					return 225;
+				case 3:
+					return 200;
+			}
+		}
+		public int icon() { return BuffIndicator.CORRUPT; }
 	};
 	public static class ReclaimedTrapper extends ReclaimTrap{
 		@Override
@@ -901,13 +919,13 @@ public enum Talent {
 				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL, EFFICIENT_TRAINING);
 				break;
 			case BATTLEMAGE:
-				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, SORCERY);
+				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, SORCERY, SPECTRE_ALLIES);
 				break;
 			case WARLOCK:
-				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, WARLOCKS_TOUCH);
+				Collections.addAll(tierTalents, SOUL_EATER, SOUL_SIPHON, NECROMANCERS_MINIONS, WARLOCKS_TOUCH, BANISHED);
 				break;
 			case SPIRITUALIST:
-				Collections.addAll(tierTalents, ECTOTOUGHNESS, I_HATE_ALL_ELEMENTS, STAB_FROM_NOWHERE, POWER_IN_NUMBERS);
+				Collections.addAll(tierTalents, ECTOTOUGHNESS, I_HATE_ALL_ELEMENTS, STAB_FROM_NOWHERE, POWER_IN_NUMBERS, MIND_BREAKER);
 				break;
 			case ASSASSIN:
 				Collections.addAll(tierTalents, ENHANCED_LETHALITY, ASSASSINS_REACH, BOUNTY_HUNTER, LETHAL_MOMENTUM_2);

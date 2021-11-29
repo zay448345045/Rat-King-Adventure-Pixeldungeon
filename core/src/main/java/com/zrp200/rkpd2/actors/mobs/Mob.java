@@ -49,6 +49,7 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
+import com.zrp200.rkpd2.items.spells.CurseInfusion;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Lucky;
@@ -716,7 +717,11 @@ public abstract class Mob extends Char {
 		}
 
 		if (alignment == Alignment.ENEMY){
-			rollToDropLoot();
+			if (!(cause instanceof CurseInfusion)){
+				rollToDropLoot();
+			} else {
+				EXP = 0;
+			}
 			if (cause == hero) Talent.LethalMomentumTracker.process();
 		}
 
