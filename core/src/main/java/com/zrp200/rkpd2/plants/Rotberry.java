@@ -25,7 +25,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.AdrenalineSurge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
@@ -39,12 +38,15 @@ public class Rotberry extends Plant {
 	}
 
 	@Override
-	public void activate( Char ch ) {
-		if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING)){
+	public void activateMisc( Char ch ) {
+		Dungeon.level.drop( new Seed(), pos ).sprite.drop();
+	}
+
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
 			Buff.affect(ch, AdrenalineSurge.class).reset(1, 200f);
 		}
-		
-		Dungeon.level.drop( new Seed(), pos ).sprite.drop();
 	}
 
 	@Override

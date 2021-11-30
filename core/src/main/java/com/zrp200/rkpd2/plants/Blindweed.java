@@ -27,7 +27,6 @@ import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -39,28 +38,30 @@ public class Blindweed extends Plant {
 		image = 11;
 		seedClass = Seed.class;
 	}
-	
+
 	@Override
-	public void activate( Char ch ) {
-		
-		if (ch != null) {
-			if (ch == Dungeon.hero && (Dungeon.hero.subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING)){
-				Buff.affect(ch, Invisibility.class, Invisibility.DURATION/2f);
-			} else {
-				Buff.prolong(ch, Blindness.class, Blindness.DURATION);
-				Buff.prolong(ch, Cripple.class, Cripple.DURATION);
-				if (ch instanceof Mob) {
-					if (((Mob) ch).state == ((Mob) ch).HUNTING) ((Mob) ch).state = ((Mob) ch).WANDERING;
-					((Mob) ch).beckon(Dungeon.level.randomDestination( ch ));
-				}
-			}
+	public void affectMob(Mob mob) {
+		Buff.prolong(mob, Blindness.class, Blindness.DURATION);
+		Buff.prolong(mob, Cripple.class, Cripple.DURATION);
+	}
+
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			Buff.affect(ch, Invisibility.class, Invisibility.DURATION/2f);
+		} else {
+			Buff.prolong(ch, Blindness.class, Blindness.DURATION);
+			Buff.prolong(ch, Cripple.class, Cripple.DURATION);
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( Speck.factory( Speck.LIGHT ), 4 );
 		}
 	}
-	
+
 	public static class Seed extends Plant.Seed {
 		{
 			image = ItemSpriteSheet.SEED_BLINDWEED;

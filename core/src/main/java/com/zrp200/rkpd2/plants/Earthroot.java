@@ -40,18 +40,18 @@ public class Earthroot extends Plant {
 		image = 8;
 		seedClass = Seed.class;
 	}
-	
+
 	@Override
-	public void activate( Char ch ) {
-		
-		if (ch == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING){
-				Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
-			} else {
-				Buff.affect(ch, Armor.class).level(ch.HT);
-			}
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			Buff.affect(ch, Barkskin.class).set(Dungeon.hero.lvl + 5, 5);
+		} else {
+			Buff.affect(ch, Armor.class).level(ch.HT);
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.bottom( pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
 			Camera.main.shake( 1, 0.4f );

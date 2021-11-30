@@ -25,8 +25,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Levitation;
 import com.zrp200.rkpd2.actors.buffs.Vertigo;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Stormvine extends Plant {
@@ -37,14 +36,16 @@ public class Stormvine extends Plant {
 	}
 
 	@Override
-	public void activate( Char ch ) {
+	public void affectMob(Mob mob) {
+		Buff.affect(mob, Vertigo.class, Vertigo.DURATION);
+	}
 
-		if (ch != null) {
-			if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING)){
-				Buff.affect(ch, Levitation.class, Levitation.DURATION/2f);
-			} else {
-				Buff.affect(ch, Vertigo.class, Vertigo.DURATION);
-			}
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			Buff.affect(ch, Levitation.class, Levitation.DURATION/2f);
+		} else {
+			Buff.affect(ch, Vertigo.class, Vertigo.DURATION);
 		}
 	}
 

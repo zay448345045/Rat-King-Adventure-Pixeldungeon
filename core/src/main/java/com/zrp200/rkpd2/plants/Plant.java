@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Item;
@@ -72,8 +73,24 @@ public abstract class Plant implements Bundlable {
 		wither();
 		activate( ch );
 	}
-	
-	public abstract void activate( Char ch );
+
+	public void activate(Char ch){
+		if (ch instanceof Mob){
+			affectMob((Mob) ch);
+			if (Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.INDIRECT_BENEFITS)){
+				affectHero(Dungeon.hero, true);
+			}
+		} else if (ch instanceof Hero){
+			affectHero(ch, (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING));
+		}
+		activateMisc(ch);
+	}
+
+	public void activateMisc(Char ch){ }
+
+	public void affectMob(Mob mob){ }
+
+	public void affectHero(Char ch, boolean isWarden){ }
 	
 	public void wither() {
 		Dungeon.level.uproot( pos );

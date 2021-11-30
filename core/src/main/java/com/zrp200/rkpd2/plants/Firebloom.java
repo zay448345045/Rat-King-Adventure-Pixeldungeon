@@ -27,8 +27,6 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.FireImbue;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -40,21 +38,23 @@ public class Firebloom extends Plant {
 		image = 1;
 		seedClass = Seed.class;
 	}
-	
-	@Override
-	public void activate( Char ch ) {
 
-		if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING)){
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
 			Buff.affect(ch, FireImbue.class).set( FireImbue.DURATION*0.3f );
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
-		
+
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( FlameParticle.FACTORY, 5 );
 		}
 	}
-	
+
 	public static class Seed extends Plant.Seed {
 		{
 			image = ItemSpriteSheet.SEED_FIREBLOOM;

@@ -27,7 +27,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Healing;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.ShaftParticle;
@@ -41,23 +40,23 @@ public class Sungrass extends Plant {
 		image = 3;
 		seedClass = Seed.class;
 	}
-	
+
 	@Override
-	public void activate( Char ch ) {
-		
-		if (ch == Dungeon.hero) {
-			if (Dungeon.hero.subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING) {
-				Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
-			} else {
-				Buff.affect(ch, Health.class).boost(ch.HT);
-			}
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
+		} else {
+			Buff.affect(ch, Health.class).boost(ch.HT);
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
 		}
 	}
-	
+
 	public static class Seed extends Plant.Seed {
 		{
 			image = ItemSpriteSheet.SEED_SUNGRASS;

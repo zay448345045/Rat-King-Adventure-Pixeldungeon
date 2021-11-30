@@ -42,44 +42,39 @@ public class Fadeleaf extends Plant {
 		image = 10;
 		seedClass = Seed.class;
 	}
-	
+
 	@Override
-	public void activate( final Char ch ) {
-		
-		if (ch instanceof Hero) {
-			
-			((Hero)ch).curAction = null;
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			if (Dungeon.bossLevel()) {
+				GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+				return;
 
-			if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING){
-				
-				if (Dungeon.bossLevel()) {
-					GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
-					return;
-					
-				}
-
-				TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-				Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-				if (timeBubble != null) timeBubble.disarmPressedTraps();
-				
-				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-				InterlevelScene.returnDepth = Math.max(1, (Dungeon.getDepth() - 1));
-				InterlevelScene.returnPos = -2;
-				Game.switchScene( InterlevelScene.class );
-				
-			} else {
-				ScrollOfTeleportation.teleportHero((Hero) ch);
 			}
-			
-		} else if (ch instanceof Mob && !ch.properties().contains(Char.Property.IMMOVABLE)) {
 
+			TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+			if (timeFreeze != null) timeFreeze.disarmPressedTraps();
+			Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
+			if (timeBubble != null) timeBubble.disarmPressedTraps();
+
+			InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+			InterlevelScene.returnDepth = Math.max(1, (Dungeon.getDepth() - 1));
+			InterlevelScene.returnPos = -2;
+			Game.switchScene( InterlevelScene.class );
+		} else {
+			ScrollOfTeleportation.teleportHero((Hero) ch);
+		}
+	}
+
+	@Override
+	public void affectMob(Mob mob) {
+		if (!mob.properties().contains(Char.Property.IMMOVABLE)){
 			if (!Dungeon.bossLevel()) {
 
 				int count = 20;
 				int newPos;
 				do {
-					newPos = Dungeon.level.randomRespawnCell(ch);
+					newPos = Dungeon.level.randomRespawnCell(mob);
 					if (count-- <= 0) {
 						break;
 					}
@@ -87,17 +82,19 @@ public class Fadeleaf extends Plant {
 
 				if (newPos != -1) {
 
-					ch.pos = newPos;
-					if (((Mob) ch).state == ((Mob) ch).HUNTING)
-						((Mob) ch).state = ((Mob) ch).WANDERING;
-					ch.sprite.place(ch.pos);
-					ch.sprite.visible = Dungeon.level.heroFOV[ch.pos];
+					mob.pos = newPos;
+					if (mob.state == mob.HUNTING)
+						mob.state = mob.WANDERING;
+					mob.sprite.place(mob.pos);
+					mob.sprite.visible = Dungeon.level.heroFOV[mob.pos];
 
 				}
 			}
-
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
 		}

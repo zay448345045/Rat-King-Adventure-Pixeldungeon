@@ -28,8 +28,6 @@ import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.FrostImbue;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.BArray;
 
@@ -39,25 +37,27 @@ public class Icecap extends Plant {
 		image = 4;
 		seedClass = Seed.class;
 	}
-	
-	@Override
-	public void activate( Char ch ) {
 
-		if (ch instanceof Hero && (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING)){
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
 			Buff.affect(ch, FrostImbue.class, FrostImbue.DURATION*0.3f);
 		}
-		
+	}
+
+	@Override
+	public void activateMisc(Char ch) {
 		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.losBlocking, null ), 1 );
-		
+
 		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
-		
+
 		for (int i=0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				Freezing.affect( i, fire );
 			}
 		}
 	}
-	
+
 	public static class Seed extends Plant.Seed {
 		{
 			image = ItemSpriteSheet.SEED_ICECAP;

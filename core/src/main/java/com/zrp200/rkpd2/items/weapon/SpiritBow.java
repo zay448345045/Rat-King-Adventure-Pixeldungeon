@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Item;
@@ -48,6 +49,7 @@ import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
 import com.zrp200.rkpd2.items.weapon.enchantments.Lucky;
 import com.zrp200.rkpd2.items.weapon.enchantments.Unstable;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.*;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -225,8 +227,8 @@ public class SpiritBow extends Weapon {
 
 		@Override
 		public void onThrow(int cell) {
-			superShot = false;
 			super.onThrow(cell);
+			superShot = false;
 		}
 
 		@Override
@@ -303,6 +305,7 @@ public class SpiritBow extends Weapon {
 	}
 
 	public int shotCount; // used for sniper specials
+	public boolean bounced = false;
 	public class SpiritArrow extends MissileWeapon {
 
 		{
@@ -347,6 +350,16 @@ public class SpiritBow extends Weapon {
 						float multiplier = Math.min(3f, 1.2f * (float) Math.pow(1.125f, distance));
 						damage = Math.round(damage * multiplier);
 						break;
+				}
+			}
+			if (bounced) {
+				switch (Dungeon.hero.pointsInTalent(Talent.ARCHERY_MARK)){
+					case 1: default:
+						return (int) (damage*0.2f);
+					case 2:
+						return (int) (damage*0.4f);
+					case 3:
+						return (int) (damage*0.6f);
 				}
 			}
 			return damage;
@@ -400,6 +413,7 @@ public class SpiritBow extends Weapon {
 
 		@Override
 		public float baseDelay(Char user) {
+			if (bounced) return 0f;
 			if(sniperSpecial) {
 				switch (SpiritBow.this.augment) {
 					case NONE:
@@ -440,7 +454,7 @@ public class SpiritBow extends Weapon {
 		}
 
 		@Override
-        public void onThrow(int cell) {
+		public void onThrow(int cell) {
 			Char enemy = Actor.findChar( cell );
 			boolean hitGround;
 			if (enemy == null || enemy == curUser) {
@@ -448,13 +462,51 @@ public class SpiritBow extends Weapon {
 				hitGround = true;
 			} else {
 				hitGround = !curUser.shoot( enemy, this );
+				if (Dungeon.hero.hasTalent(Talent.ARCHERY_MARK)){
+					if (!bounced) {
+						Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
+						int targetPos = Integer.MAX_VALUE - 1;
+						Mob desiredMob = null;
+						for (Mob m : mobs) {
+							if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
+									&& Dungeon.level.trueDistance(cell, m.pos) <= Dungeon.level.trueDistance(cell, targetPos) && m != enemy
+									&& m.alignment == Char.Alignment.ENEMY) {
+								targetPos = m.pos;
+								desiredMob = m;
+							}
+						}
+						if (targetPos == Integer.MAX_VALUE - 1){
+							bounced = false;
+							return;
+						} else {
+							bounced = true;
+							Mob finalDesiredMob = desiredMob;
+							enemy.sprite.parent.recycle(MissileSprite.class).
+									reset(enemy.sprite,
+											desiredMob.sprite,
+											this,
+											new Callback() {
+												@Override
+												public void call() {
+													curUser = Dungeon.hero;
+													curUser.shoot(finalDesiredMob, knockArrow());
+													bounced = false;
+//												if ((archeryCount >= (Dungeon.hero.pointsInTalent(Talent.ARCHERY_MARK) != 1 ? 2 : 1))){
+//													Dungeon.hero.spendAndNext(castDelay(Dungeon.hero, cell));
+//													archeryCount = 0;
+//												}
+												}
+											});
+						}
+					}
+				}
 			}
 			if(hitGround) {
 				Splash.at(cell, 0xCC99FFFF, 1);
 				if((hasEnchant(Explosive.class,curUser)
 						|| (hasEnchant(Unstable.class,curUser)
 						&& Unstable.getRandomEnchant(SpiritBow.this) instanceof Explosive))
-							&& new Explosive().tryProc(curUser, SpiritBow.this.buffedLvl()))
+						&& new Explosive().tryProc(curUser, SpiritBow.this.buffedLvl()))
 					new Bomb().explode(cell);
 				curUser.ready();
 			}

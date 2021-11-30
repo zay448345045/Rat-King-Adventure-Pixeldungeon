@@ -25,8 +25,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.BlobImmunity;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.MagicalSleep;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.messages.Messages;
@@ -41,21 +39,18 @@ public class Dreamfoil extends Plant {
 	}
 
 	@Override
-	public void activate( Char ch ) {
+	public void affectMob(Mob mob) {
+		Buff.affect(mob, MagicalSleep.class);
+	}
 
-		if (ch != null) {
-			if (ch instanceof Mob) {
-				Buff.affect(ch, MagicalSleep.class);
-			} else if (ch instanceof Hero){
-				GLog.i( Messages.get(this, "refreshed") );
-				PotionOfHealing.cure(ch);
-
-			if (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING){
-					Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
-				}
-				
-			}
+	@Override
+	public void affectHero(Char ch, boolean isWarden) {
+		if (isWarden){
+			Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
 		}
+
+		GLog.i( Messages.get(this, "refreshed") );
+		PotionOfHealing.cure(ch);
 	}
 
 	public static class Seed extends Plant.Seed {
