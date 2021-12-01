@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.ExoParticle;
+import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.Heap.Type;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
@@ -180,6 +181,9 @@ public class Hero extends Char {
 		
 		if (boostHP){
 			HP += Math.max(HT - curHT, 0);
+		}
+		if (buff(HPDebuff.class) != null){
+			HT = Math.max(1, HT - (int) buff(HPDebuff.class).count());
 		}
 		HP = Math.min(HP, HT);
 	}
@@ -1466,6 +1470,12 @@ public class Hero extends Char {
 
 		if (buff(RobotBuff.ResistanceTracker.class) != null){
 			dmg /= 4;
+		}
+
+		if (Dungeon.isChallenged(Challenges.NO_HP) && dmg > 0){
+			sprite.emitter().burst(GodfireParticle.FACTORY, 14);
+			Sample.INSTANCE.play(Assets.Sounds.BLAST, 1f, 1.5f);
+			Buff.count(this, HPDebuff.class, dmg / 2f);
 		}
 
 		int preHP = HP + shielding();
