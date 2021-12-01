@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.items.rings;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class RingOfAccuracy extends Ring {
@@ -46,7 +48,12 @@ public class RingOfAccuracy extends Ring {
 	}
 	
 	public static float accuracyMultiplier( Char target ){
-		return Math.min(2f, (float)Math.pow(1.3f, getBuffedBonus(target, Accuracy.class)));
+		float acc = Math.min(2f, (float) Math.pow(1.3f, getBuffedBonus(target, Accuracy.class)));
+		Hunger hunger = Dungeon.hero.buff(Hunger.class);
+		if (hunger != null && hunger.accumulatingDamage > 0){
+			acc *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);
+		}
+		return acc;
 	}
 	
 	public class Accuracy extends RingBuff {

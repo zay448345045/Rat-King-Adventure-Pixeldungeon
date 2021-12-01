@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2;
 
 import com.badlogic.gdx.utils.OrderedMap;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Item;
 
@@ -38,24 +39,29 @@ public class Challenges {
 	public static final int CHAMPION_ENEMIES	= 128;
 	public static final int STRONGER_BOSSES 	= 256;
 
-	public static final int MAX_VALUE           = 511;
+	public static final int FATIQUE             = 512;
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
 	static {
-		defaultChals.put("champion_enemies", 128);
-		defaultChals.put("stronger_bosses", 256);
-		defaultChals.put("no_food", 1);
-		defaultChals.put("no_armor", 2);
-		defaultChals.put("no_healing", 4);
-		defaultChals.put("no_herbalism", 8);
-		defaultChals.put("swarm_intelligence", 16);
-		defaultChals.put("darkness", 32);
-		defaultChals.put("no_scrolls", 64);
+		defaultChals.put("champion_enemies", CHAMPION_ENEMIES);
+		defaultChals.put("stronger_bosses", STRONGER_BOSSES);
+		defaultChals.put("no_food", NO_FOOD);
+		defaultChals.put("no_armor", NO_ARMOR);
+		defaultChals.put("no_healing", NO_HEALING);
+		defaultChals.put("no_herbalism", NO_HERBALISM);
+		defaultChals.put("swarm_intelligence", SWARM_INTELLIGENCE);
+		defaultChals.put("darkness", DARKNESS);
+		defaultChals.put("no_scrolls", NO_SCROLLS);
 	}
 
 	//summoning's solution would be better, but cmon, conduct refactoring for meme dlc?
 	public static OrderedMap<String, Integer> availableChallenges(){
 		OrderedMap<String, Integer> chals = new OrderedMap<>(defaultChals);
+		if (DeviceCompat.isDebug()){
+			chals.put("fatique", FATIQUE);
+		} else {
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
+		}
 		return chals;
 	}
 

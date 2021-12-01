@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.items.rings;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class RingOfEvasion extends Ring {
@@ -46,7 +48,12 @@ public class RingOfEvasion extends Ring {
 	}
 	
 	public static float evasionMultiplier( Char target ){
-		return Math.min(2f, (float) Math.pow( 1.15, getBuffedBonus(target, Evasion.class)));
+		float eva = Math.min(2f, (float) Math.pow(1.15, getBuffedBonus(target, Evasion.class)));
+		Hunger hunger = Dungeon.hero.buff(Hunger.class);
+		if (hunger != null && hunger.accumulatingDamage > 0){
+			eva *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);
+		}
+		return eva;
 	}
 
 	public class Evasion extends RingBuff {

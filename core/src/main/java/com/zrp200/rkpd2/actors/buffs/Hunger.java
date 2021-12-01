@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -45,15 +46,18 @@ public class Hunger extends Buff implements Hero.Doom {
 
 	private float level;
 	private float partialDamage;
+	public int accumulatingDamage;
 
 	private static final String LEVEL			= "level";
 	private static final String PARTIALDAMAGE 	= "partialDamage";
+	private static final String ACCUMDAMAGE 	= "accumulatedDamage";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
 		bundle.put( LEVEL, level );
 		bundle.put( PARTIALDAMAGE, partialDamage );
+		bundle.put( ACCUMDAMAGE, accumulatingDamage);
 	}
 
 	@Override
@@ -61,6 +65,7 @@ public class Hunger extends Buff implements Hero.Doom {
 		super.restoreFromBundle( bundle );
 		level = bundle.getFloat( LEVEL );
 		partialDamage = bundle.getFloat(PARTIALDAMAGE);
+		accumulatingDamage = bundle.getInt(ACCUMDAMAGE);
 	}
 
 	@Override
@@ -81,6 +86,8 @@ public class Hunger extends Buff implements Hero.Doom {
 
 				if (partialDamage > 1){
 					target.damage( (int)partialDamage, this);
+					if (Dungeon.isChallenged(Challenges.FATIQUE))
+						accumulatingDamage += (int)partialDamage;
 					partialDamage -= (int)partialDamage;
 				}
 				

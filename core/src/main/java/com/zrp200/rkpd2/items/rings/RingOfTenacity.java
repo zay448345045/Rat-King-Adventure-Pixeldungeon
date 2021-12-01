@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.items.rings;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class RingOfTenacity extends Ring {
@@ -47,7 +49,12 @@ public class RingOfTenacity extends Ring {
 
 	public static float damageMultiplier( Char t ){
 		//(HT - HP)/HT = heroes current % missing health.
-		return Math.max(0.33f, (float)Math.pow(0.85, getBuffedBonus( t, Tenacity.class)*((float)(t.HT - t.HP)/t.HT)));
+		float ten = Math.max(0.33f, (float) Math.pow(0.85, getBuffedBonus(t, Tenacity.class) * ((float) (t.HT - t.HP) / t.HT)));
+		Hunger hunger = Dungeon.hero.buff(Hunger.class);
+		if (hunger != null && hunger.accumulatingDamage > 0){
+			ten /= Math.max(0.75f, 1f - (float)hunger.accumulatingDamage/t.HT/2);
+		}
+		return ten;
 	}
 
 	public class Tenacity extends RingBuff {

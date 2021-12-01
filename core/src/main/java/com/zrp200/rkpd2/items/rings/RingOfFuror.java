@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.items.rings;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class RingOfFuror extends Ring {
@@ -46,7 +48,12 @@ public class RingOfFuror extends Ring {
 	}
 
 	public static float attackSpeedMultiplier(Char target ){
-		return Math.min(2f, (float)Math.pow(1.105, getBuffedBonus(target, Furor.class)));
+		float min = Math.min(2f, (float) Math.pow(1.105, getBuffedBonus(target, Furor.class)));
+		Hunger hunger = Dungeon.hero.buff(Hunger.class);
+		if (hunger != null && hunger.accumulatingDamage > 0){
+			min *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);
+		}
+		return min;
 	}
 
 	public class Furor extends RingBuff {
