@@ -434,6 +434,9 @@ public class Hero extends Char {
 		}
 		Buff.affect( this, Regeneration.class );
 		Buff.affect( this, Hunger.class );
+		if (Dungeon.isChallenged(Challenges.FORGET_PATH)){
+			Buff.affect(this, AmnesiaBuff.class);
+		}
 	}
 	
 	public int tier() {
@@ -1418,6 +1421,10 @@ public class Hero extends Char {
 		WandOfLivingEarth.RockArmor rockArmor = buff(WandOfLivingEarth.RockArmor.class);
 		if (rockArmor != null) {
 			damage = rockArmor.absorb(damage);
+		}
+
+		if (Dungeon.isChallenged(Challenges.FORGET_PATH) && Random.Int(5) == 0){
+			Buff.affect(this, Blindness.class, 5f);
 		}
 		
 		return damage;

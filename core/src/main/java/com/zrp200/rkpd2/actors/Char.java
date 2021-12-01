@@ -657,6 +657,7 @@ public abstract class Char extends Actor {
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
+		if (Dungeon.isChallenged(Challenges.FORGET_PATH)) speed *= 1.2f;
 		if (Ratmogrify.drratedonEffect(this) > 1) {
 			speed *= 3f;
 			Momentum momentum = Dungeon.hero.buff(Momentum.class);
