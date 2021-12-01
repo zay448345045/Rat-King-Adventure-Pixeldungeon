@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2;
 
+import com.badlogic.gdx.utils.OrderedMap;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Item;
 
@@ -39,25 +40,28 @@ public class Challenges {
 
 	public static final int MAX_VALUE           = 511;
 
-	public static final String[] NAME_IDS = {
-			"champion_enemies",
-			"stronger_bosses",
-			"no_food",
-			"no_armor",
-			"no_healing",
-			"no_herbalism",
-			"swarm_intelligence",
-			"darkness",
-			"no_scrolls"
-	};
+	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
+	static {
+		defaultChals.put("champion_enemies", 128);
+		defaultChals.put("stronger_bosses", 256);
+		defaultChals.put("no_food", 1);
+		defaultChals.put("no_armor", 2);
+		defaultChals.put("no_healing", 4);
+		defaultChals.put("no_herbalism", 8);
+		defaultChals.put("swarm_intelligence", 16);
+		defaultChals.put("darkness", 32);
+		defaultChals.put("no_scrolls", 64);
+	}
 
-	public static final int[] MASKS = {
-			CHAMPION_ENEMIES, STRONGER_BOSSES, NO_FOOD, NO_ARMOR, NO_HEALING, NO_HERBALISM, SWARM_INTELLIGENCE, DARKNESS, NO_SCROLLS
-	};
+	//summoning's solution would be better, but cmon, conduct refactoring for meme dlc?
+	public static OrderedMap<String, Integer> availableChallenges(){
+		OrderedMap<String, Integer> chals = new OrderedMap<>(defaultChals);
+		return chals;
+	}
 
 	public static int activeChallenges(){
 		int chCount = 0;
-		for (int ch : Challenges.MASKS){
+		for (int ch : Challenges.availableChallenges().values().toArray()){
 			if ((Dungeon.challenges & ch) != 0) chCount++;
 		}
 		return chCount;

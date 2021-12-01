@@ -119,7 +119,7 @@ public class Amulet extends Item {
 				public void afterCreate() {
 					Badges.validateVictory();
 					Badges.validateSecretMastery();
-					Badges.validateChampion(Challenges.activeChallenges());
+					Badges.validateChampion(Challenges.activeChallenges(), Dungeon.challenges);
 					Badges.saveGlobal();
 				}
 			});

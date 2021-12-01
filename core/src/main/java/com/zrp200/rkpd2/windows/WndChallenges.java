@@ -21,16 +21,14 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.ui.CheckBox;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.ui.*;
 
 import java.util.ArrayList;
 
@@ -62,15 +60,17 @@ public class WndChallenges extends Window {
 		boxes = new ArrayList<>();
 
 		float pos = TTL_HEIGHT;
-		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
+		OrderedMap<String, Integer> challenges = Challenges.availableChallenges();
+		int i = 0;
+		for (ObjectMap.Entry<String, Integer> chal : challenges.entries()) {
 
-			final String challenge = Challenges.NAME_IDS[i];
+			final String challenge = chal.key;
 			
 			CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
-			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
+			cb.checked( (checked & chal.value) != 0 );
 			cb.active = editable;
 
-			if (i > 0) {
+			if (++i > 0) {
 				pos += GAP;
 			}
 			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
@@ -103,7 +103,7 @@ public class WndChallenges extends Window {
 			int value = 0;
 			for (int i=0; i < boxes.size(); i++) {
 				if (boxes.get( i ).checked()) {
-					value |= Challenges.MASKS[i];
+					value |= Challenges.availableChallenges().values().toArray().get(i);
 				}
 			}
 			SPDSettings.challenges( value );

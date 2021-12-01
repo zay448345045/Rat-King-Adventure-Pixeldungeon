@@ -145,6 +145,15 @@ public class Badges {
 		VICTORY_ALL_CLASSES         ( 98, true ),
 		GAMES_PLAYED_3              ( 99, true ),
 		CHAMPION_1                  ( 100 ),
+		CHAMPED_NO_FOOD,
+		CHAMPED_NO_ARMOR,
+		CHAMPED_NO_HEALING,
+		CHAMPED_NO_HERBALISM,
+		CHAMPED_SWARM,
+		CHAMPED_DARKNESS,
+		CHAMPED_NO_SCROLLS,
+		CHAMPED_CHAMPS,
+		CHAMPED_BOSSES,
 
 		//diamond
 		GAMES_PLAYED_4              ( 112, true ),
@@ -820,7 +829,7 @@ public class Badges {
 		displayBadge( Badge.HAPPY_END );
 	}
 
-	public static void validateChampion( int challenges ) {
+	public static void validateChampion( int challenges, int mask ) {
 		if (challenges == 0) return;
 		Badge badge = null;
 		if (challenges >= 1) {
@@ -842,6 +851,32 @@ public class Badges {
 		}
 		local.add(badge);
 		displayBadge( badge );
+		for (int ch : Challenges.availableChallenges().values().toArray()){
+			if ((mask & ch) != 0){
+				Badge b;
+				switch (ch){
+					case Challenges.CHAMPION_ENEMIES: default:
+						b = Badge.CHAMPED_CHAMPS; break;
+					case Challenges.STRONGER_BOSSES:
+						b = Badge.CHAMPED_BOSSES; break;
+					case Challenges.NO_FOOD:
+						b = Badge.CHAMPED_NO_FOOD; break;
+					case Challenges.NO_ARMOR:
+						b = Badge.CHAMPED_NO_ARMOR; break;
+					case Challenges.NO_HEALING:
+						b = Badge.CHAMPED_NO_HEALING; break;
+					case Challenges.NO_HERBALISM:
+						b = Badge.CHAMPED_NO_HERBALISM; break;
+					case Challenges.SWARM_INTELLIGENCE:
+						b = Badge.CHAMPED_SWARM; break;
+					case Challenges.DARKNESS:
+						b = Badge.CHAMPED_DARKNESS; break;
+					case Challenges.NO_SCROLLS:
+						b = Badge.CHAMPED_NO_SCROLLS; break;
+				}
+				local.add(b);
+			}
+		}
 	}
 	
 	private static void displayBadge( Badge badge ) {
