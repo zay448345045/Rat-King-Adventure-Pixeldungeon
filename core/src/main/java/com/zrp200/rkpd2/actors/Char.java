@@ -1044,6 +1044,9 @@ public abstract class Char extends Actor {
 	protected final HashSet<Class> resistances = new HashSet<>();
 
 	public float resistanceValue(Class effect){
+		if (Dungeon.isChallenged(Challenges.BURN)){
+			return 0.33f;
+		}
 		return 0.5f;
 	}
 

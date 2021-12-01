@@ -164,7 +164,7 @@ public class WndChallenges extends Window {
 		}
 
 		protected boolean onClick(float x, float y) {
-			if (!inside(x, y)) return false;
+			if (!inside(x, y) || !editable) return false;
 			Sample.INSTANCE.play(Assets.Sounds.CLICK);
 			onClick();
 			return true;
@@ -174,7 +174,6 @@ public class WndChallenges extends Window {
 		protected void layout() {
 			super.layout();
 			hotArea.width = hotArea.height = 0;
-			if (!editable) icon.alpha(0f);
 		}
 	}
 }

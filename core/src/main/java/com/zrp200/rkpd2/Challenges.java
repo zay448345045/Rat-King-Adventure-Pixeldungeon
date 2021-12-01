@@ -42,6 +42,7 @@ public class Challenges {
 	public static final int FATIQUE             = 512;
 	public static final int NO_ACCURACY         = 1024;
 	public static final int NO_HP               = 2048;
+	public static final int BURN                = 4096;
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
 	static {
@@ -63,10 +64,12 @@ public class Challenges {
 			chals.put("fatique", FATIQUE);
 			chals.put("no_accuracy", NO_ACCURACY);
 			chals.put("no_hp", NO_HP);
+			chals.put("burn", BURN);
 		} else {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HEALING)) chals.put("no_hp", NO_HP);
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HERBALISM)) chals.put("burn", BURN);
 		}
 		return chals;
 	}

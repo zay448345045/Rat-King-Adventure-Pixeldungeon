@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Rect;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.levels.Level;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Rect;
-import com.watabou.utils.Reflection;
 
 public class Blob extends Actor {
 
@@ -229,8 +229,12 @@ public class Blob extends Actor {
 	
 	@SuppressWarnings("unchecked")
 	public static<T extends Blob> T seed( int cell, int amount, Class<T> type, Level level ) {
-		
-		T gas = (T)level.blobs.get( type );
+		T gas;
+		try {
+			gas = (T) level.blobs.get(type);
+		} catch (NullPointerException e){
+			return (T) new Blob();
+		}
 		
 		if (gas == null) {
 			gas = Reflection.newInstance(type);

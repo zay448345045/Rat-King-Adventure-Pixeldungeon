@@ -78,6 +78,10 @@ public abstract class Mob extends Char {
 		actPriority = MOB_PRIO;
 		
 		alignment = Alignment.ENEMY;
+		if (Dungeon.isChallenged(Challenges.BURN)){
+			resistances.add(Burning.class);
+			resistances.add(FrostBurn.class);
+		}
 	}
 	
 	private static final String	TXT_DIED	= "You hear something died in the distance";

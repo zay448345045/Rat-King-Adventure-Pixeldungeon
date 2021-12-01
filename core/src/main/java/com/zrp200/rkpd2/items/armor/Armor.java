@@ -688,6 +688,7 @@ public class Armor extends EquipableItem {
 		@SuppressWarnings("unchecked")
 		public static Glyph randomUncommon( Class<? extends Glyph> ... toIgnore ){
 			ArrayList<Class<?>> glyphs = new ArrayList<>(Arrays.asList(uncommon));
+			if (Dungeon.isChallenged(Challenges.BURN)) glyphs.remove(Brimstone.class);
 			glyphs.removeAll(Arrays.asList(toIgnore));
 			if (glyphs.isEmpty()) {
 				return random();

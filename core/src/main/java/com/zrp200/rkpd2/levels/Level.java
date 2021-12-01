@@ -29,10 +29,7 @@ import com.watabou.utils.*;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Blob;
-import com.zrp200.rkpd2.actors.blobs.SmokeScreen;
-import com.zrp200.rkpd2.actors.blobs.Web;
-import com.zrp200.rkpd2.actors.blobs.WellWater;
+import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -764,6 +761,12 @@ public abstract class Level implements Bundlable {
 						break;
 					}
 				}
+			}
+		}
+
+		if (Dungeon.isChallenged(Challenges.BURN)){
+			if (terrain == Terrain.GRASS || terrain == Terrain.FURROWED_GRASS || terrain == Terrain.HIGH_GRASS) {
+				GameScene.add(Fire.seed(cell, 2, Fire.class));
 			}
 		}
 	}

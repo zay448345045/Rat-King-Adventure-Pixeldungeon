@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -52,7 +53,7 @@ public class Fire extends Blob {
 			for (int j = area.top-1; j <= area.bottom; j++) {
 				cell = i + j*Dungeon.level.width();
 				if (cur[cell] > 0) {
-					
+
 					if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
 						freeze.clear(cell);
 						off[cell] = cur[cell] = 0;
@@ -62,6 +63,11 @@ public class Fire extends Blob {
 					burn( cell, fireClass );
 
 					fire = cur[cell] - 1;
+
+					if (Dungeon.isChallenged(Challenges.BURN)){
+						fire++;
+					}
+
 					if (fire <= 0 && flamable[cell]) {
 
 						Dungeon.level.destroy( cell );
@@ -74,6 +80,7 @@ public class Fire extends Blob {
 				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
 
 					if (flamable[cell]
+							&& !Dungeon.isChallenged(Challenges.BURN)
 							&& (cur[cell-1] > 0
 							|| cur[cell+1] > 0
 							|| cur[cell-Dungeon.level.width()] > 0
@@ -88,7 +95,6 @@ public class Fire extends Blob {
 				} else {
 					fire = 0;
 				}
-
 				volume += (off[cell] = fire);
 			}
 		}

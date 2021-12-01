@@ -23,8 +23,12 @@ package com.zrp200.rkpd2.levels.painters;
 
 import com.watabou.noosa.Game;
 import com.watabou.utils.*;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Patch;
@@ -350,6 +354,9 @@ public abstract class RegularPainter extends Painter {
 		for (int i : grassCells) {
 			if (l.heaps.get(i) != null || l.findMob(i) != null) {
 				l.map[i] = Terrain.GRASS;
+				if (Dungeon.isChallenged(Challenges.BURN)){
+					Actor.add(Blob.seed(i, 2, Fire.class, l));
+				}
 				continue;
 			}
 			
@@ -360,6 +367,9 @@ public abstract class RegularPainter extends Painter {
 				}
 			}
 			l.map[i] = (Random.Float() < count / 12f) ? Terrain.HIGH_GRASS : Terrain.GRASS;
+			if (Dungeon.isChallenged(Challenges.BURN)){
+				Actor.add(Blob.seed(i, 2, Fire.class, l));
+			}
 		}
 	}
 	

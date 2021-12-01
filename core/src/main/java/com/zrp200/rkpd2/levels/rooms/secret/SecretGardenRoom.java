@@ -21,6 +21,12 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.Foliage;
 import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
 import com.zrp200.rkpd2.levels.Level;
@@ -28,7 +34,6 @@ import com.zrp200.rkpd2.levels.Patch;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.plants.Starflower;
-import com.watabou.utils.Random;
 
 public class SecretGardenRoom extends SecretRoom {
 	
@@ -42,6 +47,9 @@ public class SecretGardenRoom extends SecretRoom {
 			for (int j=left + 1; j < right; j++) {
 				if (grass[xyToPatchCoords(j, i)]) {
 					level.map[i * level.width() + j] = Terrain.HIGH_GRASS;
+					if (Dungeon.isChallenged(Challenges.BURN)){
+						Actor.add(Blob.seed(i, 2, Fire.class, level));
+					}
 				}
 			}
 		}

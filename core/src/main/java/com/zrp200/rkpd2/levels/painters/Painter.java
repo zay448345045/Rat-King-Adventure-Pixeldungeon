@@ -21,10 +21,16 @@
 
 package com.zrp200.rkpd2.levels.painters;
 
-import com.zrp200.rkpd2.levels.Level;
-import com.zrp200.rkpd2.levels.rooms.Room;
 import com.watabou.utils.Point;
 import com.watabou.utils.Rect;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Fire;
+import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.levels.rooms.Room;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +47,9 @@ public abstract class Painter {
 
 	public static void set( Level level, int cell, int value ) {
 		level.map[cell] = value;
+		if (Dungeon.isChallenged(Challenges.BURN) && (value == Terrain.GRASS || value == Terrain.HIGH_GRASS)){
+			Actor.add(Blob.seed(cell, 2, Fire.class, level));
+		}
 	}
 	
 	public static void set( Level level, int x, int y, int value ) {
@@ -58,6 +67,11 @@ public abstract class Painter {
 		int pos = y * width + x;
 		for (int i=y; i < y + h; i++, pos += width) {
 			Arrays.fill( level.map, pos, pos + w, value );
+			if (Dungeon.isChallenged(Challenges.BURN) && (value == Terrain.GRASS || value == Terrain.HIGH_GRASS)){
+				for (int l = pos; l < pos + w; l++) {
+					Actor.add(Blob.seed(i, 2, Fire.class, level));
+				}
+			}
 		}
 	}
 	

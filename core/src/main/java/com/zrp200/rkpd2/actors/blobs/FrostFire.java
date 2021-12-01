@@ -24,6 +24,7 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -43,7 +44,7 @@ public class FrostFire extends Blob {
 
 		boolean[] flamable = Dungeon.level.flamable;
 		int cell;
-		int fire;
+		int fire = 0;
 		
 		Fire firetile = (Fire) Dungeon.level.blobs.get( Fire.class );
 
@@ -63,7 +64,7 @@ public class FrostFire extends Blob {
 					burn( cell );
 
 					fire = cur[cell] - 1;
-					if (fire <= 0 && (flamable[cell])) {
+					if (fire <= 0 && flamable[cell] && !Dungeon.isChallenged(Challenges.BURN)) {
 
 						Dungeon.level.destroy( cell );
 
