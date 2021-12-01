@@ -538,7 +538,7 @@ public abstract class Level implements Bundlable {
 				}
 			}
 
-			if (count < Dungeon.level.nMobs()) {
+			if (Dungeon.isChallenged(Challenges.HERO_PATHING) || count < Dungeon.level.nMobs()) {
 
 				PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 
@@ -567,12 +567,14 @@ public abstract class Level implements Bundlable {
 	}
 
 	public float respawnCooldown(){
+		float timeToRespawn = TIME_TO_RESPAWN;
+		if (Dungeon.isChallenged(Challenges.HERO_PATHING)) timeToRespawn *= 0.5f;
 		if (Statistics.amuletObtained){
-			return TIME_TO_RESPAWN/2f;
+			return timeToRespawn /2f;
 		} else if (Dungeon.level.feeling == Feeling.DARK){
-			return 2*TIME_TO_RESPAWN/3f;
+			return 2* timeToRespawn /3f;
 		} else {
-			return TIME_TO_RESPAWN;
+			return timeToRespawn;
 		}
 	}
 	
@@ -588,6 +590,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public int randomDestination( Char ch ) {
+		if (Dungeon.isChallenged(Challenges.HERO_PATHING) && Random.Int(10) < 7) return Dungeon.hero.pos;
 		int cell;
 		do {
 			cell = Random.Int( length() );

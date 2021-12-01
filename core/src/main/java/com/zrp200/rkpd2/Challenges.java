@@ -43,6 +43,8 @@ public class Challenges {
 	public static final int NO_ACCURACY         = 1024;
 	public static final int NO_HP               = 2048;
 	public static final int BURN                = 4096;
+	public static final int HERO_PATHING        = 8192;
+
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
 	static {
@@ -65,11 +67,13 @@ public class Challenges {
 			chals.put("no_accuracy", NO_ACCURACY);
 			chals.put("no_hp", NO_HP);
 			chals.put("burn", BURN);
+			chals.put("hero_pathing", HERO_PATHING);
 		} else {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HEALING)) chals.put("no_hp", NO_HP);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HERBALISM)) chals.put("burn", BURN);
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_SWARM)) chals.put("hero_pathing", HERO_PATHING);
 		}
 		return chals;
 	}
