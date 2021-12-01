@@ -23,6 +23,9 @@ package com.zrp200.rkpd2.windows;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.OrderedMap;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
@@ -34,19 +37,23 @@ import java.util.ArrayList;
 
 public class WndChallenges extends Window {
 
-	private static final int WIDTH		= 120;
+	private final int WIDTH = 120;
+	private final int HEIGHT = Math.min((Challenges.availableChallenges().size+1)*(BTN_HEIGHT+GAP),
+			(int) (PixelScene.uiCamera.height * 0.9));
 	private static final int TTL_HEIGHT = 16;
 	private static final int BTN_HEIGHT = 16;
 	private static final int GAP        = 1;
 
 	private boolean editable;
-	private ArrayList<CheckBox> boxes;
+	private ArrayList<IconButton> infos = new ArrayList<>();
+	private ArrayList<ConduitBox> boxes;
 
 	public WndChallenges( int checked, boolean editable ) {
 
 		super();
 
 		this.editable = editable;
+		resize(WIDTH, HEIGHT);
 
 		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 12 );
 		title.hardlight( TITLE_COLOR );
@@ -59,14 +66,48 @@ public class WndChallenges extends Window {
 
 		boxes = new ArrayList<>();
 
-		float pos = TTL_HEIGHT;
+		float pos = 2;
 		OrderedMap<String, Integer> challenges = Challenges.availableChallenges();
 		int i = 0;
+
+		ScrollPane pane = new ScrollPane(new Component()) {
+			@Override
+			public void onClick(float x, float y) {
+				int size = boxes.size();
+				if (editable) {
+					for (int i = 0; i < size; i++) {
+						if (boxes.get(i).onClick(x, y)) break;
+					}
+				}
+				size = infos.size();
+				for (int i = 0; i < size; i++) {
+					if (infos.get(i).inside(x, y)) {
+						String challenge = challenges.keys().toArray().get(i);
+
+						ShatteredPixelDungeon.scene().add(
+								new WndTitledMessage(Icons.get(Icons.CHALLENGE_ON),
+										Messages.titleCase(Messages.get(Challenges.class, challenge)),
+										Messages.get(Challenges.class, challenge+"_desc"))
+						);
+
+						break;
+					}
+				}
+			}
+		};
+		add(pane);
+		pane.setRect(0, title.bottom()+2, WIDTH, HEIGHT - title.bottom() - 2);
+		Component content = pane.content();
+
 		for (ObjectMap.Entry<String, Integer> chal : challenges.entries()) {
 
 			final String challenge = chal.key;
+			String chaltitle = Messages.titleCase(Messages.get(Challenges.class, challenge));
+			if (!Challenges.defaultChals.keys().toArray().contains(challenge, false)){
+				chaltitle = "_" + chaltitle + "_";
+			}
 			
-			CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
+			ConduitBox cb = new ConduitBox( chaltitle );
 			cb.checked( (checked & chal.value) != 0 );
 			cb.active = editable;
 
@@ -75,25 +116,24 @@ public class WndChallenges extends Window {
 			}
 			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
 
-			add( cb );
+			content.add( cb );
 			boxes.add( cb );
-			
-			IconButton info = new IconButton(Icons.get(Icons.INFO)){
+
+			IconButton info = new IconButton(Icons.get(Icons.INFO)) {
 				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().add(
-							new WndMessage(Messages.get(Challenges.class, challenge+"_desc"))
-					);
+				protected void layout() {
+					super.layout();
+					hotArea.y = -5000;
 				}
 			};
 			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
-			add(info);
+			content.add(info);
+			infos.add(info);
 			
 			pos = cb.bottom();
 		}
 
-		resize( WIDTH, (int)pos );
+		content.setSize(WIDTH, pos);
 	}
 
 	@Override
@@ -110,5 +150,31 @@ public class WndChallenges extends Window {
 		}
 
 		super.onBackPressed();
+	}
+
+	public class ConduitBox extends CheckBox{
+
+		public ConduitBox(String label) {
+			super(label);
+		}
+
+		@Override
+		protected void onClick() {
+			super.onClick();
+		}
+
+		protected boolean onClick(float x, float y) {
+			if (!inside(x, y)) return false;
+			Sample.INSTANCE.play(Assets.Sounds.CLICK);
+			onClick();
+			return true;
+		}
+
+		@Override
+		protected void layout() {
+			super.layout();
+			hotArea.width = hotArea.height = 0;
+			if (!editable) icon.alpha(0f);
+		}
 	}
 }
