@@ -22,11 +22,9 @@
 package com.zrp200.rkpd2.actors;
 
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
@@ -436,6 +434,11 @@ public abstract class Char extends Actor {
 			if (!enemy.isAlive()){
 				return true;
 			}
+			if (Dungeon.isChallenged(Challenges.NO_ACCURACY)){
+				effectiveDamage *= GameMath.gate(0.75f,
+						acuRoll(this, attackSkill( enemy ), accMulti)/
+						defRoll(this, enemy, enemy.defenseSkill(this), accMulti), 1.25f);
+			}
 
 			enemy.damage( effectiveDamage, this );
 			if (this instanceof Hero){
@@ -519,6 +522,36 @@ public abstract class Char extends Actor {
 	public static int INFINITE_ACCURACY = 1_000_000;
 	public static int INFINITE_EVASION = 1_000_000;
 
+	public static float acuRoll(Char attacker, float acuStat, float accMulti){
+		float acuRoll = Random.Float( acuStat );
+		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
+		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
+		if (attacker.buff(Shrink.class)!= null || attacker.buff(TimedShrink.class)!= null) acuRoll *= 0.6f;
+		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
+			acuRoll *= buff.evasionAndAccuracyFactor();
+		}
+		return acuRoll*accMulti;
+	}
+
+	public static float defRoll(Char attacker, Char defender, float defStat, float accMulti) {
+		float defRoll = Random.Float( defStat );
+		if (defender == hero && hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE) && accMulti == 2f) {
+			defRoll *= 2;
+		}
+		else if (defender == hero && hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE) > 1 && !Dungeon.level.adjacent(attacker.pos, defender.pos)){
+			defRoll *= 1.5f;
+		}
+		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
+		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
+		if (defender.buff(Shrink.class)!= null || defender.buff(TimedShrink.class)!= null) defRoll *= 0.8f;
+		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
+			defRoll *= buff.evasionAndAccuracyFactor();
+		}
+		return defRoll;
+	}
+
+
+
 	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f);
 	}
@@ -536,26 +569,12 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
-		float acuRoll = Random.Float( acuStat );
-		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
-		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
-		if (attacker.buff(Shrink.class)!= null || attacker.buff(TimedShrink.class)!= null) acuRoll *= 0.6f;
-		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
-			acuRoll *= buff.evasionAndAccuracyFactor();
-		}
+		float acuRoll = acuRoll(attacker, defStat, accMulti);
 		
-		float defRoll = Random.Float( defStat );
-		if (defender == hero && hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE) && accMulti == 2f) {
-			defRoll *= 2;
-		}
-		else if (defender == hero && hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE) > 1 && !Dungeon.level.adjacent(attacker.pos, defender.pos)){
-			defRoll *= 1.5f;
-		}
-		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
-		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
-		if (defender.buff(Shrink.class)!= null || defender.buff(TimedShrink.class)!= null) defRoll *= 0.8f;
-		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
-			defRoll *= buff.evasionAndAccuracyFactor();
+		float defRoll = defRoll(attacker, defender, defStat, accMulti);
+
+		if (Dungeon.isChallenged(Challenges.NO_ACCURACY)){
+			return true;
 		}
 		
 		return (acuRoll * accMulti) >= defRoll;
