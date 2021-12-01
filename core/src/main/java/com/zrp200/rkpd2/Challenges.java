@@ -66,7 +66,7 @@ public class Challenges {
 		} else {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_hp", NO_HP);
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HEALING)) chals.put("no_hp", NO_HP);
 		}
 		return chals;
 	}
