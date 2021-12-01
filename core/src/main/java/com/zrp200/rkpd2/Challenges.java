@@ -45,6 +45,7 @@ public class Challenges {
 	public static final int BURN                = 4096;
 	public static final int HERO_PATHING        = 8192;
 	public static final int FORGET_PATH         = 16384;
+	public static final int REDUCED_POWER       = 32768;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -70,6 +71,7 @@ public class Challenges {
 			chals.put("burn", BURN);
 			chals.put("hero_pathing", HERO_PATHING);
 			chals.put("forget_path", FORGET_PATH);
+			chals.put("reduced_power", REDUCED_POWER);
 		} else {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
@@ -77,6 +79,7 @@ public class Challenges {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HERBALISM)) chals.put("burn", BURN);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_SWARM)) chals.put("hero_pathing", HERO_PATHING);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_DARKNESS)) chals.put("forget_path", FORGET_PATH);
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_SCROLLS)) chals.put("reduced_power", REDUCED_POWER);
 		}
 		return chals;
 	}

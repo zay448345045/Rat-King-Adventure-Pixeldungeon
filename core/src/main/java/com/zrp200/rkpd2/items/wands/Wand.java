@@ -28,6 +28,7 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -503,6 +504,7 @@ public abstract class Wand extends Item {
 				n++;
 			}
 		}
+		if (!Dungeon.isChallenged(Challenges.REDUCED_POWER))
 		level(n);
 		curCharges += n;
 		

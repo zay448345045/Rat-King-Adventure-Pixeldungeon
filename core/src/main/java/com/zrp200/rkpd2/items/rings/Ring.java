@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.rings;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -229,7 +230,8 @@ public class Ring extends KindofMisc {
 				n++;
 			}
 		}
-		level(n);
+		if (!Dungeon.isChallenged(Challenges.REDUCED_POWER))
+			level(n);
 		
 		//30% chance to be cursed
 		if (Random.Float() < 0.3f) {

@@ -378,7 +378,8 @@ public class CursedWand {
 				do {
 					reward = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
 							Generator.Category.RING, Generator.Category.WAND));
-				} while (reward.level() < 1);
+					if (!Dungeon.isChallenged(Challenges.REDUCED_POWER)) break;
+				} while (reward.level() < 1 );
 				//play vfx/sfx manually as mimic isn't in the scene yet
 				Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1, 0.85f);
 				CellEmitter.get(mimic.pos).burst(Speck.factory(Speck.STAR), 10);

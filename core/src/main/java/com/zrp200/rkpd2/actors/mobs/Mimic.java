@@ -279,7 +279,8 @@ public class Mimic extends Mob {
 		m.pos = pos;
 
 		//generate an extra reward for killing the mimic
-		m.generatePrize();
+		if (!Dungeon.isChallenged(Challenges.REDUCED_POWER))
+			m.generatePrize();
 		
 		return m;
 	}

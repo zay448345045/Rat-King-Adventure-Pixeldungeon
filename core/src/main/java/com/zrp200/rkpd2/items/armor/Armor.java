@@ -506,6 +506,7 @@ public class Armor extends EquipableItem {
 				n++;
 			}
 		}
+		if (!Dungeon.isChallenged(Challenges.REDUCED_POWER))
 		level(n);
 		
 		//30% chance to be cursed

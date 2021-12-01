@@ -26,6 +26,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -230,7 +231,8 @@ public class Imp extends NPC {
 				do {
 					reward = (Ring)Generator.random( Generator.Category.RING );
 				} while (reward.cursed);
-				reward.upgrade( 2 );
+				if (!Dungeon.isChallenged(Challenges.REDUCED_POWER))
+					reward.upgrade( 2 );
 				reward.cursed = true;
 			}
 		}

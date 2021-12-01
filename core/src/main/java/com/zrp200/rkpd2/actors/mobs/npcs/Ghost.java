@@ -28,6 +28,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -318,8 +319,10 @@ public class Ghost extends NPC {
 				} else {
 					itemLevel = 3;
 				}
-				weapon.upgrade(itemLevel);
-				armor.upgrade(itemLevel);
+				if (!Dungeon.isChallenged(Challenges.REDUCED_POWER)) {
+					weapon.upgrade(itemLevel);
+					armor.upgrade(itemLevel);
+				}
 
 				//10% to be enchanted. We store it separately so enchant status isn't revealed early
 				if (Random.Int(10) == 0){

@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.levels;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Bones;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -32,15 +33,15 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.items.Generator;
-import com.zrp200.rkpd2.items.Heap;
-import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.keys.GoldenKey;
+import com.zrp200.rkpd2.items.potions.PotionOfStrength;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.builders.Builder;
@@ -384,10 +385,19 @@ public abstract class RegularLevel extends Level {
 
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
-			drop( item, cell ).type = Heap.Type.HEAP;
-			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-				map[cell] = Terrain.GRASS;
-				losBlocking[cell] = false;
+			if (Dungeon.isChallenged(Challenges.REDUCED_POWER)){
+				if (Dungeon.getDepth() > 1 && findMob(cell) == null
+					&& (item instanceof ScrollOfUpgrade || item instanceof PotionOfStrength ||
+						item instanceof Stylus || item instanceof Torch)){
+					mobs.add(Mimic.spawnAt(cell, item));
+				}
+			}
+			else {
+				drop(item, cell).type = Heap.Type.HEAP;
+				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+					map[cell] = Terrain.GRASS;
+					losBlocking[cell] = false;
+				}
 			}
 		}
 
