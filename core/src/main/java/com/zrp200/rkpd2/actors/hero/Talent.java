@@ -467,7 +467,7 @@ public enum Talent {
 			// somehow I managed to make it even more confusing than before.
 			int factor = talent == HEARTY_MEAL ? 3 : 4;
 			double missingHP = 1-(double)hero.HP/hero.HT;
-			int strength = (int) missingHP * factor;
+			int strength = (int)(missingHP * factor);
 			if(talent != HEARTY_MEAL) strength--; // missing 1/4 hp is not rewarded with healing normally.
 			if(strength-- == 0) return; // adjusting for the addition of one point.
 			strength += points;
@@ -750,7 +750,7 @@ public enum Talent {
 			if(talent == TESTED_HYPOTHESIS) duration = (int)Math.ceil(duration*1.5f); // 3/5
 			Buff.affect(hero, Recharging.class, duration);
 			ScrollOfRecharging.charge(hero);
-		}, TESTED_HYPOTHESIS, ROYAL_INTUITION);
+		}, TESTED_HYPOTHESIS, KINGS_WISDOM);
 	}
 
 	public static int onAttackProc( Hero hero, Char enemy, int dmg ){
