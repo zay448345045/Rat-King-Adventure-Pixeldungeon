@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.items.armor.RatKingArmor;
 import com.zrp200.rkpd2.items.armor.WarriorArmor;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
@@ -122,7 +123,46 @@ public class RKPD2Changes {
 
     final ChangeInfo[][] changes = {
         {
-            new ChangeInfo("DLC-1.3", true, TITLE_COLOR, "Warning! This build is unstable (like really). If you got a problem, let me know."),
+            new ChangeInfo("DLC-1.4", true, TITLE_COLOR, "",
+                    new ChangeButton(WARRIOR,
+                            list(2,
+                                    "Added _Bearing Paw_ as t3 talent: gives extra range, bleeding and lifesteal on low HP.",
+                                    "Added _Combo Meal_ as gladiator talent: gives combo time and combo hits on eating.",
+                                    "Added _Bravery_ as berserker talent: gives extra rage when hero is unarmored against damage.",
+                                    "Added _Pride of Steel_ as brawler talent: armor piercing, extra items and aggro control with specials.")),
+                    new ChangeButton(MAGE,
+                            list(2,
+                                    "Added _Cryonic Spell_ as t3 talent: makes fire-related wands more frosty and buffs frost wand.",
+                                    "Added _Spectre Allies_ as battlemage talent: buffs mirror images to use battlemage's perks.",
+                                    "Added _Banished_ as warlock talent: allows to instakill soul-marked enemies on cooldown.",
+                                    "Added _Mind Break_ as spirit caller talent: wraiths summoned by hero can possess enemies they attack.")),
+                    new ChangeButton(ROGUE,
+                            list(2,
+                                    "Added _Trapper's Mastery_ as t3 talent: reclaims traps hero steps on with cooldown.",
+                                    "Added _Energizing Steps_ as assassin talent: assassinations give artifact recharge.",
+                                    "Added _Olympic Stats_ as freerunner talent: more freerun speed at cost of extra exhaustion.",
+                                    "Added _Mechanical Power_ as Shadowflare talent: buffs melee attacks in robot form.",
+                                    "Assasination-related talents can proc with 40% chance even if kill did not proc assassination.",
+                                    "Innate Lethality have been buffed to +3 (_6%, 20%, 40%, 100%_)")),
+                    new ChangeButton(HUNTRESS,
+                            list(2,
+                                    "Added _Auto-Reload_ as t3 talent: repairs throwning weapons with liquid metal on go.",
+                                    "Added _Archery's Mark_ as sniper talent: arrows bounce for extra damage to nearby enemy.",
+                                    "Added _Indirect Benefits_ as warden talent: warden's plant effects can trigger when mob steps on plant.")),
+                    new ChangeButton(new Kromer(),
+                            list(2,
+                                    "Added brand new material, coming from otherworldy darkness: kromer!",
+                                    "Kromer can be obtained by completing quests or by buying them in shops (beware of scam!)",
+                                    "Usages of kromer include giving you extra talents, significantly upgrading starting items, crafting ultimate versions of PoS and SoU and even potion that allows you to not die!",
+                                    "_This seems a little too fishy to be true..._")),
+                    new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
+                            list(2,
+                                    "Added 9 new challenges that are accessible from beating regular challenges!",
+                                    "Each new challenge is connected to one that unlocks it but has separate effects.",
+                                    "Have fun for trying all of them!")),
+                    bugFixes("_-_ Fixed Frostburn not slowing down characters.")
+            ),
+            new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
             NewContent(
                     new ChangeButton(new ItemSprite(MASK), "Secret Subs",
                             list(2,
@@ -179,6 +219,7 @@ public class RKPD2Changes {
                             "_-_ Fixed miscolored icons for heroes and talents.")
             ),
             new ChangeInfo("v0.2", true, TITLE_COLOR, ""),
+            new ChangeInfo("v0.2.2",false,"", new ChangeButton(WARLOCKS_TOUCH, "Warlock's touch had incorrect mechanics, and now they've been fixed to be what was intended." + list(2, "Warlock's touch's soul mark application change is now actually 15/25/35. Previously it was instead 60/70/80% melee and 65/80/95 for ranged.", "Removed the ability for warlock's touch-applied soul mark to extend itself past 6 turns.")), bugFixes(list(2,"hearty meal not working at all.","royal intuition proccing tested hypothesis instead of king's wisdom."))),
             new ChangeInfo("v0.2.1", false, "",
                     new ChangeButton(get(INFO), "Developer Commentary", "I'm shifting to Shattered's new major.minor.patch versioning system, so even though this is listed as v0.2.1, it's really the equivalent of v0.2.0a.\n\nThis patch has many internal changes to the talent system, so beware of any bugs that may result from this."),
                     new ChangeButton(MULTISHOT, "Adjusted the way multiple sniper's marks are handled internally, to increase consistency of the mechanic:" + list(2,"Using specials with multiple free targets stored will now use them in order of highest level to lowest level.", "When too many snipers marks are stored, the one storing the lowest shared upgrades level is now removed. If all are the same level, 'standard' sniper's marks will be removed before free-targeted marks. Previously level was not considered at all.") + "\nAlso fixed a bunch of issues with multi-shot:" + list(2,"Crash when cancelling targeting a single free-targeted sniper's mark.", "Rare cases where cancelling a special would incorrectly leave the targeting system active.", "Killing a marked enemy with a thrown weapon generating two free-targeted sniper's marks.", "Not being able to use sniper specials if there are less possible targets than available marks.", "Sniper's marks sometimes not detaching when their targets are killed.")),

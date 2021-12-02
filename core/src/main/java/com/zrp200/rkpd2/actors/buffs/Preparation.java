@@ -87,7 +87,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 
 		public float KOThreshold(){
 			if (Dungeon.hero.heroClass == HeroClass.ROGUE){
-				return KOThresholds[ordinal()][2];
+				return KOThresholds[ordinal()][3];
 			}
 			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.RK_ASSASSIN)];
 		}
