@@ -166,6 +166,7 @@ public class RKPD2Changes {
                                     "Added 9 new challenges that are accessible from beating regular challenges!",
                                     "Each new challenge is connected to one that unlocks it but has separate effects.",
                                     "Have fun for trying all of them!")),
+                    misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27."),
                     bugFixes("_-_ Fixed Frostburn not slowing down characters.")
             ),
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
