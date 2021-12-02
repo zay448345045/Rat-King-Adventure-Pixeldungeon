@@ -21,7 +21,9 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.*;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
@@ -32,6 +34,7 @@ import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.TargetedCell;
+import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
@@ -202,6 +205,11 @@ public class YogDzewa extends Mob {
 					} else {
 						ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
 					}
+					if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+						ch.sprite.emitter().burst(GodfireParticle.FACTORY, 14);
+						Sample.INSTANCE.play(Assets.Sounds.BLAST, 1f, 1.5f);
+						Buff.count(this, HPDebuff.class, HT * 0.66f);
+					}
 					ChampionEnemy.AntiMagic.effect(enemy, this);
 
 					if (Dungeon.level.heroFOV[pos]) {
@@ -325,6 +333,9 @@ public class YogDzewa extends Mob {
 	public void damage( int dmg, Object src ) {
 
 		int preHP = HP;
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			dmg /= Math.min(3, phase);
+		}
 		super.damage( dmg, src );
 
 		if (phase == 0 || findFist() != null) return;

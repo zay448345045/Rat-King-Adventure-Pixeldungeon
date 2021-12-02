@@ -65,6 +65,11 @@ public class Goo extends Mob {
 	public int damageRoll() {
 		int min = 1;
 		int max = (HP*2 <= HT) ? 12 : 8;
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			min = 4;
+			max = (HP*2 <= HT) ? 26 : 18;
+			return Random.NormalIntRange( min, max );
+		}
 		if (pumpedUp > 0) {
 			pumpedUp = 0;
 			return Random.NormalIntRange( min*3, max*3 );
@@ -168,7 +173,7 @@ public class Goo extends Mob {
 			spend( attackDelay() );
 
 			return true;
-		} else if (pumpedUp >= 2 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) {
+		} else if (Dungeon.isChallenged(Challenges.EVIL_MODE) || pumpedUp >= 2 || Random.Int( (HP*2 <= HT) ? 2 : 5 ) > 0) {
 
 			boolean visible = Dungeon.level.heroFOV[pos];
 

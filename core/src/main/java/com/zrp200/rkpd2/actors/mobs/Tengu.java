@@ -93,6 +93,9 @@ public class Tengu extends Mob {
 	
 	@Override
 	public int damageRoll() {
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			return Random.NormalIntRange( 11, 14 );
+		}
 		return Random.NormalIntRange( 6, 12 );
 	}
 	
@@ -206,7 +209,15 @@ public class Tengu extends Mob {
 	public boolean canAttack( Char enemy ) {
 		return new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
 	}
-	
+
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			if (Random.Int(4) == 0) Buff.affect(enemy, Slow.class, 1.5f);
+		}
+		return super.attackProc(enemy, damage);
+	}
+
 	private void jump() {
 		
 		//in case tengu hasn't had a chance to act yet
@@ -593,6 +604,9 @@ public class Tengu extends Mob {
 
 							if (dmg > 0) {
 								ch.damage(dmg, Bomb.class);
+								if (Dungeon.isChallenged(Challenges.EVIL_MODE) && Random.Int(3) == 0){
+									Buff.affect(ch, Paralysis.class, 2f);
+								}
 							}
 
 							if (ch == Dungeon.hero && !ch.isAlive()) {
@@ -666,6 +680,9 @@ public class Tengu extends Mob {
 								
 								if (dmg > 0) {
 									ch.damage(dmg, Bomb.class);
+									if (Dungeon.isChallenged(Challenges.EVIL_MODE) && Random.Int(3) == 0){
+										Buff.affect(ch, Paralysis.class, 2f);
+									}
 								}
 								
 								if (ch == Dungeon.hero && !ch.isAlive()) {
@@ -1055,6 +1072,9 @@ public class Tengu extends Mob {
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
 								ch.damage(2 + Dungeon.getDepth(), new Electricity());
+								if (Dungeon.isChallenged(Challenges.EVIL_MODE) && Random.Int(3) == 0){
+									Buff.affect(ch, Paralysis.class, 2f);
+								}
 								
 								if (ch == Dungeon.hero && !ch.isAlive()) {
 									Dungeon.fail(Tengu.class);

@@ -24,11 +24,7 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
@@ -37,20 +33,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.actors.buffs.Chill;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
-import com.zrp200.rkpd2.actors.buffs.Frost;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.buffs.Paralysis;
-import com.zrp200.rkpd2.actors.buffs.Roots;
-import com.zrp200.rkpd2.actors.buffs.Sleep;
-import com.zrp200.rkpd2.actors.buffs.Slow;
-import com.zrp200.rkpd2.actors.buffs.Terror;
-import com.zrp200.rkpd2.actors.buffs.Vertigo;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -164,7 +147,7 @@ public class DM300 extends Mob {
 		}
 
 		//ability logic only triggers if DM is not supercharged
-		if (!supercharged){
+		if (!supercharged || Dungeon.isChallenged(Challenges.EVIL_MODE)){
 			if (turnsSinceLastAbility >= 0) turnsSinceLastAbility++;
 
 			//in case DM-300 hasn't been able to act yet
@@ -281,8 +264,9 @@ public class DM300 extends Mob {
 					}
 				}
 			}
-		} else {
+		}
 
+		if (supercharged){
 			if (!chargeAnnounced){
 				String verb = Messages.get(this,"supercharged"
 						+ (Dungeon.hero.heroClass == HeroClass.RAT_KING ? "_rk" : ""));
@@ -295,7 +279,6 @@ public class DM300 extends Mob {
 				state = HUNTING;
 				enemy = Dungeon.hero;
 			}
-
 		}
 
 		return super.act();
@@ -457,7 +440,9 @@ public class DM300 extends Mob {
 		}
 
 		int threshold;
-		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			threshold = HT / 5 * (4 - pylonsActivated);
+		} else if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 			threshold = HT / 4 * (3 - pylonsActivated);
 		} else {
 			threshold = HT / 3 * (2 - pylonsActivated);
@@ -471,6 +456,9 @@ public class DM300 extends Mob {
 	}
 
 	public int totalPylonsToActivate(){
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			return 4;
+		}
 		return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 3 : 2;
 	}
 
