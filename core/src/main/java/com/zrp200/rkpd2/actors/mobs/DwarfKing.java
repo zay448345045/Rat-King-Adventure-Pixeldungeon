@@ -526,7 +526,9 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 					Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 					sprite.remove(CharSprite.State.SHIELDED);
 					// enter phase 3 and process the rest of the damage
-					HP = HT;
+					if (Dungeon.isChallenged(Challenges.EVIL_MODE))
+						HP = HT;
+					else HP = HP3;
 					enterPhase3(); // skip to phase 3
 					yell("...how can this be???");
 					if(dmg > 0) damage(dmg, src); // apply deferred damage
@@ -571,7 +573,10 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				break;
 		}
 		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) shielding *= 1.5f;
-		HP = HT;
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE))
+			HP = HT;
+		else
+			HP = 50;
 		summonsMade = 4*(3-wavesLeft);
 		sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
