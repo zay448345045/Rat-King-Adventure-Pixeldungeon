@@ -147,6 +147,7 @@ public class RKPD2Changes {
                     new ChangeButton(HUNTRESS,
                             list(2,
                                     "Added _Auto-Reload_ as t3 talent: repairs throwning weapons with liquid metal on go.",
+                                    "Buffed _Point Blank_, now provides the chance to knockback in melee range.",
                                     "Added _Archery's Mark_ as sniper talent: arrows bounce for extra damage to nearby enemy.",
                                     "Added _Indirect Benefits_ as warden talent: warden's plant effects can trigger when mob steps on plant.")),
                     new ChangeButton(new Kromer(),

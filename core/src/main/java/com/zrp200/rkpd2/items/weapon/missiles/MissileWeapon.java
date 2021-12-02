@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.rings.RingOfSharpshooting;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
@@ -44,6 +45,7 @@ import com.zrp200.rkpd2.items.weapon.enchantments.Projecting;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
@@ -224,6 +226,11 @@ abstract public class MissileWeapon extends Weapon {
 					damage = bow.enchantment.proc(this, attacker, defender, damage);
 				}
 			}
+		}
+		if (Random.Int(8) < Dungeon.hero.pointsInTalent(Talent.POINT_BLANK) && Dungeon.level.adjacent(attacker.pos, defender.pos)){
+			Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
+			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
+			WandOfBlastWave.throwChar(defender, trajectory, 2, false);
 		}
 
 		return super.proc(attacker, defender, damage);
