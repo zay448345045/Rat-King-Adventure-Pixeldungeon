@@ -160,7 +160,12 @@ public class Badges {
 		CHAMPION_2                  ( 113 ),
 		CHAMPION_3                  ( 114 ),
 
-		DEFEATED_RK					(115);
+		//neutronium
+		DEFEATED_RK					(115),
+		CHAMPION_4                  (116),
+		CHAMPION_5                  (117),
+		CHAMPION_6                  (118),
+		CHAMPION_7                  (119);
 
 		public boolean meta;
 
@@ -849,6 +854,34 @@ public class Badges {
 			}
 			badge = Badge.CHAMPION_3;
 		}
+		if (challenges >= 9){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_4;
+		}
+		if (challenges >= 12){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_5;
+		}
+		if (challenges >= 15){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_6;
+		}
+		if (challenges >= 18){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_7;
+		}
 		local.add(badge);
 		displayBadge( badge );
 		for (int ch : Challenges.availableChallenges().values().toArray()){
@@ -873,6 +906,10 @@ public class Badges {
 						b = Badge.CHAMPED_DARKNESS; break;
 					case Challenges.NO_SCROLLS:
 						b = Badge.CHAMPED_NO_SCROLLS; break;
+				}
+				if (!global.contains(badge)){
+					global.add(badge);
+					saveNeeded = true;
 				}
 				local.add(b);
 			}
@@ -955,7 +992,7 @@ public class Badges {
 			{Badge.POTIONS_COOKED_1, Badge.POTIONS_COOKED_2, Badge.POTIONS_COOKED_3, Badge.POTIONS_COOKED_4 },
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3}
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4, Badge.CHAMPION_5, Badge.CHAMPION_6, Badge.CHAMPION_7}
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{
@@ -986,7 +1023,7 @@ public class Badges {
 		leaveBest( badges, Badge.ITEM_LEVEL_1, Badge.ITEM_LEVEL_2, Badge.ITEM_LEVEL_3, Badge.ITEM_LEVEL_4 );
 		leaveBest( badges, Badge.POTIONS_COOKED_1, Badge.POTIONS_COOKED_2, Badge.POTIONS_COOKED_3, Badge.POTIONS_COOKED_4 );
 		leaveBest( badges, Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4 );
-		leaveBest( badges, Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3 );
+		leaveBest( badges, Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4, Badge.CHAMPION_5, Badge.CHAMPION_6, Badge.CHAMPION_7);
 
 		for (Badge[] tierReplace : tierBadgeReplacements){
 			leaveBest( badges, tierReplace );
