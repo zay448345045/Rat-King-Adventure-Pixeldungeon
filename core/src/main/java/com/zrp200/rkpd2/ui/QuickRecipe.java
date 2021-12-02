@@ -48,7 +48,9 @@ import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
+import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
+import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
@@ -314,6 +316,10 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new KromerStaff.Recipe()));
 				result.add(new QuickRecipe(new KromerCloak.Recipe()));
 				result.add(new QuickRecipe(new Slingshot.Recipe()));
+				if (Dungeon.depth > 26){
+					result.add(new QuickRecipe(new TerminusBlade.Recipe()));
+				}
+				result.add(new QuickRecipe(new Dagger2.Recipe()));
 				return result;
 			case 5:
 				r = new ExoticPotion.PotionToExotic();
