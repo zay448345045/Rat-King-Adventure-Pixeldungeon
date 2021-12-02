@@ -39,6 +39,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Phantom;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.*;
@@ -161,7 +162,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	//used for just updating a sprite based on a given character, not linking them or placing in the game
 	public void linkVisuals( Char ch ){
-		//do nothin by default
+		if (ch instanceof Mob){
+			scale.set(((Mob) ch).scaleFactor);
+			place(ch.pos);
+		}
 	}
 
 	public PointF worldToCamera( int cell ) {

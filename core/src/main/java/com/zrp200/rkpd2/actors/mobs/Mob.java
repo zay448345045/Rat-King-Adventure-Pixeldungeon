@@ -74,6 +74,8 @@ import static com.zrp200.rkpd2.Dungeon.hero;
 
 public abstract class Mob extends Char {
 
+	public float scaleFactor = 1f;
+
 	{
 		actPriority = MOB_PRIO;
 		
@@ -116,6 +118,7 @@ public abstract class Mob extends Char {
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
 	private static final String MAX_LVL	= "max_lvl";
+	private static final String SCALE   = "scale";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -136,6 +139,7 @@ public abstract class Mob extends Char {
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
 		bundle.put( MAX_LVL, maxLvl );
+		bundle.put( SCALE, scaleFactor);
 	}
 	
 	@Override
@@ -160,6 +164,8 @@ public abstract class Mob extends Char {
 
 		target = bundle.getInt( TARGET );
 
+		if (bundle.contains(SCALE)) scaleFactor = bundle.getFloat( SCALE);
+
 		if (bundle.contains(MAX_LVL)) maxLvl = bundle.getInt(MAX_LVL);
 	}
 	
@@ -183,6 +189,16 @@ public abstract class Mob extends Char {
 	protected boolean act() {
 
 		super.act();
+
+		if (Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor == 1f &&
+				!properties().contains(Property.BOSS) && !properties().contains(Property.MINIBOSS)){
+			scaleFactor = Random.Float(0.5f, 1.75f);
+			HP = HT = (int) (HT * scaleFactor);
+			if (scaleFactor >= 1.25f){
+				HP = HT = (int) (HT * 1.25f);
+			}
+			sprite.linkVisuals(this);
+		}
 
 		if (hero.hasTalent(Talent.LASER_PRECISION)){
 			PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
@@ -582,7 +598,7 @@ public abstract class Mob extends Char {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-			return this.defenseSkill;
+			return (int) (this.defenseSkill/(scaleFactor != 1f ? (0.8f * scaleFactor) : 1));
 		} else {
 			return 0;
 		}
@@ -651,6 +667,24 @@ public abstract class Mob extends Char {
 	
 	public boolean isTargeting( Char ch){
 		return enemy == ch;
+	}
+
+	//2.5x speed to 0.71x speed
+	@Override
+	public float speed() {
+		return super.speed()/(scaleFactor != 1f ? (0.8f * scaleFactor) : 1);
+	}
+
+	//2.5x speed to 0.71x speed
+	@Override
+	public float attackDelay() {
+		return super.attackDelay()*(scaleFactor != 1f ? (0.8f * scaleFactor) : 1);
+	}
+
+	//70% damage to 245% damage
+	@Override
+	public int attackProc(Char enemy, int damage) {
+		return super.attackProc(enemy, (int) (damage*(scaleFactor != 1f ? (1.4f * scaleFactor) : 1)));
 	}
 
 	@Override

@@ -308,6 +308,7 @@ public abstract class Char extends Actor {
 		} else if (hit( this, enemy, accMulti )) {
 			
 			int dr = enemy.drRoll();
+			if (enemy instanceof Mob) dr *= ((Mob) enemy).scaleFactor;
 
 			Barkskin bark = enemy.buff(Barkskin.class);
 			if (bark != null)   dr += Random.NormalIntRange( 0 , bark.level() );
