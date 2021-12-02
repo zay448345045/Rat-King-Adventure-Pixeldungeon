@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.windows;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
@@ -32,6 +33,7 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Wandmaker;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.CorpseDust;
 import com.zrp200.rkpd2.items.quest.Embers;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Rotberry;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -105,6 +107,9 @@ public class WndWandmaker extends Window {
 			GLog.i( Messages.get(Dungeon.hero, "you_now_have", reward.name()) );
 		} else {
 			Dungeon.level.drop( reward, wandmaker.pos ).sprite.drop();
+		}
+		if (Random.Int(2) == 0){
+			Dungeon.level.drop(new Kromer(), wandmaker.pos).sprite.drop();
 		}
 		
 		wandmaker.yell( Messages.get(this, "farewell", Dungeon.hero.name()) );

@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.windows;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
@@ -31,6 +32,7 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -118,6 +120,9 @@ public class WndSadGhost extends Window {
 		
 		ghost.yell( Messages.get(this, "farewell") );
 		ghost.die( null );
+		if (Random.Int(2) == 0){
+			Dungeon.level.drop(new Kromer(), ghost.pos).sprite.drop();
+		}
 		
 		Ghost.Quest.complete();
 	}

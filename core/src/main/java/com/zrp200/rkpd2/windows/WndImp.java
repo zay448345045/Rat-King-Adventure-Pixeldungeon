@@ -21,10 +21,12 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.DwarfToken;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -78,6 +80,9 @@ public class WndImp extends Window {
 			GLog.i( Messages.get(Dungeon.hero, "you_now_have", reward.name()) );
 		} else {
 			Dungeon.level.drop( reward, imp.pos ).sprite.drop();
+		}
+		if (Random.Int(2) == 0){
+			Dungeon.level.drop(new Kromer(), imp.pos).sprite.drop();
 		}
 		
 		imp.flee();
