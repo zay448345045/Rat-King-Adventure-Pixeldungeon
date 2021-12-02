@@ -82,7 +82,7 @@ public class ScoutArmor extends Armor {
     }
 
     public static float maxDamage(){
-        return 3.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.FAN_OF_BLADES, Talent.GROWING_POWER, Talent.GO_FOR_THE_EYES);
+        return 3.5f + 0.25f * Dungeon.hero.pointsInTalent(Talent.HEROIC_ARCHERY);
     }
 
     @Override
