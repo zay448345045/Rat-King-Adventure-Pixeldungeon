@@ -47,6 +47,7 @@ import com.zrp200.rkpd2.sprites.LarvaSprite;
 import com.zrp200.rkpd2.sprites.YogSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
+import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -227,14 +228,22 @@ public class YogDzewa extends Mob {
 			if (abilityCooldown <= 0){
 
 				int beams = 1 + (HT - HP)/400;
+				if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+					beams *= 2;
+				}
 				HashSet<Integer> affectedCells = new HashSet<>();
+				PathFinder.buildDistanceMap( Dungeon.hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.solid, null),
+						Dungeon.isChallenged(Challenges.EVIL_MODE) ? 2 : 1 );
 				for (int i = 0; i < beams; i++){
 
 					int targetPos = Dungeon.hero.pos;
 					if (i != 0){
 						do {
-							targetPos = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[Random.Int(8)];
-						} while (Dungeon.level.trueDistance(pos, Dungeon.hero.pos)
+							do {
+								targetPos = Random.Int(PathFinder.distance.length);
+							} while (PathFinder.distance[targetPos] == Integer.MAX_VALUE);
+						} while (
+								Dungeon.level.trueDistance(pos, Dungeon.hero.pos)
 								> Dungeon.level.trueDistance(pos, targetPos));
 					}
 					targetedCells.add(targetPos);
@@ -563,6 +572,9 @@ public class YogDzewa extends Mob {
 			spriteClass = LarvaSprite.class;
 
 			HP = HT = 20;
+			if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+				HP = HT = 60;
+			}
 			defenseSkill = 12;
 			viewDistance = Light.DISTANCE;
 
@@ -575,6 +587,14 @@ public class YogDzewa extends Mob {
 		@Override
 		public int attackSkill( Char target ) {
 			return 30;
+		}
+
+		@Override
+		public float attackDelay() {
+			if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+				return super.attackDelay()*0.5f;
+			}
+			return super.attackDelay();
 		}
 
 		@Override

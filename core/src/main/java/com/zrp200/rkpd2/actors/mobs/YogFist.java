@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -153,6 +154,17 @@ public abstract class YogFist extends Mob {
 
 	{
 		immunities.add( Sleep.class );
+	}
+
+	@Override
+	protected boolean getCloser(int target) {
+		boolean closer = super.getCloser(target);
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			if (Dungeon.level.adjacent(Dungeon.hero.pos, pos)){
+				closer = super.getCloser(target);
+			}
+		}
+		return closer;
 	}
 
 	@Override
