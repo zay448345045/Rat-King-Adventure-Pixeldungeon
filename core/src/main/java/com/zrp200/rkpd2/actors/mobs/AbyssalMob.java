@@ -6,6 +6,10 @@ import com.zrp200.rkpd2.Dungeon;
 public abstract class AbyssalMob extends Mob {
     public boolean spawned = false;
 
+    {
+        maxLvl = Integer.MAX_VALUE;
+    }
+
     @Override
     protected boolean act() {
         if (!spawned){

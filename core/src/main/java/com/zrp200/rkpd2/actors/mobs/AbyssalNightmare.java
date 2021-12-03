@@ -58,8 +58,7 @@ public class AbyssalNightmare extends AbyssalMob {
 		HP = HT = 620;
 		defenseSkill = 0;
 
-		EXP = 40;
-		maxLvl = 30;
+		EXP = 20;
 
 		flying = true;
 		baseSpeed = 0.5f;

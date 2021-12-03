@@ -54,8 +54,7 @@ public class SpectreRat extends AbyssalMob implements Callback {
 		defenseSkill = 23;
 		viewDistance = Light.DISTANCE;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = Generator.Category.POTION;
 		lootChance = 0.33f;

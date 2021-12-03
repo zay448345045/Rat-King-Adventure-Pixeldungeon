@@ -45,8 +45,7 @@ public class Phantom extends AbyssalMob {
 		HP = HT = 112;
 		defenseSkill = 36;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR);
 		lootChance = 0.125f; //initially, see rollToDropLoot

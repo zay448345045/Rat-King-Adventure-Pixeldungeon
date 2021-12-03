@@ -56,8 +56,7 @@ public class DarkestElf extends AbyssalMob {
 		HP = HT = 145;
 		defenseSkill = 19;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = new PotionOfHealing();
 		lootChance = 0.2f; //see createloot

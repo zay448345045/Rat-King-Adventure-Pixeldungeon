@@ -50,8 +50,7 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 		HP = HT = 90;
 		defenseSkill = 20;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = Generator.random();
 		lootChance = 1f;

@@ -28,8 +28,7 @@ public class Trappet extends AbyssalMob implements Callback {
         defenseSkill = 36;
         viewDistance = Light.DISTANCE;
 
-        EXP = 20;
-        maxLvl = 30;
+        EXP = 13;
 
         loot = new Gold();
         lootChance = 0.45f;

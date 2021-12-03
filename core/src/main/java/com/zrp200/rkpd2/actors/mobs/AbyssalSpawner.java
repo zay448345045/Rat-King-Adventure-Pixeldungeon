@@ -22,8 +22,7 @@ public class AbyssalSpawner extends AbyssalMob {
         HP = HT = 320;
         defenseSkill = 0;
 
-        EXP = 50;
-        maxLvl = 30;
+        EXP = 30;
 
         state = PASSIVE;
 

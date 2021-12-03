@@ -53,8 +53,7 @@ public class Dragon extends AbyssalMob {
         defenseSkill = 45;
         spriteClass = DragonSprite.class;
 
-        EXP = 40;
-        maxLvl = 30;
+        EXP = 20;
         baseSpeed = 2f;
 
         flying = true;

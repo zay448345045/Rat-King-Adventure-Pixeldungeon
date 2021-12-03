@@ -57,8 +57,7 @@ public class BlinkingMan extends AbyssalMob {
 		baseSpeed = 0.75f;
 		flying = true;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = Generator.Category.SCROLL;
 		lootChance = 0.25f;

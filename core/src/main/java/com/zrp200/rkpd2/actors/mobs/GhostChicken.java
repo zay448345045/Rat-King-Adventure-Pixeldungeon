@@ -42,14 +42,22 @@ public class GhostChicken extends AbyssalMob {
 		defenseSkill = 40;
 		baseSpeed = 3f;
 
-		EXP = 20;
-		maxLvl = 30;
+		EXP = 13;
 
 		loot = Generator.random();
 		lootChance = 0.1f;
 
 		properties.add(Property.DEMONIC);
 		properties.add(Property.UNDEAD);
+	}
+
+	@Override
+	protected boolean act() {
+		boolean act = super.act();
+		if (HT >= 15){
+			HP = HT = 15;
+		}
+		return act;
 	}
 
 	@Override

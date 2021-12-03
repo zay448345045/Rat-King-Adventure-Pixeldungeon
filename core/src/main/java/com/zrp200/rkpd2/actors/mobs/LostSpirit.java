@@ -22,8 +22,7 @@ public class LostSpirit extends AbyssalMob implements Callback {
         defenseSkill = 72;
         spriteClass = LostSpiritSprite.class;
 
-        EXP = 40;
-        maxLvl = 30;
+        EXP = 20;
 
         flying = true;
         properties.add(Property.BOSS);

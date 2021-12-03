@@ -375,6 +375,9 @@ public enum Talent {
 		}
 		if (hero != null && hero.talents.get(tier - 1).size() > 4 + tier && tier < 3)
 			max += 2 * (hero.talents.get(tier - 1).size() - (4+tier));
+		if (hero != null && hero.lvl > 30){
+			max += (hero.lvl - 30)/3;
+		}
 		return max;
 	}
 
