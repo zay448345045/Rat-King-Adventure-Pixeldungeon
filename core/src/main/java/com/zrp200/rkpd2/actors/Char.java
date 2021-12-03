@@ -553,7 +553,7 @@ public abstract class Char extends Actor {
 
 
 
-	final public static boolean hit( Char attacker, Char defender, boolean magic ) {
+	public static boolean hit( Char attacker, Char defender, boolean magic ) {
 		return hit(attacker, defender, magic ? 2f : 1f);
 	}
 
@@ -578,7 +578,7 @@ public abstract class Char extends Actor {
 			return true;
 		}
 		
-		return (acuRoll * accMulti) >= defRoll;
+		return acuRoll >= defRoll;
 	}
 	
 	public int attackSkill( Char target ) {
