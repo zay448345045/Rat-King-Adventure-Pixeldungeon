@@ -570,15 +570,33 @@ public abstract class Char extends Actor {
 			return true;
 		}
 
-		float acuRoll = acuRoll(attacker, defStat, accMulti);
-		
-		float defRoll = defRoll(attacker, defender, defStat, accMulti);
+		float acuRoll = Random.Float( acuStat );
+		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
+		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
+		if (attacker.buff(Shrink.class)!= null || attacker.buff(TimedShrink.class)!= null) acuRoll *= 0.6f;
+		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
+			acuRoll *= buff.evasionAndAccuracyFactor();
+		}
+
+		float defRoll = Random.Float( defStat );
+		if (defender == hero && hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE) && accMulti == 2f) {
+			defRoll *= 2;
+		}
+		else if (defender == hero && hero.pointsInTalent(Talent.SCOURGING_THE_UNIVERSE) > 1 && !Dungeon.level.adjacent(attacker.pos, defender.pos)){
+			defRoll *= 1.5f;
+		}
+		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
+		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
+		if (defender.buff(Shrink.class)!= null || defender.buff(TimedShrink.class)!= null) defRoll *= 0.8f;
+		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
+			defRoll *= buff.evasionAndAccuracyFactor();
+		}
 
 		if (Dungeon.isChallenged(Challenges.NO_ACCURACY)){
 			return true;
 		}
-		
-		return acuRoll >= defRoll;
+
+		return (acuRoll * accMulti) >= defRoll;
 	}
 	
 	public int attackSkill( Char target ) {
