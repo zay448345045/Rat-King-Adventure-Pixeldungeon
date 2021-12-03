@@ -44,7 +44,9 @@ import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
+import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
+import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
@@ -293,6 +295,7 @@ public abstract class Recipe {
 		new Slingshot.Recipe(),
 		new KromerScroll.Recipe(),
 		new KromerPotion.Recipe(),
+		new Dagger2.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	
@@ -301,6 +304,7 @@ public abstract class Recipe {
 		new ExoticPotion.PotionToExotic(),
 		new ExoticScroll.ScrollToExotic(),
 		new StewedMeat.threeMeat(),
+		new TerminusBlade.Recipe(),
 		new MeatPie.Recipe()
 	};
 	
