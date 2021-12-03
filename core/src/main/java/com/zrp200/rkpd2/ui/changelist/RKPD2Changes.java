@@ -166,7 +166,10 @@ public class RKPD2Changes {
                                     "Added 9 new challenges that are accessible from beating regular challenges!",
                                     "Each new challenge is connected to one that unlocks it but has separate effects.",
                                     "Have fun for trying all of them!")),
-                    misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27."),
+                    misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27.\n\n" +
+                            "_-_ Heroes can level up beyond level 30 but more XP is required for each new level; each 3rd level up beyond 30 will also give talent point to every tier.\n\n" +
+                            "_-_ Abyssal enemies give 40%-50% less XP.\n\n" +
+                            "_-_ Much more items can be put into alchemy interface."),
                     bugFixes("_-_ Fixed Frostburn not slowing down characters.")
             ),
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
