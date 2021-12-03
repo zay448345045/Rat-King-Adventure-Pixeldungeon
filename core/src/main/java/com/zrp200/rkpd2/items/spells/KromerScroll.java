@@ -46,6 +46,9 @@ public class KromerScroll extends Spell{
         for (Item item : Dungeon.hero.belongings){
             if (item.isUpgradable()) item.upgrade();
         }
+        detach( curUser.belongings.backpack );
+        updateQuickslot();
+        hero.spendAndNext( 1f );
     }
 
     public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
