@@ -48,7 +48,6 @@ import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
-import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
 
@@ -343,9 +342,7 @@ public abstract class Recipe {
 	}
 	
 	public static boolean usableInRecipe(Item item){
-		return (!item.cursed || item instanceof Kromer)
-				&& ((item instanceof AlchemistsToolkit && item.isIdentified())
-					|| item instanceof MissileWeapon);
+		return (!item.cursed || item instanceof Kromer);
 	}
 }
 
