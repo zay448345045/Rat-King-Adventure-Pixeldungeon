@@ -39,6 +39,7 @@ import com.zrp200.rkpd2.items.potions.brews.InfernalBrew;
 import com.zrp200.rkpd2.items.potions.brews.ShockingBrew;
 import com.zrp200.rkpd2.items.potions.elixirs.*;
 import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
@@ -342,9 +343,8 @@ public abstract class Recipe {
 	}
 	
 	public static boolean usableInRecipe(Item item){
-		return !item.cursed
-				&& (!(item instanceof EquipableItem)
-					|| (item instanceof AlchemistsToolkit && item.isIdentified())
+		return (!item.cursed || item instanceof Kromer)
+				&& ((item instanceof AlchemistsToolkit && item.isIdentified())
 					|| item instanceof MissileWeapon);
 	}
 }
