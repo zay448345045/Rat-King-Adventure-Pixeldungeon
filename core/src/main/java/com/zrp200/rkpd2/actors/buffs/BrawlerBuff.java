@@ -89,7 +89,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
     public float getInc() {
         if (Dungeon.hero.hasTalent(Talent.IN_MY_MEMORIES)){
             BrokenSeal.WarriorShield shield = Dungeon.hero.buff(BrokenSeal.WarriorShield.class);
-            if (shield.maxShield() == shield.shielding()){
+            if (shield != null && shield.maxShield() == shield.shielding()){
                 return 0.4f * (1.15f + Dungeon.hero.pointsInTalent(Talent.IN_MY_MEMORIES)*0.1f);
             }
         }
