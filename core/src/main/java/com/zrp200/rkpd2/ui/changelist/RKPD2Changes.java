@@ -169,8 +169,13 @@ public class RKPD2Changes {
                     misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27.\n\n" +
                             "_-_ Heroes can level up beyond level 30 but more XP is required for each new level; each 3rd level up beyond 30 will also give talent point to every tier.\n\n" +
                             "_-_ Abyssal enemies give 40%-50% less XP.\n\n" +
-                            "_-_ Much more items can be put into alchemy interface."),
-                    bugFixes("_-_ Fixed Frostburn not slowing down characters.")
+                            "_-_ Much more items can be put into alchemy interface.\n\n" +
+                            "_-_ Ring of Force can be enchanted by curse enchantments with Curse Infusion.\n\n" +
+                            "_-_ Dried Rose's ghost heals 2.5x faster and has more HP and unarmed damage if hero is beyond level 30.\n\n"),
+                    bugFixes("_-_ Fixed Frostburn not slowing down characters.\n\n" +
+                            "_-_ Fixed Molten Strife's brawler special damaging hero.\n\n" +
+                            "_-_ Fixed Ring of Force being \"augmentable\".\n\n" +
+                            "_-_ Fixed crash for In My Memories if player has no broken seal.")
             ),
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
             NewContent(
