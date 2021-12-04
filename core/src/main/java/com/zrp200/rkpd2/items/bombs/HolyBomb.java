@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -57,6 +58,9 @@ public class HolyBomb extends Bomb {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				Char ch = Actor.findChar(i);
 				if (ch != null) {
+					if (doNotDamageHero && ch instanceof Hero) {
+						continue;
+					}
 					affected.add(ch);
 					
 				}

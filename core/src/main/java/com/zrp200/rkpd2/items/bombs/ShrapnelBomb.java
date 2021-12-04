@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.BlastParticle;
 import com.zrp200.rkpd2.mechanics.ShadowCaster;
@@ -62,6 +63,9 @@ public class ShrapnelBomb extends Bomb {
 				}
 				Char ch = Actor.findChar(i);
 				if (ch != null){
+					if (doNotDamageHero && ch instanceof Hero) {
+						continue;
+					}
 					affected.add(ch);
 				}
 			}

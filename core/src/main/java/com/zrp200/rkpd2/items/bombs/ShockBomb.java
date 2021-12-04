@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Lightning;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -55,6 +56,9 @@ public class ShockBomb extends Bomb {
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE
 				&& Actor.findChar(i) != null) {
+				if (doNotDamageHero && Actor.findChar(i) instanceof Hero) {
+					continue;
+				}
 				affected.add(Actor.findChar(i));
 			}
 		}

@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -46,6 +47,9 @@ public class Flashbang extends Bomb {
 			if (ch.fieldOfView != null && ch.fieldOfView[cell]){
 				int power = 16 - 4*l.distance(ch.pos, cell);
 				if (power > 0){
+					if (doNotDamageHero && ch instanceof Hero) {
+						continue;
+					}
 					Buff.prolong(ch, Blindness.class, power);
 					Buff.prolong(ch, Cripple.class, power);
 					if (ch == Dungeon.hero){

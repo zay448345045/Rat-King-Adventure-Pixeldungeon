@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.GooWarn;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -73,6 +74,9 @@ public class ArcaneBomb extends Bomb {
 				}
 				Char ch = Actor.findChar(i);
 				if (ch != null){
+					if (doNotDamageHero && ch instanceof Hero) {
+						continue;
+					}
 					affected.add(ch);
 				}
 			}

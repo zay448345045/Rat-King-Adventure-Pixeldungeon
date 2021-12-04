@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.bombs;
 
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -28,10 +29,10 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Frost;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.BArray;
-import com.watabou.utils.PathFinder;
 
 public class FrostBomb extends Bomb {
 	
@@ -48,6 +49,9 @@ public class FrostBomb extends Bomb {
 				GameScene.add(Blob.seed(i, 10, Freezing.class));
 				Char ch = Actor.findChar(i);
 				if (ch != null){
+					if (doNotDamageHero && ch instanceof Hero) {
+						continue;
+					}
 					Buff.affect(ch, Frost.class, 2f);
 				}
 			}
