@@ -108,7 +108,7 @@ public class Hero extends Char {
 		resistances.add(GodSlayerBurning.class);
 	}
 	
-	public static final int MAX_LEVEL = 30;
+	public static final int MAX_LEVEL = Integer.MAX_VALUE;
 
 	public static final int STARTING_STR = 10;
 	
