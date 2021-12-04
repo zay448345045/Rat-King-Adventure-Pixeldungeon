@@ -368,6 +368,7 @@ public enum Talent {
 	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21/*+4*/, 31};
 
 	public static int getMaxPoints(int tier) {
+		if (tier >= 5) return 0;
 		int max = tierLevelThresholds[tier+1] - tierLevelThresholds[tier];
 		if(tier == 3) max += 4;
 		if (Dungeon.hero != null){
