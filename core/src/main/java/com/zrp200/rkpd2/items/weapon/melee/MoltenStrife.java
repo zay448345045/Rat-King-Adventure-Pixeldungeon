@@ -48,6 +48,7 @@ public class MoltenStrife extends MeleeWeapon {
         Bomb.doNotDamageHero = true;
         new ShrapnelBomb().explode(enemy.pos);
         new ShrapnelBomb().explode(enemy.pos);
+        Bomb.doNotDamageHero = false;
         return super.warriorAttack(damage, enemy);
     }
 }
