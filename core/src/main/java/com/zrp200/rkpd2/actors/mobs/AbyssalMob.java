@@ -7,7 +7,7 @@ public abstract class AbyssalMob extends Mob {
     public boolean spawned = false;
 
     {
-        maxLvl = Integer.MAX_VALUE;
+        maxLvl = 100000;
     }
 
     @Override
