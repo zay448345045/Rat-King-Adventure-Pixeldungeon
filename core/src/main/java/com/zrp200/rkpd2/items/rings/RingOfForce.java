@@ -48,7 +48,7 @@ public class RingOfForce extends Ring {
 		return new Force();
 	}
 	
-	public static int armedDamageBonus( Char ch ){
+	public static int armedDamageBonus( Char ch ) {
 		return Math.round(getBuffedBonus( ch, Force.class)*1.66f);
 	}
 	
