@@ -27,7 +27,6 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -129,7 +128,7 @@ public class DistortionTrap extends Trap{
 				continue;
 			}
 
-			mob.maxLvl = Hero.MAX_LEVEL;
+			mob.maxLvl = 100000;
 			mob.state = mob.WANDERING;
 			mob.pos = point;
 			GameScene.add(mob, DELAY);
