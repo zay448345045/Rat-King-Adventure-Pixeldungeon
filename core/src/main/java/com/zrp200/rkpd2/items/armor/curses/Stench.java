@@ -33,6 +33,10 @@ public class Stench extends Armor.Glyph {
 
 	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
 
+	{
+		beneficial = false;
+	}
+
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 		float procChance = 1/8f * procChanceModifier(defender);

@@ -21,14 +21,18 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.GameMath;
 
 public class Stone extends Armor.Glyph {
 
 	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x222222 );
+
+	{
+		beneficial = false;
+	}
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {

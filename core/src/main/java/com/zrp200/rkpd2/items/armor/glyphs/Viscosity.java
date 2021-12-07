@@ -42,6 +42,10 @@ import com.zrp200.rkpd2.utils.GLog;
 public class Viscosity extends Glyph {
 	
 	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing( 0x8844CC );
+
+	{
+		beneficial = false;
+	}
 	
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage ) {

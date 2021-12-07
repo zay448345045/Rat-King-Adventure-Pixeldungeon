@@ -32,6 +32,10 @@ public class Thorns extends Armor.Glyph {
 
 	private static ItemSprite.Glowing RED = new ItemSprite.Glowing( 0x660022 );
 
+	{
+		beneficial = false;
+	}
+
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 

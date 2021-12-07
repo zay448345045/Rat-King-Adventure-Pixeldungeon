@@ -626,13 +626,15 @@ public class Armor extends EquipableItem {
 				AntiEntropy.class, Corrosion.class, Displacement.class, Metabolism.class,
 				Multiplicity.class, Stench.class, Overgrowth.class, Bulk.class
 		};
+
+		public boolean beneficial = true;
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
 
 		public static float procChanceModifier(Char defender){
 			float multi = 1f;
 			if (defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.HEROIC_ENDURANCE) == 4){
-				multi += 0.1f;
+				multi += 0.25f;
 			}
 			return multi;
 		}

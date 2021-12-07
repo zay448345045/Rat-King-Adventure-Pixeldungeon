@@ -36,6 +36,10 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 public class Overgrowth extends Armor.Glyph {
 	
 	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+
+	{
+		beneficial = false;
+	}
 	
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {

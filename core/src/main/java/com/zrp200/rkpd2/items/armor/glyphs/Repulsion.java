@@ -30,6 +30,10 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 
 public class Repulsion extends Armor.Glyph {
 
+	{
+		beneficial = false;
+	}
+
 	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
 	
 	@Override

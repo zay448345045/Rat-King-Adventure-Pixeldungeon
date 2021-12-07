@@ -1312,7 +1312,10 @@ public class Hero extends Char {
 			Armor armor = belongings.armor();
 			if (armor != null){
 				if (armor.glyph != null && Random.Int(3) < pointsInTalent(Talent.HEROIC_ENDURANCE)){
-					damage = armor.glyph.proc(armor, this, enemy, damage);
+					if (armor.glyph.beneficial)
+						damage = armor.glyph.proc(armor, enemy, this, damage);
+					else
+						damage = armor.glyph.proc(armor, this, enemy, damage);
 				}
 			}
 		}

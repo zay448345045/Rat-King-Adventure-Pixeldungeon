@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.armor.curses;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.mobs.Statue;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -32,6 +33,10 @@ public class Displacement extends Armor.Glyph {
 
 	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
 
+	{
+		beneficial = false;
+	}
+
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage ) {
 		float procChance = 1/20f * procChanceModifier(defender);
@@ -39,6 +44,9 @@ public class Displacement extends Armor.Glyph {
 		if (defender == Dungeon.hero && Random.Float() < procChance){
 			ScrollOfTeleportation.teleportHero(Dungeon.hero);
 			return 0;
+		} else if (!(defender instanceof Statue)){
+			ScrollOfTeleportation.teleportChar(defender);
+			return damage;
 		}
 
 		return damage;
