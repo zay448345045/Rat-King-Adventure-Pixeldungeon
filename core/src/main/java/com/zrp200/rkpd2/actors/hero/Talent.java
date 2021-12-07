@@ -275,9 +275,9 @@ public enum Talent {
 				case 1: default:
 					return 250;
 				case 2:
-					return 225;
+					return 220;
 				case 3:
-					return 200;
+					return 190;
 			}
 		}
 		public int icon() { return BuffIndicator.CORRUPT; }

@@ -39,12 +39,15 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
 import com.zrp200.rkpd2.actors.mobs.Wraith;
 import com.zrp200.rkpd2.effects.MagicMissile;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
+import com.zrp200.rkpd2.items.spells.CurseInfusion;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
@@ -52,13 +55,17 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
+import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public abstract class Wand extends Item {
 
@@ -211,7 +218,23 @@ public abstract class Wand extends Item {
 				}
 			}
 		}
-
+		if (Dungeon.hero.hasTalent(Talent.BANISHED) && hero.buff(Talent.BanishedCooldown.class) == null){
+			if (!target.properties().contains(Char.Property.BOSS)
+					&& !target.properties().contains(Char.Property.MINIBOSS)
+					&& target.buff(SoulMark.class) != null){
+				target.sprite.emitter().burst(ShadowParticle.UP, 50);
+				Buff.affect(hero, Hunger.class)
+						.affectHunger( target.HP*hero.byTalent(Talent.SOUL_EATER,1/4f,Talent.RK_WARLOCK,1/6f) );
+				hero.HP = (int) Math.ceil(Math.min(hero.HT, hero.HP + target.HP * 0.2f));
+				hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
+				Sample.INSTANCE.play(Assets.Sounds.DEATH, 1f, 0.75f);
+				target.die(new CurseInfusion());
+				target.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Wand.class, "banished"));
+				TargetHealthIndicator.instance.target(null);
+				Talent.Cooldown.affectHero(Talent.BanishedCooldown.class);
+				return;
+			}
+		}
 		SoulMark.process(target,wandLevel,chargesUsed,delay);
 	}
 

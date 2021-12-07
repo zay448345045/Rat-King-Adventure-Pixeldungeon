@@ -37,8 +37,6 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
-import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
@@ -49,9 +47,11 @@ import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.zrp200.rkpd2.items.spells.CurseInfusion;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
-import com.zrp200.rkpd2.items.wands.*;
+import com.zrp200.rkpd2.items.wands.WandOfFireblast;
+import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
+import com.zrp200.rkpd2.items.wands.WandOfFrost;
+import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
@@ -67,7 +67,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
-import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
@@ -819,23 +818,6 @@ public abstract class Char extends Actor {
 			for (ShieldBuff s : buffs(ShieldBuff.class)){
 				dmg = s.absorbDamage(dmg);
 				if (dmg == 0) break;
-			}
-		}
-		if (Dungeon.hero.hasTalent(Talent.BANISHED) && hero.buff(Talent.BanishedCooldown.class) == null){
-			if (!properties().contains(Char.Property.BOSS)
-					&& !properties().contains(Char.Property.MINIBOSS)
-					&& buff(SoulMark.class) != null){
-				sprite.emitter().burst(ShadowParticle.UP, 50);
-				Buff.affect(hero, Hunger.class)
-						.affectHunger( HP*hero.byTalent(Talent.SOUL_EATER,1/4f,Talent.RK_WARLOCK,1/6f) );
-				hero.HP = (int) Math.ceil(Math.min(hero.HT, hero.HP + HP * 0.2f));
-				hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-				Sample.INSTANCE.play(Assets.Sounds.DEATH, 1f, 0.75f);
-				die(new CurseInfusion());
-				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Wand.class, "banished"));
-				TargetHealthIndicator.instance.target(null);
-				Talent.Cooldown.affectHero(Talent.BanishedCooldown.class);
-				return;
 			}
 		}
 		shielded -= dmg;
