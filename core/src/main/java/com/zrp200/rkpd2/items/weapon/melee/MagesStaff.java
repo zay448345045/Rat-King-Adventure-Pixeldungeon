@@ -514,7 +514,8 @@ public class MagesStaff extends MeleeWeapon {
 					|| (wand instanceof WandOfCorruption)
 					|| (wand instanceof WandOfCorrosion)
 					|| (wand instanceof WandOfRegrowth)
-					|| (wand instanceof WandOfLivingEarth));
+					|| (wand instanceof WandOfLivingEarth)
+					|| (wand instanceof WandOfUnstable2));
 		}
 	};
 

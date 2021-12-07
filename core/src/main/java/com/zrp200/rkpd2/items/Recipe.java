@@ -44,6 +44,7 @@ import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
+import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
@@ -301,6 +302,7 @@ public abstract class Recipe {
 		new KromerScroll.Recipe(),
 		new KromerPotion.Recipe(),
 		new Dagger2.Recipe(),
+		new WandOfUnstable2.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	

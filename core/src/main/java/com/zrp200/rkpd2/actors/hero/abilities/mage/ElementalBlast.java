@@ -78,6 +78,7 @@ public class ElementalBlast extends ArmorAbility {
 		effectTypes.put(WandOfCorruption.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(WandOfRegrowth.class,       MagicMissile.FOLIAGE_CONE);
 		effectTypes.put(WandOfUnstable.class,       MagicMissile.RANDOM_CONE);
+		effectTypes.put(WandOfUnstable2.class,       MagicMissile.KROMER_CONE);
 	}
 
 	private static final HashMap<Class<?extends Wand>, Float> damageFactors = new HashMap<>();
@@ -97,6 +98,7 @@ public class ElementalBlast extends ArmorAbility {
 		damageFactors.put(WandOfCorruption.class,       0f);
 		damageFactors.put(WandOfRegrowth.class,         0f);
 		damageFactors.put(WandOfUnstable.class,         1f);
+		damageFactors.put(WandOfUnstable2.class,         0f);
 	}
 
 	{
@@ -351,6 +353,11 @@ public class ElementalBlast extends ArmorAbility {
 								} else if (finalWandCls[0] == WandOfRegrowth.class){
 									if (mob.alignment != Char.Alignment.ALLY) {
 										Buff.prolong( mob, Roots.class, effectMulti*Roots.DURATION );
+										charsHit++;
+									}
+								} else if (finalWandCls[0] == WandOfUnstable2.class){
+									if (mob.alignment != Char.Alignment.ALLY) {
+										CursedWand.cursedEffect(null, Dungeon.hero, mob);
 										charsHit++;
 									}
 								}

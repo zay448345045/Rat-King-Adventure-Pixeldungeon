@@ -46,6 +46,7 @@ import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
 import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
@@ -320,6 +321,7 @@ public class QuickRecipe extends Component {
 					result.add(new QuickRecipe(new TerminusBlade.Recipe()));
 				}
 				result.add(new QuickRecipe(new Dagger2.Recipe()));
+				result.add(new QuickRecipe(new WandOfUnstable2.Recipe()));
 				return result;
 			case 5:
 				r = new ExoticPotion.PotionToExotic();
