@@ -293,7 +293,10 @@ abstract public class MissileWeapon extends Weapon {
 
 	protected void rangedHit( Char enemy, int cell ){
 		if (Dungeon.hero.buff(Crossbow.DartSpent.class) == null || !(this instanceof Dart)) {
-			decrementDurability();
+			if (Random.Int(7) < Dungeon.hero.pointsInTalent(Talent.HEROIC_ARCHERY)){
+				//do nothing
+			}
+			else decrementDurability();
 			if (durability > 0 && !(this instanceof PhantomSpear)) {
 				//attempt to stick the missile weapon to the enemy, just drop it if we can't.
 				if (sticky && enemy != null && enemy.isAlive() && enemy.buff(Corruption.class) == null) {
