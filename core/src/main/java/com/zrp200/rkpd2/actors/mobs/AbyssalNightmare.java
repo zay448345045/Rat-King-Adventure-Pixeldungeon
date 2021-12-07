@@ -99,7 +99,7 @@ public class AbyssalNightmare extends AbyssalMob {
 		}
 		Dungeon.level.updateFieldOfView( this, fieldOfView );
 
-		HP = Math.min(HP+10, HT);
+		HP = Math.min(HP+7, HT);
 
 		boolean justAlerted = alerted;
 		alerted = false;
@@ -151,7 +151,7 @@ public class AbyssalNightmare extends AbyssalMob {
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		if (Random.Int(5) == 0){
+		if (Random.Int(5) == 0 && generation == 0){
 			ArrayList<Integer> candidates = new ArrayList<>();
 			boolean[] solid = Dungeon.level.solid;
 
