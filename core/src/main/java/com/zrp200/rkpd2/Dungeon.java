@@ -330,8 +330,11 @@ public class Dungeon {
 	
 	public static void switchLevel( final Level level, int pos ) {
 		
-		if (pos == -2 || level instanceof RatBossLevel){
-			pos = level.exit;
+		if (pos == -2){
+			if (level instanceof RatBossLevel)
+				pos = level.entrance;
+			else
+				pos = level.exit;
 		} else if (pos < 0 || pos >= level.length() || (!level.passable[pos] && !level.avoid[pos])){
 			pos = level.entrance;
 		}
