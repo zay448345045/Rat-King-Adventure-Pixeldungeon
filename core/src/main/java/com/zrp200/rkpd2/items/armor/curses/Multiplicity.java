@@ -22,6 +22,8 @@
 package com.zrp200.rkpd2.items.armor.curses;
 
 import com.watabou.utils.Bundlable;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -36,10 +38,6 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -49,8 +47,9 @@ public class Multiplicity extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+		float procChance = 1/20f * procChanceModifier(defender);
 
-		if (Random.Int(20) == 0){
+		if (Random.Float() < procChance){
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 
 			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {

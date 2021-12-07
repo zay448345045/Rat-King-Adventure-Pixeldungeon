@@ -39,8 +39,9 @@ public class Overgrowth extends Armor.Glyph {
 	
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+		float procChance = 1/20f * procChanceModifier(defender);
 		
-		if ( Random.Int( 20 ) == 0) {
+		if ( Random.Float() < procChance) {
 			
 			Plant.Seed s;
 			do{

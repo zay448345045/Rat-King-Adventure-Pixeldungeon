@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -28,8 +30,6 @@ import com.zrp200.rkpd2.actors.buffs.Ooze;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Corrosion extends Armor.Glyph {
 
@@ -37,8 +37,9 @@ public class Corrosion extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+		float procChance = 1/10f * procChanceModifier(defender);
 
-		if (Random.Int(10) == 0){
+		if (Random.Float() < procChance){
 			int pos = defender.pos;
 			for (int i : PathFinder.NEIGHBOURS9){
 				Splash.at(pos+i, 0x000000, 5);

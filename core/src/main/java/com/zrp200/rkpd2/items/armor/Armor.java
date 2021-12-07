@@ -261,11 +261,6 @@ public class Armor extends EquipableItem {
 	}
 
 	@Override
-	public int buffedLvl() {
-		return super.buffedLvl() + (Dungeon.hero != null ? Dungeon.hero.pointsInTalent(Talent.HEROIC_ENDURANCE) : 0);
-	}
-
-	@Override
 	public boolean isEquipped( Hero hero ) {
 		return hero.belongings.armor() == this;
 	}
@@ -633,6 +628,14 @@ public class Armor extends EquipableItem {
 		};
 		
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
+
+		public static float procChanceModifier(Char defender){
+			float multi = 1f;
+			if (defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.HEROIC_ENDURANCE) == 4){
+				multi += 0.1f;
+			}
+			return multi;
+		}
 		
 		public String name() {
 			if (!curse())

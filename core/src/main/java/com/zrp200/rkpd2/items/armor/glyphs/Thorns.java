@@ -36,11 +36,12 @@ public class Thorns extends Armor.Glyph {
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
 
 		int level = Math.max(0, armor.glyphEffectLevel(defender));
+		float procChance = (level+2f)/(level+12f) * procChanceModifier(defender);
 
 		// lvl 0 - 16.7%
 		// lvl 1 - 23.1%
 		// lvl 2 - 28.5%
-		if ( Random.Int( level + 12) >= 10) {
+		if ( Random.Float() < procChance) {
 
 			Buff.affect( attacker, Bleeding.class).set( 4 + level );
 

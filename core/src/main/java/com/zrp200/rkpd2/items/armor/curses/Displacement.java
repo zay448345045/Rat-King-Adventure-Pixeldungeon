@@ -21,12 +21,12 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 public class Displacement extends Armor.Glyph {
 
@@ -34,8 +34,9 @@ public class Displacement extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage ) {
+		float procChance = 1/20f * procChanceModifier(defender);
 
-		if (defender == Dungeon.hero && Random.Int(20) == 0){
+		if (defender == Dungeon.hero && Random.Float() < procChance){
 			ScrollOfTeleportation.teleportHero(Dungeon.hero);
 			return 0;
 		}

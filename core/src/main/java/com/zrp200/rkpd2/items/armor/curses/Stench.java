@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 public class Stench extends Armor.Glyph {
 
@@ -35,8 +35,9 @@ public class Stench extends Armor.Glyph {
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+		float procChance = 1/8f * procChanceModifier(defender);
 
-		if ( Random.Int( 8 ) == 0) {
+		if ( Random.Float() < procChance) {
 
 			GameScene.add( Blob.seed( defender.pos, 250, ToxicGas.class ) );
 

@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -33,7 +34,6 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.Armor.Glyph;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
-import com.watabou.utils.Random;
 
 public class AntiEntropy extends Glyph {
 
@@ -41,8 +41,9 @@ public class AntiEntropy extends Glyph {
 	
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+		float procChance = 1/8f * procChanceModifier(defender);
 
-		if (Random.Int( 8 ) == 0) {
+		if (Random.Float() < procChance) {
 
 			if (Dungeon.level.adjacent( attacker.pos, defender.pos )) {
 				Buff.prolong(attacker, Frost.class, Frost.DURATION);

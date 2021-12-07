@@ -39,11 +39,12 @@ public class Affection extends Glyph {
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 
 		int level = Math.max(0, armor.glyphEffectLevel(defender));
+		float procChance = (level+3f)/(level+20f) * procChanceModifier(defender);
 		
 		// lvl 0 - 15%
 		// lvl 1 ~ 19%
 		// lvl 2 ~ 23%
-		if (Random.Int( level + 20 ) >= 17) {
+		if (Random.Float() < procChance) {
 
 			Buff.affect( attacker, Charm.class, Charm.DURATION ).object = defender.id();
 			attacker.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );

@@ -38,11 +38,12 @@ public class Potential extends Glyph {
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 
 		int level = Math.max( 0, armor.glyphEffectLevel(defender) );
+		float procChance = (level+1f)/(level+6f) * procChanceModifier(defender);
 		
 		// lvl 0 - 16.7%
 		// lvl 1 - 28.6%
 		// lvl 2 - 37.5%
-		if (defender instanceof Hero && Random.Int( level + 6 ) >= 5 ) {
+		if (defender instanceof Hero && Random.Float() < procChance ) {
 			int wands = ((Hero) defender).belongings.charge( 1f );
 			if (wands > 0) {
 				defender.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 10);
