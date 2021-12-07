@@ -76,6 +76,7 @@ public class Item implements Bundlable {
 	public boolean stackable = false;
 	protected int quantity = 1;
 	public boolean dropsDownHeap = false;
+	public boolean consumedInAlchemy = false;
 	
 	private int level = 0;
 

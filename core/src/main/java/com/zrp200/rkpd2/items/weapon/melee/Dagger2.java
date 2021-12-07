@@ -31,6 +31,7 @@ public class Dagger2 extends Dagger {
 
 		tier = 2;
 		DLY = Integer.MAX_VALUE;
+		consumedInAlchemy = true;
 	}
 
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {

@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
@@ -236,6 +237,10 @@ public abstract class Recipe {
 				ingredients.get(0).storeInBundle(bundle);
 				result.restoreFromBundle(bundle);
 				result.identify();
+				if (ingredients.get(0).isEquipped(Dungeon.hero)){
+					((EquipableItem)ingredients.get(0)).doUnequip(Dungeon.hero, false);
+				}
+				ingredients.get(0).detachAll(Dungeon.hero.belongings.backpack);
 				return result;
 			} catch (Exception e) {
 				ShatteredPixelDungeon.reportException( e );

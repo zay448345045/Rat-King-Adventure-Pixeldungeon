@@ -78,6 +78,7 @@ public class MagesStaff extends MeleeWeapon {
 
 		unique = true;
 		bones = false;
+		consumedInAlchemy = true;
 	}
 
 	public MagesStaff() {
