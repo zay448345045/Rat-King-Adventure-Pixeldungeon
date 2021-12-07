@@ -47,7 +47,7 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 	{
 		spriteClass = FinalFroggitSprite.class;
 
-		HP = HT = 90;
+		HP = HT = 180;
 		defenseSkill = 20;
 
 		EXP = 13;
