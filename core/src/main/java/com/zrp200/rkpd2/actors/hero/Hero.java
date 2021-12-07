@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.Heap.Type;
+import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Brimstone;
@@ -1307,6 +1308,14 @@ public class Hero extends Char {
             }
         }
 		if (wep != null) damage = wep.proc( this, enemy, damage );
+		if (hasTalent(Talent.HEROIC_ENDURANCE)){
+			Armor armor = belongings.armor();
+			if (armor != null){
+				if (armor.glyph != null && Random.Int(3) < pointsInTalent(Talent.HEROIC_ENDURANCE)){
+					damage = armor.glyph.proc(armor, this, enemy, damage);
+				}
+			}
+		}
 		RingOfForce.Force forceBuff = buff(RingOfForce.Force.class);
 		if (forceBuff != null && !(wep instanceof MissileWeapon)) {
 			if (wep != null){
