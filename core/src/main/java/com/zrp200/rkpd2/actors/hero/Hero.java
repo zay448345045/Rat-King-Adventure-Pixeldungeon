@@ -1875,7 +1875,7 @@ public class Hero extends Char {
 	}
 	
 	public static int maxExp( int lvl ){
-		return (int) ((5 + lvl * 5)*Math.pow(1.15, Math.max(0, lvl - 30)));
+		return (int) ((5 + lvl * 5)*Math.pow(1.25, Math.max(0, lvl - 30)));
 	}
 	
 	public boolean isStarving() {

@@ -129,7 +129,8 @@ public class RKPD2Changes {
                                     "Added _Bearing Paw_ as t3 talent: gives extra range, bleeding and lifesteal on low HP.",
                                     "Added _Combo Meal_ as gladiator talent: gives combo time and combo hits on eating.",
                                     "Added _Bravery_ as berserker talent: gives extra rage when hero is unarmored against damage.",
-                                    "Added _Pride of Steel_ as brawler talent: armor piercing, extra items and aggro control with specials.")),
+                                    "Added _Pride of Steel_ as brawler talent: armor piercing, extra items and aggro control with specials.",
+                                    "Reworked _Heroic Endurance_ into _Heroic Enchanting_: allows to use glyphs as enchantments while attacking.")),
                     new ChangeButton(MAGE,
                             list(2,
                                     "Added _Cryonic Spell_ as t3 talent: makes fire-related wands more frosty and buffs frost wand.",
@@ -150,7 +151,8 @@ public class RKPD2Changes {
                                     "Buffed _Point Blank_, now provides the chance to knockback in melee range.",
                                     "Added _Archery's Mark_ as sniper talent: arrows bounce for extra damage to nearby enemy.",
                                     "Added _Indirect Benefits_ as warden talent: warden's plant effects can trigger when mob steps on plant.",
-                                    "Moved Super-Shot damage boosts to _Heroic Archery_.")),
+                                    "Moved Super-Shot damage boosts to _Heroic Archery_." +
+                                    "Added an actual effect to _Heroic Archery_: thrown weapons have a chance for not consuming their durability.")),
                     new ChangeButton(new Kromer(),
                             list(2,
                                     "Added brand new material, coming from otherworldy darkness: kromer!",
@@ -160,7 +162,8 @@ public class RKPD2Changes {
                     new ChangeButton(new ItemSprite(TERMINUS, new ItemSprite.Glowing()), "New weapons!",
                             list(2,
                                     "Added _Terminus Blade_, which is made with chaosstones and kromer. It has exceptional damage and ability to instakill.",
-                                    "Added a clone of _dagger_ that makes you stunlocked after using it.")),
+                                    "Added a clone of _dagger_ that makes you stunlocked after using it.",
+                                    "Added an upgraded version of Wand of His Ratiness.")),
                     new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
                             list(2,
                                     "Added 9 new challenges that are accessible from beating regular challenges!",
@@ -171,11 +174,17 @@ public class RKPD2Changes {
                             "_-_ Abyssal enemies give 40%-50% less XP.\n\n" +
                             "_-_ Much more items can be put into alchemy interface.\n\n" +
                             "_-_ Ring of Force can be enchanted by curse enchantments with Curse Infusion.\n\n" +
-                            "_-_ Dried Rose's ghost heals 2.5x faster and has more HP and unarmed damage if hero is beyond level 30.\n\n"),
+                            "_-_ Dried Rose's ghost heals 2.5x faster and has more HP and unarmed damage if hero is beyond level 30.\n\n" +
+                            "_-_ Buffed Final Froggit's HP from 90 to 180.\n\n" +
+                            "_-_ Nerfed Abyssal Nightmare's ability to split by making it only work for initial mob, also nerfed HP regen from 10 to 7."),
                     bugFixes("_-_ Fixed Frostburn not slowing down characters.\n\n" +
                             "_-_ Fixed Molten Strife's brawler special damaging hero.\n\n" +
                             "_-_ Fixed Ring of Force being \"augmentable\".\n\n" +
-                            "_-_ Fixed crash for In My Memories if player has no broken seal.")
+                            "_-_ Fixed crash for In My Memories if player has no broken seal.\n\n" +
+                            "_-_ Fixed crash after examining weak floor pit in higher levels of Abyss.\n\n" +
+                            "_-_ Fixed sprite of Spectral Necromancer.\n\n" +
+                            "_-_ Fixed Rat King's boss depth always putting you at stairs on loading the level.\n\n" +
+                            "_-_ Fixed Wand of Firebolt's elemental blast description.")
             ),
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
             NewContent(
