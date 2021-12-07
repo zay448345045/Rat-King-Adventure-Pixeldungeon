@@ -184,7 +184,8 @@ public class RKPD2Changes {
                             "_-_ Fixed crash after examining weak floor pit in higher levels of Abyss.\n\n" +
                             "_-_ Fixed sprite of Spectral Necromancer.\n\n" +
                             "_-_ Fixed Rat King's boss depth always putting you at stairs on loading the level.\n\n" +
-                            "_-_ Fixed Wand of Firebolt's elemental blast description.")
+                            "_-_ Fixed Wand of Firebolt's elemental blast description.\n\n" +
+                            "_-_ Fixed Thinking with Portals consuming all of cloak's charge independant on distance.")
             ),
             new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
             NewContent(

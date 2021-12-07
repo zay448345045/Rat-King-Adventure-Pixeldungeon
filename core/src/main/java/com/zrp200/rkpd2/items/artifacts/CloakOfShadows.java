@@ -47,6 +47,7 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class CloakOfShadows extends Artifact {
 				if (Dungeon.level.distance(target, Dungeon.hero.pos) > maxDistance){
 					GLog.w( Messages.get(CloakOfShadows.class, "cant_reach") );
 				} else {
-					float chargeCost = maxDistance / (getChargeEfficiency());
+					float chargeCost = Dungeon.level.distance(target, Dungeon.hero.pos) / (getChargeEfficiency());
 					CloakOfShadows.this.charge -= chargeCost;
 					if (Dungeon.hero.invisible > 0){
 						Preparation prep = Dungeon.hero.buff(Preparation.class);
@@ -171,7 +172,7 @@ public class CloakOfShadows extends Artifact {
 		@Override
 		public String prompt() {
 			int maxDistance = (int) (charge * (getChargeEfficiency()));
-			PathFinder.buildDistanceMap( Dungeon.hero.pos, Dungeon.level.passable, maxDistance );
+			PathFinder.buildDistanceMap( Dungeon.hero.pos, BArray.not(Dungeon.level.solid, null), maxDistance);
 			for (int i = 0; i < PathFinder.distance.length; i++) {
 				if (PathFinder.distance[i] < Integer.MAX_VALUE && !Dungeon.level.solid[i]) {
 					Dungeon.hero.sprite.parent.addToBack(new TargetedCell(i, 0xb47ffe));
