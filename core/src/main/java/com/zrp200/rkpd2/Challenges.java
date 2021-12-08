@@ -56,6 +56,7 @@ public class Challenges {
 	public static final int ALLERGY             = 524288;
 	public static final int UNSTABLE_DAMAGE     = 1048576;
 	public static final int NO_ALCHEMY          = 2097152;
+	public static final int MANY_MOBS			= 4194304;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -87,6 +88,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ACCURACY) || DeviceCompat.isDebug()) chals.put("allergy", ALLERGY);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HP) || DeviceCompat.isDebug()) chals.put("unstable_damage", UNSTABLE_DAMAGE);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_BURN) || DeviceCompat.isDebug()) chals.put("no_alchemy", NO_ALCHEMY);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_HERO_PATHING) || DeviceCompat.isDebug()) chals.put("many_mobs", MANY_MOBS);
 		return chals;
 	}
 

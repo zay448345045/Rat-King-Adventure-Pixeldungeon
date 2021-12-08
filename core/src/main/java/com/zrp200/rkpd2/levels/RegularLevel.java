@@ -106,6 +106,9 @@ public abstract class RegularLevel extends Level {
 		// reduce by designated amount to reduce levelsize for rkpd2, much like rkpd does.
 		// reduce for rkpd2, inspired by rkpd
 		standards = (int)Math.floor(standards * Random.Float(SIZE_MODIFIER[0],SIZE_MODIFIER[1]));
+		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
+			standards *= 4;
+		}
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
 			do {
@@ -198,6 +201,9 @@ public abstract class RegularLevel extends Level {
 	protected void createMobs() {
 		//on floor 1, 8 pre-set mobs are created so the player can get level 2.
 		int mobsToSpawn = Dungeon.getDepth() == 1 ? 8 : nMobs();
+		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
+			mobsToSpawn *= 16;
+		}
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for (Room room : rooms) {
