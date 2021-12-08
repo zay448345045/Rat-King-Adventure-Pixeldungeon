@@ -154,6 +154,15 @@ public class Badges {
 		CHAMPED_NO_SCROLLS,
 		CHAMPED_CHAMPS,
 		CHAMPED_BOSSES,
+		CHAMPED_FATIQUE,
+		CHAMPED_NO_HP,
+		CHAMPED_NO_ACCURACY,
+		CHAMPED_BURN,
+		CHAMPED_HERO_PATHING,
+		CHAMPED_FORGET_PATH,
+		CHAMPED_REDUCED_POWER,
+		CHAMPED_RANDOM_HP,
+		CHAMPED_EVIL_MODE,
 
 		//diamond
 		GAMES_PLAYED_4              ( 112, true ),
@@ -888,24 +897,24 @@ public class Badges {
 			if ((mask & ch) != 0){
 				Badge b;
 				switch (ch){
-					case Challenges.CHAMPION_ENEMIES: default:
-						b = Badge.CHAMPED_CHAMPS; break;
-					case Challenges.STRONGER_BOSSES:
-						b = Badge.CHAMPED_BOSSES; break;
-					case Challenges.NO_FOOD:
-						b = Badge.CHAMPED_NO_FOOD; break;
-					case Challenges.NO_ARMOR:
-						b = Badge.CHAMPED_NO_ARMOR; break;
-					case Challenges.NO_HEALING:
-						b = Badge.CHAMPED_NO_HEALING; break;
-					case Challenges.NO_HERBALISM:
-						b = Badge.CHAMPED_NO_HERBALISM; break;
-					case Challenges.SWARM_INTELLIGENCE:
-						b = Badge.CHAMPED_SWARM; break;
-					case Challenges.DARKNESS:
-						b = Badge.CHAMPED_DARKNESS; break;
-					case Challenges.NO_SCROLLS:
-						b = Badge.CHAMPED_NO_SCROLLS; break;
+					case Challenges.CHAMPION_ENEMIES: default: b = Badge.CHAMPED_CHAMPS; break;
+					case Challenges.STRONGER_BOSSES: b = Badge.CHAMPED_BOSSES; break;
+					case Challenges.NO_FOOD: b = Badge.CHAMPED_NO_FOOD; break;
+					case Challenges.NO_ARMOR: b = Badge.CHAMPED_NO_ARMOR; break;
+					case Challenges.NO_HEALING: b = Badge.CHAMPED_NO_HEALING; break;
+					case Challenges.NO_HERBALISM: b = Badge.CHAMPED_NO_HERBALISM; break;
+					case Challenges.SWARM_INTELLIGENCE: b = Badge.CHAMPED_SWARM; break;
+					case Challenges.DARKNESS: b = Badge.CHAMPED_DARKNESS; break;
+					case Challenges.NO_SCROLLS: b = Badge.CHAMPED_NO_SCROLLS; break;
+					case Challenges.FATIQUE: b = Badge.CHAMPED_FATIQUE; break;
+					case Challenges.NO_ACCURACY: b = Badge.CHAMPED_NO_ACCURACY; break;
+					case Challenges.NO_HP: b = Badge.CHAMPED_NO_HP; break;
+					case Challenges.BURN: b = Badge.CHAMPED_BURN; break;
+					case Challenges.HERO_PATHING: b = Badge.CHAMPED_HERO_PATHING; break;
+					case Challenges.FORGET_PATH: b = Badge.CHAMPED_FORGET_PATH; break;
+					case Challenges.REDUCED_POWER: b = Badge.CHAMPED_REDUCED_POWER; break;
+					case Challenges.RANDOM_HP: b = Badge.CHAMPED_RANDOM_HP; break;
+					case Challenges.EVIL_MODE: b = Badge.CHAMPED_EVIL_MODE; break;
 				}
 				if (!global.contains(badge)){
 					global.add(badge);
