@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.items.food.Blandfruit;
+import com.zrp200.rkpd2.items.rings.RingOfMight;
 
 public class Challenges {
 
@@ -58,6 +59,7 @@ public class Challenges {
 	public static final int NO_ALCHEMY          = 2097152;
 	public static final int MANY_MOBS			= 4194304;
 	public static final int UNLIMITED_VISION    = 8388608;
+	public static final int NO_STR              = 16777216;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -91,6 +93,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_BURN) || DeviceCompat.isDebug()) chals.put("no_alchemy", NO_ALCHEMY);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_HERO_PATHING) || DeviceCompat.isDebug()) chals.put("many_mobs", MANY_MOBS);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_FORGET_PATH) || DeviceCompat.isDebug()) chals.put("unlimited_vision", UNLIMITED_VISION);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_REDUCED_POWER) || DeviceCompat.isDebug()) chals.put("no_str", NO_STR);
 		return chals;
 	}
 
@@ -111,6 +114,9 @@ public class Challenges {
 			return true;
 		}
 		if (Dungeon.isChallenged(NO_ALCHEMY) && (item instanceof AlchemistsToolkit)){
+			return true;
+		}
+		if (Dungeon.isChallenged(NO_STR) && (item instanceof RingOfMight)){
 			return true;
 		}
 
