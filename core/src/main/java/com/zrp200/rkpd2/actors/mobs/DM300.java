@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.effects.particles.EarthParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.quest.MetalShard;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.levels.CavesBossLevel;
@@ -547,6 +548,8 @@ public class DM300 extends Mob {
 		}
 
 		Badges.validateBossSlain();
+		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+			new PotionOfExperience().apply(Dungeon.hero);
 
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
 		if (beacon != null) {

@@ -65,6 +65,7 @@ public class Challenges {
 
 	public static final int TOO_MANY_MOBS       = 134217728;
 	public static final int JUST_KILL_ME        = 268435456;
+	public static final int NO_LEVELS           = 536870912;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -103,6 +104,8 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_EVIL_MODE) || DeviceCompat.isDebug()) chals.put("no_talents", NO_TALENTS);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPION_4) || DeviceCompat.isDebug()) chals.put("too_many_mobs", TOO_MANY_MOBS);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPION_7) || DeviceCompat.isDebug()) chals.put("just_kill_me", JUST_KILL_ME);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPION_10) || DeviceCompat.isDebug()) chals.put("no_levels", NO_LEVELS);
+
 		return chals;
 	}
 

@@ -30,6 +30,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -37,6 +38,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -104,6 +106,8 @@ public class Dragon extends AbyssalMob {
     @Override
     public void die(Object cause) {
         super.die(cause);
+        if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+            new PotionOfExperience().apply(Dungeon.hero);
     }
 
     @Override

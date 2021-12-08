@@ -44,6 +44,7 @@ import com.zrp200.rkpd2.items.TengusMask;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.PrisonBossLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -191,6 +192,8 @@ public class Tengu extends Mob {
 		
 		GameScene.bossSlain();
 		super.die( cause );
+		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+			new PotionOfExperience().apply(Dungeon.hero);
 		
 		Badges.validateBossSlain();
 		

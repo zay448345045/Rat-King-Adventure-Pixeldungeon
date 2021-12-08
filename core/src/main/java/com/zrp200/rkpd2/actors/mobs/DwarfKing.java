@@ -49,6 +49,7 @@ import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
 import com.zrp200.rkpd2.levels.CityBossLevel;
@@ -627,6 +628,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		}
 
 		Badges.validateBossSlain();
+		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+			new PotionOfExperience().apply(Dungeon.hero);
 
 		Dungeon.level.unseal();
 

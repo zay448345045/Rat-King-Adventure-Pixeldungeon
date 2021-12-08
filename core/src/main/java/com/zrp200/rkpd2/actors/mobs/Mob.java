@@ -753,6 +753,9 @@ public abstract class Mob extends Char {
 				if (e != null && heal > 0) e.burst(Speck.factory(Speck.HEALING), 4);
 			}
 		}
+		if (Dungeon.isChallenged(Challenges.NO_LEVELS)){
+			EXP = 0;
+		}
 
 		if (alignment == Alignment.ENEMY){
 			if (!(cause instanceof CurseInfusion)){

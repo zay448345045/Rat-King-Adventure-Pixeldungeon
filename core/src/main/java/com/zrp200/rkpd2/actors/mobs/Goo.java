@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.keys.SkeletonKey;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.quest.GooBlob;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -281,6 +282,8 @@ public class Goo extends Mob {
 		}
 		
 		Badges.validateBossSlain();
+		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+			new PotionOfExperience().apply(Dungeon.hero);
 		
 		yell( Messages.get(this, "defeated") );
 	}

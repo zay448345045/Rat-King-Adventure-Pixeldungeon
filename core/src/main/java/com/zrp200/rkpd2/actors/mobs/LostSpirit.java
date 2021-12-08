@@ -1,6 +1,7 @@
 package com.zrp200.rkpd2.actors.mobs;
 
 import com.watabou.utils.Callback;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -9,6 +10,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.RainbowParticle;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.levels.traps.SummoningTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.CharSprite;
@@ -49,6 +51,13 @@ public class LostSpirit extends AbyssalMob implements Callback {
         float multiplier = Math.min(0.2f, 1 / (1.32f * (float)Math.pow(1.2f, distance)));
         dmg = Math.round(dmg * multiplier);
         super.damage(dmg, src);
+    }
+
+    @Override
+    public void die(Object cause) {
+        super.die(cause);
+        if (Dungeon.isChallenged(Challenges.NO_LEVELS))
+            new PotionOfExperience().apply(Dungeon.hero);
     }
 
     protected boolean doAttack(Char enemy ) {
