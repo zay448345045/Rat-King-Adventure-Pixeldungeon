@@ -64,6 +64,7 @@ public class Challenges {
 	public static final int NO_TALENTS          = 67108864;
 
 	public static final int TOO_MANY_MOBS       = 134217728;
+	
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -100,7 +101,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_REDUCED_POWER) || DeviceCompat.isDebug()) chals.put("no_str", NO_STR);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_RANDOM_HP) || DeviceCompat.isDebug()) chals.put("kromer", KROMER);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_EVIL_MODE) || DeviceCompat.isDebug()) chals.put("no_talents", NO_TALENTS);
-		if (Badges.isUnlocked(Badges.Badge.CHAMPION_3) || DeviceCompat.isDebug()) chals.put("too_many_mobs", TOO_MANY_MOBS);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPION_4) || DeviceCompat.isDebug()) chals.put("too_many_mobs", TOO_MANY_MOBS);
 
 		return chals;
 	}

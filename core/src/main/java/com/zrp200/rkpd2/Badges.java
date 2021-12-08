@@ -174,7 +174,11 @@ public class Badges {
 		CHAMPION_4                  (116),
 		CHAMPION_5                  (117),
 		CHAMPION_6                  (118),
-		CHAMPION_7                  (119);
+		CHAMPION_7                  (119),
+		CHAMPION_8                  (120),
+		CHAMPION_9                  (121),
+		CHAMPION_10                  (122),
+		CHAMPION_11                  (123);
 
 		public boolean meta;
 
@@ -890,6 +894,34 @@ public class Badges {
 				saveNeeded = true;
 			}
 			badge = Badge.CHAMPION_7;
+		}
+		if (challenges >= 21){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_8;
+		}
+		if (challenges >= 24){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_9;
+		}
+		if (challenges >= 27){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_10;
+		}
+		if (challenges >= 30){
+			if (!global.contains(badge)){
+				global.add(badge);
+				saveNeeded = true;
+			}
+			badge = Badge.CHAMPION_11;
 		}
 		local.add(badge);
 		displayBadge( badge );
