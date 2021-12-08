@@ -24,17 +24,7 @@ package com.zrp200.rkpd2.items.potions;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Bleeding;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.Drowsy;
-import com.zrp200.rkpd2.actors.buffs.Healing;
-import com.zrp200.rkpd2.actors.buffs.Poison;
-import com.zrp200.rkpd2.actors.buffs.Slow;
-import com.zrp200.rkpd2.actors.buffs.Vertigo;
-import com.zrp200.rkpd2.actors.buffs.Vulnerable;
-import com.zrp200.rkpd2.actors.buffs.Weakness;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
@@ -75,15 +65,17 @@ public class PotionOfHealing extends Potion {
 	}
 	
 	public static void cure( Char ch ) {
-		Buff.detach( ch, Poison.class );
-		Buff.detach( ch, Cripple.class );
-		Buff.detach( ch, Weakness.class );
-		Buff.detach( ch, Vulnerable.class );
-		Buff.detach( ch, Bleeding.class );
-		Buff.detach( ch, Blindness.class );
-		Buff.detach( ch, Drowsy.class );
-		Buff.detach( ch, Slow.class );
-		Buff.detach( ch, Vertigo.class);
+		if (!Dungeon.isChallenged(Challenges.ALLERGY)) {
+			Buff.detach(ch, Poison.class);
+			Buff.detach(ch, Cripple.class);
+			Buff.detach(ch, Weakness.class);
+			Buff.detach(ch, Vulnerable.class);
+			Buff.detach(ch, Bleeding.class);
+			Buff.detach(ch, Blindness.class);
+			Buff.detach(ch, Drowsy.class);
+			Buff.detach(ch, Slow.class);
+			Buff.detach(ch, Vertigo.class);
+		}
 	}
 
 	@Override

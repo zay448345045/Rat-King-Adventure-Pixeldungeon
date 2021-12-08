@@ -23,9 +23,11 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -150,7 +152,8 @@ public class Buff extends Actor {
 
 	public static<T extends FlavourBuff> T append( Char target, Class<T> buffClass, float duration ) {
 		T buff = append( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+		float time = duration * target.resist(buffClass);
+		buff.spend(time);
 		return buff;
 	}
 
@@ -166,16 +169,24 @@ public class Buff extends Actor {
 	
 	public static<T extends FlavourBuff> T affect( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) *
+		float time = duration * target.resist(buffClass) *
 				(buff.type == buffType.NEGATIVE && Dungeon.hero.pointsInTalent(Talent.LASER_PRECISION) == 3
-						&& target.alignment == Char.Alignment.ENEMY ? 1.5f : 1));
+						&& target.alignment == Char.Alignment.ENEMY ? 1.5f : 1);
+		if (target instanceof Hero && Dungeon.isChallenged(Challenges.ALLERGY) && buff.type == buffType.NEGATIVE){
+			time *= 2;
+		}
+		buff.spend(time);
 		return buff;
 	}
 
 	//postpones an already active buff, or creates & attaches a new buff and delays that.
 	public static<T extends FlavourBuff> T prolong( Char target, Class<T> buffClass, float duration ) {
 		T buff = affect( target, buffClass );
-		buff.postpone( duration * target.resist(buffClass) );
+		float time = duration * target.resist(buffClass);
+		if (target instanceof Hero && Dungeon.isChallenged(Challenges.ALLERGY) && buff.type == buffType.NEGATIVE){
+			time *= 2;
+		}
+		buff.postpone(time);
 		return buff;
 	}
 
