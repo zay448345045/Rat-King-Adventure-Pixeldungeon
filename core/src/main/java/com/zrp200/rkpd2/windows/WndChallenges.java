@@ -38,8 +38,6 @@ import java.util.ArrayList;
 public class WndChallenges extends Window {
 
 	private final int WIDTH = 120;
-	private final int HEIGHT = Math.min((Challenges.availableChallenges().size+1)*(BTN_HEIGHT+GAP),
-			(int) (PixelScene.uiCamera.height * 0.9));
 	private static final int TTL_HEIGHT = 16;
 	private static final int BTN_HEIGHT = 16;
 	private static final int GAP        = 1;
@@ -53,6 +51,16 @@ public class WndChallenges extends Window {
 		super();
 
 		this.editable = editable;
+		OrderedMap<String, Integer> challenges = Challenges.availableChallenges();
+		if (!this.editable){
+			OrderedMap<String, Integer> activeChallenges = new OrderedMap<>();
+			for (ObjectMap.Entry<String, Integer> chal : challenges.entries()){
+				if ((checked & chal.value) != 0) activeChallenges.put(chal.key, chal.value);
+			}
+			challenges = new OrderedMap<>(activeChallenges);
+		}
+		int HEIGHT = Math.min((challenges.size + 1) * (BTN_HEIGHT + GAP),
+				(int) (PixelScene.uiCamera.height * 0.9));
 		resize(WIDTH, HEIGHT);
 
 		RenderedTextBlock title = PixelScene.renderTextBlock( Messages.get(this, "title"), 12 );
@@ -67,9 +75,9 @@ public class WndChallenges extends Window {
 		boxes = new ArrayList<>();
 
 		float pos = 2;
-		OrderedMap<String, Integer> challenges = Challenges.availableChallenges();
 		int i = 0;
 
+		OrderedMap<String, Integer> finalChallenges = challenges;
 		ScrollPane pane = new ScrollPane(new Component()) {
 			@Override
 			public void onClick(float x, float y) {
@@ -82,7 +90,7 @@ public class WndChallenges extends Window {
 				size = infos.size();
 				for (int i = 0; i < size; i++) {
 					if (infos.get(i).inside(x, y)) {
-						String challenge = challenges.keys().toArray().get(i);
+						String challenge = finalChallenges.keys().toArray().get(i);
 
 						ShatteredPixelDungeon.scene().add(
 								new WndTitledMessage(Icons.get(Icons.CHALLENGE_ON),
