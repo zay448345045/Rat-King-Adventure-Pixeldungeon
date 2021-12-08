@@ -455,8 +455,8 @@ public class AlchemyScene extends PixelScene {
 				if (finding instanceof Dart) {
 					detached = found.get(0).detachAll(inventory.backpack);
 				} else {
-					if (finding.consumedInAlchemy ){
-						((EquipableItem) finding).doUnequip(Dungeon.hero, false);
+					if (finding.consumedInAlchemy){
+						((EquipableItem) found.get(0)).doUnequip(Dungeon.hero, false);
 					}
 					detached = found.get(0).detach(inventory.backpack);
 				}
