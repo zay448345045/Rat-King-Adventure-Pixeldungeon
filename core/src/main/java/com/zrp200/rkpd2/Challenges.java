@@ -52,6 +52,8 @@ public class Challenges {
 	public static final int EVIL_MODE           = 131072;
 
 	public static final int NO_VEGAN            = 262144;
+	public static final int ALLERGY             = 524288;
+	public static final int UNSTABLE_DAMAGE     = 1048576;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -70,29 +72,17 @@ public class Challenges {
 	//summoning's solution would be better, but cmon, conduct refactoring for meme dlc?
 	public static OrderedMap<String, Integer> availableChallenges(){
 		OrderedMap<String, Integer> chals = new OrderedMap<>(defaultChals);
-		if (DeviceCompat.isDebug()){
-			chals.put("fatique", FATIQUE);
-			chals.put("no_accuracy", NO_ACCURACY);
-			chals.put("no_hp", NO_HP);
-			chals.put("burn", BURN);
-			chals.put("hero_pathing", HERO_PATHING);
-			chals.put("forget_path", FORGET_PATH);
-			chals.put("reduced_power", REDUCED_POWER);
-			chals.put("random_hp", RANDOM_HP);
-			chals.put("evil_mode", EVIL_MODE);
-			chals.put("no_vegan", NO_VEGAN);
-		} else {
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HEALING)) chals.put("no_hp", NO_HP);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HERBALISM)) chals.put("burn", BURN);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_SWARM)) chals.put("hero_pathing", HERO_PATHING);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_DARKNESS)) chals.put("forget_path", FORGET_PATH);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_SCROLLS)) chals.put("reduced_power", REDUCED_POWER);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_CHAMPS)) chals.put("random_hp", RANDOM_HP);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_BOSSES)) chals.put("evil_mode", EVIL_MODE);
-			if (Badges.isUnlocked(Badges.Badge.CHAMPED_FATIQUE)) chals.put("no_vegan", NO_VEGAN);
-		}
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD) || DeviceCompat.isDebug()) chals.put("fatique", FATIQUE);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR) || DeviceCompat.isDebug()) chals.put("no_accuracy", NO_ACCURACY);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HEALING) || DeviceCompat.isDebug()) chals.put("no_hp", NO_HP);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HERBALISM) || DeviceCompat.isDebug()) chals.put("burn", BURN);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_SWARM) || DeviceCompat.isDebug()) chals.put("hero_pathing", HERO_PATHING);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_DARKNESS) || DeviceCompat.isDebug()) chals.put("forget_path", FORGET_PATH);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_SCROLLS) || DeviceCompat.isDebug()) chals.put("reduced_power", REDUCED_POWER);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_CHAMPS) || DeviceCompat.isDebug()) chals.put("random_hp", RANDOM_HP);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_BOSSES) || DeviceCompat.isDebug()) chals.put("evil_mode", EVIL_MODE);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_FATIQUE) || DeviceCompat.isDebug()) chals.put("no_vegan", NO_VEGAN);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ACCURACY) || DeviceCompat.isDebug()) chals.put("allegry", ALLERGY);
 		return chals;
 	}
 
