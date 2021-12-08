@@ -162,6 +162,9 @@ public class Hero extends Char {
 		super();
 
 		HP = HT = 20;
+		if (Dungeon.isChallenged(Challenges.JUST_KILL_ME)){
+			HP = HT = 10;
+		}
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
@@ -173,6 +176,9 @@ public class Hero extends Char {
 		int curHT = HT;
 		
 		HT = 20 + 5*(lvl-1) + HTBoost;
+		if (Dungeon.isChallenged(Challenges.JUST_KILL_ME)){
+			HT = Math.round(10 + 2.5f*(lvl-1) + HTBoost/2f);
+		}
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);
 		
