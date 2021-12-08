@@ -185,7 +185,7 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	public int nMobs() {
-		if (Dungeon.getDepth() <= 1) return 0;
+		if (Dungeon.getDepth() <= 1 && !Dungeon.isChallenged(Challenges.KROMER)) return 0;
 
 		int mobs = 3 + Dungeon.getDepth() % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){

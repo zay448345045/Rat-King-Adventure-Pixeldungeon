@@ -7,6 +7,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
@@ -65,6 +66,9 @@ public class AbyssLevel extends RegularLevel {
     }
 
     public Actor addRespawner() {
+        if (Dungeon.isChallenged(Challenges.KROMER)){
+            return super.addRespawner();
+        }
         return null;
     }
 

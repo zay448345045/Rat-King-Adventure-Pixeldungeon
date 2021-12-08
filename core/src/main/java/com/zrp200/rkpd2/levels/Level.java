@@ -49,6 +49,7 @@ import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.potions.PotionOfStrength;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
@@ -182,6 +183,9 @@ public abstract class Level implements Bundlable {
 
 			if (Dungeon.isChallenged(Challenges.DARKNESS)){
 				addItemToSpawn( new Torch() );
+			}
+			if (Dungeon.isChallenged(Challenges.KROMER)){
+				addItemToSpawn( new Kromer() );
 			}
 
 			if (!Dungeon.isChallenged(Challenges.NO_STR)) {
@@ -522,7 +526,11 @@ public abstract class Level implements Bundlable {
 	public Actor addRespawner() {
 		if (respawner == null){
 			respawner = new Respawner();
-			Actor.addDelayed(respawner, respawnCooldown());
+			float delay = respawnCooldown();
+			if (Dungeon.isChallenged(Challenges.KROMER)){
+				delay = 180f;
+			}
+			Actor.addDelayed(respawner, delay);
 		} else {
 			Actor.add(respawner);
 		}
@@ -544,7 +552,9 @@ public abstract class Level implements Bundlable {
 				}
 			}
 
-			if (Dungeon.isChallenged(Challenges.HERO_PATHING) || count < Dungeon.level.nMobs()) {
+			if (Dungeon.isChallenged(Challenges.HERO_PATHING)
+					|| Dungeon.isChallenged(Challenges.KROMER)
+					 || count < Dungeon.level.nMobs()) {
 
 				PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 
@@ -559,6 +569,9 @@ public abstract class Level implements Bundlable {
 					}
 					if (!mob.buffs(ChampionEnemy.class).isEmpty()){
 						GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+					}
+					if (Dungeon.isChallenged(Challenges.KROMER)){
+						Buff.affect(mob, Adrenaline.class, 20000f);
 					}
 					spend(Dungeon.level.respawnCooldown());
 				} else {
@@ -576,6 +589,7 @@ public abstract class Level implements Bundlable {
 	public float respawnCooldown(){
 		float timeToRespawn = TIME_TO_RESPAWN;
 		if (Dungeon.isChallenged(Challenges.HERO_PATHING)) timeToRespawn *= 0.5f;
+		if (Dungeon.isChallenged(Challenges.KROMER)) timeToRespawn = 0.5f;
 		if (Statistics.amuletObtained){
 			return timeToRespawn /2f;
 		} else if (Dungeon.level.feeling == Feeling.DARK){
