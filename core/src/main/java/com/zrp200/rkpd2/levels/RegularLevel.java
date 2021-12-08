@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.levels;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Challenges;
@@ -50,6 +51,7 @@ import com.zrp200.rkpd2.levels.builders.FigureEightBuilder;
 import com.zrp200.rkpd2.levels.builders.LoopBuilder;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
+import com.zrp200.rkpd2.levels.rooms.connection.TunnelRoom;
 import com.zrp200.rkpd2.levels.rooms.secret.SecretRoom;
 import com.zrp200.rkpd2.levels.rooms.special.PitRoom;
 import com.zrp200.rkpd2.levels.rooms.special.ShopRoom;
@@ -61,6 +63,7 @@ import com.zrp200.rkpd2.levels.traps.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public abstract class RegularLevel extends Level {
@@ -204,52 +207,89 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
 			mobsToSpawn *= 16;
 		}
+		if (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS)){
+			mobsToSpawn *= 1000;
+		}
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
+		boolean allowCorridors = Dungeon.isChallenged(Challenges.TOO_MANY_MOBS);
 		for (Room room : rooms) {
 			if (room instanceof StandardRoom && room != roomEntrance) {
 				for (int i = 0; i < ((StandardRoom) room).sizeCat.roomValue; i++) {
 					stdRooms.add(room);
 				}
+			} else if(allowCorridors && room instanceof TunnelRoom){
+				stdRooms.add(room);
 			}
 		}
 		Random.shuffle(stdRooms);
 		Iterator<Room> stdRoomIter = stdRooms.iterator();
 
-		while (mobsToSpawn > 0) {
-			Mob mob = createMob();
-			Room roomToSpawn;
-			
-			if (!stdRoomIter.hasNext()) {
-				stdRoomIter = stdRooms.iterator();
-			}
-			roomToSpawn = stdRoomIter.next();
+		if (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS)){
+				HashSet<Integer> cells = new HashSet<>();
+				HashSet<Integer> largeCells = new HashSet<>();
+				while (stdRoomIter.hasNext()) {
+					Room r = stdRoomIter.next();
+					for (int i = r.left; i < r.right; i++) {
+						for (int j = r.top; j < r.bottom; j++) {
+							int c = pointToCell(new Point(i, j));
+							if (passable[c] && !solid[c] && c != exit && c != entrance) {
+								cells.add(c);
+								if (openSpace[c]) largeCells.add(c);
+							}
+						}
+					}
+				}
+				while (mobsToSpawn > 0) {
+					Mob mob = createMob();
+					if (cells.size() <= 0) break;
+					HashSet<Integer> set = mob.properties().contains(Char.Property.LARGE) ? largeCells : cells;
 
-			int tries = 30;
-			do {
-				mob.pos = pointToCell(roomToSpawn.random());
-				tries--;
-			} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
-					|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
-
-			if (tries >= 0) {
-				mobsToSpawn--;
-				mobs.add(mob);
-
-				//chance to add a second mob to this room, except on floor 1
-				if (Dungeon.getDepth() > 1 && mobsToSpawn > 0 && Random.Int(4) == 0){
-					mob = createMob();
-
-					tries = 30;
-					do {
-						mob.pos = pointToCell(roomToSpawn.random());
-						tries--;
-					} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
-							|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
-
-					if (tries >= 0) {
-						mobsToSpawn--;
+					mobsToSpawn--;
+					if (set.size() > 0) {
+						int cell = Random.element(set);
+						mob.pos = cell;
+						cells.remove(cell);
+						largeCells.remove(cell);
 						mobs.add(mob);
+					}
+				}
+		} else {
+			while (mobsToSpawn > 0) {
+				Mob mob = createMob();
+				Room roomToSpawn;
+
+				if (!stdRoomIter.hasNext()) {
+					stdRoomIter = stdRooms.iterator();
+				}
+				roomToSpawn = stdRoomIter.next();
+
+				int tries = 30;
+				do {
+					mob.pos = pointToCell(roomToSpawn.random());
+					tries--;
+				} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
+						|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
+
+				if (tries >= 0) {
+					mobsToSpawn--;
+					mobs.add(mob);
+
+					//chance to add a second mob to this room, except on floor 1
+					if (Dungeon.getDepth() > 1 && mobsToSpawn > 0 && Random.Int(4) == 0) {
+						mob = createMob();
+
+						tries = 30;
+						do {
+							mob.pos = pointToCell(roomToSpawn.random());
+							tries--;
+						} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
+								|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
+
+						if (tries >= 0) {
+							mobsToSpawn--;
+							mobs.add(mob);
+						}
 					}
 				}
 			}
@@ -544,7 +584,7 @@ public abstract class RegularLevel extends Level {
 				if (passable[pos] && !solid[pos]
 						&& pos != exit
 						&& heaps.get(pos) == null
-						&& findMob(pos) == null) {
+						&& (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS) || findMob(pos) == null)) {
 					
 					Trap t = traps.get(pos);
 					
@@ -564,6 +604,24 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	public int fallCell( boolean fallIntoPit ) {
+		if (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS)){
+			HashSet<Integer> cells = new HashSet<>();
+			for (Room r : rooms) {
+				if(r instanceof SpecialRoom) continue;
+				for (int i = r.left; i < r.right; i++) {
+					for (int j = r.top; j < r.bottom; j++) {
+						int c = pointToCell(new Point(i, j));
+						if (passable[c] && !solid[c]) {
+							cells.add(c);
+						}
+					}
+				}
+			}
+			for (Mob mob : mobs) {
+				cells.remove(mob.pos);
+			}
+			return Random.element(cells);
+		}
 		if (fallIntoPit) {
 			for (Room room : rooms) {
 				if (room instanceof PitRoom) {
