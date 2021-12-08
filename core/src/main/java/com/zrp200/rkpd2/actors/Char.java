@@ -779,6 +779,9 @@ public abstract class Char extends Actor {
 				if (dmg < 0) dmg = 0;
 			}
 		}
+		if (this instanceof Hero && Dungeon.isChallenged(Challenges.UNSTABLE_DAMAGE)){
+			dmg *= Random.Float(0.5f, 2f);
+		}
 		return dmg;
 	}
 	protected void onDamage(int dmg, Object src) {

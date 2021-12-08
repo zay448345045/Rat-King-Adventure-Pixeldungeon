@@ -83,6 +83,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_BOSSES) || DeviceCompat.isDebug()) chals.put("evil_mode", EVIL_MODE);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_FATIQUE) || DeviceCompat.isDebug()) chals.put("no_vegan", NO_VEGAN);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ACCURACY) || DeviceCompat.isDebug()) chals.put("allergy", ALLERGY);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HP) || DeviceCompat.isDebug()) chals.put("unstable_damage", UNSTABLE_DAMAGE);
 		return chals;
 	}
 
