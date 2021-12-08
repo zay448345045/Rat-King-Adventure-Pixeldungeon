@@ -21,16 +21,22 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.Pasty;
 import com.zrp200.rkpd2.sprites.SeniorSprite;
-import com.watabou.utils.Random;
 
 public class Senior extends Monk {
 
 	{
 		spriteClass = SeniorSprite.class;
 
-		loot = new Pasty();
+		if (Dungeon.isChallenged(Challenges.NO_VEGAN))
+			loot = new MysteryMeat();
+		else
+			loot = new Pasty();
 		lootChance = 1f;
 	}
 	

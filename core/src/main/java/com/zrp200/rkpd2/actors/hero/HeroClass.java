@@ -50,6 +50,7 @@ import com.zrp200.rkpd2.items.bags.PotionBandolier;
 import com.zrp200.rkpd2.items.bags.ScrollHolder;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
@@ -117,7 +118,10 @@ public enum HeroClass {
 		Item i = new ClothArmor().identify();
 		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor) i;
 
-		i = new Food();
+		if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
+			i = new MysteryMeat();
+		}
+		else i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
 		// give all bags.

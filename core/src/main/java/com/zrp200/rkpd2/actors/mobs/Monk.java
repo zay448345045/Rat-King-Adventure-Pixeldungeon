@@ -26,10 +26,13 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.MonkSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -44,8 +47,11 @@ public class Monk extends Mob {
 		
 		EXP = 11;
 		maxLvl = 21;
-		
-		loot = new Food();
+
+		if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
+			loot = new MysteryMeat();
+		}
+		else loot = new Food();
 		lootChance = 0.083f;
 
 		properties.add(Property.UNDEAD);

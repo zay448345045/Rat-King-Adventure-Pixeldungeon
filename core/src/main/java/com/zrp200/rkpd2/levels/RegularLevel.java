@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.keys.GoldenKey;
@@ -452,7 +453,11 @@ public abstract class RegularLevel extends Level {
 					losBlocking[cell] = false;
 				}
 				// rogue gets regular food.
-				drop( dropped.count() < large ? new Food() : new SmallRation(), cell).type = Heap.Type.CHEST;
+				if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
+					drop( new MysteryMeat(), cell).type = Heap.Type.CHEST;
+				}
+				else
+					drop( dropped.count() < large ? new Food() : new SmallRation(), cell).type = Heap.Type.CHEST;
 				dropped.countUp(1);
 			}
 		}

@@ -110,6 +110,9 @@ public class WndChallenges extends Window {
 			ConduitBox cb = new ConduitBox( chaltitle );
 			cb.checked( (checked & chal.value) != 0 );
 			cb.active = editable;
+			if (chal.value > Challenges.EVIL_MODE){
+				cb.textColor(0x5c5c5c);
+			}
 
 			if (++i > 0) {
 				pos += GAP;

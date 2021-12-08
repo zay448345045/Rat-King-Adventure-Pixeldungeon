@@ -21,13 +21,15 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Foliage;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.plants.BlandfruitBush;
 import com.zrp200.rkpd2.plants.Sungrass;
-import com.watabou.utils.Random;
 
 public class GardenRoom extends SpecialRoom {
 
@@ -43,9 +45,11 @@ public class GardenRoom extends SpecialRoom {
 		if (bushes == 0) {
 			level.plant(new Sungrass.Seed(), plantPos( level ));
 		} else if (bushes == 1) {
+			if (!Dungeon.isChallenged(Challenges.NO_VEGAN))
 			level.plant(new BlandfruitBush.Seed(), plantPos( level ));
 		} else if (Random.Int(5) == 0) {
 			level.plant(new Sungrass.Seed(), plantPos( level ));
+			if (!Dungeon.isChallenged(Challenges.NO_VEGAN))
 			level.plant(new BlandfruitBush.Seed(), plantPos( level ));
 		}
 		

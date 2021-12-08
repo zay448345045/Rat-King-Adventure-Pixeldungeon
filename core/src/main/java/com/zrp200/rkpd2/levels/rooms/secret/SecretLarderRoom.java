@@ -22,10 +22,12 @@
 package com.zrp200.rkpd2.levels.rooms.secret;
 
 import com.watabou.utils.Point;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.items.food.ChargrilledMeat;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.Pasty;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -53,7 +55,7 @@ public class SecretLarderRoom extends SecretRoom {
 		
 		Painter.fill(level, c.x-1, c.y-1, 3, 3, Terrain.WATER);
 		Painter.set(level, c, Terrain.GRASS);
-		
+		if (!Dungeon.isChallenged(Challenges.NO_VEGAN))
 		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
 		
 		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.getDepth() / 5);
@@ -61,10 +63,16 @@ public class SecretLarderRoom extends SecretRoom {
 		while (extraFood > 0){
 			Food food;
 			if (extraFood >= Hunger.STARVING){
-				food = new Pasty();
+				if (Dungeon.isChallenged(Challenges.NO_VEGAN))
+					food = new MysteryMeat();
+				else
+					food = new Pasty();
 				extraFood -= Hunger.STARVING;
 			} else {
-				food = new ChargrilledMeat();
+				if (Dungeon.isChallenged(Challenges.NO_VEGAN))
+					food = new MysteryMeat();
+				else
+					food = new ChargrilledMeat();
 				extraFood -= (Hunger.STARVING - Hunger.HUNGRY);
 			}
 			int foodPos;

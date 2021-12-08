@@ -25,6 +25,8 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
+import com.zrp200.rkpd2.items.food.Blandfruit;
 
 public class Challenges {
 
@@ -48,6 +50,8 @@ public class Challenges {
 	public static final int REDUCED_POWER       = 32768;
 	public static final int RANDOM_HP           = 65536;
 	public static final int EVIL_MODE           = 131072;
+
+	public static final int NO_VEGAN            = 262144;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -76,6 +80,7 @@ public class Challenges {
 			chals.put("reduced_power", REDUCED_POWER);
 			chals.put("random_hp", RANDOM_HP);
 			chals.put("evil_mode", EVIL_MODE);
+			chals.put("no_vegan", NO_VEGAN);
 		} else {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_FOOD)) chals.put("fatique", FATIQUE);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ARMOR)) chals.put("no_accuracy", NO_ACCURACY);
@@ -86,6 +91,7 @@ public class Challenges {
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_SCROLLS)) chals.put("reduced_power", REDUCED_POWER);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_CHAMPS)) chals.put("random_hp", RANDOM_HP);
 			if (Badges.isUnlocked(Badges.Badge.CHAMPED_BOSSES)) chals.put("evil_mode", EVIL_MODE);
+			if (Badges.isUnlocked(Badges.Badge.CHAMPED_FATIQUE)) chals.put("no_vegan", NO_VEGAN);
 		}
 		return chals;
 	}
@@ -101,6 +107,9 @@ public class Challenges {
 	public static boolean isItemBlocked( Item item ){
 
 		if (Dungeon.isChallenged(NO_HERBALISM) && item instanceof Dewdrop){
+			return true;
+		}
+		if (Dungeon.isChallenged(NO_VEGAN) && (item instanceof HornOfPlenty || item instanceof Blandfruit)){
 			return true;
 		}
 
