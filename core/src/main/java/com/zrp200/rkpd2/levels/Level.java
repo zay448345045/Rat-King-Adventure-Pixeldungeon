@@ -1081,10 +1081,16 @@ public abstract class Level implements Bundlable {
 		
 		boolean sighted = c.buff( Blindness.class ) == null && c.buff( Shadows.class ) == null
 						&& c.buff( TimekeepersHourglass.timeStasis.class ) == null && c.isAlive();
-		if (sighted) {
+		if (sighted || (c instanceof Mob && Dungeon.isChallenged(Challenges.UNLIMITED_VISION))) {
 			boolean[] blocking;
-			
-			if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero)c).hasTalent(Talent.RK_WARDEN)))
+			if (c instanceof Mob && (Dungeon.isChallenged(Challenges.UNLIMITED_VISION))){
+				blocking = Dungeon.level.losBlocking.clone();
+				for (int i = 0; i < blocking.length; i++){
+					if (blocking[i])
+						blocking[i] = false;
+				}
+			}
+			else if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero)c).hasTalent(Talent.RK_WARDEN)))
 				|| c instanceof YogFist.SoiledFist) {
 				blocking = Dungeon.level.losBlocking.clone();
 				for (int i = 0; i < blocking.length; i++){
@@ -1097,10 +1103,13 @@ public abstract class Level implements Bundlable {
 			}
 			
 			int viewDist = c.viewDistance;
-			if (c instanceof Hero){
+			if (c instanceof Mob && Dungeon.isChallenged(Challenges.UNLIMITED_VISION)){
+				viewDist = 10;
+			}
+			else if (c instanceof Hero){
 				viewDist *= ((Hero)c).getViewDistanceModifier();
 			}
-			if (Ratmogrify.drratedonActive(c)){
+			else if (Ratmogrify.drratedonActive(c)){
 				viewDist *= Dungeon.hero.getViewDistanceModifier();
 			}
 			
