@@ -1120,7 +1120,7 @@ public abstract class Level implements Bundlable {
 			
 			int viewDist = c.viewDistance;
 			if (c instanceof Mob && Dungeon.isChallenged(Challenges.UNLIMITED_VISION)){
-				viewDist = 10;
+				viewDist = 8;
 			}
 			else if (c instanceof Hero){
 				viewDist *= ((Hero)c).getViewDistanceModifier();
