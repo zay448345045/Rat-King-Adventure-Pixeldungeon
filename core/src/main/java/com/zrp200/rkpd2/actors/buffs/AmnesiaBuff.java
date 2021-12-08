@@ -5,6 +5,11 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.scenes.GameScene;
 
 public class AmnesiaBuff extends Buff{
+
+    {
+        revivePersists = true;
+    }
+
     @Override
     public boolean act() {
         if (target.isAlive()) {

@@ -166,8 +166,9 @@ public class RKPD2Changes {
                                     "Added an upgraded version of Wand of His Ratiness.")),
                     new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
                             list(2,
-                                    "Added 9 new challenges that are accessible from beating regular challenges!",
+                                    "Added 21 new challenges that are accessible from beating challenges!",
                                     "Each new challenge is connected to one that unlocks it but has separate effects.",
+                                    "First 9 challenges are unlocked from regular challenges, another nine are from beating previous 9 challenges, and last three are from beating 9/18/27 challenges at once.",
                                     "Have fun for trying all of them!")),
                     misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27.\n\n" +
                             "_-_ Heroes can level up beyond level 30 but more XP is required for each new level; each 3rd level up beyond 30 will also give talent point to every tier.\n\n" +
@@ -176,7 +177,8 @@ public class RKPD2Changes {
                             "_-_ Ring of Force can be enchanted by curse enchantments with Curse Infusion.\n\n" +
                             "_-_ Dried Rose's ghost heals 2.5x faster and has more HP and unarmed damage if hero is beyond level 30.\n\n" +
                             "_-_ Buffed Final Froggit's HP from 90 to 180.\n\n" +
-                            "_-_ Nerfed Abyssal Nightmare's ability to split by making it only work for initial mob, also nerfed HP regen from 10 to 7."),
+                            "_-_ Nerfed Abyssal Nightmare's ability to split by making it only work for initial mob, also nerfed HP regen from 10 to 7.\n\n" +
+                            "_-_ Changed UI to better differentate from regular RKPD2."),
                     bugFixes("_-_ Fixed Frostburn not slowing down characters.\n\n" +
                             "_-_ Fixed Molten Strife's brawler special damaging hero.\n\n" +
                             "_-_ Fixed Ring of Force being \"augmentable\".\n\n" +

@@ -38,7 +38,9 @@ public class KromerPotion extends Elixir{
     }
 
     public static class Effect extends Buff {
-
+        {
+            revivePersists = true;
+        }
     }
 
     public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
