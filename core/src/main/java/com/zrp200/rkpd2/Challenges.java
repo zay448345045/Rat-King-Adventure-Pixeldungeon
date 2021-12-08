@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.items.food.Blandfruit;
 
@@ -54,6 +55,7 @@ public class Challenges {
 	public static final int NO_VEGAN            = 262144;
 	public static final int ALLERGY             = 524288;
 	public static final int UNSTABLE_DAMAGE     = 1048576;
+	public static final int NO_ALCHEMY          = 2097152;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -84,6 +86,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_FATIQUE) || DeviceCompat.isDebug()) chals.put("no_vegan", NO_VEGAN);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_ACCURACY) || DeviceCompat.isDebug()) chals.put("allergy", ALLERGY);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_NO_HP) || DeviceCompat.isDebug()) chals.put("unstable_damage", UNSTABLE_DAMAGE);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_BURN) || DeviceCompat.isDebug()) chals.put("no_alchemy", NO_ALCHEMY);
 		return chals;
 	}
 
@@ -101,6 +104,9 @@ public class Challenges {
 			return true;
 		}
 		if (Dungeon.isChallenged(NO_VEGAN) && (item instanceof HornOfPlenty || item instanceof Blandfruit)){
+			return true;
+		}
+		if (Dungeon.isChallenged(NO_ALCHEMY) && (item instanceof AlchemistsToolkit)){
 			return true;
 		}
 

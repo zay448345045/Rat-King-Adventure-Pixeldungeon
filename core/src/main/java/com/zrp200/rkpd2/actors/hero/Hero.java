@@ -943,6 +943,10 @@ public class Hero extends Char {
 		if (Dungeon.level.distance(dst, pos) <= 1) {
 
 			ready();
+			if (Dungeon.isChallenged(Challenges.NO_ALCHEMY)){
+				GLog.w( Messages.get(AlchemistsToolkit.class, "omni_cursed"));
+				return false;
+			}
 			
 			AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
 			if (kit != null && kit.isCursed()){
