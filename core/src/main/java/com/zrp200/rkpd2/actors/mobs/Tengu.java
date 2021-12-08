@@ -37,10 +37,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.*;
-import com.zrp200.rkpd2.effects.particles.BlastParticle;
-import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.SmokeParticle;
-import com.zrp200.rkpd2.effects.particles.SparkParticle;
+import com.zrp200.rkpd2.effects.particles.*;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.TengusMask;
@@ -890,7 +887,11 @@ public class Tengu extends Mob {
 							
 							Char ch = Actor.findChar( cell );
 							if (ch != null && !ch.isImmune(Fire.class) && !(ch instanceof Tengu)) {
-								Buff.affect( ch, Burning.class ).reignite( ch );
+								if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+									Buff.affect( ch, GodSlayerBurning.class ).reignite( ch, 4 );
+								}
+								else
+									Buff.affect( ch, Burning.class ).reignite( ch );
 							}
 							
 							if (Dungeon.level.flamable[cell]){
@@ -901,7 +902,11 @@ public class Tengu extends Mob {
 							}
 							
 							burned = true;
-							CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
+							if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+								CellEmitter.get(cell).start(GodfireParticle.FACTORY, 0.03f, 10);
+							}
+							else
+								CellEmitter.get(cell).start(FlameParticle.FACTORY, 0.03f, 10);
 						}
 					}
 				}

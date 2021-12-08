@@ -32,10 +32,12 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Inferno;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.EarthParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -147,7 +149,7 @@ public class DM300 extends Mob {
 		}
 
 		//ability logic only triggers if DM is not supercharged
-		if (!supercharged || Dungeon.isChallenged(Challenges.EVIL_MODE)){
+		if (!supercharged){
 			if (turnsSinceLastAbility >= 0) turnsSinceLastAbility++;
 
 			//in case DM-300 hasn't been able to act yet
@@ -272,6 +274,19 @@ public class DM300 extends Mob {
 						+ (Dungeon.hero.heroClass == HeroClass.RAT_KING ? "_rk" : ""));
 				yell(verb + " " + verb + " " + verb );
 				chargeAnnounced = true;
+				ArrayList<Integer> points = Level.getSpawningPoints(pos);
+				if (!points.isEmpty()){
+					DM200 clone = new DM200();
+					clone.HP = clone.HT = HP / 2;
+					clone.pos = Random.element(points);
+					clone.state = clone.HUNTING;
+					ChampionEnemy.rollForChampionInstantly(clone);
+
+					Dungeon.level.occupyCell(clone);
+
+					GameScene.add(clone, 0f);
+					Actor.addDelayed(new Pushing(clone, pos, clone.pos), -1);
+				}
 			}
 
 			if (Dungeon.hero.invisible <= 0){
@@ -349,22 +364,29 @@ public class DM300 extends Mob {
 		Dungeon.hero.interrupt();
 
 		int gasVented = 0;
+		Class<? extends Blob> usedGas = ToxicGas.class;
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			usedGas = Inferno.class;
+		}
 
 		Ballistica trajectory = new Ballistica(pos, target.pos, Ballistica.STOP_TARGET);
 
 		int gasMulti = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 2 : 1;
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			gasMulti++;
+		}
 
 		for (int i : trajectory.subPath(0, trajectory.dist)){
-			GameScene.add(Blob.seed(i, 20*gasMulti, ToxicGas.class));
+			GameScene.add(Blob.seed(i, 20*gasMulti, usedGas));
 			gasVented += 20*gasMulti;
 		}
 
-		GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, ToxicGas.class));
+		GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, usedGas));
 
 		if (gasVented < 250*gasMulti){
 			int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
 			for (int i : PathFinder.NEIGHBOURS8){
-				GameScene.add(Blob.seed(pos+i, toVentAround, ToxicGas.class));
+				GameScene.add(Blob.seed(pos+i, toVentAround, usedGas));
 			}
 
 		}
@@ -610,6 +632,11 @@ public class DM300 extends Mob {
 		resistances.add(Frost.class);
 		resistances.add(Roots.class);
 		resistances.add(Slow.class);
+
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			immunities.add(Inferno.class);
+			immunities.add(Burning.class);
+		}
 	}
 
 	public static class FallingRockBuff extends FlavourBuff {

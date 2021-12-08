@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.LockedFloor;
 import com.zrp200.rkpd2.actors.buffs.Ooze;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.keys.SkeletonKey;
 import com.zrp200.rkpd2.items.quest.GooBlob;
@@ -153,6 +154,18 @@ public class Goo extends Mob {
 		}
 
 		return damage;
+	}
+
+	@Override
+	public int defenseProc(Char enemy, int damage) {
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
+			for (int i : PathFinder.NEIGHBOURS9){
+				Splash.at(pos+i, 0x000000, 5);
+				if (Actor.findChar(pos+i) != null)
+					Buff.affect(Actor.findChar(pos+i), Ooze.class).set( Ooze.DURATION );
+			}
+		}
+		return super.defenseProc(enemy, damage);
 	}
 
 	@Override
