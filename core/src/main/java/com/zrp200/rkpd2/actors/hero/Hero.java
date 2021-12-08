@@ -1853,7 +1853,7 @@ public class Hero extends Char {
 				GLog.p( Messages.get(this, "new_level") );
 				sprite.showStatus( CharSprite.POSITIVE, Messages.get(Hero.class, "level_up") );
 				Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
-				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
+				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1] && !Dungeon.isChallenged(Challenges.NO_TALENTS)){
 					int points = 1;
 					if(lvl >= 21 && lvl < 25) points += 1;
 					if(lvl >= Talent.tierLevelThresholds[4] && armorAbility != null && armorAbility.talents().length == 0) points--;

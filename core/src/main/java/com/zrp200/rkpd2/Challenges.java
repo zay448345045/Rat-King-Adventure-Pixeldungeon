@@ -61,6 +61,7 @@ public class Challenges {
 	public static final int UNLIMITED_VISION    = 8388608;
 	public static final int NO_STR              = 16777216;
 	public static final int KROMER              = 33554432;
+	public static final int NO_TALENTS          = 67108864;
 
 
 	public static OrderedMap<String, Integer> defaultChals = new OrderedMap<>();
@@ -96,6 +97,7 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_FORGET_PATH) || DeviceCompat.isDebug()) chals.put("unlimited_vision", UNLIMITED_VISION);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_REDUCED_POWER) || DeviceCompat.isDebug()) chals.put("no_str", NO_STR);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_RANDOM_HP) || DeviceCompat.isDebug()) chals.put("kromer", KROMER);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPED_EVIL_MODE) || DeviceCompat.isDebug()) chals.put("no_talents", NO_TALENTS);
 		return chals;
 	}
 

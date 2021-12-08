@@ -121,6 +121,9 @@ public class WndChallenges extends Window {
 			if (chal.value > Challenges.EVIL_MODE){
 				cb.textColor(0x5c5c5c);
 			}
+			if (chal.value == Challenges.NO_TALENTS){
+				cb.textColor(0x3c3f47);
+			}
 
 			if (++i > 0) {
 				pos += GAP;

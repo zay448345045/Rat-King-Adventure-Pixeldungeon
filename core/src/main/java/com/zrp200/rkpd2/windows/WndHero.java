@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.windows;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.Statistics;
@@ -92,11 +93,20 @@ public class WndHero extends WndTabbed {
 
 		layoutTabs();
 
+		if (Dungeon.isChallenged(Challenges.NO_TALENTS))
+		tabs.get(1).bg.tint(0, 0.5f);
+
 		talents.setRect(0, 0, WIDTH, HEIGHT);
 		talents.pane.scrollTo(0, talents.pane.content().height() - talents.pane.height());
 		talents.layout();
 
 		select( lastIdx );
+	}
+
+	@Override
+	public void select(Tab tab) {
+		if (Dungeon.isChallenged(Challenges.NO_TALENTS) && tabs.indexOf(tab) == 1) return;
+		super.select(tab);
 	}
 
 	private class StatsTab extends Group {

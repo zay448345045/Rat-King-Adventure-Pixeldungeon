@@ -484,18 +484,20 @@ public class GameScene extends PixelScene {
 				Random.popGenerator();
 			}
 
-			boolean unspentTalents = false;
-			for (int i = 1; i <= Dungeon.hero.talents.size(); i++){
-				if (Dungeon.hero.talentPointsAvailable(i) > 0){
-					unspentTalents = true;
-					break;
+			if (!Dungeon.isChallenged(Challenges.NO_TALENTS)) {
+				boolean unspentTalents = false;
+				for (int i = 1; i <= Dungeon.hero.talents.size(); i++){
+					if (Dungeon.hero.talentPointsAvailable(i) > 0){
+						unspentTalents = true;
+						break;
+					}
 				}
-			}
-			if (unspentTalents){
-				GLog.newLine();
-				GLog.w( Messages.get(Dungeon.hero, "unspent") );
-				StatusPane.talentBlink = 10f;
-				WndHero.lastIdx = 1;
+				if (unspentTalents){
+					GLog.newLine();
+					GLog.w( Messages.get(Dungeon.hero, "unspent") );
+					StatusPane.talentBlink = 10f;
+					WndHero.lastIdx = 1;
+				}
 			}
 
 			switch (Dungeon.level.feeling) {
