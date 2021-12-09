@@ -1033,7 +1033,7 @@ public class Badges {
 			{Badge.POTIONS_COOKED_1, Badge.POTIONS_COOKED_2, Badge.POTIONS_COOKED_3, Badge.POTIONS_COOKED_4 },
 			{Badge.BOSS_SLAIN_1, Badge.BOSS_SLAIN_2, Badge.BOSS_SLAIN_3, Badge.BOSS_SLAIN_4},
 			{Badge.GAMES_PLAYED_1, Badge.GAMES_PLAYED_2, Badge.GAMES_PLAYED_3, Badge.GAMES_PLAYED_4},
-			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4, Badge.CHAMPION_5, Badge.CHAMPION_6, Badge.CHAMPION_7}
+			{Badge.CHAMPION_1, Badge.CHAMPION_2, Badge.CHAMPION_3, Badge.CHAMPION_4, Badge.CHAMPION_5, Badge.CHAMPION_6, Badge.CHAMPION_7, Badge.CHAMPION_8, Badge.CHAMPION_9, Badge.CHAMPION_10, Badge.CHAMPION_11}
 	};
 
 	private static final Badge[][] metaBadgeReplacements = new Badge[][]{
