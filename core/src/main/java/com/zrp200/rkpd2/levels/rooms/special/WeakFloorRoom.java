@@ -82,7 +82,7 @@ public class WeakFloorRoom extends SpecialRoom {
 		@Override
 		public Tilemap create() {
 			Tilemap v = super.create();
-			v.map( new int[]{Math.max(5, Dungeon.getDepth() /5)}, 1);
+			v.map( new int[]{Math.min(5, Dungeon.getDepth() /5)}, 1);
 			return v;
 		}
 
