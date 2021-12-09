@@ -276,7 +276,7 @@ public class DM300 extends Mob {
 				yell(verb + " " + verb + " " + verb );
 				chargeAnnounced = true;
 				ArrayList<Integer> points = Level.getSpawningPoints(pos);
-				if (!points.isEmpty()){
+				if (!points.isEmpty() && Dungeon.isChallenged(Challenges.EVIL_MODE)){
 					DM200 clone = new DM200();
 					clone.HP = clone.HT = HP / 2;
 					clone.pos = Random.element(points);
