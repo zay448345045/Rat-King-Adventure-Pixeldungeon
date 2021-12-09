@@ -168,7 +168,7 @@ public class RKPD2Changes {
                             list(2,
                                     "Added 21 new challenges that are accessible from beating challenges!",
                                     "Each new challenge is connected to one that unlocks it but has separate effects.",
-                                    "First 9 challenges are unlocked from regular challenges, another nine are from beating previous 9 challenges, and last three are from beating 9/18/27 challenges at once.",
+                                    "First 9 challenges are unlocked from regular challenges, another nine are from beating previous 9 challenges, and last three are from beating 6/12/18 challenges at once.",
                                     "Have fun for trying all of them!")),
                     misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27.\n\n" +
                             "_-_ Heroes can level up beyond level 30 but more XP is required for each new level; each 3rd level up beyond 30 will also give talent point to every tier.\n\n" +
