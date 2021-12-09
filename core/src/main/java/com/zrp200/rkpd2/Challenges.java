@@ -102,9 +102,9 @@ public class Challenges {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_REDUCED_POWER) || DeviceCompat.isDebug()) chals.put("no_str", NO_STR);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_RANDOM_HP) || DeviceCompat.isDebug()) chals.put("kromer", KROMER);
 		if (Badges.isUnlocked(Badges.Badge.CHAMPED_EVIL_MODE) || DeviceCompat.isDebug()) chals.put("no_talents", NO_TALENTS);
-		if (Badges.isUnlocked(Badges.Badge.CHAMPION_4) || DeviceCompat.isDebug()) chals.put("too_many_mobs", TOO_MANY_MOBS);
-		if (Badges.isUnlocked(Badges.Badge.CHAMPION_7) || DeviceCompat.isDebug()) chals.put("just_kill_me", JUST_KILL_ME);
-		if (Badges.isUnlocked(Badges.Badge.CHAMPION_10) || DeviceCompat.isDebug()) chals.put("no_levels", NO_LEVELS);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPION_3) || DeviceCompat.isDebug()) chals.put("too_many_mobs", TOO_MANY_MOBS);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPION_5) || DeviceCompat.isDebug()) chals.put("just_kill_me", JUST_KILL_ME);
+		if (Badges.isUnlocked(Badges.Badge.CHAMPION_7) || DeviceCompat.isDebug()) chals.put("no_levels", NO_LEVELS);
 
 		return chals;
 	}
