@@ -170,10 +170,10 @@ public class ElementalBlast extends ArmorAbility {
 		final Class<? extends Wand>[] finalWandCls = new Class[]{wandCls[0] == WandOfFirebolt.class ? WandOfFireblast.class : wandCls[0]};
 		int finalMinDamage = minDamage;
 		int finalMaxDamage = maxDamage;
-		((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
+		hero.sprite.parent.recycle( MagicMissile.class ).reset(
 				effectTypes.get(wandCls[0]),
 				hero.sprite,
-				aim.path.get(aoeSize / 2),
+				aim.path.get(Math.min(aim.path.size()-1, aoeSize / 2)),
 				new Callback() {
 					@Override
 					public void call() {
