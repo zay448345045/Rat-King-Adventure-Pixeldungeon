@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.Recipe;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
+import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.journal.Journal;
@@ -330,7 +331,7 @@ public class AlchemyScene extends PixelScene {
 							} else if (item instanceof EquipableItem && !(item instanceof MissileWeapon)) {
 								if (item.isEquipped(Dungeon.hero))
 									((EquipableItem) item).doUnequip(Dungeon.hero, true);
-								inputs[i].item(item);
+								inputs[i].item(item.detachAll(Dungeon.hero.belongings.backpack));
 							} else {
 								inputs[i].item(item.detach(Dungeon.hero.belongings.backpack));
 							}
@@ -451,14 +452,22 @@ public class AlchemyScene extends PixelScene {
 			int needed = finding.quantity();
 			ArrayList<Item> found = inventory.getAllSimilar(finding);
 			while (!found.isEmpty() && needed > 0){
+				//					if (finding.consumedInAlchemy){
+//						((EquipableItem) found.get(0)).doUnequip(Dungeon.hero, false);
+//					}
 				Item detached;
 				if (finding instanceof Dart) {
 					detached = found.get(0).detachAll(inventory.backpack);
-				} else {
-					if (finding.consumedInAlchemy){
-						((EquipableItem) found.get(0)).doUnequip(Dungeon.hero, false);
-					}
-					detached = found.get(0).detach(inventory.backpack);
+				}
+				else if (found.get(0) instanceof Weapon){
+						if (found.get(0).isEquipped(Dungeon.hero))
+							((Weapon)found.get(0)).doUnequip(Dungeon.hero, true, false);
+						if (inventory.contains(found.get(0)))
+							found.get(0).detach(inventory.backpack);
+						detached = found.get(0);
+				}
+				else {
+						detached = found.get(0).detach(inventory.backpack);
 				}
 				inputs[curslot].item(detached);
 				curslot++;
@@ -495,7 +504,7 @@ public class AlchemyScene extends PixelScene {
 			for (int i = 0; i < inputs.length; i++) {
 				if (inputs[i] != null && inputs[i].item != null) {
 					if (!(inputs[i].item instanceof AlchemistsToolkit) || (!(inputs[i].item  instanceof EquipableItem && !(inputs[i].item  instanceof MissileWeapon)))) {
-						if (!inputs[i].item.collect()) {
+						if (!inputs[i].item.collect() && inputs[i].item.quantity() > 0) {
 							Dungeon.level.drop(inputs[i].item, Dungeon.hero.pos);
 						}
 					}

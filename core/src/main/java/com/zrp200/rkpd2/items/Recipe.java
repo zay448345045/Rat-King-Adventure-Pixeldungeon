@@ -214,13 +214,26 @@ public abstract class Recipe {
 			for (Item ingredient : ingredients){
 				for (int i = 0; i < inputs.length; i++) {
 					if (ingredient.getClass() == inputs[i] && needed[i] > 0) {
-						if (ingredient instanceof EquipableItem) equipList.add(Bundlable.clone(ingredient));
-						if (needed[i] <= ingredient.quantity()) {
-							ingredient.quantity(ingredient.quantity() - needed[i]);
+						if (ingredient instanceof EquipableItem) {
+							equipList.add(Bundlable.clone(ingredient));
+							if (ingredient.isEquipped(Dungeon.hero)){
+								((EquipableItem)ingredient).doUnequip(Dungeon.hero, false);
+							}
 							needed[i] = 0;
-						} else {
-							needed[i] -= ingredient.quantity();
+							if (ingredient.isEquipped(Dungeon.hero))
+								((EquipableItem)ingredient).doUnequip(Dungeon.hero, true, false);
+							if (Dungeon.hero.belongings.contains(ingredient))
+								ingredient.detach(Dungeon.hero.belongings.backpack);
 							ingredient.quantity(0);
+						}
+						else {
+							if (needed[i] <= ingredient.quantity()) {
+								ingredient.quantity(ingredient.quantity() - needed[i]);
+								needed[i] = 0;
+							} else {
+								needed[i] -= ingredient.quantity();
+								ingredient.quantity(0);
+							}
 						}
 					}
 				}
@@ -238,10 +251,6 @@ public abstract class Recipe {
 				ingredients.get(0).storeInBundle(bundle);
 				result.restoreFromBundle(bundle);
 				result.identify();
-				if (ingredients.get(0).isEquipped(Dungeon.hero)){
-					((EquipableItem)ingredients.get(0)).doUnequip(Dungeon.hero, false);
-				}
-				ingredients.get(0).detachAll(Dungeon.hero.belongings.backpack);
 				return result;
 			} catch (Exception e) {
 				ShatteredPixelDungeon.reportException( e );
