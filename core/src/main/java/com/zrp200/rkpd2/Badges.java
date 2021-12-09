@@ -948,8 +948,8 @@ public class Badges {
 					case Challenges.RANDOM_HP: b = Badge.CHAMPED_RANDOM_HP; break;
 					case Challenges.EVIL_MODE: b = Badge.CHAMPED_EVIL_MODE; break;
 				}
-				if (!global.contains(badge)){
-					global.add(badge);
+				if (!global.contains(b)){
+					global.add(b);
 					saveNeeded = true;
 				}
 				local.add(b);
