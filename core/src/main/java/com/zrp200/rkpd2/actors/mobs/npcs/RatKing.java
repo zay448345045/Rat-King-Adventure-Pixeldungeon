@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.KingsCrown;
+import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
@@ -115,14 +116,17 @@ public class RatKing extends NPC {
 			return super.interact(c);
 		}
 
-		if (Dungeon.hero.belongings.getItem(Amulet.class) != null) {
+		if (Dungeon.hero.belongings.getItem(Amulet.class) != null || Dungeon.hero.belongings.getItem(SoulOfYendor.class) != null) {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
 					GameScene.show(new WndQuest(RatKing.this, Messages.get(RatKing.this,"amulet")){
 						@Override
 						public void hide() {
-							Dungeon.hero.belongings.getItem(Amulet.class).detach(Dungeon.hero.belongings.backpack);
+							if (Dungeon.hero.belongings.getItem(Amulet.class) != null)
+								Dungeon.hero.belongings.getItem(Amulet.class).detach(Dungeon.hero.belongings.backpack);
+							else
+								Dungeon.hero.belongings.getItem(SoulOfYendor.class).detach(Dungeon.hero.belongings.backpack);
 							Dungeon.depth = -1;
 							Statistics.deepestFloor = -1;
 							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
