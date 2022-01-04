@@ -905,36 +905,37 @@ public abstract class Char extends Actor {
 		
 		super.spend( time / timeScale );
 	}
-	
+
 	public synchronized HashSet<Buff> buffs() {
 		return new HashSet<>(buffs);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	//returns all buffs assignable from the given buff class if not strict, or of the class if strict.
-	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c, boolean strict ) {
+	//returns all buffs assignable from the given buff class
+	public synchronized <T extends Object> HashSet<T> buffs( Class<T> c ) {
 		HashSet<T> filtered = new HashSet<>();
 		for (Buff b : buffs) {
-			if (strict ? b.getClass() == c : c.isInstance( b )) {
+			if (c.isInstance( b )) {
 				filtered.add( (T)b );
 			}
 		}
 		return filtered;
 	}
 
-	public synchronized <T extends Buff> HashSet<T> buffs( Class<T> c ) {
-		return buffs(c, false);
-	}
-
 	@SuppressWarnings("unchecked")
-	public synchronized final <T extends Buff> T buff(Class<T> c) {
-		return buff(c, true);
-	}
 	//returns an instance of the specific buff class, if it exists. Not just assignable
-	public synchronized  <T extends Buff> T buff( Class<T> c, boolean matchClass ) {
+	public synchronized <T extends Object> T buff( Class<T> c ) {
 		for (Buff b : buffs) {
-			if (matchClass ? b.getClass() == c : c.isInstance(b)) {
+			if (c.isAssignableFrom(b.getClass())) {
 				return (T)b;
+			}
+			if (c.isInterface()){
+				Class[] interfaces = b.getClass().getInterfaces();
+				for (Class clazz : interfaces){
+					if (clazz.isAssignableFrom(c)){
+						return (T)b;
+					}
+				}
 			}
 		}
 		return null;
