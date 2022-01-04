@@ -171,11 +171,17 @@ public class SandalsOfNature extends Artifact {
 
 	public interface NaturalismBuff {
 		public boolean isCursed();
-		public int itemLevel();
+		public int natureLevel();
 		public void charge(float amount);
 	}
 
 	public class Naturalism extends ArtifactBuff implements NaturalismBuff{
+		@Override
+		public int natureLevel() {
+			return level();
+		}
+
+
 		public void charge(float amount) {
 			if (level() > 0 && charge < target.HT){
 				//gain 1+(1*level)% of the difference between current charge and max HP.

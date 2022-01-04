@@ -96,7 +96,7 @@ public class HighGrass {
 				SandalsOfNature.NaturalismBuff naturalism = ch.buff( SandalsOfNature.NaturalismBuff.class );
 				if (naturalism != null) {
 					if (!naturalism.isCursed()) {
-						naturalismLevel = naturalism.itemLevel() + 1;
+						naturalismLevel = naturalism.natureLevel() + 1;
 						naturalism.charge(1);
 					} else {
 						naturalismLevel = -1;

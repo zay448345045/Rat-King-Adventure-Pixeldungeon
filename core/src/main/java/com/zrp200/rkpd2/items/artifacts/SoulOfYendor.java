@@ -672,6 +672,7 @@ public class SoulOfYendor extends Artifact {
             if (partialCharge >= 1){
                 partialCharge--;
                 charge++;
+                if (charge >= 100) charge = 100;
                 updateQuickslot();
             }
         }
@@ -719,6 +720,11 @@ public class SoulOfYendor extends Artifact {
         }
 
         @Override
+        public int natureLevel() {
+            return (int) (level()/2.5f);
+        }
+
+        @Override
         public void gainCharge(float levelPortion) {
             if (charge < chargeCap) {
 
@@ -740,6 +746,7 @@ public class SoulOfYendor extends Artifact {
                         GLog.p( Messages.get(AlchemistsToolkit.class, "full") );
                         partialCharge = 0;
                     }
+                    if (charge >= 100) charge = 100;
 
                     updateQuickslot();
                 }
@@ -759,14 +766,14 @@ public class SoulOfYendor extends Artifact {
 
         public void collect(int gold){
             if (!cursed) {
-                charge += gold/20 * RingOfEnergy.artifactChargeMultiplier(target);
+                charge += gold/60 * RingOfEnergy.artifactChargeMultiplier(target);
+                if (charge >= 100) charge = 100;
             }
         }
 
         public boolean steal(int value){
-            if (value <= charge/10){
-                charge -= value/10;
-                exp += value/10;
+            if (value <= charge/30){
+                charge -= value/30;
             } else {
                 float chance = stealChance(value);
                 if (Random.Float() > chance)
@@ -776,8 +783,7 @@ public class SoulOfYendor extends Artifact {
                         charge = 0;
                     else
                         //removes the charge it took you to reach 100%
-                        charge -= charge/chance/10;
-                    exp += value/10;
+                        charge -= charge/chance/30;
                 }
             }
             return true;
@@ -786,7 +792,7 @@ public class SoulOfYendor extends Artifact {
         public float stealChance(int value){
             //get lvl*50 gold or lvl*3.33% item value of free charge, whichever is less.
             int chargeBonus = Math.min(level()*50, (value*level())/30);
-            return (((float)charge/10 + chargeBonus/10)/value);
+            return (((float)charge*3 + chargeBonus)/value);
         }
     }
 
