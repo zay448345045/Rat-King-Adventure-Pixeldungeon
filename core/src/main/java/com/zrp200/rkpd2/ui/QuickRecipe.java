@@ -104,7 +104,7 @@ public class QuickRecipe extends Component {
 			int quantity = 0;
 			for (Item sim : similar) {
 				//if we are looking for a specific item, it must be IDed
-				if (sim.getClass() != in.getClass() || sim.isIdentified()) quantity += sim.quantity();
+				if (sim.getClass() != in.getClass() || (sim.isIdentified() && !sim.isEquipped(Dungeon.hero))) quantity += sim.quantity();
 			}
 			
 			if (quantity < in.quantity()) {

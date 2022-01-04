@@ -214,26 +214,13 @@ public abstract class Recipe {
 			for (Item ingredient : ingredients){
 				for (int i = 0; i < inputs.length; i++) {
 					if (ingredient.getClass() == inputs[i] && needed[i] > 0) {
-						if (ingredient instanceof EquipableItem) {
-							equipList.add(Bundlable.clone(ingredient));
-							if (ingredient.isEquipped(Dungeon.hero)){
-								((EquipableItem)ingredient).doUnequip(Dungeon.hero, false);
-							}
+						if (ingredient instanceof EquipableItem) equipList.add(Bundlable.clone(ingredient));
+						if (needed[i] <= ingredient.quantity()) {
+							ingredient.quantity(ingredient.quantity() - needed[i]);
 							needed[i] = 0;
-							if (ingredient.isEquipped(Dungeon.hero))
-								((EquipableItem)ingredient).doUnequip(Dungeon.hero, true, false);
-							if (Dungeon.hero.belongings.contains(ingredient))
-								ingredient.detach(Dungeon.hero.belongings.backpack);
+						} else {
+							needed[i] -= ingredient.quantity();
 							ingredient.quantity(0);
-						}
-						else {
-							if (needed[i] <= ingredient.quantity()) {
-								ingredient.quantity(ingredient.quantity() - needed[i]);
-								needed[i] = 0;
-							} else {
-								needed[i] -= ingredient.quantity();
-								ingredient.quantity(0);
-							}
 						}
 					}
 				}
@@ -358,7 +345,7 @@ public abstract class Recipe {
 	}
 	
 	public static boolean usableInRecipe(Item item){
-		return (!item.cursed || item instanceof Kromer);
+		return item instanceof Kromer || (((item instanceof EquipableItem && !item.isEquipped(Dungeon.hero))) && (!item.cursed));
 	}
 }
 
