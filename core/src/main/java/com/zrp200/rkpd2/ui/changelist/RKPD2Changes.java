@@ -164,6 +164,11 @@ public class RKPD2Changes {
                                     "Added _Terminus Blade_, which is made with chaosstones and kromer. It has exceptional damage and ability to instakill.",
                                     "Added a clone of _dagger_ that makes you stunlocked after using it.",
                                     "Added an upgraded version of Wand of His Ratiness.")),
+                    new ChangeButton(new ItemSprite(ARTIFACT_OMNI, new ItemSprite.Glowing()), "Soul of Yendor",
+                            "_-_ Added the artifact, that is 8 other artifacts at once.\n\n" +
+                                    "_-_ This item combines properties of Horn of Plenty, Alchemical Toolkit, Ethereal Chains, Chalice of Blood, Sandals of Nature, Master Thieves\' Armband, Timekeeper\'s Hourglass and Unstable Spellbook.\n\n" +
+                                    "_-_ To make it, use cursed wand in some way to combine all artifacts together.\n\n" +
+                                    "_-_ Alternatively, use kromer, chaosstone, Amulet of Yendor and 101 energy."),
                     new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
                             list(2,
                                     "Added 21 new challenges that are accessible from beating challenges!",
