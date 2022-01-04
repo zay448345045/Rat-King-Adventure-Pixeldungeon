@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.*;
@@ -51,6 +52,7 @@ import com.zrp200.rkpd2.plants.Earthroot;
 import com.zrp200.rkpd2.scenes.AlchemyScene;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -817,6 +819,22 @@ public class SoulOfYendor extends Artifact {
         }
 
         return desc;
+    }
+
+    @Override
+    protected void onThrow(int cell) {
+        if (Dungeon.level.pit[cell] || Dungeon.hero.heroClass != HeroClass.RAT_KING){
+            super.onThrow( cell );
+        } else {
+            Dungeon.level.pressCell( cell );
+            Sample.INSTANCE.play(Assets.Sounds.SHATTER);
+            GameScene.flash(0xFFFFFF, true);
+            Dungeon.depth = -1;
+            Statistics.deepestFloor = -1;
+            InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+            Game.switchScene(InterlevelScene.class);
+            Invisibility.dispel();
+        }
     }
 
     public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
