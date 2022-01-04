@@ -37,8 +37,11 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.*;
+import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.quest.Chaosstone;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
@@ -814,5 +817,19 @@ public class SoulOfYendor extends Artifact {
         }
 
         return desc;
+    }
+
+    public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
+
+        {
+            inputs =  new Class[]{Chaosstone.class, Kromer.class, Amulet.class};
+            inQuantity = new int[]{1, 1, 1};
+
+            cost = 101;
+
+            output = SoulOfYendor.class;
+            outQuantity = 1;
+        }
+
     }
 }

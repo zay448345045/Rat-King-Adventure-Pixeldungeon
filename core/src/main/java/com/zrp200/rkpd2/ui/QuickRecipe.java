@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
+import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.*;
 import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
@@ -384,6 +385,11 @@ public class QuickRecipe extends Component {
 				result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new KromerScroll.Recipe()));
+				result.add(null);
+				result.add(null);
+				if (Dungeon.depth > 26) {
+					result.add(new QuickRecipe(new SoulOfYendor.Recipe()));
+				}
 				return result;
 		}
 	}
