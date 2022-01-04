@@ -64,7 +64,6 @@ import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.mechanics.ShadowCaster;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
@@ -1033,22 +1032,10 @@ public abstract class Level implements Bundlable {
 		}
 
 		if (trap != null) {
-			
-			TimekeepersHourglass.timeFreeze timeFreeze =
-					Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-			
-			Swiftthistle.TimeBubble bubble =
-					Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-			
-			if (bubble != null){
-				
-				Sample.INSTANCE.play(Assets.Sounds.TRAP);
-				
-				discover(cell);
-				
-				bubble.setDelayedPress(cell);
-				
-			} else if (timeFreeze != null){
+
+			TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
+
+			if (timeFreeze != null){
 				
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
 				

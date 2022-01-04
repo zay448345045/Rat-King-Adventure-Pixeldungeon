@@ -30,7 +30,6 @@ import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
@@ -129,7 +128,7 @@ public class Invisibility extends FlavourBuff {
 		}
 
 		//these aren't forms of invisibilty, but do dispel at the same time as it.
-		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.timeFreeze.class );
+		TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
 		if (timeFreeze != null) {
 			timeFreeze.detach();
 		}
@@ -137,11 +136,6 @@ public class Invisibility extends FlavourBuff {
 		Preparation prep = Dungeon.hero.buff( Preparation.class );
 		if (prep != null){
 			prep.detach();
-		}
-
-		Swiftthistle.TimeBubble bubble =  Dungeon.hero.buff( Swiftthistle.TimeBubble.class );
-		if (bubble != null){
-			bubble.detach();
 		}
 	}
 

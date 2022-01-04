@@ -25,6 +25,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.RegenerationBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Item;
@@ -172,7 +173,7 @@ public class ChaliceOfBlood extends Artifact {
 		return desc;
 	}
 
-	public class chaliceRegen extends ArtifactBuff {
+	public class chaliceRegen extends ArtifactBuff implements RegenerationBuff {
 		//see Regeneration.class for effect
 	}
 

@@ -45,6 +45,7 @@ import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
+import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.bags.PotionBandolier;
 import com.zrp200.rkpd2.items.bags.ScrollHolder;
@@ -141,6 +142,7 @@ public enum HeroClass {
 		if (Badges.isUnlocked(Badges.Badge.CHAMPION_7)){
 			new Chaosstone().collect();
 		}
+		new SoulOfYendor().identify().collect();
 
 		switch (this) {
 			case WARRIOR:

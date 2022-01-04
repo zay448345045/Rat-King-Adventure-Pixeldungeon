@@ -164,7 +164,7 @@ public class AlchemistsToolkit extends Artifact {
 		alchemyReady = bundle.getBoolean(READY);
 	}
 	
-	public class kitEnergy extends ArtifactBuff implements AlchemyScene.AlchemyProvider {
+	public class kitEnergy extends ArtifactBuff implements AlchemyScene.AlchemyProvider, ToolkitBuff {
 		
 		public void gainCharge(float levelPortion) {
 			alchemyReady = true;
@@ -208,6 +208,11 @@ public class AlchemistsToolkit extends Artifact {
 			charge = Math.max(0, charge - reduction);
 			Talent.onArtifactUsed(Dungeon.hero);
 		}
+	}
+
+	public interface ToolkitBuff{
+		public void gainCharge(float levelPortion);
+		public boolean isCursed();
 	}
 	
 	public static class upgradeKit extends Recipe {

@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Haste;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
@@ -62,7 +63,7 @@ public class Swiftthistle extends Plant {
 	
 	//FIXME lots of copypasta from time freeze here
 	
-	public static class TimeBubble extends Buff {
+	public static class TimeBubble extends Buff implements TimekeepersHourglass.TimeFreezing {
 		
 		{
 			type = buffType.POSITIVE;

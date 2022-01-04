@@ -80,7 +80,6 @@ import com.zrp200.rkpd2.mechanics.ShadowCaster;
 import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Earthroot;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.*;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.HeroSprite;
@@ -715,15 +714,9 @@ public class Hero extends Char {
 	@Override
 	public void spend( float time ) {
 		justMoved = false;
-		TimekeepersHourglass.timeFreeze freeze = buff(TimekeepersHourglass.timeFreeze.class);
+		TimekeepersHourglass.TimeFreezing freeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
 		if (freeze != null) {
 			freeze.processTime(time);
-			return;
-		}
-		
-		Swiftthistle.TimeBubble bubble = buff(Swiftthistle.TimeBubble.class);
-		if (bubble != null){
-			bubble.processTime(time);
 			return;
 		}
 		
@@ -1154,10 +1147,8 @@ public class Hero extends Char {
 				curAction = null;
 				lastMovPos = -1;
 
-				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
-				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-				Swiftthistle.TimeBubble timeBubble =buff(Swiftthistle.TimeBubble.class);
-				if (timeBubble != null) timeBubble.disarmPressedTraps();
+				TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
+				if (timeFreeze != null) timeFreeze.detach();
 
 				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 				Game.switchScene(InterlevelScene.class);
@@ -1212,10 +1203,9 @@ public class Hero extends Char {
 				
 				curAction = null;
 
-				TimekeepersHourglass.timeFreeze timeFreeze = buff(TimekeepersHourglass.timeFreeze.class);
-				if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-				Swiftthistle.TimeBubble timeBubble = buff(Swiftthistle.TimeBubble.class);
-				if (timeBubble != null) timeBubble.disarmPressedTraps();
+				TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
+				if (timeFreeze != null) timeFreeze.detach();
+
 				lastMovPos = -1;
 
 				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
@@ -1339,7 +1329,7 @@ public class Hero extends Char {
 			}
 		}
 
-		Talent.SpiritBladesTracker tracker = buff(Talent.SpiritBladesTracker.class, false);
+		Talent.SpiritBladesTracker tracker = buff(Talent.SpiritBladesTracker.class);
 		if ( tracker != null && Random.Float() < 3*pointsInTalent(Talent.SPIRIT_BLADES, Talent.SEA_OF_BLADES) * mult ){
 			SpiritBow bow = belongings.getItem(SpiritBow.class);
 			if (bow != null) damage = bow.proc( this, enemy, damage );

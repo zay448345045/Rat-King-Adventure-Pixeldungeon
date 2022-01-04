@@ -24,7 +24,6 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
-import com.zrp200.rkpd2.items.artifacts.ChaliceOfBlood;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.levels.Terrain;
 
@@ -55,7 +54,7 @@ public class Regeneration extends Buff {
 				}
 			}
 
-			ChaliceOfBlood.chaliceRegen regenBuff = Dungeon.hero.buff( ChaliceOfBlood.chaliceRegen.class);
+			RegenerationBuff regenBuff = Dungeon.hero.buff( RegenerationBuff.class);
 
 			float delay = REGENERATION_DELAY;
 			if (regenBuff != null) {

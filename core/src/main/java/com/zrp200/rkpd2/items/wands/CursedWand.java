@@ -54,7 +54,6 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.ui.Icons;
@@ -307,10 +306,8 @@ public class CursedWand {
 					for (int i = 1; i < Dungeon.getDepth(); i++) depths[i-1] = i;
 					int depth = 1+Random.chances(depths);
 
-					TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-					if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-					Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-					if (timeBubble != null) timeBubble.disarmPressedTraps();
+					TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
+					if (timeFreeze != null) timeFreeze.detach();
 
 					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 					InterlevelScene.returnDepth = depth;
@@ -446,6 +443,10 @@ public class CursedWand {
 				Dungeon.level.drop(result, user.pos).sprite.drop();
 				return true;
 		}
+	}
+
+	private static void createOmniArtifact(final Ballistica bolt){
+
 	}
 
 	private static void cursedFX(final Char user, final Ballistica bolt, final Callback callback){

@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.items.artifacts;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class MasterThievesArmband extends Artifact {
 
@@ -68,7 +68,15 @@ public class MasterThievesArmband extends Artifact {
 		return desc;
 	}
 
-	public class Thievery extends ArtifactBuff{
+	public interface ThieveryBuff{
+		public void collect(int gold);
+		public boolean steal(int value);
+		public float stealChance(int value);
+
+		public boolean isCursed();
+	}
+
+	public class Thievery extends ArtifactBuff implements ThieveryBuff{
 		public void collect(int gold){
 			if (!cursed) {
 				charge += gold/2 * RingOfEnergy.artifactChargeMultiplier(target);
