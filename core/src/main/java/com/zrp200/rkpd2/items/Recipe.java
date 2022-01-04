@@ -47,9 +47,11 @@ import com.zrp200.rkpd2.items.spells.*;
 import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
+import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
+import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 
 import java.util.ArrayList;
 
@@ -345,7 +347,11 @@ public abstract class Recipe {
 	}
 	
 	public static boolean usableInRecipe(Item item){
-		return item instanceof Kromer || (((item instanceof EquipableItem && !item.isEquipped(Dungeon.hero))) && (!item.cursed));
+		if (item instanceof EquipableItem){
+			if (item instanceof MissileWeapon || item instanceof SpiritBow) return true;
+			else return !item.isEquipped(Dungeon.hero);
+		}
+		return (!item.cursed || item instanceof Kromer);
 	}
 }
 
