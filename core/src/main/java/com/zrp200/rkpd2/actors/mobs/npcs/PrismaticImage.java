@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Brimstone;
 import com.zrp200.rkpd2.levels.features.Chasm;
@@ -165,6 +166,13 @@ public class PrismaticImage extends AbstractMirrorImage {
 			return hero.belongings.armor().speedFactor(this, super.speed());
 		}
 		return super.speed();
+	}
+
+	@Override
+	public boolean canAttack(Char enemy) {
+		return super.canAttack(enemy) ||
+				(hero.belongings.weapon() != null && hero.belongings.weapon().canReach(this, enemy.pos)) ||
+				(hero.hasTalent(Talent.SPECTRE_ALLIES) && KindOfWeapon.canReach(this, enemy.pos, 1 + hero.pointsInTalent(Talent.SPECTRE_ALLIES)));
 	}
 
 	@Override

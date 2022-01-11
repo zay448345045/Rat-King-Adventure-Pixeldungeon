@@ -105,6 +105,8 @@ public enum Catalog {
 		WEAPONS.seen.put(PhantomSpear.class,                false);
 		WEAPONS.seen.put(RedKunai.class,                    false);
 		WEAPONS.seen.put(SteelAxe.class,                    false);
+		WEAPONS.seen.put(TerminusBlade.class,               false);
+		WEAPONS.seen.put(Dagger2.class,                     false);
 
 	
 		ARMOR.seen.put( ClothArmor.class,                   false);

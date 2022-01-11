@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
+import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Blandfruit;
 import com.zrp200.rkpd2.items.food.MeatPie;
@@ -310,6 +311,7 @@ public abstract class Recipe {
 		new ExoticScroll.ScrollToExotic(),
 		new StewedMeat.threeMeat(),
 		new TerminusBlade.Recipe(),
+		new SoulOfYendor.Recipe(),
 		new MeatPie.Recipe()
 	};
 	
