@@ -22,7 +22,6 @@
 package com.zrp200.rkpd2.actors.hero.abilities.warrior;
 
 import com.watabou.noosa.Camera;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
@@ -131,7 +130,6 @@ public class HeroicLeap extends ArmorAbility {
 						hero.buff(TripleJumpTracker.class).detach();
 					}
 
-				}
 				OmniAbility.markAbilityUsed(HeroicLeap.this);
 			});
 		}

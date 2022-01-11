@@ -132,7 +132,7 @@ public class Wraith extends Mob {
 			destroy();
 			CellEmitter.bottom(pos).burst(ShadowParticle.MISSILE, 30);
 			sprite.killAndErase();
-			Corruption.corrupt(enemy);
+			Corruption.corrupt((Mob)enemy);
 			Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1f, 0.75f);
 			return -1;
 		}

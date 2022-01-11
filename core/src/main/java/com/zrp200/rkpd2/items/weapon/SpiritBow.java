@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.items.weapon;
 
-import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
@@ -318,19 +317,6 @@ public class SpiritBow extends Weapon {
 		public boolean sniperSpecial = false;
 		public float sniperSpecialBonusDamage = 0f;
 		public boolean doNotDelay = false;
-
-		@Override
-		public Emitter emitter() {
-			if (Dungeon.hero.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
-				Emitter e = new Emitter();
-				e.pos(5, 5);
-				e.fillTarget = false;
-				e.pour(LeafParticle.GENERAL, 0.01f);
-				return e;
-			} else {
-				return super.emitter();
-			}
-		}
 
 		@Override
 		public Emitter emitter() {

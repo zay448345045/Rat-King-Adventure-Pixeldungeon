@@ -34,7 +34,6 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
-import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.sprites.RatKingBossSprite;
@@ -49,14 +48,11 @@ import static com.zrp200.rkpd2.actors.hero.Talent.*;
 import static com.zrp200.rkpd2.messages.Messages.get;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
-
-import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
-
 import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
 import static com.zrp200.rkpd2.ui.Icons.DEPTH;
 import static com.zrp200.rkpd2.ui.Icons.INFO;
-import static com.zrp200.rkpd2.ui.Icons.TARGET;
 import static com.zrp200.rkpd2.ui.Icons.PREFS;
+import static com.zrp200.rkpd2.ui.Icons.TARGET;
 import static com.zrp200.rkpd2.ui.Icons.get;
 import static com.zrp200.rkpd2.ui.Window.SHPX_COLOR;
 import static com.zrp200.rkpd2.ui.Window.TITLE_COLOR;
@@ -105,6 +101,10 @@ public class RKPD2Changes {
                 false, NEGATIVE,
                 "",
                 buttons);
+    }
+
+    private static ChangeButton info(String message) {
+        return new ChangeButton(get(INFO), "Developer Commentary", message);
     }
 
     // more utils

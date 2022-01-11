@@ -21,8 +21,6 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
-import static com.zrp200.rkpd2.Dungeon.hero;
-
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
@@ -36,7 +34,7 @@ public class RevealedArea extends FlavourBuff{
 
 	public static int distance() {
 		// 3x3 normally, Seer Shot however gets 3x3/5x5/7x7
-		return Math.max(1, hero.pointsInTalent(Talent.SEER_SHOT));
+		return 1;
 	}
 
 	{
@@ -48,7 +46,6 @@ public class RevealedArea extends FlavourBuff{
 	public RevealedArea(int pos, int depth) {
 		this.pos = pos;
 		this.depth = depth;
-		spend( duration() );
 		Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class);
 	}
 

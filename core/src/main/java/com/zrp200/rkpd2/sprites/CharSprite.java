@@ -864,28 +864,6 @@ protected void copyAnimations(CharSprite other) {
 		}
 	}
 
-	public void aura( int color ){
-		if (aura != null){
-			aura.killAndErase();
-		}
-		float size = Math.max(width(), height());
-		size = Math.max(size+4, 16);
-		aura = new Flare(5, size);
-		aura.angularSpeed = 90;
-		aura.color(color, true);
-
-		if (parent != null) {
-			aura.show(this, 0);
-		}
-	}
-
-	public void clearAura(){
-		if (aura != null){
-			aura.killAndErase();
-			aura = null;
-		}
-	}
-
 	private static class JumpTweener extends Tweener {
 
 		public CharSprite visual;

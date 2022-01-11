@@ -21,16 +21,14 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Bones;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.GamesInProgress;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.*;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Alchemy;
+import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
@@ -56,8 +54,8 @@ import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfMight;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfDivineInspiration;
 import com.zrp200.rkpd2.items.potions.elixirs.KromerPotion;
+import com.zrp200.rkpd2.items.potions.exotic.PotionOfDivineInspiration;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
@@ -96,19 +94,9 @@ import com.zrp200.rkpd2.windows.WndHero;
 import com.zrp200.rkpd2.windows.WndMessage;
 import com.zrp200.rkpd2.windows.WndResurrect;
 import com.zrp200.rkpd2.windows.WndTradeItem;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class Hero extends Char {
@@ -408,10 +396,10 @@ public class Hero extends Char {
 	}
 
 	public boolean hasTier(int tier) {
-		return !(tier >= Talent.tierLevelThresholds.length) return 0;
-		if (lvl < (Talent.tierLevelThresholds[tier] - 1)
-				|| (tier == 3 && subClass == HeroSubClass.NONE)
-				|| (tier == 4 && armorAbility == null));
+		return !(tier >= Talent.tierLevelThresholds.length);
+//		if (lvl < (Talent.tierLevelThresholds[tier] - 1)
+//				|| (tier == 3 && subClass == HeroSubClass.NONE)
+//				|| (tier == 4 && armorAbility == null));
 	}
 	public int talentPointsAvailable(int tier){
 		if (!hasTier(tier)) {

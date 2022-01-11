@@ -52,7 +52,7 @@ public class Generator {
 		WEP_T3	( 0, 0, MeleeWeapon.class),
 		WEP_T4	( 0, 0, MeleeWeapon.class),
 		WEP_T5	( 0, 0, MeleeWeapon.class),
-		WEP_T6  ( 0,     MeleeWeapon.class),
+		WEP_T6  ( 0,     0, MeleeWeapon.class),
 
 		ARMOR	( 2, 1, Armor.class ),
 		
@@ -62,7 +62,7 @@ public class Generator {
 		MIS_T3  ( 0, 0, MissileWeapon.class ),
 		MIS_T4  ( 0, 0, MissileWeapon.class ),
 		MIS_T5  ( 0, 0, MissileWeapon.class ),
-		MIS_T6  ( 0,    MissileWeapon.class ),
+		MIS_T6  ( 0,    0, MissileWeapon.class ),
 
 		WAND	( 1, 1, Wand.class ),
 		RING	( 1, 0, Ring.class ),

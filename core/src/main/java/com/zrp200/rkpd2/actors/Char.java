@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.items.armor.glyphs.Potential;
 import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Food;
+import com.zrp200.rkpd2.items.potions.exotic.PotionOfCleansing;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -70,11 +71,6 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -1031,7 +1027,7 @@ public abstract class Char extends Actor {
 		return 0;
 	}
 
-	public final void move( int step ) {
+	public void move( int step ) {
 		move( step, true );
 	}
 

@@ -21,10 +21,6 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
-import static com.zrp200.rkpd2.Dungeon.hero;
-
-import static java.lang.Math.max;
-
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -36,21 +32,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Adrenaline;
-import com.zrp200.rkpd2.actors.buffs.AllyBuff;
-import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
-import com.zrp200.rkpd2.actors.buffs.Berserk;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.CounterBuff;
-import com.zrp200.rkpd2.actors.buffs.EnhancedRings;
-import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
-import com.zrp200.rkpd2.actors.buffs.Haste;
-import com.zrp200.rkpd2.actors.buffs.LostInventory;
-import com.zrp200.rkpd2.actors.buffs.Preparation;
-import com.zrp200.rkpd2.actors.buffs.Recharging;
-import com.zrp200.rkpd2.actors.buffs.RevealedArea;
-import com.zrp200.rkpd2.actors.buffs.Roots;
-import com.zrp200.rkpd2.actors.buffs.WandEmpower;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
@@ -91,6 +73,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
+import static java.lang.Math.max;
 
 public enum Talent {
 

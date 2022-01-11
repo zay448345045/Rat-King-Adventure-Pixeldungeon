@@ -1,7 +1,5 @@
 package com.zrp200.rkpd2.actors.hero.abilities.rat_king;
 
-import static com.zrp200.rkpd2.Dungeon.hero;
-
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -18,6 +16,8 @@ import com.zrp200.rkpd2.ui.HeroIcon;
 
 import java.util.*;
 
+import static com.zrp200.rkpd2.Dungeon.hero;
+
 public class OmniAbility extends ArmorAbility {
 
     private ArmorAbility armorAbility = null;
@@ -30,7 +30,7 @@ public class OmniAbility extends ArmorAbility {
         }
 
     }
-    @Override protected void activate(ClassArmor armor, Hero hero, Integer target) {/*do nothing*/}
+    @Override public void activate(ClassArmor armor, Hero hero, Integer target) {/*do nothing*/}
 
     // talent choosing
     public ArmorAbility activeAbility() { return armorAbility; }

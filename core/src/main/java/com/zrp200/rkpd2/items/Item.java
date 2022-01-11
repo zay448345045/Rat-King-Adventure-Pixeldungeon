@@ -113,7 +113,7 @@ public class Item implements Bundlable {
 		return Messages.get(this, "ac_" + action);
 	}
 
-	public final boolean doPickUp( Hero hero ) {
+	public boolean doPickUp(Hero hero) {
 		return doPickUp( hero, hero.pos );
 	}
 

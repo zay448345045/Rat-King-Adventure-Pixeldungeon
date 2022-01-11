@@ -21,30 +21,21 @@
 
 package com.zrp200.rkpd2.levels;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
+import com.watabou.utils.*;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Blob;
-import com.zrp200.rkpd2.actors.blobs.SmokeScreen;
-import com.zrp200.rkpd2.actors.blobs.Web;
-import com.zrp200.rkpd2.actors.blobs.WellWater;
-import com.zrp200.rkpd2.actors.buffs.Awareness;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.buffs.MagicalSight;
-import com.zrp200.rkpd2.actors.buffs.MindVision;
-import com.zrp200.rkpd2.actors.buffs.PinCushion;
-import com.zrp200.rkpd2.actors.buffs.RevealedArea;
-import com.zrp200.rkpd2.actors.buffs.Shadows;
+import com.zrp200.rkpd2.actors.blobs.*;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.Bestiary;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -79,17 +70,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
-import com.watabou.utils.SparseArray;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 
 import java.util.*;
 

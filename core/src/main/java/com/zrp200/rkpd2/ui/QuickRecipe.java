@@ -44,20 +44,7 @@ import com.zrp200.rkpd2.items.potions.elixirs.*;
 import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.rkpd2.items.spells.Alchemize;
-import com.zrp200.rkpd2.items.spells.AquaBlast;
-import com.zrp200.rkpd2.items.spells.ArcaneCatalyst;
-import com.zrp200.rkpd2.items.spells.BeaconOfReturning;
-import com.zrp200.rkpd2.items.spells.CurseInfusion;
-import com.zrp200.rkpd2.items.spells.FeatherFall;
-import com.zrp200.rkpd2.items.spells.MagicalInfusion;
-import com.zrp200.rkpd2.items.spells.MagicalPorter;
-import com.zrp200.rkpd2.items.spells.PhaseShift;
-import com.zrp200.rkpd2.items.spells.ReclaimTrap;
-import com.zrp200.rkpd2.items.spells.Recycle;
-import com.zrp200.rkpd2.items.spells.SummonElemental;
-import com.zrp200.rkpd2.items.spells.TelekineticGrab;
-import com.zrp200.rkpd2.items.spells.WildEnergy;
+import com.zrp200.rkpd2.items.spells.*;
 import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
@@ -359,22 +346,6 @@ public class QuickRecipe extends Component {
 				}
 				result.add(new QuickRecipe(new Dagger2.Recipe()));
 				result.add(new QuickRecipe(new WandOfUnstable2.Recipe()));
-				return result;
-			case 5:
-				r = new ExoticPotion.PotionToExotic();
-				for (Class<?> cls : Generator.Category.POTION.classes){
-					Potion pot = (Potion) Reflection.newInstance(cls);
-					ArrayList<Item> in = new ArrayList<>(Arrays.asList(pot, new Plant.Seed.PlaceHolder().quantity(2)));
-					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
-				}
-				return result;
-			case 6:
-				r = new ExoticScroll.ScrollToExotic();
-				for (Class<?> cls : Generator.Category.SCROLL.classes){
-					Scroll scroll = (Scroll) Reflection.newInstance(cls);
-					ArrayList<Item> in = new ArrayList<>(Arrays.asList(scroll, new Runestone.PlaceHolder().quantity(2)));
-					result.add(new QuickRecipe( r, in, r.sampleOutput(in)));
-				}
 				return result;
 			case 7:
 				result.add(new QuickRecipe(new AlchemicalCatalyst.Recipe(), new ArrayList<>(Arrays.asList(new Potion.PlaceHolder(), new Plant.Seed.PlaceHolder())), new AlchemicalCatalyst()));
