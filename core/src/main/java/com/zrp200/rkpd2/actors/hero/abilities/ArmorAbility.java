@@ -64,7 +64,7 @@ public abstract class ArmorAbility implements Bundlable {
 		return targetingPrompt() != null;
 	}
 
-	private static final double HEROIC_ENERGY_REDUCTION = 0.839;
+	protected static final double HEROIC_ENERGY_REDUCTION = 0.839;
 
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;

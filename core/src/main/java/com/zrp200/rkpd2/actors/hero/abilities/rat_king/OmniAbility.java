@@ -43,6 +43,8 @@ public class OmniAbility extends ArmorAbility {
         int roll = Random.Int(4);
         if(roll < 2){
             pool.remove( new Wrath() ); // ;)
+            pool.remove( new MusRexIra() );
+            pool.remove( new LegacyWrath() );
             if(roll == 0) pool.remove(new Ratmogrify());
         }
 
@@ -86,7 +88,15 @@ public class OmniAbility extends ArmorAbility {
     }
 
     @Override public Talent[] talents() {
-        return armorAbility != null ? armorAbility.talents() : new Talent[0];
+        if (armorAbility != null){
+            ArrayList<Talent> talents = new ArrayList<>(Arrays.asList(armorAbility.talents()));
+                talents.remove(Talent.HEROIC_ARCHERY);
+                talents.remove(Talent.HEROIC_ENDURANCE);
+                talents.remove(Talent.HEROIC_STAMINA);
+                talents.remove(Talent.HEROIC_WIZARDRY);
+            return talents.toArray(new Talent[0]);
+        }
+        return new Talent[0];
     }
 
     @Override
@@ -122,8 +132,12 @@ public class OmniAbility extends ArmorAbility {
         if(hero.talents.size() < 4) return talents;
         Iterator<Integer> iterator = hero.talents.get(3).values().iterator();
         for(Talent talent : armorAbility.talents()) {
-            talents.put(talent, iterator.hasNext() ? iterator.next() : 0);
+            if (talent == Talent.HEROIC_ARCHERY || talent == Talent.HEROIC_ENDURANCE || talent == Talent.HEROIC_STAMINA || talent == Talent.HEROIC_WIZARDRY){
+                talents.put(Talent.HEROIC_RATINESS, iterator.hasNext() ? iterator.next() : 0);
+            }
+            else talents.put(talent, iterator.hasNext() ? iterator.next() : 0);
         }
+
         return talents;
     }
     /** returns the amount of points that would be in that talent if it corresponded, otherwise return null.
@@ -159,7 +173,8 @@ public class OmniAbility extends ArmorAbility {
     public static Set<ArmorAbility> activeAbilities() {
         Set<ArmorAbility> abilities = trackedAbilities();
         for(Iterator<ArmorAbility> i = abilities.iterator(); i.hasNext();) {
-            if( !i.next().isActive() ) i.remove();
+            ArmorAbility aa = i.next();
+            if( !aa.isActive() ) i.remove();
         }
         return abilities;
     }
@@ -182,6 +197,7 @@ public class OmniAbility extends ArmorAbility {
             abilities.addAll(Arrays.asList(cls.armorAbilities()));
         }
         abilities.remove(new OmniAbility());
+        abilities.remove(new MusRexIra());
         //abilities.add(new Ratmogrify());
     }
 }

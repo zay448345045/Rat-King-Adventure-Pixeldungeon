@@ -219,7 +219,7 @@ public class LegacyWrath extends ArmorAbility {
         },(delay += JUMP_DELAY)-1);
 
         hero.spendAndNext(delay);
-        for(boolean stage : stages) if(stage) { armor.charge -= chargeUse(hero); return; }
+        for(boolean stage : stages) if(stage) { armor.useCharge(hero, this); return; }
     }
 
     @Override public int icon() { return HeroIcon.LEGACYWRATH; }
