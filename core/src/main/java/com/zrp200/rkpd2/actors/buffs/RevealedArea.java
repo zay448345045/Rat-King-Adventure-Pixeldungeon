@@ -24,11 +24,14 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class RevealedArea extends FlavourBuff{
 
@@ -46,6 +49,7 @@ public class RevealedArea extends FlavourBuff{
 	public RevealedArea(int pos, int depth) {
 		this.pos = pos;
 		this.depth = depth;
+		spend( duration() );
 		Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class);
 	}
 
@@ -66,11 +70,14 @@ public class RevealedArea extends FlavourBuff{
 		icon.hardlight(0, 1, 1);
 	}
 
+	public static int duration() {
+		if (hero.heroClass == HeroClass.HUNTRESS) return 5;
+		return 5*hero.pointsInTalent(Talent.RK_WARDEN); }
 	@Override
 	public float iconFadePercent() {
 		float max = 5;
-		if (Dungeon.hero.subClass == HeroSubClass.KING)
-			max = 5*Dungeon.hero.pointsInTalent(Talent.RK_WARDEN);
+		if (hero.subClass == HeroSubClass.KING)
+			max = 5* hero.pointsInTalent(Talent.RK_WARDEN);
 		return Math.max(0, (max-visualcooldown()) / max);
 	}
 
