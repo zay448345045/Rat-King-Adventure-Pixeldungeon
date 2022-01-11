@@ -28,6 +28,8 @@ import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.markAbilityUsed;
+
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -111,6 +113,9 @@ public class WarpBeacon extends ArmorAbility {
 
 						armor.charge -= chargeNeeded;
 						armor.updateQuickslot();
+						//  todo should I clear the beacon at this point? Bottom implementation wouldn't work, would need to manually clear the thing.
+						// could also force you to teleport once before switching (this would be in line with standard mechanics but would be annoying af)
+						// markAbilityUsed(WarpBeacon.this); // won't let you repeat.
 
 						if (tracker.depth == Dungeon.depth){
 							Char existing = Actor.findChar(tracker.pos);
@@ -210,6 +215,7 @@ public class WarpBeacon extends ArmorAbility {
 			tracker.pos = target;
 			tracker.depth = Dungeon.depth;
 			tracker.attachTo(hero);
+			markAbilityUsed(this);
 
 			hero.sprite.operate(target);
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
@@ -254,6 +260,10 @@ public class WarpBeacon extends ArmorAbility {
 			pos = bundle.getInt(POS);
 			depth = bundle.getInt(DEPTH);
 		}
+	}
+
+	@Override public boolean isActive() {
+		return Actor.containsClass(WarpBeaconTracker.class);
 	}
 
 	@Override

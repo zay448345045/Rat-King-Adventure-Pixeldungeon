@@ -27,7 +27,12 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Amok;
+import com.zrp200.rkpd2.actors.buffs.Dread;
+import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.buffs.Sleep;
+import com.zrp200.rkpd2.actors.buffs.Terror;
+import com.zrp200.rkpd2.actors.buffs.Vertigo;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.messages.Messages;
@@ -113,6 +118,7 @@ public class DemonSpawner extends Mob {
 				}
 			}
 		}
+		alerted = false;
 		return super.act();
 	}
 
@@ -157,6 +163,7 @@ public class DemonSpawner extends Mob {
 		immunities.add( Paralysis.class );
 		immunities.add( Amok.class );
 		immunities.add( Sleep.class );
+		immunities.add( Dread.class );
 		immunities.add( Terror.class );
 		immunities.add( Vertigo.class );
 	}

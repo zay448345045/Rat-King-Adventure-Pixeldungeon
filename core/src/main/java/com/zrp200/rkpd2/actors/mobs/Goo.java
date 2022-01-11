@@ -202,9 +202,8 @@ public class Goo extends Mob {
 					((GooSprite)sprite).triggerEmitters();
 				}
 				attack( enemy );
+				spend( attackDelay() );
 			}
-
-			spend( attackDelay() );
 
 			return !visible;
 

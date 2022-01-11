@@ -57,10 +57,14 @@ public class Endure extends ArmorAbility {
 		}
 		hero.sprite.operate(hero.pos);
 
-		armor.charge -= chargeUse(hero);
-		armor.updateQuickslot();
+		armor.useCharge(hero, this);
 		Invisibility.dispel();
 		hero.spendAndNext(3f);
+	}
+
+	@Override
+	public boolean isTracked() {
+		return Actor.containsClass(EndureTracker.class);
 	}
 
 	public static class EndureTracker extends FlavourBuff {
@@ -93,7 +97,7 @@ public class Endure extends ArmorAbility {
 
 		public void setup(Hero hero){
 			enduring = true;
-			maxDmgTaken = (int) (hero.HT * Math.pow(0.707f, hero.pointsInTalent(Talent.SHRUG_IT_OFF, Talent.BLOODFLARE_SKIN)));
+			maxDmgTaken = (int) (hero.HT * Math.pow(0.67f, hero.pointsInTalent(Talent.SHRUG_IT_OFF, Talent.BLOODFLARE_SKIN)));
 			damageBonus = 0;
 			hitsLeft = 0;
 		}

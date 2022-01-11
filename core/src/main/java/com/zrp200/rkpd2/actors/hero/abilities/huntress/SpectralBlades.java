@@ -175,8 +175,7 @@ public class SpectralBlades extends ArmorAbility {
 			}
 		}
 
-		armor.charge -= chargeUse(hero);
-		Item.updateQuickslot();
+		armor.useCharge(hero, this);
 
 		final HashSet<Callback> callbacks = new HashSet<>();
 

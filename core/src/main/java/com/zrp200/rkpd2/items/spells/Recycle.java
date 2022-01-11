@@ -26,6 +26,8 @@ import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.armor.glyphs.Stone;
+import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.potions.brews.Brew;
 import com.zrp200.rkpd2.items.potions.elixirs.Elixir;
@@ -34,6 +36,7 @@ import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.stones.Runestone;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -47,10 +50,11 @@ public class Recycle extends InventorySpell {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return (item instanceof Potion && !(item instanceof Elixir || item instanceof Brew)) ||
+		return (item instanceof Potion && !(item instanceof Elixir || item instanceof Brew || item instanceof AlchemicalCatalyst)) ||
 				item instanceof Scroll ||
 				item instanceof Plant.Seed ||
-				item instanceof Runestone;
+				item instanceof Runestone ||
+				item instanceof TippedDart;
 	}
 
 	@Override
@@ -69,8 +73,10 @@ public class Recycle extends InventorySpell {
 				}
 			} else if (item instanceof Plant.Seed) {
 				result = Generator.random(Generator.Category.SEED);
-			} else {
+			} else if (item instanceof Runestone) {
 				result = Generator.random(Generator.Category.STONE);
+			} else {
+				result = TippedDart.randomTipped(1);
 			}
 		} while (result.getClass() == item.getClass() || Challenges.isItemBlocked(result));
 		

@@ -21,19 +21,26 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Button;
+import static com.zrp200.rkpd2.Dungeon.hero;
+
+import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Button;
+import com.zrp200.rkpd2.utils.SafeCast;
 
 public class ItemSlot extends Button {
 
@@ -80,7 +87,7 @@ public class ItemSlot extends Button {
 	public static final Item EBONY_CHEST = new Item() {
 		public int image() { return ItemSpriteSheet.EBONY_CHEST; }
 	};
-	
+
 	public ItemSlot() {
 		super();
 		sprite.visible(false);
@@ -138,7 +145,13 @@ public class ItemSlot extends Button {
 
 		if (itemIcon != null){
 			itemIcon.x = x + width - (ItemSpriteSheet.Icons.SIZE + itemIcon.width())/2f;
-			itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height)/2f;
+			if(item instanceof ClassArmor) {
+				// bottom right, with a 1 pixel offset from the corners.
+				if(level != null) itemIcon.x = x + 1; else itemIcon.x--;
+				itemIcon.y = y + height - itemIcon.height() - 1;
+			} else {
+				itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height())/2f;
+			}
 			PixelScene.align(itemIcon);
 		}
 		
@@ -203,19 +216,29 @@ public class ItemSlot extends Button {
 
 		status.text( item.status() );
 
-		if (item.icon != -1 && (item.isIdentified() || (item instanceof Ring && ((Ring) item).isKnown()))){
+		if(item instanceof ClassArmor) {
+			OmniAbility ability = SafeCast.cast(hero.armorAbility, OmniAbility.class);
+			if(ability != null && ability.activeAbility() != null) {
+				// this violates pixel art rules but I need something.
+				itemIcon = new HeroIcon(ability.activeAbility());
+				itemIcon.scale.set(0.5f);
+				// fixme I would prefer that this go underneath level
+				add(itemIcon);
+			}
+		} else if (item.icon != -1 && (item.isIdentified() || (item instanceof Ring && ((Ring) item).isKnown()))){
 			extra.text( null );
 
 			itemIcon = new Image(Assets.Sprites.ITEM_ICONS);
 			itemIcon.frame(ItemSpriteSheet.Icons.film.get(item.icon));
 			add(itemIcon);
 
-		} else if (item instanceof Weapon || item instanceof Armor) {
+		}
+		/*else*/ if (item instanceof Weapon || item instanceof Armor) {
 
 			if (item.levelKnown){
 				int str = item instanceof Weapon ? ((Weapon)item).STRReq() : ((Armor)item).STRReq();
 				extra.text( Messages.format( TXT_STRENGTH, str ) );
-				if (str > Dungeon.hero.STR()) {
+				if (str > hero.STR()) {
 					extra.hardlight( DEGRADED );
 				} else {
 					extra.resetColor();

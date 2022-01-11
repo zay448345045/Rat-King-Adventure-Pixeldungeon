@@ -30,7 +30,7 @@ import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.quest.MetalShard;
-import com.zrp200.rkpd2.items.rings.RingOfForce;
+import com.zrp200.rkpd2.items.rings.RingOfMight;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;

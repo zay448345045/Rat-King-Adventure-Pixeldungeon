@@ -27,7 +27,15 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.blobs.Freezing;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.Bleeding;
+import com.zrp200.rkpd2.actors.buffs.Blindness;
+import com.zrp200.rkpd2.actors.buffs.BlobImmunity;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Corruption;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -98,8 +106,7 @@ public class SpiritHawk extends ArmorAbility {
 			}
 
 			if (!spawnPoints.isEmpty()){
-				armor.charge -= chargeUse(hero);
-				armor.updateQuickslot();
+				armor.useCharge(hero, this);
 
 				ally = new HawkAlly();
 				ally.pos = Random.element(spawnPoints);
@@ -136,6 +143,7 @@ public class SpiritHawk extends ArmorAbility {
 		}
 		return null;
 	}
+	@Override public boolean isActive() { return getHawk() != null; }
 
 	public static class HawkAlly extends DirectableAlly {
 
@@ -151,7 +159,7 @@ public class SpiritHawk extends ArmorAbility {
 			attacksAutomatically = false;
 
 			immunities.addAll(new BlobImmunity().immunities());
-			immunities.add(Corruption.class);
+			immunities.add(AllyBuff.class);
 		}
 
 		@Override
@@ -169,7 +177,7 @@ public class SpiritHawk extends ArmorAbility {
 		}
 
 		private int dodgesUsed = 0;
-		private float timeRemaining = 60f;
+		private float timeRemaining = 100f;
 
 		@Override
 		public int defenseSkill(Char enemy) {

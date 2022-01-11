@@ -50,6 +50,8 @@ import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
+import com.zrp200.rkpd2.items.spells.SummonElemental;
+import com.zrp200.rkpd2.items.spells.TelekineticGrab;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
@@ -248,7 +250,7 @@ public abstract class Recipe {
 			}
 		}
 	}
-	
+
 	
 	//*******
 	// Static members
@@ -259,9 +261,11 @@ public abstract class Recipe {
 	};
 
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
-		new AlchemistsToolkit.upgradeKit(),
 		new Scroll.ScrollToStone(),
+		new ExoticPotion.PotionToExotic(),
+		new ExoticScroll.ScrollToExotic(),
 		new ArcaneResin.Recipe(),
+		new Alchemize.Recipe(),
 		new StewedMeat.oneMeat()
 	};
 	
@@ -281,7 +285,6 @@ public abstract class Recipe {
 		new InfernalBrew.Recipe(),
 		new ShockingBrew.Recipe(),
 		new CausticBrew.Recipe(),
-		new Alchemize.Recipe(),
 		new AquaBlast.Recipe(),
 		new BeaconOfReturning.Recipe(),
 		new CurseInfusion.Recipe(),
@@ -302,50 +305,52 @@ public abstract class Recipe {
 		new KromerPotion.Recipe(),
 		new Dagger2.Recipe(),
 		new WandOfUnstable2.Recipe(),
+		new TelekineticGrab.Recipe(),
+		new SummonElemental.Recipe(),
 		new StewedMeat.twoMeat()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 		new Potion.SeedToPotion(),
-		new ExoticPotion.PotionToExotic(),
-		new ExoticScroll.ScrollToExotic(),
 		new StewedMeat.threeMeat(),
 		new TerminusBlade.Recipe(),
 		new SoulOfYendor.Recipe(),
 		new MeatPie.Recipe()
 	};
 	
-	public static Recipe findRecipe(ArrayList<Item> ingredients){
+	public static ArrayList<Recipe> findRecipes(ArrayList<Item> ingredients){
+
+		ArrayList<Recipe> result = new ArrayList<>();
 
 		for (Recipe recipe : variableRecipes){
 			if (recipe.testIngredients(ingredients)){
-				return recipe;
+				result.add(recipe);
 			}
 		}
 
 		if (ingredients.size() == 1){
 			for (Recipe recipe : oneIngredientRecipes){
 				if (recipe.testIngredients(ingredients)){
-					return recipe;
+					result.add(recipe);
 				}
 			}
 			
 		} else if (ingredients.size() == 2){
 			for (Recipe recipe : twoIngredientRecipes){
 				if (recipe.testIngredients(ingredients)){
-					return recipe;
+					result.add(recipe);
 				}
 			}
 			
 		} else if (ingredients.size() == 3){
 			for (Recipe recipe : threeIngredientRecipes){
 				if (recipe.testIngredients(ingredients)){
-					return recipe;
+					result.add(recipe);
 				}
 			}
 		}
 		
-		return null;
+		return result;
 	}
 	
 	public static boolean usableInRecipe(Item item){

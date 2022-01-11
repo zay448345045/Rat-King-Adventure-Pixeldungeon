@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
@@ -60,7 +61,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	protected boolean usableOnItem(Item item) {
 		return item instanceof MeleeWeapon ||
-				(item instanceof MissileWeapon && !(item instanceof Dart)) ||
+				(item instanceof MissileWeapon && (!(item instanceof Dart) || item instanceof TippedDart)) ||
 				(item instanceof Potion && !(item instanceof Elixir || item instanceof Brew || item instanceof AlchemicalCatalyst)) ||
 				item instanceof Scroll ||
 				item instanceof Ring ||
@@ -93,7 +94,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			if (result.isIdentified()){
 				Catalog.setSeen(result.getClass());
 			}
-			//TODO visuals
+			Transmuting.show(curUser, item, result);
+			curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 			GLog.p( Messages.get(this, "morph") );
 		}
 		
@@ -101,7 +103,9 @@ public class ScrollOfTransmutation extends InventoryScroll {
 
 	public static Item changeItem( Item item ){
 		if (item instanceof MagesStaff) {
-			return changeStaff( (MagesStaff)item );
+			return changeStaff((MagesStaff) item);
+		}else if (item instanceof TippedDart){
+			return changeTippeDart( (TippedDart)item );
 		} else if (item instanceof MeleeWeapon || item instanceof MissileWeapon) {
 			return changeWeapon( (Weapon)item );
 		} else if (item instanceof Scroll) {
@@ -140,7 +144,16 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		return staff;
 	}
-	
+
+	private static TippedDart changeTippeDart( TippedDart dart ){
+		TippedDart n;
+		do {
+			n = TippedDart.randomTipped(1);
+		} while (n.getClass() == dart.getClass());
+
+		return n;
+	}
+
 	private static Weapon changeWeapon( Weapon w ) {
 		
 		Weapon n;
@@ -165,6 +178,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 		
 		n.enchantment = w.enchantment;
 		n.curseInfusionBonus = w.curseInfusionBonus;
+		n.masteryPotionBonus = w.masteryPotionBonus;
 		n.levelKnown = w.levelKnown;
 		n.cursedKnown = w.cursedKnown;
 		n.cursed = w.cursed;
@@ -277,5 +291,10 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	@Override
 	public int value() {
 		return isKnown() ? 50 * quantity : super.value();
+	}
+
+	@Override
+	public int energyVal() {
+		return isKnown() ? 8 * quantity : super.energyVal();
 	}
 }

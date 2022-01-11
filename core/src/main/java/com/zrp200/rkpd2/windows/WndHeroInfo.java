@@ -34,7 +34,15 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.HeroIcon;
+import com.zrp200.rkpd2.ui.IconButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.TalentButton;
+import com.zrp200.rkpd2.ui.TalentsPane;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,7 +199,7 @@ public class WndHeroInfo extends WndTabbed {
 				case HUNTRESS:
 					icons = new Image[]{ new ItemSprite(ItemSpriteSheet.SPIRIT_BOW),
 							new Image(Assets.Environment.TILES_SEWERS, 112, 96, 16, 16),
-							new ItemSprite(ItemSpriteSheet.THROWING_CLUB),
+							new HeroIcon(HeroSubClass.SNIPER),
 							new ItemSprite(ItemSpriteSheet.ARTIFACT_TALISMAN),
 							new ItemSprite(ItemSpriteSheet.GLOVES),
 							new ItemSprite(ItemSpriteSheet.ARMOR_SCOUT),
@@ -256,7 +264,7 @@ public class WndHeroInfo extends WndTabbed {
 			Talent.initClassTalents(cls, talents);
 			talents.get(2).clear(); //we show T3 talents with subclasses
 
-			talentPane = new TalentsPane(false, talents);
+			talentPane = new TalentsPane(TalentButton.Mode.INFO, talents);
 			add(talentPane);
 		}
 
@@ -361,7 +369,7 @@ public class WndHeroInfo extends WndTabbed {
 				abilityInfos[i] = new IconButton( Icons.get(Icons.INFO) ){
 					@Override
 					protected void onClick() {
-						Game.scene().addToFront(new WndInfoArmorAbility(cls, abilities[finalI]));
+						Game.scene().addToFront(new WndInfoArmorAbility(abilities[finalI]));
 					}
 				};
 				add(abilityDescs[i]);

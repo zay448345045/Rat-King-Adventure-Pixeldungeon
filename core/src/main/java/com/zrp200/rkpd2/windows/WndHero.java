@@ -34,7 +34,22 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.BuffIcon;
+import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.ui.IconButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.ScrollPane;
+import com.zrp200.rkpd2.ui.StatusPane;
+import com.zrp200.rkpd2.ui.TalentButton;
+import com.zrp200.rkpd2.ui.TalentsPane;
+import com.zrp200.rkpd2.ui.Window;
+import com.watabou.gltextures.SmartTexture;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -68,14 +83,14 @@ public class WndHero extends WndTabbed {
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
 		
-		add( new LabeledTab( Messages.get(this, "stats") ) {
+		add( new IconTab( Icons.get(Icons.RANKINGS) ) {
 			protected void select( boolean value ) {
 				super.select( value );
 				if (selected) lastIdx = 0;
 				stats.visible = stats.active = selected;
 			}
 		} );
-		add( new LabeledTab( Messages.get(this, "talents") ) {
+		add( new IconTab( Icons.get(Icons.TALENT) ) {
 			protected void select( boolean value ) {
 				super.select( value );
 				if (selected) lastIdx = 1;
@@ -83,7 +98,7 @@ public class WndHero extends WndTabbed {
 				talents.visible = talents.active = selected;
 			}
 		} );
-		add( new LabeledTab( Messages.get(this, "buffs") ) {
+		add( new IconTab( Icons.get(Icons.BUFFS) ) {
 			protected void select( boolean value ) {
 				super.select( value );
 				if (selected) lastIdx = 2;
@@ -187,7 +202,7 @@ public class WndHero extends WndTabbed {
 		@Override
 		protected void createChildren() {
 			super.createChildren();
-			pane = new TalentsPane(true);
+			pane = new TalentsPane(TalentButton.Mode.UPGRADE);
 			add(pane);
 		}
 
@@ -276,10 +291,12 @@ public class WndHero extends WndTabbed {
 			protected void layout() {
 				super.layout();
 				icon.y = this.y;
+				txt.maxWidth((int)(width - icon.width()));
 				txt.setPos(
 						icon.width + GAP,
 						this.y + (icon.height - txt.height()) / 2
 				);
+				PixelScene.align(txt);
 			}
 			
 			protected boolean onClick ( float x, float y ) {

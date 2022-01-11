@@ -33,12 +33,14 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
 import com.zrp200.rkpd2.actors.buffs.Corruption;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.npcs.DirectableAlly;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -110,8 +112,7 @@ public class ShadowClone extends ArmorAbility {
 			}
 
 			if (!spawnPoints.isEmpty()){
-				armor.charge -= chargeUse(hero);
-				armor.updateQuickslot();
+				armor.useCharge(hero, this);
 
 				ally = new ShadowAlly(hero.lvl);
 				ally.pos = Random.element(spawnPoints);
@@ -123,7 +124,7 @@ public class ShadowClone extends ArmorAbility {
 				hero.spendAndNext(Actor.TICK);
 
 			} else {
-				GLog.w(Messages.get(this, "no_space"));
+				GLog.w(Messages.get(SpiritHawk.class, "no_space"));
 			}
 		}
 
@@ -147,6 +148,7 @@ public class ShadowClone extends ArmorAbility {
 		}
 		return null;
 	}
+	@Override public boolean isActive() { return getShadowAlly() != null; }
 
 	public static class ShadowAlly extends DirectableAlly {
 
@@ -155,7 +157,12 @@ public class ShadowClone extends ArmorAbility {
 
 			HP = HT = 100;
 
-			immunities.add(Corruption.class);
+			immunities.add(AllyBuff.class);
+		}
+
+		@Override
+		public String name() {
+			return Messages.get(this, "name", hero.heroClass.title());
 		}
 
 		public ShadowAlly(){
@@ -364,8 +371,8 @@ public class ShadowClone extends ArmorAbility {
 
 		@Override
 		public boolean interact(Char c) {
-			// automatically given..
-			if (!hero.canHaveTalent(Talent.PERFECT_COPY)){
+
+			if (!hero.hasTalent(Talent.PERFECT_COPY)){
 				return super.interact(c);
 			}
 
@@ -470,11 +477,9 @@ public class ShadowClone extends ArmorAbility {
 				run = new Animation(20, true);
 				run.frames(film, 2, 3, 4, 5, 6, 7);
 
-				die = new Animation(20, false);
-				die.frames(film, 0);
 
-				attack = new Animation(15, false);
-				attack.frames(film, 13, 14, 15, 0);
+				die.frames(idle.frames[ 0] );
+			die.delay = 1/20f;
 			}
 
 			idle();

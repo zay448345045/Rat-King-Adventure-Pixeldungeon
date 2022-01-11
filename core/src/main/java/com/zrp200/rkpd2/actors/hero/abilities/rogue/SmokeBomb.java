@@ -29,8 +29,15 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.*;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Amok;
+import com.zrp200.rkpd2.actors.buffs.Blindness;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Charm;
+import com.zrp200.rkpd2.actors.buffs.Dread;
+import com.zrp200.rkpd2.actors.buffs.Haste;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.Sleep;
+import com.zrp200.rkpd2.actors.buffs.Terror;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -74,7 +81,7 @@ public class SmokeBomb extends ArmorAbility {
 	public static boolean isValidTarget(Hero hero, int target, int limit) {
 		Char ch = Actor.findChar( target );
 		if(ch == hero) {
-			GLog.w( Messages.get(ArmorAbility.class, "self-target") );
+			GLog.w( Messages.get(ArmorAbility.class, "self_target") );
 			return false;
 		}
 
@@ -141,7 +148,6 @@ public class SmokeBomb extends ArmorAbility {
     public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target != null) {
 			if(!isValidTarget(hero, target, 8)) return;
-			armor.useCharge();
 
 			if (!isShadowStep(hero)) {
 				blindAdjacentMobs(hero);
@@ -164,6 +170,7 @@ public class SmokeBomb extends ArmorAbility {
 			} else {
 				hero.next();
 			}
+			armor.useCharge(hero,this);
 		}
 	}
 
@@ -189,6 +196,12 @@ public class SmokeBomb extends ArmorAbility {
 		return new Talent[]{Talent.HASTY_RETREAT, Talent.BODY_REPLACEMENT, Talent.SHADOW_STEP, Talent.FRIGID_TOUCH, Talent.HEROIC_ENERGY, Talent.HEROIC_STAMINA};
 	}
 
+	@Override
+	public boolean isTracked() {
+		// keeps summon stats consistent.
+		return Actor.containsClass(NinjaLog.class);
+	}
+
 	public static class NinjaLog extends NPC {
 
 		{
@@ -199,12 +212,16 @@ public class SmokeBomb extends ArmorAbility {
 
 			alignment = Alignment.ALLY;
 
-			HP = HT = 20* hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE, Talent.SMOKE_AND_MIRRORS);
+			// TODO isn't it kinda weird that the two variants have the same HP?
+			HP = HT = 20* hero.pointsInTalent(false,Talent.BODY_REPLACEMENT, Talent.SHADOWSPEC_SLICE, Talent.SMOKE_AND_MIRRORS);
 		}
 
 		{
 			immunities.add(FrostFire.class);
 		}
+
+		protected Talent talent = Talent.BODY_REPLACEMENT;
+		protected int drScaling = 5;
 
 		@Override
 		public int drRoll() {
@@ -217,6 +234,7 @@ public class SmokeBomb extends ArmorAbility {
 		}
 
 		{
+			immunities.add( Dread.class );
 			immunities.add( Terror.class );
 			immunities.add( Amok.class );
 			immunities.add( Charm.class );

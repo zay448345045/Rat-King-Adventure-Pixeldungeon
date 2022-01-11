@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -132,6 +133,7 @@ public class Shockwave extends ArmorAbility {
 					if(endTurn) {
 						Invisibility.dispel();
 						hero.spendAndNext(Actor.TICK);
+						OmniAbility.markAbilityUsed(new Shockwave());
 					} else next.call();
 
 				});
@@ -152,7 +154,7 @@ public class Shockwave extends ArmorAbility {
 				60 + 15*hero.shiftedPoints(EXPANDING_WAVE),
 				5 + hero.shiftedPoints(EXPANDING_WAVE),
 				null);
-		armor.useCharge();
+		armor.useCharge(hero, this, false);
 	}
 
 	@Override

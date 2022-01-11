@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -77,18 +78,15 @@ public class HeroicLeap extends ArmorAbility {
 				backTrace--;
 			}
 
-			armor.charge -= chargeUse( hero );
-			armor.updateQuickslot();
+			armor.useCharge(hero, this, false);
 
 			final int dest = cell;
 			hero.busy();
-			hero.sprite.jump(hero.pos, cell, new Callback() {
-				@Override
-				public void call() {
-					hero.move(dest);
-					Dungeon.level.occupyCell(hero);
-					Dungeon.observe();
-					GameScene.updateFog();
+			hero.sprite.jump(hero.pos, cell, () -> {
+				hero.move(dest);
+				Dungeon.level.occupyCell(hero);
+				Dungeon.observe();
+				GameScene.updateFog();
 
 					for (int i : PathFinder.NEIGHBOURS8) {
 						Char mob = Actor.findChar(hero.pos + i);
@@ -114,11 +112,11 @@ public class HeroicLeap extends ArmorAbility {
 						}
 					}
 
-					WandOfBlastWave.BlastWave.blast(dest);
-					Camera.main.shake(2, 0.5f);
+				WandOfBlastWave.BlastWave.blast(dest);
+				Camera.main.shake(2, 0.5f);
 
-					Invisibility.dispel();
-					hero.spendAndNext(Actor.TICK);
+				Invisibility.dispel();
+				hero.spendAndNext(Actor.TICK);
 
 
 					if (hero.buff(DoubleJumpTracker.class) != null){
@@ -134,6 +132,7 @@ public class HeroicLeap extends ArmorAbility {
 					}
 
 				}
+				OmniAbility.markAbilityUsed(HeroicLeap.this);
 			});
 		}
 	}

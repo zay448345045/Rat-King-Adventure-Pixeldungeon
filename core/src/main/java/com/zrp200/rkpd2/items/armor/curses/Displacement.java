@@ -42,7 +42,7 @@ public class Displacement extends Armor.Glyph {
 		float procChance = 1/20f * procChanceModifier(defender);
 
 		if (defender == Dungeon.hero && Random.Float() < procChance){
-			ScrollOfTeleportation.teleportHero(Dungeon.hero);
+			ScrollOfTeleportation.teleportChar(Dungeon.hero);
 			return 0;
 		} else if (!(defender instanceof Statue)){
 			ScrollOfTeleportation.teleportChar(defender);

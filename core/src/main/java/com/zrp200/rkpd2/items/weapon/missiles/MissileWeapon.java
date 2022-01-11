@@ -66,7 +66,7 @@ abstract public class MissileWeapon extends Weapon {
 	
 	protected boolean sticky = true;
 	
-	protected static final float MAX_DURABILITY = 100;
+	public static final float MAX_DURABILITY = 100;
 	protected float durability = MAX_DURABILITY;
 	protected float baseUses = 10;
 	
@@ -261,7 +261,7 @@ abstract public class MissileWeapon extends Weapon {
 			thing.collect();
 		}
 	}
-	
+
 	@Override
 	public float castDelay(Char user, int dst) {
 		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 1){
@@ -299,7 +299,7 @@ abstract public class MissileWeapon extends Weapon {
 			else decrementDurability();
 			if (durability > 0 && !(this instanceof PhantomSpear)) {
 				//attempt to stick the missile weapon to the enemy, just drop it if we can't.
-				if (sticky && enemy != null && enemy.isAlive() && enemy.buff(Corruption.class) == null) {
+				if (sticky && enemy != null && enemy.isAlive() && enemy.alignment != Char.Alignment.ALLY) {
 					PinCushion p = Buff.affect(enemy, PinCushion.class);
 					if (p.target == enemy) {
 						p.stick(this);
@@ -331,6 +331,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	public void repair( float amount ){
 		durability += amount;
+		durability = Math.min(durability, MAX_DURABILITY);
 	}
 
 	public float durabilityPerUse(){
@@ -338,13 +339,13 @@ abstract public class MissileWeapon extends Weapon {
 		if(Dungeon.hero.heroClass == HeroClass.ROGUE && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class) != null) level++;
 		float usages = baseUses * (float)(Math.pow(3, level));
 
-		// TODO should I link the innate to the talent? currently the talent if transferred is identical to pursuit, except worse...
-		//+50%/75% durability
-		if(Dungeon.hero.heroClass == HeroClass.HUNTRESS) usages *= 1.5; // look how simple this is!
 		final float[] u = {usages};
 		Dungeon.hero.byTalent(
-				(talent, points) -> u[0] *= 1.25f + 0.25f * points,
-				Talent.DURABLE_PROJECTILES, Talent.PURSUIT);
+				(talent, points) -> {
+					float boost = 0.25f * (1 + points); 					// +50% / +75%
+					if(talent == Talent.DURABLE_PROJECTILES) boost *= 2; 	// +100% / +150%
+					u[0] *= 1 + boost;
+				}, Talent.DURABLE_PROJECTILES, Talent.PURSUIT);
 		usages = u[0];
 		if (holster) {
 			usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
@@ -460,9 +461,9 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	@Override
-	public boolean doPickUp(Hero hero) {
+	public boolean doPickUp(Hero hero, int pos) {
 		parent = null;
-		return super.doPickUp(hero);
+		return super.doPickUp(hero, pos);
 	}
 	
 	@Override
@@ -536,7 +537,7 @@ abstract public class MissileWeapon extends Weapon {
 		bundleRestoring = true;
 		super.restoreFromBundle(bundle);
 		bundleRestoring = false;
-		durability = bundle.getInt(DURABILITY);
+		durability = bundle.getFloat(DURABILITY);
 	}
 
 	public static class PlaceHolder extends MissileWeapon {

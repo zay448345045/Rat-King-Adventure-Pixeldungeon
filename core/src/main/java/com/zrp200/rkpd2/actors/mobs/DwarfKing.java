@@ -34,7 +34,13 @@ import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Barrier;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Doom;
+import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
+import com.zrp200.rkpd2.actors.buffs.LifeLink;
+import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.buffs.ShieldBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -51,7 +57,6 @@ import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
 import com.zrp200.rkpd2.levels.CityBossLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -65,7 +70,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import static com.zrp200.rkpd2.Assets.Sounds.CHALLENGE;
+import static com.zrp200.rkpd2.Assets.Sounds.SHATTER;
 import static com.zrp200.rkpd2.actors.hero.HeroClass.RAT_KING;
+
+import sun.jvm.hotspot.opto.Phase;
 
 public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	@Override public void sayHeroKilled() {
@@ -103,10 +111,6 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		};
 	}
 
-	private static int getPhaseHP() {
-		return Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 100 : 50;
-	}
-
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 15, 25 );
@@ -129,6 +133,16 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	private float abilityCooldown = 0;
 	private final int MIN_COOLDOWN = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 8 : 10;
 	private final int MAX_COOLDOWN = Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 10 : 14;
+
+	private final int PHASE2_HP, SUMMONS_PER_WAVE; {
+		if(Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+			PHASE2_HP = 100;
+			SUMMONS_PER_WAVE = 6;
+		} else {
+			PHASE2_HP = 50;
+			SUMMONS_PER_WAVE = 4;
+		}
+	}
 
 	private boolean abilityUsed;
 
@@ -175,13 +189,15 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				: Dungeon.hero.heroClass == RAT_KING && phase == 1 && summonsMade < 5;
 		golemSpawned = bundle.getBoolean("golemSpawned");
 		if (phase == 2) properties.add(Property.IMMOVABLE);
+		// this is possible but unlikely.
+		if(buff(DKBarrior.class) != null && phase < 2) new PhaseChange(true);
 	}
 	// for dialogues when he shows a new power.
 	private boolean yellSpecialNotice, yellStrong, golemSpawned;
 
 	@Override
 	protected boolean act() {
-		if(state == HUNTING && yellSpecialNotice && paralysed == 0) { // takes him a hot second to realize who he's fighting.
+		if(yellSpecialNotice && paralysed == 0) { // takes him a hot second to realize who he's fighting.
 			yell(Messages.get(this, "notice2"));
 			yellSpecialNotice = false;
 			Sample.INSTANCE.play(CHALLENGE);
@@ -472,8 +488,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				}
 			}
 			if(phase == 0) phase = 1;
+			spend(TICK); // there's no good reason he just out and notices you.
 		}
-		spend(TICK); // there's no good reason he just out and notices you.
 	}
 
 	@Override
@@ -483,8 +499,11 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	protected void onDamage(int dmg, Object src) { // handle locked floor
 		super.onDamage(dmg, src);
+		if(!isImmune( src.getClass() )) handleLockedFloor(dmg);
+	}
+	private void handleLockedFloor(int dmg) {
 		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null && !isImmune(src.getClass())) lock.addTime(dmg/3);
+		if (lock != null) lock.addTime(dmg/3);
 	}
 
 	@Override
@@ -493,58 +512,34 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 			super.damage(dmg, src);
 			return;
 		} else if (!isAlive() || dmg < 0) return;
-		if(phase == 0) { notice(); }
-		if (phase == 3 && !(src instanceof Viscosity.DeferedDamage)) {
-			if (dmg >= 0) {
-				Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
-				deferred.prolong( dmg );
 
-				sprite.showStatus( CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg) );
-			}
-			return;
+		if(phase == 0) notice();
+
+		if (phase == 3 && !(src instanceof Viscosity.DeferedDamage)) {
+			Viscosity.DeferedDamage deferred = Buff.affect( this, Viscosity.DeferedDamage.class );
+			deferred.prolong( dmg );
+			sprite.showStatus( CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg) );
 		}
 		else if (phase < 2) {
 			// yay custom logic
 			int preHP = HP;
-			dmg = modifyDamage(dmg, src); // determining what our final HP is supposed to be here.
-			HP = HP - dmg + shielding();
-			// adjust HP to match phase if necessary.
-			int HP3 = getPhaseHP();
-			// FIXME this is a terrible way of handling it.
-			if (HP <= HP3 && !(src instanceof Grim)) { // grim will never actually break the shield.
-				HP += HT;
-				// TODO is 3f still correct???
-				float rawCrit = (HP - HP3)/(HT/3f);
-				// this stops it from randomly skipping a phase randomly. the big hits are given more leverage however.
-				int criticality = rawCrit <= 2.5 ? Random.round(rawCrit) : 3; // this makes it a bit more lenient.
-				if (criticality <= 0) {
-					int dmg2 = Math.min(dmg,preHP+250); // everything after the last 50 was deferred.
-					dmg = dmg-dmg2;
-					HP = preHP; // set HP back to original HP.
-					// literally just broke the shield in one go.
-					sprite.add(CharSprite.State.SHIELDED);
-					onDamage(dmg2, src); // process damage-related stuff
-					Sample.INSTANCE.play(Assets.Sounds.SHATTER);
-					sprite.remove(CharSprite.State.SHIELDED);
-					// enter phase 3 and process the rest of the damage
-					if (Dungeon.isChallenged(Challenges.EVIL_MODE))
-						HP = HT;
-					else HP = HP3;
-					enterPhase3(); // skip to phase 3
-					yell("...how can this be???");
-					if(dmg > 0) damage(dmg, src); // apply deferred damage
-				} else {
-					// handle normally.
-					onDamage(dmg, src); // this is the second part of #damage.
-					enterPhase2(criticality);
-				}
+			if(phaseChange != null) dmg = Random.round(dmg * phaseChange.remaining());
+			// determine 'final' damage
+			dmg = modifyDamage(dmg, src);
+			// this assumes that DK will never have shielding other than his barrier
+			int toPhaseChange = preHP + shielding() - PHASE2_HP;
+			if(phaseChange == null && dmg >= toPhaseChange) {
+				new PhaseChange(false);
+				toPhaseChange += HT;
 			}
-			else {
-				HP = preHP;
-				onDamage(dmg,src); // actually damage the guy
-				int dmgTaken = preHP-HP;
-				abilityCooldown -= dmgTaken / 8f;
-				summonCooldown -= dmgTaken / 8f;
+			int excess = dmg - toPhaseChange;
+			onDamage( Math.min(toPhaseChange, dmg), src );
+			abilityCooldown -= dmg / 8f;
+			summonCooldown -= dmg / 8f;
+			// skip to phase 3 immediately if there's excess damage, so it can be applied as deferred.
+			if(phaseChange != null && excess > 0) {
+				remove(phaseChange);
+				damage(excess, src);
 			}
 		}
 		else {
@@ -560,31 +555,57 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		}
 	}
 
-	private void enterPhase2 (int wavesLeft) {
-		int shielding = 0;
-		switch (wavesLeft) {
-			case 1:
-				shielding = 100;
-				break;
-			case 2:
-				shielding = 200;
-				break;
-			case 3:
-				shielding = 300;
-				break;
+	private PhaseChange phaseChange;
+	private class PhaseChange extends Actor {
+		{
+			actPriority = VFX_PRIO;
+			phaseChange = this;
 		}
-		if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) shielding *= 1.5f;
-		if (Dungeon.isChallenged(Challenges.EVIL_MODE))
-			HP = HT;
-		else
-			HP = 50;
-		summonsMade = 4*(3-wavesLeft);
+
+		@Override protected boolean act() {
+			remove(this);
+			return true;
+		}
+
+		float remaining() {
+			return shielding() / (float)HT;
+		}
+		PhaseChange(boolean restoring) {
+			if(!restoring) {
+				Buff.affect(DwarfKing.this, DKBarrior.class).setShield(HT + HP - PHASE2_HP);
+				HP = PHASE2_HP;
+			}
+			add(this);
+		}
+
+		@Override public void onRemove() {
+			phaseChange = null;
+			// dk at 100%, remaining returns 1, skipped returns 0
+			float skipped = ( 1-remaining() ) * 3;
+			// entering phase 3 from enterPhase2 has special logic.
+			enterPhase2(skipped < .5f ? 0 // consistency
+							      : Random.round(skipped)
+			);
+		}
+	}
+
+	private void enterPhase2 (int skippedWaves) {
+		if(skippedWaves >= 3) { // dramatic fx, congrats you skipped phase 2.
+			// FIXME still not happy with this.
+			sprite.flash();
+			Sample.INSTANCE.play(SHATTER, 15,1.5f);
+			Buff.detach(this, DKBarrior.class);
+			yell("...how can this be???");
+			enterPhase3();
+			return;
+		}
+		summonsMade = SUMMONS_PER_WAVE * skippedWaves;
 		sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "invulnerable"));
 				ScrollOfTeleportation.appear(this, CityBossLevel.throne);
 		properties.add(Property.IMMOVABLE);
 		phase = 2;
 		sprite.idle();
-		Buff.affect(this, DKBarrior.class).setShield(shielding);
+		Buff.affect(this, DKBarrior.class).setShield(HT * (3 - skippedWaves)/3, true);
 		for (Summoning s : buffs(Summoning.class)) {
 			s.detach();
 		}

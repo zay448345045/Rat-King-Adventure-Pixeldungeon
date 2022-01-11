@@ -26,6 +26,9 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
+import com.zrp200.rkpd2.actors.blobs.ToxicGas;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
 import com.zrp200.rkpd2.actors.buffs.PrismaticGuard;
@@ -46,7 +49,7 @@ public class PrismaticImage extends AbstractMirrorImage {
 	{
 		spriteClass = PrismaticSprite.class;
 		
-		HP = HT = 8;
+		HP = HT = 10;
 
 		intelligentAlly = true;
 		
@@ -116,9 +119,9 @@ public class PrismaticImage extends AbstractMirrorImage {
 	public int damageRoll() {
 		int i;
 		if (hero != null) {
-			i = Random.NormalIntRange(1 + hero.lvl / 8, 4 + hero.lvl / 2);
+			i = Random.NormalIntRange(2 + hero.lvl / 4, 4 + hero.lvl / 2);
 		} else {
-			i = Random.NormalIntRange(1, 4);
+			i = Random.NormalIntRange(2, 4);
 		}
 		i *= 1f + 0.2f*hero.pointsInTalent(Talent.SPECTRE_ALLIES);
 		return i;

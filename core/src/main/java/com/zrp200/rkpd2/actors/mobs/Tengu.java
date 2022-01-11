@@ -33,7 +33,13 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.blobs.Fire;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Blindness;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.buffs.Doom;
+import com.zrp200.rkpd2.actors.buffs.Dread;
+import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.buffs.Terror;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.*;
@@ -83,7 +89,7 @@ public class Tengu extends Mob {
 	protected void onAdd() {
 		//when he's removed and re-added to the fight, his time is always set to now.
 		if (cooldown() > TICK) {
-			spend(-cooldown());
+			timeToNow();
 			spendToWhole();
 		}
 		super.onAdd();
@@ -194,7 +200,7 @@ public class Tengu extends Mob {
 		super.die( cause );
 		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
 			new PotionOfExperience().apply(Dungeon.hero);
-		
+
 		Badges.validateBossSlain();
 		
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
@@ -329,6 +335,7 @@ public class Tengu extends Mob {
 	
 	{
 		immunities.add( Blindness.class );
+		immunities.add( Dread.class );
 		immunities.add( Terror.class );
 	}
 	
@@ -575,10 +582,10 @@ public class Tengu extends Mob {
 		
 		public int bombPos;
 		private int timer = 3;
-		
+
 		@Override
 		public boolean act() {
-			
+
 			PointF p = DungeonTilemap.raisedTileCenterToWorld(bombPos);
 			if (timer == 3) {
 				FloatingText.show(p.x, p.y, bombPos, "3...", CharSprite.NEUTRAL);
@@ -632,7 +639,7 @@ public class Tengu extends Mob {
 			spend(TICK);
 			return true;
 		}
-		
+
 		private static final String BOMB_POS = "bomb_pos";
 		private static final String TIMER = "timer";
 		
@@ -655,36 +662,36 @@ public class Tengu extends Mob {
 				actPriority = BUFF_PRIO - 1;
 				alwaysVisible = true;
 			}
-			
+
 			@Override
 			protected void evolve() {
-				
+
 				boolean exploded = false;
-				
+
 				int cell;
 				for (int i = area.left; i < area.right; i++){
 					for (int j = area.top; j < area.bottom; j++){
 						cell = i + j* Dungeon.level.width();
 						off[cell] = cur[cell] > 0 ? cur[cell] - 1 : 0;
-						
+
 						if (off[cell] > 0) {
 							volume += off[cell];
 						}
-						
+
 						if (cur[cell] > 0 && off[cell] == 0){
-							
+
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
 								int dmg = Random.NormalIntRange(5 + Dungeon.getDepth(), 10 + Dungeon.getDepth() *2);
 								dmg -= ch.drRoll();
-								
+
 								if (dmg > 0) {
 									ch.damage(dmg, Bomb.class);
 									if (Dungeon.isChallenged(Challenges.EVIL_MODE) && Random.Int(3) == 0){
 										Buff.affect(ch, Paralysis.class, 2f);
 									}
 								}
-								
+
 								if (ch == Dungeon.hero && !ch.isAlive()) {
 									Dungeon.fail(Tengu.class);
 								}
@@ -698,32 +705,32 @@ public class Tengu extends Mob {
 									}
 								}
 							}
-							
+
 							exploded = true;
 							CellEmitter.center(cell).burst(BlastParticle.FACTORY, 2);
 						}
 					}
 				}
-				
+
 				if (exploded){
 					Sample.INSTANCE.play(Assets.Sounds.BLAST);
 				}
-				
+
 			}
-			
+
 			@Override
 			public void use(BlobEmitter emitter) {
 				super.use(emitter);
-				
+
 				emitter.pour( SmokeParticle.FACTORY, 0.25f );
 			}
-			
+
 			@Override
 			public String tileDesc() {
 				return Messages.get(this, "desc");
 			}
 		}
-		
+
 		public static class BombItem extends Item {
 			
 			{
@@ -734,7 +741,7 @@ public class Tengu extends Mob {
 			}
 			
 			@Override
-			public boolean doPickUp( Hero hero ) {
+			public boolean doPickUp(Hero hero, int pos) {
 				GLog.w( Messages.get(this, "cant_pickup") );
 				return false;
 			}
@@ -1121,7 +1128,7 @@ public class Tengu extends Mob {
 			}
 			
 			@Override
-			public boolean doPickUp( Hero hero ) {
+			public boolean doPickUp(Hero hero, int pos) {
 				GLog.w( Messages.get(this, "cant_pickup") );
 				return false;
 			}

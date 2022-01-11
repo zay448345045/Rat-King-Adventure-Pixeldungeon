@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.items.journal.Guidebook;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
@@ -71,7 +72,9 @@ public class Hunger extends Buff implements Hero.Doom {
 	@Override
 	public boolean act() {
 
-		if (Dungeon.level.locked || target.buff(WellFed.class) != null){
+		if (Dungeon.level.locked
+				|| target.buff(WellFed.class) != null
+				|| target.buff(ScrollOfChallenge.ChallengeArena.class) != null){
 			spend(STEP);
 			return true;
 		}

@@ -21,22 +21,29 @@
 
 package com.zrp200.rkpd2.items.wands;
 
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
-import com.zrp200.rkpd2.actors.mobs.*;
+import com.zrp200.rkpd2.actors.mobs.Bee;
+import com.zrp200.rkpd2.actors.mobs.Mimic;
+import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.Piranha;
+import com.zrp200.rkpd2.actors.mobs.Statue;
+import com.zrp200.rkpd2.actors.mobs.Swarm;
+import com.zrp200.rkpd2.actors.mobs.Wraith;
 import com.zrp200.rkpd2.effects.MagicMissile;
+import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.HashMap;
 
@@ -76,7 +83,8 @@ public class WandOfCorruption extends Wand {
 		MAJOR_DEBUFFS.put(Slow.class,           2f);
 		MAJOR_DEBUFFS.put(Hex.class,            2f);
 		MAJOR_DEBUFFS.put(Paralysis.class,      1f);
-		
+
+		MAJOR_DEBUFFS.put(Dread.class,          0f);
 		MAJOR_DEBUFFS.put(Charm.class,          0f);
 		MAJOR_DEBUFFS.put(MagicalSleep.class,   0f);
 		MAJOR_DEBUFFS.put(SoulMark.class,       0f);
@@ -183,7 +191,8 @@ public class WandOfCorruption extends Wand {
 			GLog.w( Messages.get(this, "already_corrupted") );
 			return;
 		}
-		
+
+		// TODO IMPLEMENT
 		if( !Corruption.corrupt(enemy) ) Buff.affect(enemy, Doom.class);
 	}
 

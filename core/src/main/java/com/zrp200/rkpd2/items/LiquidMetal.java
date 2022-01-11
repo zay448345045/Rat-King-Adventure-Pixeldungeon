@@ -11,6 +11,7 @@ import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
@@ -104,7 +105,7 @@ public class LiquidMetal extends Item {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item instanceof MissileWeapon && !(item instanceof TippedDart);
+			return item instanceof MissileWeapon && !(item instanceof Dart);
 		}
 
 		@Override
@@ -183,7 +184,7 @@ public class LiquidMetal extends Item {
 				MissileWeapon m = (MissileWeapon) i;
 				float quantity = m.quantity()-1;
 				quantity += 0.25f + 0.0075f*m.durabilityLeft();
-				quantity *= Math.pow(2, m.level());
+				quantity *= Math.pow(2, Math.min(3, m.level()));
 				metalQuantity += Math.round((5*(m.tier+1))*quantity);
 				if (Dungeon.hero.pointsInTalent(Talent.AUTO_RELOAD) > 2) metalQuantity *= 1.60f;
 			}

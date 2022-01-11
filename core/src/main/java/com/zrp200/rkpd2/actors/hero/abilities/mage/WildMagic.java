@@ -23,6 +23,8 @@ package com.zrp200.rkpd2.actors.hero.abilities.mage;
 
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
+import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.markAbilityUsed;
+
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -45,7 +47,7 @@ import java.util.ArrayList;
 public class WildMagic extends ArmorAbility {
 
 	{
-		baseChargeUse = 35f;
+		baseChargeUse = 25f;
 	}
 
 	@Override
@@ -107,6 +109,7 @@ public class WildMagic extends ArmorAbility {
 
 		if (wands.size() == 0){
 			GLog.w(Messages.get(this, "no_wands"));
+			markAbilityUsed(this);
 			return;
 		}
 
@@ -126,7 +129,17 @@ public class WildMagic extends ArmorAbility {
 
 	}
 
-	public static class WildMagicTracker extends FlavourBuff{};
+	@Override
+	public boolean isActive() {
+		return Actor.containsClass(WildMagicTracker.class);
+	}
+
+	public static class WildMagicTracker extends FlavourBuff{
+		@Override
+		protected void onRemove() {
+			markAbilityUsed(new WildMagic());
+		}
+	};
 
 	public static void zapWand(ArrayList<Wand> wands, Hero hero, int target){
 		Wand cur = wands.remove(0);

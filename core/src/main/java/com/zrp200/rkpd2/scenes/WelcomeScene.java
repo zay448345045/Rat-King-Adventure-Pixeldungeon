@@ -154,9 +154,9 @@ public class WelcomeScene extends PixelScene {
 				//TODO: change the messages here in accordance with the type of patch.
 				message = Messages.get(this, "patch_intro");
 				message += "\n";
-//				message += "\n" + Messages.get(this, "patch_balance");
+				message += "\n" + Messages.get(this, "patch_balance");
 				message += "\n" + Messages.get(this, "patch_bugfixes");
-				//message += "\n" + Messages.get(this, "patch_translations");
+				message += "\n" + Messages.get(this, "patch_translations");
 
 			}
 		} else {
@@ -201,6 +201,7 @@ public class WelcomeScene extends PixelScene {
 
 		}
 
+		/*
 		//if the player has beaten Goo, automatically give all guidebook pages
 		if (previousVersion <= ShatteredPixelDungeon.v0_1_0) {
 			Badges.loadGlobal();
@@ -209,7 +210,7 @@ public class WelcomeScene extends PixelScene {
 					Document.ADVENTURERS_GUIDE.readPage(page);
 				}
 			}
-		}
+		}*/
 		/*resetting language preference back to native for finnish speakers if they were on english
 		//This is because Finnish was unmaintained for quite a while
 		if ( previousVersion <= 500

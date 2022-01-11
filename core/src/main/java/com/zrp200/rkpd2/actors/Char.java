@@ -46,6 +46,7 @@ import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.wands.WandOfFireblast;
@@ -69,6 +70,11 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -261,7 +267,7 @@ public abstract class Char extends Actor {
 		super.restoreFromBundle( bundle );
 
 		restoring = this;
-		
+
 		pos = bundle.getInt( POS );
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
@@ -377,6 +383,10 @@ public abstract class Char extends Actor {
 
 			if (enemy.buff(Shrink.class) != null || enemy.buff(TimedShrink.class) != null) dmg *= 1.4f;
 
+			if (enemy.buff(ScrollOfChallenge.ChallengeArena.class) != null){
+				dmg *= 0.67f;
+			}
+
 			int effectiveDamage = enemy.defenseProc( this, dmg );
 			if (Ratmogrify.drratedonActive(this)){
 				dr = 0;
@@ -396,7 +406,7 @@ public abstract class Char extends Actor {
 							(0.5f+((Hero) enemy).pointsInTalent(Talent.BRAVERY)/2f) *effectiveDamage));
 			}
 
-			
+
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
@@ -675,6 +685,7 @@ public abstract class Char extends Actor {
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if ( buff( Adrenaline.class ) != null) speed *= 2f;
 		if ( buff( Haste.class ) != null) speed *= 3f;
+		if ( buff( Dread.class ) != null) speed *= 2f;
 		if (Dungeon.isChallenged(Challenges.FORGET_PATH)) speed *= 1.2f;
 		if (Ratmogrify.drratedonEffect(this) > 1) {
 			speed *= 3f;
@@ -757,11 +768,7 @@ public abstract class Char extends Actor {
 			if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null) {
 				dmg *= DeathMark.damageMultiplier();
 			}
-			Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
-			//reduce damage here if it isn't coming from a chacter (if it is we already reduced it)
-			if (endure != null && !(src instanceof Char)) {
-				dmg = endure.adjustDamageTaken(dmg);
-			}
+
 
 			Class<?> srcClass = src.getClass();
 			if (isImmune(srcClass)) {
@@ -794,6 +801,10 @@ public abstract class Char extends Actor {
 		if (t != null){
 			t.recover();
 		}
+		Dread d = buff(Dread.class);
+		if (d != null){
+			d.recover();
+		}
 		Charm c = buff(Charm.class);
 		if (c != null){
 			c.recover(src);
@@ -810,7 +821,6 @@ public abstract class Char extends Actor {
 		}
 
 		Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
-		//reduce damage here if it isn't coming from a chacter (if it is we already reduced it)
 		if (endure != null){
 			dmg = endure.enforceDamagetakenLimit(dmg);
 		}
@@ -863,6 +873,9 @@ public abstract class Char extends Actor {
 		for (Char ch : Actor.chars().toArray(new Char[0])){
 			if (ch.buff(Charm.class) != null && ch.buff(Charm.class).object == id()){
 				ch.buff(Charm.class).detach();
+			}
+			if (ch.buff(Dread.class) != null && ch.buff(Dread.class).object == id()){
+				ch.buff(Dread.class).detach();
 			}
 			if (ch.buff(Terror.class) != null && ch.buff(Terror.class).object == id()){
 				ch.buff(Terror.class).detach();
@@ -961,7 +974,15 @@ public abstract class Char extends Actor {
 	}
 
 	public synchronized void add( Buff buff ) {
-		
+
+		if (buff(PotionOfCleansing.Cleanse.class) != null) { //cleansing buff
+			if (buff.type == Buff.buffType.NEGATIVE
+					&& !(buff instanceof AllyBuff)
+					&& !(buff instanceof LostInventory)){
+				return;
+			}
+		}
+
 		buffs.add( buff );
 		if (Actor.chars().contains(this)) Actor.add( buff );
 
@@ -1009,10 +1030,15 @@ public abstract class Char extends Actor {
 	public float stealth() {
 		return 0;
 	}
-	
-	public void move( int step ) {
 
-		if (Dungeon.level.adjacent( step, pos ) && buff( Vertigo.class ) != null) {
+	public final void move( int step ) {
+		move( step, true );
+	}
+
+	//travelling may be false when a character is moving instantaneously, such as via teleportation
+	public void move( int step, boolean travelling ) {
+
+		if (travelling && Dungeon.level.adjacent( step, pos ) && buff( Vertigo.class ) != null) {
 			sprite.interruptMotion();
 			int newPos = pos + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
 			if (!(Dungeon.level.passable[newPos] || Dungeon.level.avoid[newPos])
@@ -1122,9 +1148,9 @@ public abstract class Char extends Actor {
 
 	public enum Property{
 		BOSS ( new HashSet<Class>( Arrays.asList(Grim.class, GrimTrap.class, ScrollOfRetribution.class, ScrollOfPsionicBlast.class)),
-				new HashSet<Class>( Arrays.asList(Corruption.class) )),
+				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class) )),
 		MINIBOSS ( new HashSet<Class>(),
-				new HashSet<Class>( Arrays.asList(Corruption.class) )),
+				new HashSet<Class>( Arrays.asList(AllyBuff.class, Dread.class) )),
 		UNDEAD,
 		DEMONIC,
 		INORGANIC ( new HashSet<Class>(),

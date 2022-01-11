@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.SparseArray;
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -86,7 +87,11 @@ public abstract class Actor implements Bundlable {
 	public void clearTime() {
 		time = 0;
 	}
-	
+
+	public void timeToNow() {
+		time = now;
+	}
+
 	protected void diactivate() {
 		time = Float.MAX_VALUE;
 	}
@@ -305,7 +310,19 @@ public abstract class Actor implements Bundlable {
 	public static void addDelayed( Actor actor, float delay ) {
 		add( actor, now + delay );
 	}
-	
+
+	// shortcut to add something that executes as soon as the current actor is done acting.
+	public static void add(Callback callback) {
+		add(new Actor() {
+			{ actPriority = VFX_PRIO; }
+			@Override protected boolean act() {
+				remove(this);
+				callback.call();
+				return true;
+			}
+		});
+	}
+
 	private static synchronized void add( Actor actor, float time ) {
 		
 		if (all.contains( actor )) {
@@ -350,6 +367,14 @@ public abstract class Actor implements Bundlable {
 
 	public static synchronized Actor findById( int id ) {
 		return ids.get( id );
+	}
+
+	public static synchronized <T extends Actor>  T findByClass(Class<T> cls) {
+		for(Actor a : all) if(cls.isInstance(a)) return cls.cast(a);
+		return null;
+	}
+	public static synchronized boolean containsClass(Class<? extends Actor> cls) {
+		return findByClass(cls) != null;
 	}
 
 	public static synchronized HashSet<Actor> all() {

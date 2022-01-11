@@ -75,7 +75,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, GODBURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED
+		BURNING, GODBURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED, HEARTS
 	}
 	private int stunStates = 0;
 
@@ -85,6 +85,14 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Animation operate;
 	protected Animation zap;
 	protected Animation die;
+protected void copyAnimations(CharSprite other) {
+		idle = other.idle;
+		run = other.run;
+		attack = other.attack;
+		operate = other.operate;
+		zap = other.zap;
+		die = other.die;
+	}
 
 	protected Callback animCallback;
 
@@ -96,6 +104,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Emitter marked;
 	protected Emitter levitation;
 	protected Emitter healing;
+	protected Emitter hearts;
 	protected Emitter frostburning;
 	protected Emitter spirit;
 	protected Emitter allured;
@@ -451,6 +460,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				scale.x = 1.5f;
 				scale.y = 1.5f;
 				break;
+			case HEARTS:
+				hearts = emitter();
+				hearts.pour(Speck.factory(Speck.HEART), 0.5f);
+				break;
 		}
 	}
 
@@ -560,9 +573,37 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 					swords = null;
 				}
 				break;
+			case HEARTS:
+				if (hearts != null){
+					hearts.on = false;
+					hearts = null;
+				}
+				break;
 		}
 	}
 
+	public void aura( int color ){
+		if (aura != null){
+			aura.killAndErase();
+		}
+		float size = Math.max(width(), height());
+		size = Math.max(size+4, 16);
+		aura = new Flare(5, size);
+		aura.angularSpeed = 90;
+		aura.color(color, true);
+
+		if (parent != null) {
+			aura.show(this, 0);
+		}
+	}
+
+	public void clearAura(){
+		if (aura != null){
+			aura.killAndErase();
+			aura = null;
+		}
+	}
+	
 	@Override
 	public void update() {
 		if (paused && !looping() && ch != null && curAnim != null){
@@ -597,6 +638,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		if (marked != null) {
 			marked.visible = visible;
+		}
+		if (healing != null){
+			healing.visible = visible;
+		}
+		if (hearts != null){
+			hearts.visible = visible;
 		}
 		if (aura != null){
 			if (aura.parent == null){

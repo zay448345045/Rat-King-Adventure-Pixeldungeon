@@ -111,6 +111,14 @@ public class Shopkeeper extends NPC {
 		return GameScene.selectItem( itemSelector );
 	}
 
+	public static boolean canSell(Item item){
+		if (item.value() <= 0)                                              return false;
+		if (item.unique && !item.stackable)                                 return false;
+		if (item instanceof Armor && ((Armor) item).checkSeal() != null)    return false;
+		if (item.isEquipped(Dungeon.hero) && item.cursed)                   return false;
+		return true;
+	}
+
 	private static WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 		@Override
 		public String textPrompt() {
@@ -119,11 +127,7 @@ public class Shopkeeper extends NPC {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			if (item.value() <= 0)                                              return false;
-			if (item.unique && !item.stackable)                                 return false;
-			if (item instanceof Armor && ((Armor) item).checkSeal() != null)    return false;
-			if (item.isEquipped(Dungeon.hero) && item.cursed)                   return false;
-			return true;
+			return Shopkeeper.canSell(item);
 		}
 
 		@Override

@@ -113,7 +113,7 @@ public abstract class ChampionEnemy extends Buff {
 	}
 
 	{
-		immunities.add(Corruption.class);
+		immunities.add(AllyBuff.class);
 	}
 
 	public static boolean isChampion(Mob m){

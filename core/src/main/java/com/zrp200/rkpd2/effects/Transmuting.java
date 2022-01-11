@@ -24,8 +24,13 @@ package com.zrp200.rkpd2.effects;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.zrp200.rkpd2.ui.TalentIcon;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
 
 public class Transmuting extends Component {
 
@@ -39,8 +44,8 @@ public class Transmuting extends Component {
 
 	private static final float ALPHA	= 0.6f;
 
-	ItemSprite oldSprite;
-	ItemSprite newSprite;
+	Image oldSprite;
+	Image newSprite;
 
 	private Char target;
 
@@ -48,13 +53,11 @@ public class Transmuting extends Component {
 	private float duration;
 	private float passed;
 
-	public Transmuting( Item oldItem, Item newItem ){
-		oldSprite = new ItemSprite(oldItem);
+	public Transmuting(Image oldSprite, Image newSprite) {
 		oldSprite.originToCenter();
-		add(oldSprite);
-		newSprite = new ItemSprite(newItem);
+		add(this.oldSprite = oldSprite);
 		newSprite.originToCenter();
-		add(newSprite);
+		add(this.newSprite = newSprite);
 
 		oldSprite.alpha(0f);
 		newSprite.alpha(0f);
@@ -62,6 +65,12 @@ public class Transmuting extends Component {
 		phase = Phase.FADE_IN;
 		duration = FADE_IN_TIME;
 		passed = 0;
+	}
+	public Transmuting( Item oldItem, Item newItem ){
+		this( new ItemSprite(oldItem), new ItemSprite(newItem) );
+	}
+	public Transmuting( Talent oldTalent, Talent newTalent ){
+		this( new TalentIcon(oldTalent), new TalentIcon(newTalent) );
 	}
 
 	@Override
@@ -110,15 +119,18 @@ public class Transmuting extends Component {
 		}
 	}
 
+	public void show(Char ch) {
+		if(!ch.sprite.visible) return; // fixme this checks twice, if anything I would prefer to only have this check; it's dumb to duplicate #show over and over for literally no reason.
+		target = ch;
+		ch.sprite.parent.add(this);
+	}
 	public static void show( Char ch, Item oldItem, Item newItem ) {
 
-		if (!ch.sprite.visible) {
-			return;
-		}
+		if (!ch.sprite.visible) new Transmuting( oldItem, newItem ).show(ch);
+	}
 
-		Transmuting sprite = new Transmuting( oldItem, newItem );
-		sprite.target = ch;
-		ch.sprite.parent.add( sprite );
+	public static void show( Char ch, Talent oldTalent, Talent newTalent ) {
+		if (!ch.sprite.visible) new Transmuting( oldTalent, newTalent ).show(ch);
 	}
 
 }

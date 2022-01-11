@@ -27,7 +27,8 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
     import com.zrp200.rkpd2.actors.Char;
     import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
     import com.zrp200.rkpd2.actors.blobs.ToxicGas;
-    import com.zrp200.rkpd2.actors.buffs.Burning;
+    import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.Burning;
     import com.zrp200.rkpd2.actors.buffs.Corruption;
     import com.zrp200.rkpd2.actors.hero.Hero;
     import com.zrp200.rkpd2.actors.hero.Talent;
@@ -161,6 +162,6 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
         immunities.add( ToxicGas.class );
         immunities.add( CorrosiveGas.class );
         immunities.add( Burning.class );
-        immunities.add( Corruption.class );
+        immunities.add( AllyBuff.class );
     }
 }

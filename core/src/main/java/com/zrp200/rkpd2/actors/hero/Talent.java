@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
+import static com.zrp200.rkpd2.Dungeon.hero;
+
+import static java.lang.Math.max;
+
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -32,7 +36,21 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Adrenaline;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
+import com.zrp200.rkpd2.actors.buffs.Berserk;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.CounterBuff;
+import com.zrp200.rkpd2.actors.buffs.EnhancedRings;
+import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
+import com.zrp200.rkpd2.actors.buffs.Haste;
+import com.zrp200.rkpd2.actors.buffs.LostInventory;
+import com.zrp200.rkpd2.actors.buffs.Preparation;
+import com.zrp200.rkpd2.actors.buffs.Recharging;
+import com.zrp200.rkpd2.actors.buffs.RevealedArea;
+import com.zrp200.rkpd2.actors.buffs.Roots;
+import com.zrp200.rkpd2.actors.buffs.WandEmpower;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
@@ -61,7 +79,6 @@ import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.HighGrass;
-import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
@@ -198,9 +215,8 @@ public enum Talent {
 
 		@Override public String title() {
 			//TODO translate this
-			if (Messages.lang() == Languages.ENGLISH
-					&& ratmogrify()) {
-				return "ratroic energy";
+			if (ratmogrify()) {
+				return Messages.get(this, name() + ".rat_title");
 			}
 			return super.title();
 		}
@@ -245,7 +261,7 @@ public enum Talent {
 			buff.spend( buff.duration() + extraDuration );
 		}
 		public abstract float duration();
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / duration()); }
+		public float iconFadePercent() { return max(0, visualcooldown() / duration()); }
 		public String toString() { return Messages.get(this, "name"); }
 		public String desc() { return Messages.get(this, "desc", dispTurns(visualcooldown())); }
 	}
@@ -295,7 +311,7 @@ public enum Talent {
 	}
 	public static class BigRushTracker extends FlavourBuff{};
 	public static class LethalMomentumTracker extends FlavourBuff{
-		public static void process() { hero.byTalent(process, LETHAL_MOMENTUM,PURSUIT,LETHAL_MOMENTUM_2); }
+		public static void process() { hero.byTalent(process, PURSUIT); }
 		private static final TalentCallback process = (talent, points) -> {
 			if( Random.Float() < ( (talent == LETHAL_MOMENTUM ? 2 : 1) + points )
 					/ (talent == PURSUIT ? 3f : 4f) ) {
@@ -303,6 +319,91 @@ public enum Talent {
 			}
 		};
 	};
+
+	// this is my idea of buffing lethal momentum: remove all possible inconsistencies with it.
+	public static abstract class RKPD2LethalMomentumTracker extends FlavourBuff {
+		{ actPriority = VFX_PRIO; }
+		private boolean checkShielding = false, wasTurned; // this is a very specific case, but still needed.
+
+		@Override public boolean attachTo(Char target) {
+			// does not bundle.
+			if (Char.restoring == target
+					|| !tryAttach(target)
+					|| target.HP == 0 && target.isAlive() && !(checkShielding = target.shielding() > 0)
+					|| !super.attachTo(target)) {
+				return false;
+			}
+			wasTurned = target.buff(AllyBuff.class) != null;
+			return true;
+		}
+		protected abstract boolean tryAttach(Char target);
+
+		public static void process(Char enemy) {
+			for(Class<RKPD2LethalMomentumTracker> trackerClass : new Class[]{
+					WarriorLethalMomentumTracker.class,
+					AssassinLethalMomentumTracker.class}) {
+				Buff.append(enemy, trackerClass);
+			}
+		}
+
+		@Override protected void onRemove() {
+			if (target != null &&
+					// activates if the enemy was brought to 0 HP this turn.
+					(target.HP == 0 && (!checkShielding || target.shielding() == 0) ||
+							// also activates if the enemy was corrupted.
+							(target.buff(AllyBuff.class) == null) == wasTurned
+					)
+			) {
+				hero.spend(-hero.cooldown());
+				detach(target, RKPD2LethalMomentumTracker.class);
+				proc();
+			}
+		}
+		protected void proc() {}
+
+		// template class
+		abstract static class Chain extends FlavourBuff {
+			{ type = buffType.POSITIVE; }
+			@Override public int icon() { return BuffIndicator.CORRUPT; }
+			@Override public String desc() {
+				String desc = super.desc();
+				String effect = Messages.get(this, "effect");
+				//noinspection StringEquality
+				if(effect != Messages.NULL) desc += "\n" + effect;
+				return desc;
+			}
+		}
+	}
+
+	public static class WarriorLethalMomentumTracker extends RKPD2LethalMomentumTracker {
+		@Override protected boolean tryAttach(Char target) {
+			int points = hero.pointsInTalent(LETHAL_MOMENTUM);
+			return points > 0 && points >= Random.Int(3);
+		}
+
+		@Override protected void proc() { Buff.affect(hero, Chain.class); }
+
+		public static class Chain extends RKPD2LethalMomentumTracker.Chain // 2x accuracy
+		{
+			@Override public void tintIcon(Image icon) { icon.invert(); }
+		}
+	}
+
+	public static class AssassinLethalMomentumTracker extends RKPD2LethalMomentumTracker {
+		// Preparation is only required for the initial kill.
+		public static class Chain extends RKPD2LethalMomentumTracker.Chain
+		{}
+		@Override protected boolean tryAttach(Char target) {
+			return hero.buff(AssassinLethalMomentumTracker.Chain.class) != null // after the first, any following lethal strike ALWAYS procs lethal.
+					// otherwise you need preparation to start the chain.
+					|| hero.buff(Preparation.class) != null
+						// 50% / 75% / 100%
+						&& Random.Float() < .25f*(2+hero.pointsInTalent(LETHAL_MOMENTUM_2));
+		}
+		@Override protected void proc() {
+			Buff.affect(hero, Chain.class);
+		}
+	}
 	public static class StrikingWaveTracker extends FlavourBuff{};
 	public static class WandPreservationCounter extends CounterBuff{};
 	public static class EmpoweredStrikeTracker extends FlavourBuff{};
@@ -314,6 +415,7 @@ public enum Talent {
 		@Override public float duration() {
 			// if both are present the higher one is used. They don't stack in this implementation.
 			int points = hero.shiftedPoints(REJUVENATING_STEPS, POWER_WITHIN);
+			if(hero.hasTalent(NATURES_BETTER_AID)) points = max(points, 1);
 			return 10*(float)Math.pow(2,1-points);
 		}
 		public int icon() { return BuffIndicator.TIME; }
@@ -337,12 +439,24 @@ public enum Talent {
 			else target.sprite.remove(CharSprite.State.SPIRIT);
 		}
 	};
-	public static class RejuvenatingStepsFurrow extends CounterBuff{};
+	public static class RejuvenatingStepsFurrow extends CounterBuff{
+		/** Track a successful proc of rejuvenating steps.
+		 *	Moved logic from Level.java to here so I don't forget what this does.
+		 **/
+		public static void record() {
+			int points = hero.pointsInTalent(false, REJUVENATING_STEPS, POWER_WITHIN);
+			if(hero.hasTalent(NATURES_BETTER_AID)) points = max(points, 1);
+			count(hero, Talent.RejuvenatingStepsFurrow.class, 3 - points);
+		}
+	};
 	public static class SeerShotCooldown extends Cooldown{
-		@Override public float duration() { return 20; }
+		@Override public float duration() {
+			return hero.hasTalent(SEER_SHOT)
+					? 15 * hero.pointsInTalent(SEER_SHOT)
+					: 20;
+		}
 		public int icon() {
-			// changed cooldown behavior to be more stacking-friendly.
-			return target.buff(RevealedArea.class) != null ? BuffIndicator.NONE : BuffIndicator.TIME;
+			return target.buff(RevealedArea.class) == null ? BuffIndicator.TIME : BuffIndicator.NONE;
 		}
 		public void tintIcon(Image icon) { icon.hardlight(0.7f, 0.4f, 0.7f); }
 	};
@@ -745,7 +859,7 @@ public enum Talent {
 		if(heal > 0) {
 			hero.HP += heal;
 			Emitter e = hero.sprite.emitter();
-			if (e != null) e.burst(Speck.factory(Speck.HEALING), Math.max(1,Math.round(heal*2f/3)));
+			if (e != null) e.burst(Speck.factory(Speck.HEALING), max(1,Math.round(heal*2f/3)));
 		}
 
 		hero.byTalent( (talent, points) -> {
@@ -862,10 +976,14 @@ public enum Talent {
 
 
 	public static void initClassTalents( Hero hero ){
-		initClassTalents( hero.heroClass, hero.talents );
+		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents );
 	}
 
-	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
+	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents){
+		initClassTalents( cls, talents, new LinkedHashMap<>());
+	}
+
+	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements ){
 		while (talents.size() < MAX_TALENT_TIERS){
 			talents.add(new LinkedHashMap<>());
 		}
@@ -875,6 +993,9 @@ public enum Talent {
 		//tier 1
 		Collections.addAll(tierTalents, talentList(cls, 1));
 		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
 			talents.get(0).put(talent, 0);
 		}
 		tierTalents.clear();
@@ -882,6 +1003,9 @@ public enum Talent {
 		//tier 2
 		Collections.addAll(tierTalents, talentList(cls, 2));
 		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
 			talents.get(1).put(talent, 0);
 		}
 		tierTalents.clear();
@@ -903,6 +1027,7 @@ public enum Talent {
 			case RAT_KING: break; // no unique talents... :(
 		}
 		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)) talent = replacements.get(talent);
 			talents.get(2).put(talent, 0);
 		}
 		tierTalents.clear();
@@ -974,9 +1099,11 @@ public enum Talent {
 	public static void initArmorTalents( Hero hero ){
 		initArmorTalents( hero.armorAbility, hero.talents);
 	}
-
-	public static void initArmorTalents(ArmorAbility abil, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
-		if (abil == null) return;
+	public static ArrayList<LinkedHashMap<Talent, Integer>> initArmorTalents(ArmorAbility abil){
+		return initArmorTalents(abil, new ArrayList());
+	}
+	public static ArrayList<LinkedHashMap<Talent, Integer>> initArmorTalents(ArmorAbility abil, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
+		if (abil == null) return talents;
 
 		while (talents.size() < MAX_TALENT_TIERS){
 			talents.add(new LinkedHashMap<>());
@@ -985,7 +1112,7 @@ public enum Talent {
 		for (Talent t : abil.talents()){
 			talents.get(3).put(t, 0);
 		}
-
+		return talents;
 	}
 
 	private static final String TALENT_TIER = "talents_tier_";
@@ -1003,9 +1130,23 @@ public enum Talent {
 			}
 			bundle.put(TALENT_TIER+(i+1), tierBundle);
 		}
+
+		Bundle replacementsBundle = new Bundle();
+		for (Talent t : hero.metamorphedTalents.keySet()){
+			replacementsBundle.put(t.name(), hero.metamorphedTalents.get(t));
+		}
+		bundle.put("replacements", replacementsBundle);
 	}
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){
+		//TODO restore replacements
+		if (bundle.contains("replacements")){
+			Bundle replacements = bundle.getBundle("replacements");
+			for (String key : replacements.getKeys()){
+				hero.metamorphedTalents.put(Talent.valueOf(key), replacements.getEnum(key, Talent.class));
+			}
+		}
+
 		if (hero.heroClass != null) initClassTalents(hero);
 		if (hero.subClass != null)  initSubclassTalents(hero);
 		if (hero.armorAbility != null)  initArmorTalents(hero);

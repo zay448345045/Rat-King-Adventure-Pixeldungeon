@@ -92,8 +92,7 @@ public class DeathMark extends ArmorAbility {
 			 + (hero.hasTalent(Talent.CATACLYSMIC_ENERGY) ? 1 : 0)).setInitialHP(ch.HP);
 		}
 
-		armor.charge -= chargeUse( hero );
-		armor.updateQuickslot();
+		armor.useCharge(hero, this);
 		hero.sprite.zap(target);
 
 		hero.next();
@@ -141,6 +140,7 @@ public class DeathMark extends ArmorAbility {
 		}
 	}
 
+	// FIXME generalize?
 	public static class DoubleMarkTracker extends FlavourBuff{};
 	public static class TripleMarkTracker extends FlavourBuff{};
 
@@ -152,6 +152,10 @@ public class DeathMark extends ArmorAbility {
 	@Override
 	public Talent[] talents() {
 		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.CATACLYSMIC_ENERGY, Talent.HEROIC_ENERGY, Talent.HEROIC_STAMINA};
+	}
+
+	@Override public boolean isTracked() {
+		return Actor.containsClass(DeathMarkTracker.class);
 	}
 
 	public static class DeathMarkTracker extends FlavourBuff {

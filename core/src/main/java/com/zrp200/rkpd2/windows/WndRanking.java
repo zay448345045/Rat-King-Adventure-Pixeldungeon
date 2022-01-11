@@ -21,20 +21,33 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Button;
-import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Rankings;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.BadgesGrid;
+import com.zrp200.rkpd2.ui.BadgesList;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.ItemSlot;
+import com.zrp200.rkpd2.ui.RedButton;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.TalentButton;
+import com.zrp200.rkpd2.ui.TalentsPane;
+import com.zrp200.rkpd2.ui.Window;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Button;
+import com.watabou.noosa.ui.Component;
 
 import java.util.Locale;
 
@@ -108,8 +121,8 @@ public class WndRanking extends WndTabbed {
 	
 	private void createControls() {
 		
-		String[] labels =
-			{Messages.get(this, "stats"), Messages.get(this, "items"), Messages.get(this, "badges")};
+		Icons[] icons =
+			{Icons.RANKINGS, Icons.BACKPACK_LRG, Icons.BADGES};
 		Group[] pages =
 			{new StatsTab(), new ItemsTab(), new BadgesTab()};
 		
@@ -117,7 +130,7 @@ public class WndRanking extends WndTabbed {
 			
 			add( pages[i] );
 			
-			Tab tab = new RankingTab( labels[i], pages[i] );
+			Tab tab = new RankingTab( icons[i], pages[i] );
 			add( tab );
 		}
 
@@ -126,12 +139,12 @@ public class WndRanking extends WndTabbed {
 		select( 0 );
 	}
 
-	private class RankingTab extends LabeledTab {
+	private class RankingTab extends IconTab {
 		
 		private Group page;
 		
-		public RankingTab( String label, Group page ) {
-			super( label );
+		public RankingTab( Icons icon, Group page ) {
+			super( Icons.get(icon) );
 			this.page = page;
 		}
 		
@@ -175,7 +188,7 @@ public class WndRanking extends WndTabbed {
 					}
 					Game.scene().addToFront( new Window(){
 						{
-							TalentsPane p = new TalentsPane(false);
+							TalentsPane p = new TalentsPane(TalentButton.Mode.INFO);
 							add(p);
 							p.setPos(0, 0);
 							p.setSize(120, p.content().height());
@@ -185,6 +198,7 @@ public class WndRanking extends WndTabbed {
 					});
 				}
 			};
+			btnTalents.icon(Icons.get(Icons.TALENT));
 			btnTalents.setRect( (WIDTH - btnTalents.reqWidth()+2)/2, pos, btnTalents.reqWidth()+2 , 16 );
 			add(btnTalents);
 
@@ -198,6 +212,7 @@ public class WndRanking extends WndTabbed {
 					}
 				};
 
+				btnChallenges.icon(Icons.get(Icons.CHALLENGE_ON));
 				btnChallenges.setSize( btnChallenges.reqWidth()+2, 16 );
 				add( btnChallenges );
 
@@ -228,7 +243,7 @@ public class WndRanking extends WndTabbed {
 			pos += GAP;
 			
 			pos = statSlot( this, Messages.get(this, "food"), Integer.toString( Statistics.foodEaten ), pos );
-			pos = statSlot( this, Messages.get(this, "alchemy"), Integer.toString( Statistics.potionsCooked ), pos );
+			pos = statSlot( this, Messages.get(this, "alchemy"), Integer.toString( Statistics.itemsCrafted ), pos );
 			pos = statSlot( this, Messages.get(this, "ankhs"), Integer.toString( Statistics.ankhsUsed ), pos );
 		}
 		
@@ -305,11 +320,15 @@ public class WndRanking extends WndTabbed {
 			super();
 			
 			camera = WndRanking.this.camera;
-			
-			ScrollPane list = new BadgesList( false );
-			add( list );
-			
-			list.setSize( WIDTH, HEIGHT );
+
+			Component badges;
+			if (Badges.unlocked(false) <= 7){
+				badges = new BadgesList(false);
+			} else {
+				badges = new BadgesGrid(false);
+			}
+			add(badges);
+			badges.setSize( WIDTH, HEIGHT );
 		}
 	}
 

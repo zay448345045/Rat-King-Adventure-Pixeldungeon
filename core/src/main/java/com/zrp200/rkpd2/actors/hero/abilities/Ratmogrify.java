@@ -119,8 +119,7 @@ public class Ratmogrify extends ArmorAbility {
 			Dungeon.level.occupyCell(rat);
 		}
 
-		armor.charge -= chargeUse(hero);
-		armor.updateQuickslot();
+		armor.useCharge(hero,this);
 		Invisibility.dispel();
 		hero.spendAndNext(Actor.TICK);
 
@@ -151,6 +150,12 @@ public class Ratmogrify extends ArmorAbility {
 		return talents.toArray(new Talent[0]);
 	}
 
+	@Override
+	public boolean isTracked() {
+		// yes I know this is incredibly general, but I know this will come up at some point.
+		return Actor.containsClass(Rat.class) || Actor.containsClass(TransmogRat.class);
+	}
+
 	public static class TransmogRat extends Mob {
 
 		{
@@ -179,6 +184,11 @@ public class Ratmogrify extends ArmorAbility {
 				state = WANDERING;
 			}
 
+			if(!isAlive()) {
+				// this is actually possible.
+				die(null);
+			}
+
 		}
 
 		private float timeLeft = 6f;
@@ -190,6 +200,7 @@ public class Ratmogrify extends ArmorAbility {
 				original.pos = pos;
 				original.clearTime();
 				GameScene.add(original);
+				if(original.HP == 0) original.die(this); // avoid shittery.
 
 				destroy();
 				sprite.killAndErase();

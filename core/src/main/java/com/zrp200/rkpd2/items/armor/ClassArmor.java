@@ -21,6 +21,14 @@
 
 package com.zrp200.rkpd2.items.armor;
 
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.tiles.DungeonTileSheet;
+import com.zrp200.rkpd2.ui.QuickSlotButton;
+import com.zrp200.rkpd2.utils.SafeCast;
+import com.zrp200.rkpd2.windows.WndChooseAbility;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
@@ -36,12 +44,15 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
 import com.zrp200.rkpd2.windows.WndChooseAbility;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
+import static com.zrp200.rkpd2.Dungeon.quickslot;
+import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.additionalActions;
 
 abstract public class ClassArmor extends Armor {
 
@@ -118,6 +129,7 @@ abstract public class ClassArmor extends Armor {
 		classArmor.inscribe( armor.glyph );
 		classArmor.cursed = armor.cursed;
 		classArmor.curseInfusionBonus = armor.curseInfusionBonus;
+		classArmor.masteryPotionBonus = armor.masteryPotionBonus;
 		classArmor.identify();
 
 		classArmor.charge = 50;
@@ -145,18 +157,20 @@ abstract public class ClassArmor extends Armor {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero )) {
-			actions.add( AC_ABILITY );
-		}
+		actions.add( AC_ABILITY );
+		actions.addAll( additionalActions().keySet() );
 		return actions;
 	}
 
 	@Override
 	public String actionName(String action, Hero hero) {
 		if (hero.armorAbility != null && action.equals(AC_ABILITY)){
-			return hero.armorAbility.name().toUpperCase();
+			return hero.armorAbility.actionName();
 		} else {
-			return super.actionName(action, hero);
+			String actionName = super.actionName(action, hero);
+			//overriding the default to suppress NULL so that OmniAbility can communicate with itself.
+			//noinspection StringEquality
+			return actionName != Messages.NULL ? actionName : action;
 		}
 	}
 
@@ -166,43 +180,75 @@ abstract public class ClassArmor extends Armor {
 	}
 
 	@Override
+	public void execute(Hero hero) {
+		if(additionalActions().isEmpty()) super.execute(hero);
+		else {
+			// omni-ability default action.
+			OmniAbility omniAbility = (OmniAbility)hero.armorAbility;
+			ArmorAbility activeAbility = omniAbility.activeAbility();
+			usesTargeting = false; // manually handled.
+			GameScene.show(new WndChooseAbility(null,this, omniAbility.name(),false) {
+				@Override protected ArrayList<ArmorAbility> getArmorAbilities() {
+					ArrayList<ArmorAbility> abilities = new ArrayList<>();
+					abilities.add(activeAbility);
+					abilities.addAll( OmniAbility.activeAbilities() );
+					return abilities;
+				}
+				@Override protected WndInfoArmorAbility getAbilityInfo(ArmorAbility ability) {
+					return new WndInfoArmorAbility(ability, OmniAbility::transferTalents);
+				}
+				@Override protected void selectAbility(ArmorAbility ability) {
+					hide();
+					if(ability.equals(activeAbility)) ClassArmor.super.execute(hero);
+					else execute(hero, ability.actionName());
+					// due to the delay, we need to manually enable targeting.
+					int slotIdx = quickslot.getSlot(ClassArmor.this);
+					if(slotIdx != -1 && usesTargeting) QuickSlotButton.useTargeting(slotIdx);
+				}
+			});
+		}
+	}
+
+	@Override
 	public void execute( Hero hero, String action ) {
 
 		super.execute( hero, action );
 
-		if (action.equals(AC_ABILITY)){
-
-			//for pre-0.9.3 saves
-			if (hero.armorAbility == null){
-				GameScene.show(new WndChooseAbility(null, this, hero));
-			} else if (!isEquipped( hero )) {
-				usesTargeting = false;
-				GLog.w( Messages.get(this, "not_equipped") );
-			} else {
-				float chargeUse = hero.armorAbility.chargeUse(hero);
-				if (hero.armorAbility instanceof MusRexIra) chargeUse*=2;
-				if (charge < chargeUse) {
-					/*usesTargeting = false;
-					GLog.w( Messages.get(this, "low_charge") );*/
-					GLog.n("Rat King: I don't have time for this nonsense! I have a kingdom to run! CLASS ARMOR SUPERCHAARGE!!");
-					charge += 100;
-					hero.HP = Math.max( Math.min(hero.HP,1),
-							hero.HP*(hero.pointsInTalent(Talent.FUN) > 3 ? 3/4 : 2/3) );
-					updateQuickslot();
-					ScrollOfRecharging.charge(hero);
-					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
-				}
-				usesTargeting = hero.armorAbility.useTargeting();
-				hero.armorAbility.use(this, hero);
+		if (action.equals(AC_ABILITY)) {
+			useAbility(hero, hero.armorAbility);
+		} else if(additionalActions().containsKey(action)) {
+			useAbility(hero, additionalActions().get(action));
+		}
+	}
+	private void useAbility(Hero hero, ArmorAbility armorAbility) {
+		//for pre-0.9.3 saves
+		if (armorAbility == null){
+			GameScene.show(new WndChooseAbility(null, this));
+		} else {
+			if (charge < armorAbility.chargeUse(hero)) {
+				/*usesTargeting = false;
+				GLog.w( Messages.get(this, "low_charge") );*/
+				GLog.n("Rat King: I don't have time for this nonsense! I have a kingdom to run! CLASS ARMOR SUPERCHAARGE!!");
+				charge += 100;
+				hero.HP = Math.max( Math.min(hero.HP,1), hero.HP*2/3 );
+				updateQuickslot();
+				ScrollOfRecharging.charge(hero);
+				Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 			}
-
+			usesTargeting = armorAbility.useTargeting();
+			armorAbility.use(this, hero);
 		}
 	}
 
-	public void useCharge() {
+	public void useCharge(Hero hero, ArmorAbility armorAbility, boolean recordUsed) {
 		if (hero.armorAbility != null)
-			charge -= hero.armorAbility.chargeUse(hero);
+			charge -= armorAbility.chargeUse(hero);
+		// This is a trigger for OmniAbility to transition to a new ability.
+		if(recordUsed) OmniAbility.markAbilityUsed(armorAbility);
 		updateQuickslot();
+	}
+	public void useCharge(Hero hero, ArmorAbility armorAbility) {
+		useCharge(hero, armorAbility, true);
 	}
 
 	@Override

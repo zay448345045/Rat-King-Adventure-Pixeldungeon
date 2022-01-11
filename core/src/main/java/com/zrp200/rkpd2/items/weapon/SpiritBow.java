@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.weapon;
 
+import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
@@ -188,12 +189,12 @@ public class SpiritBow extends Weapon {
 	
 	@Override
 	public int min(int lvl) {
-		return 1 + level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return Math.max(0,1 + level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
 	}
 	
 	@Override
 	public int max(int lvl) {
-		return 6 + (int)(2*(internalLevel() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
+		return Math.max(0, 6 + (int)(2*(internalLevel() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero))));
 	}
 
 	@Override
@@ -249,7 +250,7 @@ public class SpiritBow extends Weapon {
 			return super.proc(attacker, defender, damage);
 		}
 	}
-	
+
 	private int targetPos;
 
 	@Override
@@ -317,6 +318,19 @@ public class SpiritBow extends Weapon {
 		public boolean sniperSpecial = false;
 		public float sniperSpecialBonusDamage = 0f;
 		public boolean doNotDelay = false;
+
+		@Override
+		public Emitter emitter() {
+			if (Dungeon.hero.buff(NaturesPower.naturesPowerTracker.class) != null && !sniperSpecial){
+				Emitter e = new Emitter();
+				e.pos(5, 5);
+				e.fillTarget = false;
+				e.pour(LeafParticle.GENERAL, 0.01f);
+				return e;
+			} else {
+				return super.emitter();
+			}
+		}
 
 		@Override
 		public Emitter emitter() {
@@ -574,10 +588,7 @@ public class SpiritBow extends Weapon {
 						&& user.buff(Talent.SeerShotCooldown.class) == null){
 					int shotPos = throwPos(user, dst);
 					if (Actor.findChar(shotPos) == null) {
-						RevealedArea a = Buff.append(user, RevealedArea.class, user.heroClass == HeroClass.HUNTRESS ? 5 : 5 * user.pointsInTalent(Talent.RK_WARDEN));
-						a.depth = Dungeon.getDepth();
-						a.pos = shotPos;
-						Talent.Cooldown.affectHero(Talent.SeerShotCooldown.class, Dungeon.hero.heroClass == HeroClass.HUNTRESS ? 5 : 0);
+						new RevealedArea(shotPos, Dungeon.depth).attachTo(user);
 					}
 				}
 				if (!doNotDelay)

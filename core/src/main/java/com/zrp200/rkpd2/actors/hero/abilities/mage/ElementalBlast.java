@@ -27,6 +27,8 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.markAbilityUsed;
+
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -39,6 +41,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Speck;
@@ -408,15 +411,17 @@ public class ElementalBlast extends ArmorAbility {
 	}
 	@Override
     public void activate(ClassArmor armor, Hero hero, Integer target) {
-		if(MagesStaff.getWandClass() == null) return; // prevents the callback by catching it now.
+		if(MagesStaff.getWandClass() == null) {
+			markAbilityUsed(this);
+			return; // prevents the callback by catching it now.
+		}
 
 		activate(hero, () -> hero.spendAndNext(Actor.TICK) );
 
 		Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 		Invisibility.dispel();
 
-		armor.charge -= chargeUse(hero);
-		armor.updateQuickslot();
+		armor.useCharge(hero, this);
 	}
 
 	@Override
