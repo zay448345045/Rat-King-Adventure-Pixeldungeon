@@ -14,9 +14,9 @@ allprojects {
     ext {
         appName = 'RKPD2 DLC'
         appPackageName = 'com.zrp200.rkpd2abyssal'
-
-        appVersionCode = 614
-        appVersionName = 'DLC-1.4.9'
+1
+        appVersionCode = 620
+        appVersionName = 'DLC-1.4.10-beta'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
