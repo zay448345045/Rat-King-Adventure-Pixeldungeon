@@ -468,9 +468,6 @@ public enum Talent {
 		if (tier >= 5) return 0;
 		int max = tierLevelThresholds[tier+1] - tierLevelThresholds[tier];
 		if(tier == 3) max += 4;
-		if (Dungeon.hero != null){
-			if (Dungeon.hero.pointsInTalent(HEROIC_RATINESS) >= tier) max += 1;
-		}
 		if (hero != null && hero.talents.get(tier - 1).size() > 4 + tier && tier < 3)
 			max += 2 * (hero.talents.get(tier - 1).size() - (4+tier));
 		if (hero != null && hero.lvl > 30){

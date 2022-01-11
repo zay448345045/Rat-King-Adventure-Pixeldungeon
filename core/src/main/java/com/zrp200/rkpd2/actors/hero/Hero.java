@@ -413,11 +413,16 @@ public class Hero extends Char {
 	public int bonusTalentPoints(int tier){
 		if (!hasTier(tier)) {
 			return 0;
-		} else if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
-				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
-			return 2;
-		} else {
-			return 0;
+		} else{
+			int point = 0;
+			if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
+					&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
+				point += 2;
+			}
+			if (Dungeon.hero.pointsInTalent(Talent.HEROIC_RATINESS) >= tier) {
+				point += 1;
+			}
+			return point;
 		}
 	}
 	
