@@ -343,7 +343,7 @@ abstract public class MissileWeapon extends Weapon {
 		Dungeon.hero.byTalent(
 				(talent, points) -> {
 					float boost = 0.25f * (1 + points); 					// +50% / +75%
-					if(talent == Talent.DURABLE_PROJECTILES) boost *= 2; 	// +100% / +150%
+					if(talent == Talent.DURABLE_PROJECTILES) boost *= 2.5f; 	// +125% / +188%
 					u[0] *= 1 + boost;
 				}, Talent.DURABLE_PROJECTILES, Talent.PURSUIT);
 		usages = u[0];
