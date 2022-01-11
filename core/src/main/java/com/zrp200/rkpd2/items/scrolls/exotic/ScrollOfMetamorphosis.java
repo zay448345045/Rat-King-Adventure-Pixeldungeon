@@ -21,9 +21,8 @@
 
 package com.zrp200.rkpd2.items.scrolls.exotic;
 
-import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
-import static com.zrp200.rkpd2.actors.hero.Talent.*;
-
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -42,13 +41,14 @@ import com.zrp200.rkpd2.ui.TalentsPane;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.windows.IconTitle;
 import com.zrp200.rkpd2.windows.WndOptions;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
+
+import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
+import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
 public class ScrollOfMetamorphosis extends ExoticScroll {
 	
@@ -172,12 +172,15 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			restrictedTalents.put(BACKUP_BARRIER, MAGE);
 			restrictedTalents.put(ENERGIZING_UPGRADE, MAGE);
 			restrictedTalents.put(WAND_PRESERVATION, MAGE);
+			restrictedTalents.put(ARCANE_BOOST, MAGE);
 
 			restrictedTalents.put(MENDING_SHADOWS, ROGUE);
-			restrictedTalents.put(MYSTICAL_UPGRADE, ROGUE);
 			restrictedTalents.put(LIGHT_CLOAK, ROGUE);
+			restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
 
 			restrictedTalents.put(SEER_SHOT, HUNTRESS);
+			restrictedTalents.put(RESTORED_NATURE, HUNTRESS);
+			restrictedTalents.put(NATURES_AID, HUNTRESS);
 
 			// rat king talents that contain restricted talents are removed.
 			restrictedTalents.put(NOBLE_CAUSE, RAT_KING);
