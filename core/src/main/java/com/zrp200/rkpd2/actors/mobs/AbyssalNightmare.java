@@ -230,7 +230,7 @@ public class AbyssalNightmare extends AbyssalMob {
 					if ((Dungeon.level.map[pos+i] == Terrain.WALL || Dungeon.level.map[pos+i] == Terrain.WALL_DECO ||
 							Dungeon.level.map[pos+i] == Terrain.DOOR || Dungeon.level.map[pos+i] == Terrain.SECRET_DOOR)){
 						Level.set(pos+i, Terrain.EMPTY);
-						if (Dungeon.hero.fieldOfView[pos+i]){
+						if (Dungeon.level.insideMap(pos+i) && Dungeon.hero.fieldOfView[pos+i]){
 							CellEmitter.bottom(pos+i).burst(SmokeParticle.FACTORY, 12);
 						}
 						GameScene.updateMap(pos+i);
