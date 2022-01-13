@@ -152,7 +152,7 @@ public enum Icons {
 			icon.frame( icon.texture.uvRect( 80, 16, 93, 29 ) );
 			break;
 		case MAGNIFY:
-			icon.frame( icon.texture.uvRect( 48, 80, 62, 94 ) );
+			icon.frame( icon.texture.uvRect( 96, 16, 110, 30 ) );
 			break;
 		case BUFFS:
 			icon.frame( icon.texture.uvRect( 110, 16, 128, 31 ) );
