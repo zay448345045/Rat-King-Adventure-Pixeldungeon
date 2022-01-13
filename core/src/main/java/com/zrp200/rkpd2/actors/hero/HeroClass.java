@@ -143,6 +143,7 @@ public enum HeroClass {
 		Waterskin waterskin = new Waterskin();
 		waterskin.collect();
 
+
 		new ScrollOfIdentify().identify();
 		if (Badges.isUnlocked(Badges.Badge.CHAMPION_7)){
 			new Chaosstone().collect();

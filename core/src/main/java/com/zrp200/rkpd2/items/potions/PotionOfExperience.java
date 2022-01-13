@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.potions;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -36,6 +37,12 @@ public class PotionOfExperience extends Potion {
 	public void apply( Hero hero ) {
 		identify();
 		hero.earnExp( 5 + 5*hero.lvl, getClass() );
+	}
+
+	public static void levelUp(int level){
+		for (int i = 0; i < level; i++){
+			Dungeon.hero.earnExp( 5 + 5* Dungeon.hero.lvl, PotionOfExperience.class );
+		}
 	}
 	
 	@Override
