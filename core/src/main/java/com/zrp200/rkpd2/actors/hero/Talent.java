@@ -294,7 +294,7 @@ public enum Talent {
 	}
 	public static class BigRushTracker extends FlavourBuff{};
 	public static class LethalMomentumTracker extends FlavourBuff{
-		public static void process() { hero.byTalent(process, PURSUIT); }
+		public static void process() { hero.byTalent(process, LETHAL_MOMENTUM, LETHAL_MOMENTUM_2, PURSUIT); }
 		private static final TalentCallback process = (talent, points) -> {
 			if( Random.Float() < ( (talent == LETHAL_MOMENTUM ? 2 : 1) + points )
 					/ (talent == PURSUIT ? 3f : 4f) ) {
