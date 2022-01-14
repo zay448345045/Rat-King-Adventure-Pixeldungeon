@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Item;
@@ -481,8 +482,8 @@ public class SpiritBow extends Weapon {
 						} else {
 							bounced = true;
 							Mob finalDesiredMob = desiredMob;
-							enemy.sprite.parent.recycle(MissileSprite.class).
-									reset(enemy.sprite,
+							CellEmitter.center(enemy.pos).parent.recycle(MissileSprite.class).
+									reset(enemy.pos,
 											desiredMob.sprite,
 											this,
 											new Callback() {
