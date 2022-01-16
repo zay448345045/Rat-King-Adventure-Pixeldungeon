@@ -48,8 +48,8 @@ public class Invisibility extends FlavourBuff {
 		if (super.attachTo( target )) {
 			target.invisible++;
 			if (target instanceof Hero
-					&& (((Hero) target).subClass == HeroSubClass.ASSASSIN
-						|| ((Hero) target).subClass == HeroSubClass.KING)) {
+					&& (((Hero) target).isSubclassed(HeroSubClass.ASSASSIN)
+						|| ((Hero) target).isSubclassed(HeroSubClass.KING))) {
 				Buff.affect(target, Preparation.class);
 			}
 			return true;

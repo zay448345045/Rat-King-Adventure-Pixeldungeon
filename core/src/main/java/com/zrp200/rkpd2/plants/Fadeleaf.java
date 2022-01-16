@@ -26,7 +26,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
@@ -73,7 +72,7 @@ public class Fadeleaf extends Plant {
 
 	@Override
 	public String wardenDesc(HeroSubClass subClass) {
-		return wardenDesc(subClass, subClass == HeroSubClass.WARDEN ? "her" : "him");
+		return wardenDesc(subClass, isSubclassed(HeroSubClass.WARDEN) ? "her" : "him");
 	}
 
 	public static class Seed extends Plant.Seed {

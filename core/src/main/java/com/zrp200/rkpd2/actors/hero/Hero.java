@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
-import com.watabou.utils.DeviceCompat;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
@@ -121,6 +120,16 @@ public class Hero extends Char {
 	
 	public HeroClass heroClass = HeroClass.ROGUE;
 	public HeroSubClass subClass = HeroSubClass.NONE;
+	public HeroSubClass subClass2 = HeroSubClass.NONE;
+
+	public boolean isSubclassed(HeroSubClass sub){
+		if (subClass2 == HeroSubClass.NONE){
+			return subClass == sub;
+		} else {
+			return subClass == sub || subClass2 == sub;
+		}
+	}
+
 	public ArmorAbility armorAbility = null;
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 	public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
@@ -235,11 +244,12 @@ public class Hero extends Char {
 
 	// this affects what items get boosted. if I want a talent to grant boosts I should go here.
 	public int getBonus(Item item) {
-		return heroClass.getBonus(item) + subClass.getBonus(item);
+		return heroClass.getBonus(item) + subClass.getBonus(item) + subClass2.getBonus(item);
 	}
 
 	private static final String CLASS       = "class";
 	private static final String SUBCLASS    = "subClass";
+	private static final String SUBCLASS2    = "subClass2";
 	private static final String ABILITY     = "armorAbility";
 
 	private static final String ATTACK		= "attackSkill";
@@ -257,6 +267,7 @@ public class Hero extends Char {
 
 		bundle.put( CLASS, heroClass );
 		bundle.put( SUBCLASS, subClass );
+		bundle.put( SUBCLASS2, subClass2 );
 		bundle.put( ABILITY, armorAbility );
 		Talent.storeTalentsInBundle( bundle, this );
 		
@@ -286,6 +297,9 @@ public class Hero extends Char {
 
 		heroClass = bundle.getEnum( CLASS, HeroClass.class );
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
+		if (bundle.contains(SUBCLASS2)){
+			subClass2 = bundle.getEnum( SUBCLASS2, HeroSubClass.class );
+		}
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );
 		lastMovPos = bundle.getInt(LASTMOVE);
@@ -476,7 +490,8 @@ public class Hero extends Char {
 	}
 	
 	public int tier() {
-		if (subClass != null && subClass == HeroSubClass.DECEPTICON){
+		if ((subClass != null && subClass == HeroSubClass.DECEPTICON) ||
+				(subClass2 != null && subClass2 == HeroSubClass.DECEPTICON)){
 			if (RobotBuff.isVehicle())
 				return 8;
 			return 7;
@@ -503,7 +518,7 @@ public class Hero extends Char {
 		Invisibility.dispel();
 		belongings.thrownWeapon = null;
 
-		if (hit && (subClass == HeroSubClass.GLADIATOR || hasTalent(Talent.RK_GLADIATOR))){
+		if (hit && (isSubclassed(HeroSubClass.GLADIATOR) || hasTalent(Talent.RK_GLADIATOR))){
 			Buff.affect( this, Combo.class ).hit( enemy );
 		}
 
@@ -516,7 +531,7 @@ public class Hero extends Char {
 		
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		if(subClass == HeroSubClass.SNIPER) accuracy *= 4/3d; // sniper innate boost
+		if(isSubclassed(HeroSubClass.SNIPER)) accuracy *= 4/3d; // sniper innate boost
 
 		if (wep instanceof MissileWeapon){
 			if (Dungeon.level.adjacent( pos, target.pos )) {
@@ -854,17 +869,17 @@ public class Hero extends Char {
 		if (belongings.weapon instanceof NuclearHatchet){
 			Buff.affect(this, ToxicImbue.class).set(1.1f);
 		}
-		if (subClass == HeroSubClass.BRAWLER && buff(BrawlerBuff.class) == null){
+		if (isSubclassed(HeroSubClass.BRAWLER) && buff(BrawlerBuff.class) == null){
 			Buff.affect(this, BrawlerBuff.class);
 		}
-		if (subClass == HeroSubClass.SPIRITUALIST && buff(SpiritBuff.class) == null){
+		if (isSubclassed(HeroSubClass.SPIRITUALIST) && buff(SpiritBuff.class) == null){
 			Buff.affect(this, SpiritBuff.class);
 		}
-		if (subClass == HeroSubClass.DECEPTICON && buff(RobotBuff.class) == null){
+		if (isSubclassed(HeroSubClass.DECEPTICON) && buff(RobotBuff.class) == null){
 			Buff.affect(this, RobotBuff.class);
 			((HeroSprite)sprite).updateArmor();
 		}
-		if (subClass == HeroSubClass.RK_CHAMPION && buff(RKChampionBuff.class) == null){
+		if (isSubclassed(HeroSubClass.RK_CHAMPION) && buff(RKChampionBuff.class) == null){
 			Buff.affect(this, RKChampionBuff.class);
 		}
 
@@ -1318,7 +1333,7 @@ public class Hero extends Char {
 		}
 
 		// subclass logic here
-        if (subClass == HeroSubClass.BATTLEMAGE || hasTalent(Talent.RK_BATTLEMAGE)) {
+        if (isSubclassed(HeroSubClass.BATTLEMAGE) || hasTalent(Talent.RK_BATTLEMAGE)) {
             MagesStaff staff = belongings.getItem(MagesStaff.class);
             if (staff != null && (staff == wep || hasTalent(Talent.SORCERY))&& (mult == 1 || Random.Float() < mult)){
 					if(staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
@@ -1381,7 +1396,7 @@ public class Hero extends Char {
 			}
 		}
 
-        if (subClass == HeroSubClass.SNIPER || hasTalent(Talent.RK_SNIPER)) {
+        if (isSubclassed(HeroSubClass.SNIPER) || hasTalent(Talent.RK_SNIPER)) {
             if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
                 Actor.add(new Actor() {
 
@@ -1439,7 +1454,7 @@ public class Hero extends Char {
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
-		if (damage > 0 && (subClass == HeroSubClass.BERSERKER || subClass == HeroSubClass.KING)){
+		if (damage > 0 && (isSubclassed(HeroSubClass.BERSERKER) || isSubclassed(HeroSubClass.KING))){
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
 		}
@@ -1502,7 +1517,7 @@ public class Hero extends Char {
 		// berserker gets rage from all sources. all hail viscosity!
 		// TODO change for 0.9.2?
 		if (!(src instanceof Char)) {
-			if (subClass == HeroSubClass.BERSERKER && hasTalent(Talent.ENDLESS_RAGE)) {
+			if (isSubclassed(HeroSubClass.BERSERKER) && hasTalent(Talent.ENDLESS_RAGE)) {
 				Buff.affect(this, Berserk.class).damage(Math.round(dmg * 0.2f * pointsInTalent(Talent.ENDLESS_RAGE)));
 			}
 		}
@@ -1708,7 +1723,7 @@ public class Hero extends Char {
 
 		if (step != -1) {
 
-			if (subClass == HeroSubClass.FREERUNNER || hasTalent(Talent.RK_FREERUNNER)){
+			if (isSubclassed(HeroSubClass.FREERUNNER) || hasTalent(Talent.RK_FREERUNNER)){
 				Buff.affect(this, Momentum.class).gainStack();
 			}
 
@@ -2145,7 +2160,7 @@ public class Hero extends Char {
 		Invisibility.dispel();
 		spend( attackDelay() );
 
-		if (subClass == HeroSubClass.GLADIATOR || hasTalent(Talent.RK_GLADIATOR)){
+		if (isSubclassed(HeroSubClass.GLADIATOR) || hasTalent(Talent.RK_GLADIATOR)){
 			Combo combo = Buff.affect( this, Combo.class );
 			if(hit) combo.hit(enemy);
 			else 	combo.miss();

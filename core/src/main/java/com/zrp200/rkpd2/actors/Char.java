@@ -209,7 +209,7 @@ public abstract class Char extends Actor {
 		c.spend( 1 / c.speed() );
 
 		if (c == hero){
-			if (hero.subClass == HeroSubClass.FREERUNNER){
+			if (hero.isSubclassed(HeroSubClass.FREERUNNER)){
 				Buff.affect(hero, Momentum.class).gainStack();
 			}
 
@@ -321,7 +321,7 @@ public abstract class Char extends Actor {
 			if (this instanceof Hero){
 				Hero hero = (Hero)this;
 				if (hero.belongings.weapon() instanceof MissileWeapon
-						&& (hero.subClass == HeroSubClass.SNIPER || hero.subClass == HeroSubClass.KING)
+						&& (hero.isSubclassed(HeroSubClass.SNIPER) || hero.isSubclassed(HeroSubClass.KING))
 						&& !Dungeon.level.adjacent(hero.pos, enemy.pos)){
 					dr = 0;
 				}

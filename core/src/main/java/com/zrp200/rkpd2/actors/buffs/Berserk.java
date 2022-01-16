@@ -76,7 +76,7 @@ public class Berserk extends Buff {
 
 	// this basically covers all of berserker's "buffed" talents.
 	private boolean berserker() {
-		return target instanceof Hero && ((Hero)target).subClass == HeroSubClass.BERSERKER;
+		return target instanceof Hero && ((Hero)target).isSubclassed(HeroSubClass.BERSERKER);
 	}
 
 	public static float STAMINA_REDUCTION = 1/3f;

@@ -81,7 +81,7 @@ public abstract class Plant implements Bundlable {
 				affectHero(Dungeon.hero, true);
 			}
 		} else if (ch instanceof Hero){
-			affectHero(ch, (((Hero)ch).subClass == HeroSubClass.WARDEN || ((Hero)ch).subClass == HeroSubClass.KING));
+			affectHero(ch, (((Hero)ch).isSubclassed(HeroSubClass.WARDEN) || ((Hero)ch).isSubclassed(HeroSubClass.KING)));
 		}
 		activateMisc(ch);
 	}
@@ -128,11 +128,15 @@ public abstract class Plant implements Bundlable {
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( POS, pos );
 	}
+
+	public static boolean isSubclassed(HeroSubClass subClass){
+		return Dungeon.hero.isSubclassed(subClass);
+	}
 	
 	public String desc() {
 		String desc = Messages.get(this, "desc");
 		HeroSubClass subClass = Dungeon.hero.subClass;
-		if (subClass == HeroSubClass.WARDEN || subClass == HeroSubClass.KING){
+		if (isSubclassed(HeroSubClass.WARDEN) || isSubclassed(HeroSubClass.KING)){
 			desc += "\n\n" + wardenDesc(subClass);
 		}
 		return desc;
@@ -144,7 +148,7 @@ public abstract class Plant implements Bundlable {
 		return Messages.get(this, "warden_desc", array.items);
 	}
 	public String wardenDesc(HeroSubClass subClass) {
-		return wardenDesc(subClass,subClass == HeroSubClass.WARDEN ? "she" : "he");
+		return wardenDesc(subClass,isSubclassed(HeroSubClass.WARDEN) ? "she" : "he");
 	}
 
 	public static class Seed extends Item {
@@ -176,7 +180,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
-				if (Dungeon.hero.subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING) {
+				if (Dungeon.hero.isSubclassed(HeroSubClass.WARDEN) || Dungeon.hero.isSubclassed(HeroSubClass.KING)) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
 						if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO
@@ -239,7 +243,7 @@ public abstract class Plant implements Bundlable {
 		public String desc() {
 			String desc = Messages.get(plantClass, "desc");
 			HeroSubClass subClass = Dungeon.hero.subClass;
-			if (subClass == HeroSubClass.WARDEN || subClass == HeroSubClass.KING){
+			if (isSubclassed(HeroSubClass.WARDEN) || isSubclassed(HeroSubClass.KING)){
 				desc += "\n\n" + Reflection.newInstance(plantClass).wardenDesc(subClass);
 			}
 			return desc;

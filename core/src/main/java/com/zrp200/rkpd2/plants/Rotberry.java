@@ -62,7 +62,7 @@ public class Rotberry extends Plant {
 
 	@Override
 	public String wardenDesc(HeroSubClass subClass) {
-		return wardenDesc(subClass, subClass == HeroSubClass.WARDEN ? "her" : "his");
+		return wardenDesc(subClass, isSubclassed(HeroSubClass.WARDEN) ? "her" : "his");
 	}
 
 	public static class Seed extends Plant.Seed {

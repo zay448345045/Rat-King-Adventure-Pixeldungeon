@@ -122,7 +122,7 @@ public abstract class EquipableItem extends Item {
 			GLog.w(Messages.get(EquipableItem.class, "unequip_cursed"));
 			return false;
 		}
-		if (this instanceof Weapon && hero.subClass == HeroSubClass.BRAWLER) {
+		if (this instanceof Weapon && hero.isSubclassed(HeroSubClass.BRAWLER)) {
 			//do nothing
 		} else {
 			if (single) {

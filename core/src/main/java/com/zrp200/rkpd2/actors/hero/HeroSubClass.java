@@ -89,8 +89,14 @@ public enum HeroSubClass {
 	RK_CHAMPION(HeroIcon.CHAMP);
 
 	public static void set(Hero hero, HeroSubClass subClass) {
-		hero.subClass = subClass;
-		Talent.initSubclassTalents(hero);
+		if (hero.subClass != NONE){
+			hero.subClass2 = subClass;
+			Talent.initSubclassTalents(subClass, hero.talents, 3);
+		}
+		else {
+			hero.subClass = subClass;
+			Talent.initSubclassTalents(hero);
+		}
 	}
 
 	public final int icon;

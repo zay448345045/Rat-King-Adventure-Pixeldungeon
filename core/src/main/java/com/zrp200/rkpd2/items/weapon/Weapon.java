@@ -206,7 +206,7 @@ abstract public class Weapon extends KindOfWeapon {
 		if(owner instanceof Hero) {
 			Hero hero = (Hero) owner;
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
-			if(hero.subClass == HeroSubClass.BATTLEMAGE && staff != null && staff.wandClass() == WandOfDisintegration.class) {
+			if(hero.isSubclassed(HeroSubClass.BATTLEMAGE) && staff != null && staff.wandClass() == WandOfDisintegration.class) {
 				if(staff == this || Random.Int(3) < hero.pointsInTalent(Talent.SORCERY)) reach++;
 			}
 			if (((Hero) owner).pointsInTalent(Talent.BEAR_PAW) > 1 && owner.HP <= owner.HT / 4)

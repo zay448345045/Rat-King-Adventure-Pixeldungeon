@@ -292,7 +292,7 @@ public abstract class Wand extends Item {
 			desc += "\n\n" + Messages.get(Wand.class, "not_cursed");
 		}
 
-		if (Dungeon.hero.subClass == HeroSubClass.BATTLEMAGE || Dungeon.hero.hasTalent(Talent.RK_BATTLEMAGE)){
+		if (Dungeon.hero.isSubclassed(HeroSubClass.BATTLEMAGE) || Dungeon.hero.hasTalent(Talent.RK_BATTLEMAGE)){
 			desc += "\n\n" + Messages.get(this, "bmage_desc", Messages.titleCase(Dungeon.hero.subClass.title()));
 		}
 

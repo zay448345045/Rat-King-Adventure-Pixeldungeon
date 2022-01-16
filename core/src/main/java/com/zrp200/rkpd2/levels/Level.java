@@ -1100,7 +1100,7 @@ public abstract class Level implements Bundlable {
 				modifiableBlocking = new boolean[Dungeon.level.losBlocking.length];
 			}
 
-			if ((c instanceof Hero && (((Hero) c).subClass == HeroSubClass.WARDEN || ((Hero)c).subClass == HeroSubClass.KING))
+			if ((c instanceof Hero && (((Hero) c).isSubclassed(HeroSubClass.WARDEN) || ((Hero)c).isSubclassed(HeroSubClass.KING)))
 				|| c instanceof YogFist.SoiledFist) {
 				System.arraycopy(Dungeon.level.losBlocking, 0, modifiableBlocking, 0, modifiableBlocking.length);
 				blocking = modifiableBlocking;

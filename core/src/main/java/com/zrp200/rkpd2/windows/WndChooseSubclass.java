@@ -113,17 +113,20 @@ public class WndChooseSubclass extends Window {
 			}
 
 			@Override protected boolean onLongClick() {
-				// this is how you access hidden subclasses, for now.
-					for(HeroSubClass subClass : subClasses) {
-						if(subClass == hero.heroClass.secretSub()) return false;
+				if (subClasses.size() == 2) {
+					// this is how you access hidden subclasses, for now.
+					for (HeroSubClass subClass : subClasses) {
+						if (subClass == hero.heroClass.secretSub()) return false;
 					}
 					hide();
 					ArrayList<HeroSubClass> subs = subClasses;
 					subs.add(hero.heroClass.secretSub());
 					// fixme maybe I should just get a designated secret pitch and volume?
 					Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
-					GameScene.show( new WndChooseSubclass(tome, hero, subs) );
+					GameScene.show(new WndChooseSubclass(tome, hero, subs));
 					return true;
+				}
+				return true;
 			}
 		};
 		btnCancel.setRect( 0, pos, WIDTH, 18 );

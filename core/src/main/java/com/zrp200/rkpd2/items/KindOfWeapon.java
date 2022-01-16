@@ -66,7 +66,7 @@ abstract public class KindOfWeapon extends EquipableItem {
 				equipCursed( hero );
 				GLog.n( Messages.get(KindOfWeapon.class, "equip_cursed") );
 			}
-			if (Dungeon.hero.subClass != HeroSubClass.BRAWLER)
+			if (!Dungeon.hero.isSubclassed(HeroSubClass.BRAWLER))
 				hero.spendAndNext( TIME_TO_EQUIP );
 			return true;
 			

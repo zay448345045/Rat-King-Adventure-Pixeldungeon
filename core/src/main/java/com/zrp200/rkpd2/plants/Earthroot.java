@@ -60,7 +60,7 @@ public class Earthroot extends Plant {
 
 	@Override
 	public String wardenDesc(HeroSubClass subClass) {
-		return wardenDesc(subClass, subClass == HeroSubClass.WARDEN ? "her" : "him");
+		return wardenDesc(subClass, isSubclassed(HeroSubClass.WARDEN) ? "her" : "him");
 	}
 	
 	public static class Seed extends Plant.Seed {

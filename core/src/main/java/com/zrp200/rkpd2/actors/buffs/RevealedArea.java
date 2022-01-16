@@ -76,7 +76,7 @@ public class RevealedArea extends FlavourBuff{
 	@Override
 	public float iconFadePercent() {
 		float max = 5;
-		if (hero.subClass == HeroSubClass.KING)
+		if (hero.isSubclassed(HeroSubClass.KING))
 			max = 5* hero.pointsInTalent(Talent.RK_WARDEN);
 		return Math.max(0, (max-visualcooldown()) / max);
 	}

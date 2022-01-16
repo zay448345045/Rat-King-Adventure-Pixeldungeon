@@ -1052,7 +1052,11 @@ public enum Talent {
 		initSubclassTalents( hero.subClass, hero.talents );
 	}
 
-	public static void initSubclassTalents( HeroSubClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents ){
+	public static void initSubclassTalents( HeroSubClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents){
+		initSubclassTalents( cls, talents, 2);
+	}
+
+	public static void initSubclassTalents( HeroSubClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, int tier){
 		if (cls == HeroSubClass.NONE) return;
 
 		while (talents.size() < MAX_TALENT_TIERS){
@@ -1102,7 +1106,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, RK_FIRE, RK_PROJECT, RK_ANTIMAGIC, RK_GIANT, RK_BLESSED, RK_CURSED, RK_SPLINT, RK_PALADIN); break;
 		}
 		for (Talent talent : tierTalents){
-			talents.get(2).put(talent, 0);
+			talents.get(tier).put(talent, 0);
 		}
 		tierTalents.clear();
 
