@@ -159,34 +159,34 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		}
 	}
 
+	//talents that can only be used by one hero class
+	//TODO could some of these be made more generic?
+	public static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
+	static {
+		restrictedTalents.put(IRON_WILL, WARRIOR);
+		restrictedTalents.put(RESTORED_WILLPOWER, WARRIOR);
+		restrictedTalents.put(RUNIC_TRANSFERENCE, WARRIOR);
+
+		restrictedTalents.put(BACKUP_BARRIER, MAGE);
+		restrictedTalents.put(ENERGIZING_UPGRADE, MAGE);
+		restrictedTalents.put(WAND_PRESERVATION, MAGE);
+		restrictedTalents.put(ARCANE_BOOST, MAGE);
+
+		restrictedTalents.put(MENDING_SHADOWS, ROGUE);
+		restrictedTalents.put(LIGHT_CLOAK, ROGUE);
+		restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
+
+		restrictedTalents.put(SEER_SHOT, HUNTRESS);
+		restrictedTalents.put(RESTORED_NATURE, HUNTRESS);
+		restrictedTalents.put(NATURES_AID, HUNTRESS);
+
+		// rat king talents that contain restricted talents are removed.
+		restrictedTalents.put(NOBLE_CAUSE, RAT_KING);
+		restrictedTalents.put(RESTORATION, RAT_KING);
+		restrictedTalents.put(POWER_WITHIN, RAT_KING);
+	}
+
 	public static class WndMetamorphReplace extends Window {
-
-		//talents that can only be used by one hero class
-		//TODO could some of these be made more generic?
-		private static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
-		static {
-			restrictedTalents.put(IRON_WILL, WARRIOR);
-			restrictedTalents.put(RESTORED_WILLPOWER, WARRIOR);
-			restrictedTalents.put(RUNIC_TRANSFERENCE, WARRIOR);
-
-			restrictedTalents.put(BACKUP_BARRIER, MAGE);
-			restrictedTalents.put(ENERGIZING_UPGRADE, MAGE);
-			restrictedTalents.put(WAND_PRESERVATION, MAGE);
-			restrictedTalents.put(ARCANE_BOOST, MAGE);
-
-			restrictedTalents.put(MENDING_SHADOWS, ROGUE);
-			restrictedTalents.put(LIGHT_CLOAK, ROGUE);
-			restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
-
-			restrictedTalents.put(SEER_SHOT, HUNTRESS);
-			restrictedTalents.put(RESTORED_NATURE, HUNTRESS);
-			restrictedTalents.put(NATURES_AID, HUNTRESS);
-
-			// rat king talents that contain restricted talents are removed.
-			restrictedTalents.put(NOBLE_CAUSE, RAT_KING);
-			restrictedTalents.put(RESTORATION, RAT_KING);
-			restrictedTalents.put(POWER_WITHIN, RAT_KING);
-		}
 
 		public static WndMetamorphReplace INSTANCE;
 

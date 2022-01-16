@@ -18,6 +18,7 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.RatKingArmor;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -77,10 +78,18 @@ public class Kromer extends Item {
                         return;
                     }
                     HeroClass cls;
-                    do {
-                        cls = Random.element(HeroClass.values());
-                    } while (cls == Dungeon.hero.heroClass);
-                    Talent randomTalent = Random.element(Talent.talentList(cls, index+1));
+                    Talent randomTalent = null;
+                    while (randomTalent == null) {
+                        do {
+                            cls = Random.element(HeroClass.values());
+                        } while (cls == Dungeon.hero.heroClass);
+                        randomTalent = Random.element(Talent.talentList(cls, index + 1));
+                        if (ScrollOfMetamorphosis.restrictedTalents.containsValue(randomTalent) &&
+                            ScrollOfMetamorphosis.restrictedTalents.get(randomTalent) != Dungeon.hero.heroClass){
+                            cls = null;
+                            randomTalent = null;
+                        }
+                    }
                     Dungeon.hero.talents.get(index).put(randomTalent, 0);
                     Sample.INSTANCE.play( Assets.Sounds.LEVELUP );
                     Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.STAR), 40);
