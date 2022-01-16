@@ -179,6 +179,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		restrictedTalents.put(SEER_SHOT, HUNTRESS);
 		restrictedTalents.put(RESTORED_NATURE, HUNTRESS);
 		restrictedTalents.put(NATURES_AID, HUNTRESS);
+		restrictedTalents.put(NATURE_AID_2, HUNTRESS);
 
 		// rat king talents that contain restricted talents are removed.
 		restrictedTalents.put(NOBLE_CAUSE, RAT_KING);
