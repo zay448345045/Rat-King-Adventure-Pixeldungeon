@@ -84,9 +84,8 @@ public class Kromer extends Item {
                             cls = Random.element(HeroClass.values());
                         } while (cls == Dungeon.hero.heroClass);
                         randomTalent = Random.element(Talent.talentList(cls, index + 1));
-                        if (ScrollOfMetamorphosis.restrictedTalents.containsValue(randomTalent) &&
+                        if (ScrollOfMetamorphosis.restrictedTalents.containsKey(randomTalent) &&
                             ScrollOfMetamorphosis.restrictedTalents.get(randomTalent) != Dungeon.hero.heroClass){
-                            cls = null;
                             randomTalent = null;
                         }
                     }
