@@ -1,9 +1,11 @@
 package com.zrp200.rkpd2.items.scrolls;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
-// Commands
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -11,26 +13,16 @@ import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.Potion;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
-// needed for HelpWindow
 import com.zrp200.rkpd2.scenes.PixelScene;
-
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.ScrollPane;
-import com.zrp200.rkpd2.ui.Window;
-// WndTextInput (added in v0.9.4)
-import com.zrp200.rkpd2.ui.WndTextInput;
-// Output
+import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.utils.GLog;
-
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Reflection;
+import sun.net.www.protocol.file.FileURLConnection;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,16 +32,14 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import sun.net.www.protocol.file.FileURLConnection;
+// Commands
+// needed for HelpWindow
+// WndTextInput (added in v0.9.4)
+// Output
 
 /**
  * Scroll of Debug uses ClassLoader to get every class that can be directly created and provides a command interface with which to interact with them.
@@ -79,7 +69,11 @@ public class ScrollOfDebug extends Scroll {
                 "Summons the indicated mob and randomly places them on the depth."),
         AFFECT(Buff.class,
                 "BUFF [duration]",
-                "Allows you to attach a buff to a character in sight. This can be extremely dangerous, or it could do literally nothing.");
+                "Allows you to attach a buff to a character in sight. This can be extremely dangerous, or it could do literally nothing."),
+        LEVELUP(null,
+                "[amount]",
+                "Drinks X potions of experience.");
+
 
         final Class<?> paramClass;
         final String syntax, description;
@@ -156,7 +150,13 @@ public class ScrollOfDebug extends Scroll {
                         output = builder.toString().trim();
                     }
                     GameScene.show(new HelpWindow(output));
-                } else if(input.length > 1) {
+                } else if (command == Command.LEVELUP && input.length > 1){
+                        try {
+                            int number = Integer.parseInt(input[1]);
+                            PotionOfExperience.levelUp(number);
+                        } catch (NumberFormatException e) {/* do nothing */}
+                }
+                else if(input.length > 1) {
                     final Class cls = trie.findClass(input[1]);
                     boolean valid = true;
                     Object o = null; try {

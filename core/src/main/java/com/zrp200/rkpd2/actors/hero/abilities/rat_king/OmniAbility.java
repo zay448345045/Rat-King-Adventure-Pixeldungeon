@@ -53,8 +53,9 @@ public class OmniAbility extends ArmorAbility {
         ).show(hero);
         Item.updateQuickslot();
         if(hero.talents.size() >= 4) {
-            hero.talents.get(3).put(Talent.HEROIC_RATINESS, hero.talents.get(3).get(Talent.HEROIC_RATINESS));
+            int ratiness = hero.talents.get(3).get(Talent.HEROIC_RATINESS);
             hero.talents.set(3, transferTalents(armorAbility));
+            hero.talents.get(3).put(Talent.HEROIC_RATINESS, ratiness);
         }
     }
 
