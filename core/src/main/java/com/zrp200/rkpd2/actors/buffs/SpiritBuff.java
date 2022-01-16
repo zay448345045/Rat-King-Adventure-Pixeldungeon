@@ -95,7 +95,7 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
             w.sprite.parent.add( new AlphaTweener( w.sprite, 1, 0.5f ) );
 
             w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
-            Buff.affect(w, AllyBuff.class);
+            Buff.affect(w, DLCAllyBuff.class);
             countDown(count());
             ActionIndicator.clearAction(this);
             BuffIndicator.refreshHero();

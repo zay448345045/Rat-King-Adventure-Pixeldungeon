@@ -10,8 +10,8 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.AllyBuff;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.DLCAllyBuff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.buffs.StuckBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -113,7 +113,7 @@ public class Wrath extends ArmorAbility {
                         SpectreRat rat = new SpectreRat();
                         rat.pos = poss;
                         rat.HP = rat.HT = rat.HT/2;
-                        Buff.affect(rat, AllyBuff.class);
+                        Buff.affect(rat, DLCAllyBuff.class);
                         Buff.affect(rat, StuckBuff.class);
                         GameScene.add(rat);
                     }
