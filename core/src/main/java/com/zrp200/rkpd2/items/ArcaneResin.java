@@ -90,11 +90,6 @@ public class ArcaneResin extends Item {
 			if (item != null && item instanceof Wand) {
 				Wand w = (Wand)item;
 
-				if (w.level() >= 3){
-					GLog.w(Messages.get(ArcaneResin.class, "level_too_high"));
-					return;
-				}
-
 				int resinToUse = w.level()+1;
 
 				if (quantity() < resinToUse){
