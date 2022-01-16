@@ -40,15 +40,13 @@ public class OmniAbility extends ArmorAbility {
 
         // Rat King's abilities show up less.
         // fixme should I weight things to attempt to 'even' out the results of rng?
-        int roll = Random.Int(4);
-        if(roll < 2){
-            pool.remove( new Wrath() ); // ;)
-            pool.remove( new MusRexIra() );
+        if(Random.Int(2) == 0) pool.remove(new Wrath());
+        pool.remove( new MusRexIra() );
             pool.remove( new LegacyWrath() );
-            if(roll == 0) pool.remove(new Ratmogrify());
-        }
+            if(Random.Int(4) == 0) pool.remove(new Ratmogrify());
 
         pool.remove(armorAbility);
+
         new Transmuting(
                 armorAbility != null ? new HeroIcon(armorAbility) : new Image(),
                 new HeroIcon(armorAbility = Objects.requireNonNull(Random.element(pool)))

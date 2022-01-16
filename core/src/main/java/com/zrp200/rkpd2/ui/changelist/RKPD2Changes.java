@@ -257,6 +257,10 @@ public class RKPD2Changes {
             ),
         // v0.3
             new ChangeInfo("v0.3.0",true,TITLE_COLOR,""),
+            new ChangeInfo("",false,""), // placeholder
+            new ChangeInfo("v0.3.1", false, TITLE_COLOR, "",
+                    misc("By misc, these are really small changes.\n" + list("Omniability's Warp Beacon destroys itself after warping once to let it get rerolled more often.", "Slightly changed the frequency of Wrath and Ratmogrify in Omniability","Added some comments to more metamorphed talents.")),
+                    bugFixes(list( "Lethal Momentum not working.") + list("crash when attempting to target a character with sniper's mark when no possible valid targets are present") + list("Heroic Energy sometimes applying to Wrath under OmniAbility", "OmniAbility now shows actual charge use in descriptions, as opposed to default charge use.", "Omniability icon sometimes covering level icon in quickslot") + list("Fixed a few minor genderizing textual fails created by metamorphing talents. Huntress is she/her/hers, it's 2022, we should realize the value of pronouns by now."))),
             NewContent(
                 info(Messages.get(this, "030")), // trying something different with this.
                 new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "New Rat King Armor Ability!", "_Omni-Ability_ is an armor ability generator. Every time you use it, it will generate a new armor ability for you to use out of the existing ones. It's currently a tad unwieldy (especially with abilities that summon things) and more than a little bit confusing, but it should finally give Rat King what many have been waiting for: access to every armor ability without exception in one slot!")
@@ -287,12 +291,21 @@ public class RKPD2Changes {
                 new ChangeButton(WARLOCKS_TOUCH, "Removed Warlock's Touch's instant-proc chance."), new ChangeButton(PERFECT_COPY, "Removed +0 effect of instant swapping.\n\nThere will be another pass over armor abilities in the future so they work more predictably with Omni-Ability."))
         },{ // v0.2
             new ChangeInfo("v0.2", true, TITLE_COLOR, ""),
-            new ChangeInfo("v0.2.2",false,"", new ChangeButton(WARLOCKS_TOUCH, "Warlock's touch had incorrect mechanics, and now they've been fixed to be what was intended." + list(2, "Warlock's touch's soul mark application change is now actually 15/25/35. Previously it was instead 60/70/80% melee and 65/80/95 for ranged.", "Removed the ability for warlock's touch-applied soul mark to extend itself past 6 turns.")),misc("adjusted king's wisdom's icon again."), bugFixes(list(2,"hearty meal not working at all.","royal intuition proccing tested hypothesis instead of king's wisdom."))),
-            new ChangeInfo("v0.2.1", false, "",
-                    new ChangeButton(get(INFO), "Developer Commentary", "I'm shifting to Shattered's new major.minor.patch versioning system, so even though this is listed as v0.2.1, it's really the equivalent of v0.2.0a.\n\nThis patch has many internal changes to the talent system, so beware of any bugs that may result from this."),
-                    new ChangeButton(MULTISHOT, "Adjusted the way multiple sniper's marks are handled internally, to increase consistency of the mechanic:" + list(2,"Using specials with multiple free targets stored will now use them in order of highest level to lowest level.", "When too many snipers marks are stored, the one storing the lowest shared upgrades level is now removed. If all are the same level, 'standard' sniper's marks will be removed before free-targeted marks. Previously level was not considered at all.") + "\nAlso fixed a bunch of issues with multi-shot:" + list(2,"Crash when cancelling targeting a single free-targeted sniper's mark.", "Rare cases where cancelling a special would incorrectly leave the targeting system active.", "Killing a marked enemy with a thrown weapon generating two free-targeted sniper's marks.", "Not being able to use sniper specials if there are less possible targets than available marks.", "Sniper's marks sometimes not detaching when their targets are killed.")),
-                    new ChangeButton(KINGS_WISDOM, "Improved King's Wisdom icon, hopefully it should feel more professional now with a proper background and less outlines."),
-                    bugFixes(list(2,"fixed soul eater working incorrectly and sometimes yielding NaN hunger.", "Fixed rare cases of incorrect character-specific text.", "Fixed color of Rat King's eyes in his subclass icon."))),
+            NewContent(
+                    info("As of v0.2.1, I shifted to Shattered's new major.minor.patch versioning system. As such v0.2.1 was really the equivalent of v0.2.0a."),
+                    new ChangeButton(new Wrath(), "Rat King's Wrath Redesign!", "I've finally gotten around to updating Rat King's Wrath to reflect v0.9.3 reworks to armor abilities!"
+                            + "\n\nWhile the previous Wrath was a combination of all armor abilities, the prospect of combining 13 different abilities into one isn't possible under the Wrath design, so I have instead decided to adapt the ones that have similar functionality to each part of the previous Wrath: _Smoke Bomb, Shockwave, Elemental Blast, and Spectral Blades._"
+                            + "\n\nNote, however, that Wrath is not a perfect mirror of these abilities, though all their mechanics are there in some form." + "\n"
+                            + list("Energy cost increased to 60 from 35.") + list("Added four new talents to Wrath.", "Each new talent corresponds as closely as possible to the talents of the respective armor ability.", "Wrath does not have Heroic Energy.") + list("Smoke Bomb no longer grants invisibility, mechanic instead moved to corresponding talent.", "Range is reduced to 6, from 8.") + list("Molten Earth effect replaced with Elemental Blast.") + list("Wrath's leap no longer stuns adjacent foes, instead sends out a 360 degree AOE Shockwave that covers a 3x3 area.", "Aftershock's Striking Wave and Shock Force are less effective than the real thing.", "Stun inflicted through through Aftershock cannot be broken during Wrath itself.") + list("Spectral Blades retains the ability to hit all targets in sight (removing the need to target it).", "Spectral Blades instead has damage and proc penalties when attacking multiple targets, though upgrading its respective talent lowers the degree to which this occurs.")
+                            + "\nWrath should be much more powerful now, but also much less cheesy; the consistent stun and root are gone, and it's much more bound to set ranges than before, but upgrading its talents can hugely increase Wrath's power output and flexibility."),
+                    new ChangeButton(HUNTRESS, list(2,
+                            "Added a _secret subclass_ to Huntress, accessible by a secret interaction while choosing a subclass.",
+                            "_Restored Nature_ root duration reverted to 2/3, down from 4/6, but it now also causes health potions and related alchemy products to be used instantly.")
+                            + "_Multi-Shot:_" + list("Now uses multiple buffs to show that more than one target is marked.",
+                            "Allows stacking of free-targeted marks instead of overriding them when a new target is marked.",
+                            "Has changed free-targeting logic (thanks to smart-targeting) to make these new interactions smoother; enemies that are already targeted will be highlighted while manually targeting.")
+                            + "\nMulti-shot should now be more complex, but in exchange it should (somewhat ironically) be easier to use and understand. It's also much more flexible with its free-targeted sniper special functionality."),
+                    new ChangeButton(KINGS_WISDOM, "New Talent Icons!", "Most of my added talents now have unique icons! Many of these are personally done, but some credit to _Trashbox Bobylev_ is needed.\n\nAlso, the new music and UI changes from SHPD v1.0.0 have been implemented into the game.")),
             new ChangeInfo("From SHPD v1.0.1", false, SHPX_COLOR, "",
                     // alchemy stuff once it's added in.
                     new ChangeButton(new ItemSprite(CROWN), "Armor Ability Changes", ""
@@ -377,7 +390,8 @@ public class RKPD2Changes {
                         "Rat King's light cloak now is 13/27/40 instead of 10/20/30",
                         "Fixed a mistake when updating Ranger to Multi-Shot talent.",
                         "Typo in Restoration description",
-                        "Rat King's Wrath sometimes freezing Rat King's sprite after use."))),
+                        "Rat King's Wrath sometimes freezing Rat King's sprite after use.",
+                        "fixed soul eater working incorrectly and sometimes yielding NaN hunger.", "Fixed rare cases of incorrect character-specific text.", "Fixed color of Rat King's eyes in his subclass icon."))),
             Nerfs(
                 new ChangeButton(ROGUE, ""
                         + "_Mending Shadows_ turned out to have exploits, so it's (very unfortunately) being largely scrapped, though the name remains for now:"

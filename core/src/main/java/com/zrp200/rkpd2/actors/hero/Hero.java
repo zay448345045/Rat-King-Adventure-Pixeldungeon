@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
+import com.watabou.utils.DeviceCompat;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
@@ -59,6 +60,7 @@ import com.zrp200.rkpd2.items.potions.exotic.PotionOfDivineInspiration;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfDebug;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -169,7 +171,13 @@ public class Hero extends Char {
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
-		
+
+		if(DeviceCompat.isDesktop() && DeviceCompat.isDebug()) {
+			// scroll of debug: autocollect, put in last slot as that's least likely to be occupied.
+			ScrollOfDebug debug = new ScrollOfDebug();
+			if(debug.collect(belongings.backpack)) Dungeon.quickslot.setSlot(3, debug);
+		}
+
 		visibleEnemies = new ArrayList<>();
 	}
 	

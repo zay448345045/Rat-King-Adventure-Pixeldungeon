@@ -23,6 +23,8 @@ package com.zrp200.rkpd2.actors.hero.abilities;
 
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import static com.zrp200.rkpd2.Dungeon.hero;
+
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
@@ -71,7 +73,7 @@ public abstract class ArmorAbility implements Bundlable {
 		if (hero.hasTalent(Talent.EMPOWERED_STRIKE_II)){
 			chargeUse = 85 - hero.pointsInTalent(Talent.EMPOWERED_STRIKE_II)*5;
 		}
-		if (hero.hasTalent(Talent.HEROIC_ENERGY)){
+		if (hasTalent(Talent.HEROIC_ENERGY) && hero.hasTalent(Talent.HEROIC_ENERGY)){
 			//reduced charge use by 16%/30%/41%/50%
 			chargeUse *= Math.pow( HEROIC_ENERGY_REDUCTION, hero.pointsInTalent(Talent.HEROIC_ENERGY));
 		}
@@ -92,7 +94,8 @@ public abstract class ArmorAbility implements Bundlable {
 		if (this instanceof LegacyWrath || this instanceof MusRexIra){
 			return Messages.get(this, "desc");
 		}
-		return Messages.get(this, "desc") + "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
+		return Messages.get(this, "desc") + "\n\n" + Messages.get(this, "cost",
+				hero != null ? (int)chargeUse(hero) : (int)baseChargeUse);
 	}
 
 	public int icon(){
@@ -100,6 +103,10 @@ public abstract class ArmorAbility implements Bundlable {
 	}
 
 	public abstract Talent[] talents();
+	public final boolean hasTalent(Talent talent) {
+		for(Talent t : talents()) if(t == talent) return true;
+		return false;
+	}
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
