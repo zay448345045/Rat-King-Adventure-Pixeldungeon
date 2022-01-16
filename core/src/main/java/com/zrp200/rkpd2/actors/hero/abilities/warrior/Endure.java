@@ -194,6 +194,6 @@ public class Endure extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.DEMONSHADER, Talent.HEROIC_ENERGY, Talent.HEROIC_ENDURANCE};
+		return new Talent[]{Talent.SUSTAINED_RETRIBUTION, Talent.SHRUG_IT_OFF, Talent.EVEN_THE_ODDS, Talent.DEMONSHADER, Talent.HEROIC_ENERGY};
 	}
 }

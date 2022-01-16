@@ -138,6 +138,12 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				LinkedHashMap<Talent, Integer> lolTalents = talents.get(i);
 				for (Talent talent : heroTalents.keySet()){
 					if (!lolTalents.containsKey(talent)){
+						if ((i == 3 &&
+								!(talent == HEROIC_RATINESS || talent == HEROIC_ARCHERY ||
+										talent == HEROIC_ENDURANCE || talent == HEROIC_STAMINA || talent == HEROIC_WIZARDRY))){
+							continue;
+						}
+						if (i == 2) continue;
 						lolTalents.put(talent, Dungeon.hero.pointsInTalent(talent));
 					}
 				}

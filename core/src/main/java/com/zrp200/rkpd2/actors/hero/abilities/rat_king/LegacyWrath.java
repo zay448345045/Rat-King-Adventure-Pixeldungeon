@@ -52,7 +52,7 @@ public class LegacyWrath extends ArmorAbility {
 
     @Override
     public Talent[] talents() { return new Talent[]{
-            Talent.AURIC_TESLA, Talent.QUANTUM_POSITION, Talent.RAT_AGE, Talent.AVALON_POWER_UP, Talent.HEROIC_ENERGY, Talent.HEROIC_RATINESS}; }
+            Talent.AURIC_TESLA, Talent.QUANTUM_POSITION, Talent.RAT_AGE, Talent.AVALON_POWER_UP, Talent.HEROIC_ENERGY}; }
 
     private static final float JUMP_DELAY=2f;
 

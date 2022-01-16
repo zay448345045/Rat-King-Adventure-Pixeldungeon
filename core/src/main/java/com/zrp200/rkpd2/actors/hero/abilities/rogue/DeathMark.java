@@ -151,7 +151,7 @@ public class DeathMark extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.CATACLYSMIC_ENERGY, Talent.HEROIC_ENERGY, Talent.HEROIC_STAMINA};
+		return new Talent[]{Talent.FEAR_THE_REAPER, Talent.DEATHLY_DURABILITY, Talent.DOUBLE_MARK, Talent.CATACLYSMIC_ENERGY, Talent.HEROIC_ENERGY};
 	}
 
 	@Override public boolean isTracked() {

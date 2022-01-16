@@ -52,7 +52,10 @@ public class OmniAbility extends ArmorAbility {
                 new HeroIcon(armorAbility = Objects.requireNonNull(Random.element(pool)))
         ).show(hero);
         Item.updateQuickslot();
-        if(hero.talents.size() >= 4) hero.talents.set(3, transferTalents(armorAbility));
+        if(hero.talents.size() >= 4) {
+            hero.talents.get(3).put(Talent.HEROIC_RATINESS, hero.talents.get(3).get(Talent.HEROIC_RATINESS));
+            hero.talents.set(3, transferTalents(armorAbility));
+        }
     }
 
     @Override public boolean useTargeting() {
@@ -88,10 +91,6 @@ public class OmniAbility extends ArmorAbility {
     @Override public Talent[] talents() {
         if (armorAbility != null){
             ArrayList<Talent> talents = new ArrayList<>(Arrays.asList(armorAbility.talents()));
-                talents.remove(Talent.HEROIC_ARCHERY);
-                talents.remove(Talent.HEROIC_ENDURANCE);
-                talents.remove(Talent.HEROIC_STAMINA);
-                talents.remove(Talent.HEROIC_WIZARDRY);
             return talents.toArray(new Talent[0]);
         }
         return new Talent[0];
@@ -130,10 +129,7 @@ public class OmniAbility extends ArmorAbility {
         if(hero.talents.size() < 4) return talents;
         Iterator<Integer> iterator = hero.talents.get(3).values().iterator();
         for(Talent talent : armorAbility.talents()) {
-            if (talent == Talent.HEROIC_ARCHERY || talent == Talent.HEROIC_ENDURANCE || talent == Talent.HEROIC_STAMINA || talent == Talent.HEROIC_WIZARDRY){
-                talents.put(Talent.HEROIC_RATINESS, iterator.hasNext() ? iterator.next() : 0);
-            }
-            else talents.put(talent, iterator.hasNext() ? iterator.next() : 0);
+           talents.put(talent, iterator.hasNext() ? iterator.next() : 0);
         }
 
         return talents;

@@ -1021,6 +1021,29 @@ public enum Talent {
 		}
 		tierTalents.clear();
 
+		switch (cls){
+			case WARRIOR: default:
+				Collections.addAll(tierTalents, HEROIC_ENDURANCE);
+				break;
+			case MAGE:
+				Collections.addAll(tierTalents, HEROIC_WIZARDRY);
+				break;
+			case ROGUE:
+				Collections.addAll(tierTalents, HEROIC_STAMINA);
+				break;
+			case HUNTRESS:
+				Collections.addAll(tierTalents, HEROIC_ARCHERY);
+				break;
+			case RAT_KING:
+				Collections.addAll(tierTalents, HEROIC_RATINESS);
+				break;
+		}
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)) talent = replacements.get(talent);
+			talents.get(3).put(talent, 0);
+		}
+		tierTalents.clear();
+
 		//tier4
 		//TBD
 	}

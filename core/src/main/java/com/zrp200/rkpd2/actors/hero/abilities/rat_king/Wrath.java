@@ -49,7 +49,7 @@ public class Wrath extends ArmorAbility {
     @Override public int icon() { return HeroIcon.WRATH; }
 
     @Override public Talent[] talents() {
-        return new Talent[]{AFTERSHOCK, Talent.RAT_BLAST, SMOKE_AND_MIRRORS, SEA_OF_BLADES, FUN, HEROIC_RATINESS};
+        return new Talent[]{AFTERSHOCK, Talent.RAT_BLAST, SMOKE_AND_MIRRORS, SEA_OF_BLADES, FUN};
     }
 
     @Override public float chargeUse(Hero hero) {

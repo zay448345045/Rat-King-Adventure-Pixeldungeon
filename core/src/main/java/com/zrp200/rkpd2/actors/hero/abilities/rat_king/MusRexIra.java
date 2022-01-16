@@ -372,6 +372,6 @@ public class MusRexIra extends ArmorAbility {
 
     @Override
     public Talent[] talents() {
-        return new Talent[]{Talent.BLOODFLARE_SKIN, Talent.ASTRAL_CHARGE, Talent.SHADOWSPEC_SLICE, Talent.SILVA_RANGE, Talent.HEROIC_ENERGY, Talent.HEROIC_RATINESS};
+        return new Talent[]{Talent.BLOODFLARE_SKIN, Talent.ASTRAL_CHARGE, Talent.SHADOWSPEC_SLICE, Talent.SILVA_RANGE, Talent.HEROIC_ENERGY};
     }
 }

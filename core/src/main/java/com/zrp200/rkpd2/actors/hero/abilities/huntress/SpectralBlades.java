@@ -306,6 +306,6 @@ public class SpectralBlades extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.SPECTRAL_SHOT, Talent.HEROIC_ENERGY, Talent.HEROIC_ARCHERY};
+		return new Talent[]{Talent.FAN_OF_BLADES, Talent.PROJECTING_BLADES, Talent.SPIRIT_BLADES, Talent.SPECTRAL_SHOT, Talent.HEROIC_ENERGY};
 	}
 }

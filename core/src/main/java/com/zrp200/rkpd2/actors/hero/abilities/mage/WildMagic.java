@@ -23,8 +23,6 @@ package com.zrp200.rkpd2.actors.hero.abilities.mage;
 
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
-import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.markAbilityUsed;
-
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -43,6 +41,8 @@ import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.markAbilityUsed;
 
 public class WildMagic extends ArmorAbility {
 
@@ -195,6 +195,6 @@ public class WildMagic extends ArmorAbility {
 
 	@Override
 	public Talent[] talents() {
-		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.ELDRITCH_BLESSING, Talent.HEROIC_ENERGY, Talent.HEROIC_WIZARDRY};
+		return new Talent[]{Talent.WILD_POWER, Talent.FIRE_EVERYTHING, Talent.CONSERVED_MAGIC, Talent.ELDRITCH_BLESSING, Talent.HEROIC_ENERGY};
 	}
 }
