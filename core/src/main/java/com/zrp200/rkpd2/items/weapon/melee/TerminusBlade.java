@@ -11,6 +11,7 @@ import com.zrp200.rkpd2.actors.buffs.GodSlayerBurning;
 import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.buffs.Scam;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.quest.Chaosstone;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -71,12 +72,21 @@ public class TerminusBlade extends MeleeWeapon {
 
     public void instaKill(Char enemy) {
         if (++hitCount >= 50){
-            enemy.sprite.showStatus(CharSprite.NEGATIVE, "9999999999999999999999\n9999999999999999999999\n9999999999999999999999\n9999999999999999999999");
-            enemy.die(Dungeon.hero);
-            GameScene.flash(0xAAAAAA);
-            enemy.sprite.emitter().burst(ElmoParticle.FACTORY, 100);
-            Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 0.75f, 0.88f);
-            Dungeon.hero.damage(Dungeon.hero.HP / 2, this);
+            if (enemy instanceof RatKingBoss) {
+                Dungeon.hero.sprite.showStatus(CharSprite.NEGATIVE, String.valueOf(Dungeon.hero.HP - 1));
+                Dungeon.hero.HP = 1;
+                GameScene.flash(0xAAAAAA);
+                Dungeon.hero.sprite.emitter().burst(ElmoParticle.FACTORY, 100);
+                Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 0.75f, 0.88f);
+                enemy.damage(enemy.HP / 5, this);
+            } else {
+                enemy.sprite.showStatus(CharSprite.NEGATIVE, "9999999999999999999999\n9999999999999999999999\n9999999999999999999999\n9999999999999999999999");
+                enemy.die(Dungeon.hero);
+                GameScene.flash(0xAAAAAA);
+                enemy.sprite.emitter().burst(ElmoParticle.FACTORY, 100);
+                Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 0.75f, 0.88f);
+                Dungeon.hero.damage(Dungeon.hero.HP / 2, this);
+            }
             hitCount = 0;
         }
     }
