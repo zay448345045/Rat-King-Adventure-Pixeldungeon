@@ -21,16 +21,12 @@
 
 package com.zrp200.rkpd2;
 
-import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfMetamorphosis;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.scenes.TitleScene;
-import com.zrp200.rkpd2.scenes.WelcomeScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.PlatformSupport;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.scenes.TitleScene;
@@ -40,6 +36,7 @@ public class ShatteredPixelDungeon extends Game {
 
 	//variable constants for specific older versions of shattered, used for data conversion
 	public static final int
+			vDLC_1_4_10=623,
 			vDLC_1_4=600,
 			vDLC_1_3=575,
 			vDLC_1_2=560,
@@ -58,8 +55,8 @@ public class ShatteredPixelDungeon extends Game {
 
 	public static final int v1_0_3   = 574;
 	public static final int v1_1_0   = 583;
-	
-	public ShatteredPixelDungeon( PlatformSupport platform ) {
+
+    public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
 		// no idea if this is needed.

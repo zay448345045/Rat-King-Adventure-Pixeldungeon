@@ -31,7 +31,6 @@ import com.watabou.utils.FileUtils;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.effects.BannerSprites;
 import com.zrp200.rkpd2.effects.Fireball;
-import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.Archs;
 import com.zrp200.rkpd2.ui.Icons;
@@ -40,7 +39,7 @@ import com.zrp200.rkpd2.ui.StyledButton;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_4;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_4_10;
 
 	@Override
 	public void create() {
