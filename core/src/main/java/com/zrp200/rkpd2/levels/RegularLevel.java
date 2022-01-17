@@ -433,10 +433,16 @@ public abstract class RegularLevel extends Level {
 		for (Item item : itemsToSpawn) {
 			int cell = randomDropCell();
 			if (Dungeon.isChallenged(Challenges.REDUCED_POWER)){
-				if (Dungeon.getDepth() > 1 && findMob(cell) == null
+				if (Dungeon.depth > 1 && findMob(cell) == null
 					&& (item instanceof ScrollOfUpgrade || item instanceof PotionOfStrength ||
 						item instanceof Stylus || item instanceof Torch)){
 					mobs.add(Mimic.spawnAt(cell, item));
+				} else {
+					drop(item, cell).type = Heap.Type.HEAP;
+					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+						map[cell] = Terrain.GRASS;
+						losBlocking[cell] = false;
+					}
 				}
 			}
 			else {
