@@ -191,11 +191,15 @@ public abstract class Mob extends Char {
 		super.act();
 
 		if (Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor == 1f &&
-				!properties().contains(Property.BOSS) && !properties().contains(Property.MINIBOSS)){
+				!properties().contains(Property.BOSS) && !properties().contains(Property.MINIBOSS) &&
+				!(this instanceof Swarm || this instanceof DarkSlime)){
 			scaleFactor = Random.Float(0.5f, 1.75f);
 			HP = HT = (int) (HT * scaleFactor);
 			if (scaleFactor >= 1.25f){
 				HP = HT = (int) (HT * 1.25f);
+			}
+			if (HT <= 1){
+				HP = HT = 1;
 			}
 			sprite.linkVisuals(this);
 		}
