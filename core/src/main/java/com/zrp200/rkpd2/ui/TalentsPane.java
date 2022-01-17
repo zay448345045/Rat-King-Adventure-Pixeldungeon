@@ -31,10 +31,6 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.windows.WndInfoTalent;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -74,7 +70,7 @@ public class TalentsPane extends ScrollPane {
 			}
 			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE){
 				tiersAvailable = 2;
-			} else if (tiersAvailable > 3 && Dungeon.hero.armorAbility == null){
+			} else if (tiersAvailable > 3 && (Dungeon.hero.subClass2 == HeroSubClass.NONE && Dungeon.hero.armorAbility == null)){
 				tiersAvailable = 3;
 			}
 		}

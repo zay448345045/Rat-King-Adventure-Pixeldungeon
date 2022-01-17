@@ -396,6 +396,9 @@ public class QuickRecipe extends Component {
 				if (Dungeon.depth > 26) {
 					result.add(new QuickRecipe(new SoulOfYendor.Recipe()));
 				}
+				if (Dungeon.hero.belongings.getSimilar(new KingsCrown()) != null){
+					result.add(new QuickRecipe(new KromerCrown.Recipe()));
+				}
 				return result;
 		}
 	}

@@ -26,7 +26,6 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.items.bombs.Bomb;
@@ -50,8 +49,6 @@ import com.zrp200.rkpd2.items.weapon.KromerBow;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger2;
-import com.zrp200.rkpd2.items.spells.SummonElemental;
-import com.zrp200.rkpd2.items.spells.TelekineticGrab;
 import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
@@ -315,6 +312,7 @@ public abstract class Recipe {
 		new StewedMeat.threeMeat(),
 		new TerminusBlade.Recipe(),
 		new SoulOfYendor.Recipe(),
+		new KromerCrown.Recipe(),
 		new MeatPie.Recipe()
 	};
 	

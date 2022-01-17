@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 public class TengusMask extends Item {
 	
-	private static final String AC_WEAR	= "WEAR";
+	protected static final String AC_WEAR	= "WEAR";
 	
 	{
 		stackable = false;

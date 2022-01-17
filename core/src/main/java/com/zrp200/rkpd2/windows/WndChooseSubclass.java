@@ -43,7 +43,7 @@ public class WndChooseSubclass extends Window {
 	public WndChooseSubclass(final TengusMask tome, final Hero hero) {
 		this(tome, hero, hero.heroClass.subClasses());
 	}
-	private WndChooseSubclass(final TengusMask tome, final Hero hero, final ArrayList<HeroSubClass> subClasses ) {
+	public WndChooseSubclass(final TengusMask tome, final Hero hero, final ArrayList<HeroSubClass> subClasses) {
 		
 		super();
 
@@ -54,7 +54,7 @@ public class WndChooseSubclass extends Window {
 		add( titlebar );
 
 		RenderedTextBlock message = PixelScene.renderTextBlock( 6 );
-		message.text( Messages.get(this, "message"), WIDTH );
+		message.text( Messages.get(tome.getClass(), "message"), WIDTH );
 		message.setPos( titlebar.left(), titlebar.bottom() + GAP );
 		add( message );
 
@@ -105,33 +105,44 @@ public class WndChooseSubclass extends Window {
 
 			pos = btnCls.bottom() + GAP;
 		}
-
-		RedButton btnCancel = new RedButton( Messages.get(this, "cancel") ) {
-			@Override
-			protected void onClick() {
-				hide();
-			}
-
-			@Override protected boolean onLongClick() {
-				if (subClasses.size() == 2) {
-					// this is how you access hidden subclasses, for now.
-					for (HeroSubClass subClass : subClasses) {
-						if (subClass == hero.heroClass.secretSub()) return false;
-					}
+		if (Dungeon.hero.subClass == HeroSubClass.NONE) {
+			RedButton btnCancel = new RedButton(Messages.get(this, "cancel")) {
+				@Override
+				protected void onClick() {
 					hide();
-					ArrayList<HeroSubClass> subs = subClasses;
-					subs.add(hero.heroClass.secretSub());
-					// fixme maybe I should just get a designated secret pitch and volume?
-					Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
-					GameScene.show(new WndChooseSubclass(tome, hero, subs));
+				}
+
+				@Override
+				protected boolean onLongClick() {
+					if (subClasses.size() == 2) {
+						// this is how you access hidden subclasses, for now.
+						for (HeroSubClass subClass : subClasses) {
+							if (subClass == hero.heroClass.secretSub()) return false;
+						}
+						hide();
+						ArrayList<HeroSubClass> subs = subClasses;
+						subs.add(hero.heroClass.secretSub());
+						// fixme maybe I should just get a designated secret pitch and volume?
+						Sample.INSTANCE.play(Assets.Sounds.SECRET, 0.5f);
+						GameScene.show(new WndChooseSubclass(tome, hero, subs));
+						return true;
+					}
 					return true;
 				}
-				return true;
-			}
-		};
-		btnCancel.setRect( 0, pos, WIDTH, 18 );
-		add( btnCancel );
-		
-		resize( WIDTH, (int)btnCancel.bottom() );
+			};
+			btnCancel.setRect(0, pos, WIDTH, 18);
+			add(btnCancel);
+
+			resize(WIDTH, (int) btnCancel.bottom());
+		} else {
+			resize(WIDTH, (int) (pos + 1));
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (Dungeon.hero.subClass == HeroSubClass.NONE)
+			super.onBackPressed();
+		else return;
 	}
 }
