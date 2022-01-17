@@ -1057,13 +1057,10 @@ public abstract class Level implements Bundlable {
 				}
 				if (Dungeon.hero.pos == cell && Dungeon.hero.hasTalent(Talent.TRAPPER_MASTERY) &&
 					Dungeon.hero.buff(Talent.TrapperMasteryCooldown.class) == null){
-					Talent.ReclaimedTrapper reclaim = new Talent.ReclaimedTrapper();
 					trap.disarm();
 					Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
 					ScrollOfRecharging.charge(Dungeon.hero);
 					Dungeon.hero.sprite.emitter().burst( Speck.factory( Speck.JET ), 20);
-					reclaim.storedTrap = trap.getClass();
-					reclaim.collect(Dungeon.hero.belongings.backpack);
 					Talent.Cooldown.affectHero(Talent.TrapperMasteryCooldown.class);
 				}
 				else

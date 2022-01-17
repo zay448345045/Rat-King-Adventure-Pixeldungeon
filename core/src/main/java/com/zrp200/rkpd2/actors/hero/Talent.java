@@ -52,7 +52,6 @@ import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
-import com.zrp200.rkpd2.items.spells.ReclaimTrap;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
@@ -259,11 +258,11 @@ public enum Talent {
 		public float duration() {
 			switch (hero.pointsInTalent(TRAPPER_MASTERY)){
 				case 1: default:
-					return 180;
+					return 170;
 				case 2:
-					return 160;
+					return 150;
 				case 3:
-					return 140;
+					return 130;
 			}
 		}
 		public int icon() { return BuffIndicator.THORNS; }
@@ -281,17 +280,6 @@ public enum Talent {
 		}
 		public int icon() { return BuffIndicator.CORRUPT; }
 	};
-	public static class ReclaimedTrapper extends ReclaimTrap{
-		@Override
-		public boolean isSimilar(Item item) {
-			return super.isSimilar(item) && storedTrap == ((ReclaimedTrapper)(item)).storedTrap;
-		}
-
-		@Override
-		public int value() {
-			return 0;
-		}
-	}
 	public static class BigRushTracker extends FlavourBuff{};
 	public static class LethalMomentumTracker extends FlavourBuff{
 		public static void process() { hero.byTalent(process, LETHAL_MOMENTUM, LETHAL_MOMENTUM_2, PURSUIT); }
