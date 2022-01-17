@@ -141,7 +141,7 @@ public class RKPD2Changes {
                                             "Nerfed Protein Infusion by 33%.",
                                             "Nerfed Trapper's Mastery: no longer reclaims traps, decreased cooldown to compensate.",
                                             "Kromer follows the same rules as Scroll of Metamorphosis.",
-                                            "Quadrupled Big Rush's bonus damage.",
+                                            "Doubled Big Rush's bonus damage, but made it roll from 0 to value.",
                                             "t4 hero-specific talents are listed ahead of armor ability talents and can be metamorphed.",
                                             "Buffed Durable Projectiles by a 25%.")),
                             bugFixes(list("Fixed Abyssal Nightmare crashes.",
