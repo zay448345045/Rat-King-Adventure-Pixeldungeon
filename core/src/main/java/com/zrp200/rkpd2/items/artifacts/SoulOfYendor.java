@@ -232,9 +232,8 @@ public class SoulOfYendor extends Artifact {
                 break;
             case 1:
                 //Alchemist Toolkit
-                if (!isEquipped(hero))                                          GLog.i( Messages.get(AlchemistsToolkit.class, "need_to_equip") );
-                else if (cursed)                                                GLog.w( Messages.get(AlchemistsToolkit.class, "cursed") );
-                else if (hero.visibleEnemies() > hero.mindVisionEnemies.size()) GLog.i( Messages.get(AlchemistsToolkit.class, "enemy_near") );
+                if (!isEquipped(hero))              GLog.i( Messages.get(this, "need_to_equip") );
+                else if (cursed)                    GLog.w( Messages.get(this, "cursed") );
                 else {
                     Game.switchScene(AlchemyScene.class);
                 }
