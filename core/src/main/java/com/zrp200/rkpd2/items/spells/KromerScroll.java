@@ -7,6 +7,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
+import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.traps.DistortionTrap;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -44,7 +45,7 @@ public class KromerScroll extends Spell{
             }
         }
         for (Item item : Dungeon.hero.belongings){
-            if (item.isUpgradable()) item.upgrade();
+            if (item.isUpgradable() && !(item instanceof MissileWeapon)) item.upgrade();
         }
         detach( curUser.belongings.backpack );
         updateQuickslot();
