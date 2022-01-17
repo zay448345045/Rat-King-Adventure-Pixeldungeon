@@ -582,7 +582,7 @@ public class Hero extends Char {
 
 		if (pointsInTalent(Talent.ROGUES_FORESIGHT) > 0){
 			int hunger = buff(Hunger.class).hunger();
-			evasion *= 1f + 0.4f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
+			evasion *= 1f + 0.25f*pointsInTalent(Talent.ROGUES_FORESIGHT)*((Hunger.STARVING - hunger)/Hunger.STARVING);
 		}
 
 		return Math.round(evasion);
