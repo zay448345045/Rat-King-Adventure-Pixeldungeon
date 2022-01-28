@@ -22,11 +22,15 @@
 package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.Speck;
@@ -66,6 +70,8 @@ public class KromerCrown extends TengusMask {
 		return actions;
 	}
 
+	public static ArrayList<HeroSubClass> subClasses = new ArrayList<>();
+
 	@Override
 	public void execute( Hero hero, String action ) {
 
@@ -79,30 +85,34 @@ public class KromerCrown extends TengusMask {
 			} else {
 
 				curUser = hero;
+				ExploitHandler handler = Buff.affect(curUser, ExploitHandler.class);
+				handler.crown = this;
+				if (subClasses.isEmpty()) {
 
-				ArrayList<HeroSubClass> heroSubClasses = new ArrayList<>(Arrays.asList(HeroSubClass.values()));
-				//remove unusable classes
-				heroSubClasses.remove(NONE);
-				heroSubClasses.remove(HeroSubClass.BATTLEMAGE);
-				heroSubClasses.remove(HeroSubClass.SNIPER);
-				heroSubClasses.remove(HeroSubClass.ASSASSIN);
-				heroSubClasses.remove(hero.subClass);
-				//remove rat king class
-				heroSubClasses.remove(HeroSubClass.KING);
-				heroSubClasses.remove(HeroSubClass.RK_CHAMPION);
-				ArrayList<HeroSubClass> crownSubs = new ArrayList<>();
-				while (crownSubs.size() < 3) {
-					HeroSubClass chosenSub;
-					do {
-						chosenSub = Random.element(heroSubClasses);
-						if (!crownSubs.contains(chosenSub)) {
-							crownSubs.add(chosenSub);
-							break;
-						}
-					} while (true);
+					ArrayList<HeroSubClass> heroSubClasses = new ArrayList<>(Arrays.asList(HeroSubClass.values()));
+					//remove unusable classes
+					heroSubClasses.remove(NONE);
+					heroSubClasses.remove(HeroSubClass.BATTLEMAGE);
+					heroSubClasses.remove(HeroSubClass.SNIPER);
+					heroSubClasses.remove(HeroSubClass.ASSASSIN);
+					heroSubClasses.remove(hero.subClass);
+					//remove rat king class
+					heroSubClasses.remove(HeroSubClass.KING);
+					heroSubClasses.remove(HeroSubClass.RK_CHAMPION);
+					while (subClasses.size() < 3) {
+						HeroSubClass chosenSub;
+						do {
+							chosenSub = Random.element(heroSubClasses);
+							if (!subClasses.contains(chosenSub)) {
+								subClasses.add(chosenSub);
+								break;
+							}
+						} while (true);
+					}
 				}
+				handler.subClasses = subClasses;
 
-				GameScene.show(new WndChooseSubclass(this, hero, crownSubs));
+				GameScene.show(new WndChooseSubclass(this, hero, subClasses));
 			}
 
 		}
@@ -136,6 +146,43 @@ public class KromerCrown extends TengusMask {
 		Camera.main.shake(1f, 1f);
 		GLog.p( Messages.get(this, way != HeroSubClass.KING ? "used" : "used_rk") );
 		
+	}
+
+	public static class ExploitHandler extends Buff {
+		{ actPriority = VFX_PRIO; }
+
+		public KromerCrown crown;
+		public ArrayList<HeroSubClass> subClasses;
+
+		@Override
+		public boolean act() {
+			curUser = Dungeon.hero;
+			curItem = crown;
+			KromerCrown.subClasses = subClasses;
+
+			Game.runOnRenderThread(() -> crown.execute(curUser, AC_CONNECT));
+			detach();
+			return true;
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put( "crown", crown );
+			bundle.put("sub1", subClasses.get(0));
+			bundle.put("sub2", subClasses.get(1));
+			bundle.put("sub3", subClasses.get(2));
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			crown = (KromerCrown) bundle.get("crown");
+			subClasses = new ArrayList<>();
+			subClasses.add(bundle.getEnum("sub1", HeroSubClass.class));
+			subClasses.add(bundle.getEnum("sub2", HeroSubClass.class));
+			subClasses.add(bundle.getEnum("sub3", HeroSubClass.class));
+		}
 	}
 
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
