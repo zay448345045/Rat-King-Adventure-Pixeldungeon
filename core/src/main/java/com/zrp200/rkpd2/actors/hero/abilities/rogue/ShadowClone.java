@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities.rogue;
 
-import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
@@ -50,10 +49,8 @@ import com.zrp200.rkpd2.levels.CityLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.MobSprite;
-import com.zrp200.rkpd2.sprites.RatKingHeroSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
@@ -96,9 +93,7 @@ public class ShadowClone extends ArmorAbility {
 		ShadowAlly ally = getShadowAlly();
 
 		if (ally != null){
-			if (target == null){
-				return;
-			} else {
+			if (target != null) {
 				ally.directTocell(target);
 			}
 		} else {
@@ -446,40 +441,10 @@ public class ShadowClone extends ArmorAbility {
 			super();
 
 			texture( hero.heroClass.spritesheet() );
-			TextureFilm film;
-			if (Dungeon.hero.sprite instanceof RatKingHeroSprite){
-				film = new TextureFilm( HeroSprite.tiers(Assets.Sprites.RAT_KING_HERO, 17), 0, 16, 17 );
-				idle = new Animation( 2, true );
-				idle.frames( film, 0, 0, 0, 1 );
+			copyAnimations(hero.sprite);
 
-				run = new Animation( 10, true );
-				run.frames( film, 6, 7, 8, 9, 10 );
-
-				attack = new Animation( 15, false );
-				attack.frames( film, 2, 3, 4, 5, 0 );
-
-				die = new Animation( 10, false );
-				die.frames( film, 11,12,13,14 );
-
-				zap = attack.clone();
-
-				operate = new Animation( 8, false );
-				operate.frames( film, 2,6,2,6);
-
-			}
-			else {
-				film = new TextureFilm(((HeroSprite) hero.sprite).tiers(), 6, 12, 15);
-
-				idle = new Animation(1, true);
-				idle.frames(film, 0, 0, 0, 1, 0, 0, 1, 1);
-
-				run = new Animation(20, true);
-				run.frames(film, 2, 3, 4, 5, 6, 7);
-
-
-				die.frames(idle.frames[ 0] );
+			die.frames( idle.frames[0] );
 			die.delay = 1/20f;
-			}
 
 			idle();
 			resetColor();
