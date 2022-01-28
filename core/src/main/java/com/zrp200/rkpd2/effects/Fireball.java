@@ -35,10 +35,10 @@ import com.zrp200.rkpd2.Assets;
 
 public class Fireball extends Component {
 
-	private static final RectF BLIGHT = new RectF( 0, 0, 0.0625f, 1 );
-	private static final RectF FLIGHT = new RectF( 0.0625f*6, 0, 0.0625f*7, 1 );
-	private static final RectF FLAME1 = new RectF( 0.0625f*10, 0, 0.0625f*11, 1 );
-	private static final RectF FLAME2 = new RectF( 0.0625f*8, 0, 0.0625f*9, 1 );
+	private static final RectF BLIGHT = new RectF( 0, 0, 0.0625f, 1/3f );
+	private static final RectF FLIGHT = new RectF( 0.0625f*6, 0, 0.0625f*7, 1/3f );
+	private static final RectF FLAME1 = new RectF( 0.0625f*10, 0, 0.0625f*11, 1/3f );
+	private static final RectF FLAME2 = new RectF( 0.0625f*8, 0, 0.0625f*9, 1/3f );
 	
 	private static final int COLOR = 0xd3d1d3;
 	
