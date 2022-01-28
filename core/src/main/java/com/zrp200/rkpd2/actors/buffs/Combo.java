@@ -199,7 +199,10 @@ public class Combo extends Buff implements ActionIndicator.Action {
 			icon = new ItemSprite(new Item(){ {image = ItemSpriteSheet.WEAPON_HOLDER; }});
 		}
 
-		icon.tint(getHighestMove().tintColor);
+		ComboMove move = getHighestMove();
+		if (move != null) {
+			icon.tint(move.tintColor);
+		}
 		return icon;
 	}
 
