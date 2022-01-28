@@ -35,7 +35,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.quest.Kromer;
-import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfMetamorphosis;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -171,10 +171,10 @@ public class KromerMask extends Item {
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {
 
 		{
-			inputs =  new Class[]{Kromer.class, ScrollOfMetamorphosis.class, KingsCrown.class};
+			inputs =  new Class[]{Kromer.class, ScrollOfUpgrade.class, TengusMask.class};
 			inQuantity = new int[]{1, 1, 1};
 
-			cost = 97;
+			cost = 48;
 
 			output = KromerMask.class;
 			outQuantity = 1;

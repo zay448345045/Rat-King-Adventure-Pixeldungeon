@@ -399,6 +399,9 @@ public class QuickRecipe extends Component {
 				if (Dungeon.hero.belongings.getSimilar(new KingsCrown()) != null){
 					result.add(new QuickRecipe(new KromerCrown.Recipe()));
 				}
+				if (Dungeon.hero.belongings.getSimilar(new TengusMask()) != null){
+					result.add(new QuickRecipe(new KromerMask.Recipe()));
+				}
 				return result;
 		}
 	}

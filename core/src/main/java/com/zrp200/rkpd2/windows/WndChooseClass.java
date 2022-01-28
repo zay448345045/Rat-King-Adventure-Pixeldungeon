@@ -21,10 +21,8 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.KromerMask;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -103,8 +101,5 @@ public class WndChooseClass extends Window {
 
 	@Override
 	public void onBackPressed() {
-		if (Dungeon.hero.subClass == HeroSubClass.NONE)
-			super.onBackPressed();
-		else return;
 	}
 }
