@@ -25,6 +25,8 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Gloves extends MeleeWeapon {
@@ -49,12 +51,13 @@ public class Gloves extends MeleeWeapon {
 	@Override
 	public int warriorAttack(int damage, Char enemy) {
 		int hits = Random.Int(2, 6);
+		Buff.detach(Dungeon.hero, BrawlerBuff.BrawlingTracker.class);
 		for (int i = 0; i < hits; i++) Dungeon.hero.attack(enemy);
 		return super.warriorAttack(damage, enemy);
 	}
 
 	@Override
 	public float warriorDelay() {
-		return 2f;
+		return 2.5f;
 	}
 }
