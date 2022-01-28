@@ -21,16 +21,16 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.input.GameAction;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
-import com.watabou.input.GameAction;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 
@@ -181,10 +181,12 @@ public class AttackIndicator extends Tag {
 	
 	public static void target( Char target ) {
 		synchronized (instance) {
-			instance.lastTarget = (Mob) target;
-			instance.updateImage();
+			if (target != null) {
+				instance.lastTarget = (Mob) target;
+				instance.updateImage();
 
-			TargetHealthIndicator.instance.target(target);
+				TargetHealthIndicator.instance.target(target);
+			}
 		}
 	}
 	

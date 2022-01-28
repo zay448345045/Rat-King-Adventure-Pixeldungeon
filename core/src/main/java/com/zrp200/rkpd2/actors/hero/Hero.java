@@ -493,8 +493,8 @@ public class Hero extends Char {
 		if ((subClass != null && subClass == HeroSubClass.DECEPTICON) ||
 				(subClass2 != null && subClass2 == HeroSubClass.DECEPTICON)){
 			if (RobotBuff.isVehicle())
-				return 8;
-			return 7;
+				return 8 - (heroClass == HeroClass.RAT_KING ? 6 : 0);
+			return 7 - (heroClass == HeroClass.RAT_KING ? 6 : 0);
 		}
 		if (belongings.armor() instanceof ClassArmor){
 			return 6;
