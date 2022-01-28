@@ -24,12 +24,13 @@ package com.zrp200.rkpd2.items.weapon.melee;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 
-public class MeleeWeapon extends Weapon {
+public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 
 	@Override
 	public int min(int lvl) {
@@ -143,14 +144,6 @@ public class MeleeWeapon extends Weapon {
 
 	public float warriorMod(){
 		return 1f;
-	}
-
-	public int warriorAttack(int damage, Char enemy){
-		return damage;
-	}
-
-	public float warriorDelay(){
-		return 1.5f;
 	}
 
 }

@@ -11,7 +11,6 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
-import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -143,7 +142,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
 
         Invisibility.dispel();
-        hero.spendAndNext(hero.attackDelay()*((MeleeWeapon)(hero.belongings.weapon())).warriorDelay());
+        hero.spendAndNext(hero.attackDelay()*((BrawlerWeapon)(hero.belongings.weapon())).warriorDelay());
 
         if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
             if (hero.hasTalent(Talent.HOLERIC_BURST)){
@@ -211,6 +210,16 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         @Override
         public String prompt() {
             return Messages.get(Combo.class, "prompt");
+        }
+    }
+
+    public interface BrawlerWeapon {
+        default int warriorAttack(int damage, Char enemy){
+            return damage;
+        }
+
+        default float warriorDelay(){
+            return 1.5f;
         }
     }
 }

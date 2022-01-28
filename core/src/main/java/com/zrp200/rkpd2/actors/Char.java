@@ -57,7 +57,6 @@ import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
-import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.melee.RoundShield;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.ShockingDart;
@@ -419,7 +418,7 @@ public abstract class Char extends Actor {
 				if (hero.pointsInTalent(Talent.PRIDE_OF_STEEL) > 2) {
 					Buff.affect(enemy, StoneOfAggression.Aggression.class, 4f);
 				}
-				effectiveDamage = ((MeleeWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
+				effectiveDamage = ((BrawlerBuff.BrawlerWeapon)((Hero) this).belongings.weapon()).warriorAttack(effectiveDamage, enemy);
 			}
 			if (RobotBuff.isRobot()) {
 				if (this instanceof Hero) {

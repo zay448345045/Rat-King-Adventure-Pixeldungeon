@@ -61,7 +61,7 @@ import com.zrp200.rkpd2.ui.QuickSlotButton;
 
 import java.util.*;
 
-public class SpiritBow extends Weapon {
+public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	
 	public static final String AC_SHOOT		= "SHOOT";
 	
@@ -303,6 +303,23 @@ public class SpiritBow extends Weapon {
 			return new SuperShot();
 		}
 		return new SpiritArrow();
+	}
+
+	@Override
+	public int warriorAttack(int damage, Char enemy) {
+		SpiritBow.SpiritArrow arrow = knockArrow(); // need a unique arrow for every character.
+		arrow.sniperSpecial = true; // :D
+
+		int cell = QuickSlotButton.autoAim(enemy, arrow);
+
+		int points = Dungeon.hero.pointsInTalent(Talent.SHARED_UPGRADES, Talent.RK_SNIPER);
+		if(Dungeon.hero.canHaveTalent(Talent.SHARED_UPGRADES)) points++; // free +1.
+		arrow.sniperSpecialBonusDamage = level()*points/10f;
+
+		Buff.detach(Dungeon.hero, Preparation.class); // nope!
+
+		arrow.cast(Dungeon.hero, cell);
+		return 0;
 	}
 
 	public int shotCount; // used for sniper specials
