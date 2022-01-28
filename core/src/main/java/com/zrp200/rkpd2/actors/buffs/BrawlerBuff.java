@@ -136,7 +136,8 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         int dmgBonus = 0;
         if (hero.pointsInTalent(Talent.IN_MY_MEMORIES) > 0){
             BrokenSeal.WarriorShield shield = hero.buff(BrokenSeal.WarriorShield.class);
-            dmgBonus += 0.4f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
+            if (shield != null)
+                dmgBonus += 0.4f*hero.pointsInTalent(Talent.IN_MY_MEMORIES)*shield.shielding();
         }
 
         hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
