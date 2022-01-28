@@ -181,7 +181,7 @@ public enum Talent {
 			// FIXME this is really brittle, will be an issue if/when I add OmniAbility
 			return GamesInProgress.selectedClass == HeroClass.RAT_KING
 					|| hero != null
-						&& (hero.heroClass == HeroClass.RAT_KING
+						&& (hero.isClassed(HeroClass.RAT_KING)
 							|| hero.armorAbility instanceof Ratmogrify);
 		}
 		@Override public int icon() {
@@ -765,9 +765,9 @@ public enum Talent {
 				&& (item instanceof Weapon || item instanceof Armor)){
 			if(id = !item.isIdentified()) item.identify();
 		}
-		if ((hero.heroClass == HeroClass.ROGUE || hero.hasTalent(ROYAL_INTUITION)) && item instanceof Ring){
+		if ((hero.isClassed(HeroClass.ROGUE) || hero.hasTalent(ROYAL_INTUITION)) && item instanceof Ring){
 			int points = hero.pointsInTalent(THIEFS_INTUITION,ROYAL_INTUITION);
-			if(hero.heroClass == HeroClass.ROGUE ) points++; // essentially this is a 50% boost.
+			if(hero.isClassed(HeroClass.ROGUE) ) points++; // essentially this is a 50% boost.
 			if (!item.isIdentified() && points >= 2){
 				item.identify();
 				id = true;
@@ -950,7 +950,7 @@ public enum Talent {
 		}
 	}
 
-
+	public static boolean trolling;
 
 	public static void initClassTalents( Hero hero ){
 		initClassTalents( hero.heroClass, hero.talents, hero.metamorphedTalents );
@@ -960,7 +960,7 @@ public enum Talent {
 		initClassTalents( cls, talents, new LinkedHashMap<>());
 	}
 
-	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements ){
+	public static void initClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements){
 		while (talents.size() < MAX_TALENT_TIERS){
 			talents.add(new LinkedHashMap<>());
 		}
@@ -1036,6 +1036,60 @@ public enum Talent {
 
 		//tier4
 		//TBD
+	}
+
+	public static void initSecondClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements ){
+		while (talents.size() < MAX_TALENT_TIERS){
+			talents.add(new LinkedHashMap<>());
+		}
+
+		ArrayList<Talent> tierTalents = new ArrayList<>();
+
+		//tier 1
+		Collections.addAll(tierTalents, talentList(cls, 1));
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
+			talents.get(2).put(talent, 0);
+		}
+		tierTalents.clear();
+
+		//tier 2
+		Collections.addAll(tierTalents, talentList(cls, 2));
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
+			talents.get(2).put(talent, 0);
+		}
+		tierTalents.clear();
+
+		//tier 3
+		HeroClass lol = !trolling ? null : hero.heroClass;
+		if (lol != null) {
+			switch (lol){
+				case WARRIOR: default:
+					Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN, BEAR_PAW);
+					break;
+				case MAGE:
+					Collections.addAll(tierTalents, EMPOWERING_SCROLLS, ALLY_WARP, CRYONIC_SPELL);
+					break;
+				case ROGUE:
+					Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY);
+					break;
+				case HUNTRESS:
+					Collections.addAll(tierTalents, POINT_BLANK, SEER_SHOT, AUTO_RELOAD);
+					break;
+				case RAT_KING: break; // no unique talents... :(
+			}
+			for (Talent talent : tierTalents){
+				if (replacements.containsKey(talent)) talent = replacements.get(talent);
+				talents.get(2).put(talent, 0);
+			}
+		}
+
+		tierTalents.clear();
 	}
 
 	public static void initSubclassTalents( Hero hero ){

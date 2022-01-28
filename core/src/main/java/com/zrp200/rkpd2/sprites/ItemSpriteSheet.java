@@ -718,6 +718,7 @@ public class ItemSpriteSheet {
 	public static final int KROMER_STAFF = QUEST+13;
 	public static final int KROMER_SLINGSHOT = QUEST+14;
 	public static final int KROMER_CROWN = QUEST+15;
+	public static final int KROMER_MASK = QUEST+16;
 	static{
 		assignItemRect(SKULL,   16, 11);
 		assignItemRect(DUST,    12, 11);
@@ -735,6 +736,7 @@ public class ItemSpriteSheet {
 		assignItemRect(KROMER_STAFF, 16, 16);
 		assignItemRect(KROMER_SLINGSHOT, 12, 13);
 		assignItemRect(KROMER_CROWN, 13, 7);
+		assignItemRect(KROMER_MASK, 11, 9);
 	}
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots

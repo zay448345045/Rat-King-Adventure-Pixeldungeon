@@ -250,7 +250,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.5f/3f;
 			if (!isEquipped(target)) amount *= target.byTalent(
 					Talent.LIGHT_CLOAK, LC_FACTOR,
 					Talent.RK_FREERUNNER, LC_FACTOR_RK);
-			if(target.heroClass == HeroClass.ROGUE) amount *= ROGUE_BOOST;
+			if(target.isClassed(HeroClass.ROGUE)) amount *= ROGUE_BOOST;
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
 				partialCharge--;
@@ -303,7 +303,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.5f/3f;
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
-					if(((Hero)target).heroClass == HeroClass.ROGUE
+					if(((Hero)target).isClassed(HeroClass.ROGUE)
 						&& !((Hero) target).hasTalent(Talent.EFFICIENT_SHADOWS)) turnsToCharge /= ROGUE_BOOST;
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
@@ -448,7 +448,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.5f/3f;
 				if (charge < 0) {
 					charge = 0;
 					detach();
-					GLog.w(Messages.get(this, "no_charge"));
+					GLog.w(Messages.get(cloakStealth.class, "no_charge"));
 					target.interrupt();
 				} else {
 					//target hero level is 1 + 2*cloak level
@@ -467,7 +467,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.5f/3f;
 					if (exp >= (level() + 1) * expPerLevel && level() < levelCap) {
 						upgrade();
 						exp -= level() * expPerLevel;
-						GLog.p(Messages.get(this, "levelup"));
+						GLog.p(Messages.get(cloakStealth.class, "levelup"));
 
 					}
 					turnsToCost = (int) stealthDuration();

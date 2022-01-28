@@ -74,6 +74,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static com.zrp200.rkpd2.Dungeon.hero;
+
 public enum HeroClass {
 
 	WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR),
@@ -114,6 +116,39 @@ public enum HeroClass {
 
 	HeroClass(HeroSubClass... subClasses ) {
 		this.subClasses = new ArrayList<>(Arrays.asList(subClasses));
+	}
+
+	public static void giveSecondClass(HeroClass heroClass){
+		hero.heroClass2 = heroClass;
+		Talent.initSecondClassTalents(hero.heroClass2, hero.talents, hero.metamorphedTalents);
+		switch (heroClass) {
+			case WARRIOR:
+				new BrokenSeal().identify().collect();
+				break;
+
+			case MAGE:
+				new MagesStaff(new WandOfMagicMissile()).identify().collect();
+				break;
+
+			case ROGUE:
+				new CloakOfShadows().identify().collect();
+				break;
+
+			case HUNTRESS:
+				new SpiritBow().identify().collect();
+				break;
+
+			case RAT_KING:
+				if (hero.heroClass != WARRIOR)
+					new BrokenSeal().identify().collect();
+				if (hero.heroClass != MAGE)
+					new MagesStaff(new WandOfMagicMissile()).identify().collect();
+				if (hero.heroClass != ROGUE)
+					new CloakOfShadows().identify().collect();
+				if (hero.heroClass != HUNTRESS)
+					new SpiritBow().identify().collect();
+				break;
+		}
 	}
 
 	public void initHero( Hero hero ) {

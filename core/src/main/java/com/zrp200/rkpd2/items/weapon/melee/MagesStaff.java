@@ -220,7 +220,7 @@ public class MagesStaff extends MeleeWeapon {
 				};
 			}
 			// mage has an intrinsic 2/3 chance to preserve a wand anyway.
-			if(preserve || Dungeon.hero.heroClass == HeroClass.MAGE && Random.Int(3) > 0) {
+			if(preserve || Dungeon.hero.isClassed(HeroClass.MAGE) && Random.Int(3) > 0) {
 				this.wand.level(wastedUpgrades);
 				if (!this.wand.collect()) {
 					Dungeon.level.drop(this.wand, owner.pos);

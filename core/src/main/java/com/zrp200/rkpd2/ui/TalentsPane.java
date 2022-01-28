@@ -68,7 +68,7 @@ public class TalentsPane extends ScrollPane {
 					&& Dungeon.hero.lvl+1 >= Talent.tierLevelThresholds[tiersAvailable+1]){
 				tiersAvailable++;
 			}
-			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE){
+			if (tiersAvailable > 2 && Dungeon.hero.subClass == HeroSubClass.NONE && Dungeon.hero.heroClass2 == null){
 				tiersAvailable = 2;
 			} else if (tiersAvailable > 3 && (Dungeon.hero.subClass2 == HeroSubClass.NONE && Dungeon.hero.armorAbility == null)){
 				tiersAvailable = 3;
@@ -236,7 +236,7 @@ public class TalentsPane extends ScrollPane {
 			}
 			int rows = ((buttons.size()-1)/7);
 			// this assumes that there's an even number of talents all around. THIS IS VERY BRITTLE
-			int buttonsPerRow = buttons.size() > 7 ? 4 : buttons.size();
+			int buttonsPerRow = buttons.size() > 7 ? buttons.size() / 2 : buttons.size();
 			float gap = (width - buttonsPerRow*TalentButton.WIDTH)/(buttonsPerRow+1);
 			float bottom = title.bottom();
 			int placed = 0;

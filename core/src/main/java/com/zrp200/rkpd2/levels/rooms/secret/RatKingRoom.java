@@ -32,7 +32,6 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.sewerboss.SewerBossEntranceRoom;
-import com.watabou.utils.Random;
 
 public class RatKingRoom extends SecretRoom {
 	
@@ -68,7 +67,7 @@ public class RatKingRoom extends SecretRoom {
 		}
 
 		int pos = level.pointToCell(random(2));
-		if(Dungeon.hero.heroClass == HeroClass.RAT_KING) {
+		if(Dungeon.hero.isClassed(HeroClass.RAT_KING)) {
 			Painter.set(level,pos,Terrain.SIGN); // home sweet home sign, see hero#actMove
 		} else {
 			RatKing king = new RatKing();

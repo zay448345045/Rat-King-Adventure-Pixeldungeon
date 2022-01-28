@@ -119,6 +119,7 @@ public class Hero extends Char {
 	private static final float HUNGER_FOR_SEARCH	= 6f;
 	
 	public HeroClass heroClass = HeroClass.ROGUE;
+	public HeroClass heroClass2 = null;
 	public HeroSubClass subClass = HeroSubClass.NONE;
 	public HeroSubClass subClass2 = HeroSubClass.NONE;
 
@@ -127,6 +128,14 @@ public class Hero extends Char {
 			return subClass == sub;
 		} else {
 			return subClass == sub || subClass2 == sub;
+		}
+	}
+
+	public boolean isClassed(HeroClass sub){
+		if (heroClass2 == null){
+			return heroClass == sub;
+		} else {
+			return heroClass == sub || heroClass2 == sub;
 		}
 	}
 
@@ -248,6 +257,7 @@ public class Hero extends Char {
 	}
 
 	private static final String CLASS       = "class";
+	private static final String CLASS2      = "class2";
 	private static final String SUBCLASS    = "subClass";
 	private static final String SUBCLASS2    = "subClass2";
 	private static final String ABILITY     = "armorAbility";
@@ -266,6 +276,7 @@ public class Hero extends Char {
 		super.storeInBundle( bundle );
 
 		bundle.put( CLASS, heroClass );
+		bundle.put( CLASS2, heroClass2);
 		bundle.put( SUBCLASS, subClass );
 		bundle.put( SUBCLASS2, subClass2 );
 		bundle.put( ABILITY, armorAbility );
@@ -299,6 +310,9 @@ public class Hero extends Char {
 		subClass = bundle.getEnum( SUBCLASS, HeroSubClass.class );
 		if (bundle.contains(SUBCLASS2)){
 			subClass2 = bundle.getEnum( SUBCLASS2, HeroSubClass.class );
+		}
+		if (bundle.contains(CLASS2)){
+			heroClass2 = bundle.getEnum( CLASS2, HeroClass.class );
 		}
 		armorAbility = (ArmorAbility)bundle.get( ABILITY );
 		Talent.restoreTalentsFromBundle( bundle, this );
@@ -2257,7 +2271,7 @@ public class Hero extends Char {
 
 		int points = pointsInTalent(Talent.KINGS_VISION);
 		boolean circular = points == 1;
-		int distance = (heroClass == HeroClass.ROGUE || heroClass == HeroClass.RAT_KING) ? 2 : 1;
+		int distance = (isClassed(HeroClass.ROGUE) || isClassed(HeroClass.RAT_KING)) ? 2 : 1;
 		if (points > 0) distance++;
 		distance += pointsInTalent(Talent.WIDE_SEARCH);
 		

@@ -21,15 +21,11 @@
 
 package com.zrp200.rkpd2.levels.features;
 
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
-import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -74,8 +70,8 @@ public class HighGrass {
 		
 		Char ch = Actor.findChar(pos);
 		boolean furrow = ch instanceof Hero
-				&& (((Hero)ch).heroClass == HeroClass.HUNTRESS
-				|| ((Hero)ch).heroClass == HeroClass.RAT_KING);
+				&& (((Hero)ch).isClassed(HeroClass.HUNTRESS)
+				|| ((Hero)ch).isClassed(HeroClass.RAT_KING));
 		if (level.map[pos] == Terrain.FURROWED_GRASS){
 			if (ch instanceof Hero && furrow){
 				//Do nothing
