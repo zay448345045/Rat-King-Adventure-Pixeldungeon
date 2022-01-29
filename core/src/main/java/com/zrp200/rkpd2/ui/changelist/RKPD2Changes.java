@@ -128,7 +128,7 @@ public class RKPD2Changes {
 
     final ChangeInfo[][] changes = {
             {
-                    new ChangeInfo("DLC-1.4.10", true, TITLE_COLOR, ""),
+                    new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, ""),
                     Changes(
                             new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "RKPD Changes",
                                     list(2,
@@ -136,6 +136,9 @@ public class RKPD2Changes {
                             new ChangeButton(new ItemSprite(KROMER_CROWN), "Second subclass",
                                     "_-_ You can sacrifice DK's crown to get a second subclass instead of armor ability.\n\n" +
                                             "_-_ Some subclasses are blacklisted and 3 are randomly chosen."),
+                            new ChangeButton(new ItemSprite(KROMER_MASK), "Second class",
+                                    "_-_ You can use Tengu's mask with kromer to get a second class instead of subclass.\n\n" +
+                                            "_-_ 2 are randomly chosen."),
                             misc(list(
                                     "Arcane Resin has no limit for level.",
                                             "Nerfed Protein Infusion by 33%.",
@@ -143,8 +146,18 @@ public class RKPD2Changes {
                                             "Kromer follows the same rules as Scroll of Metamorphosis.",
                                             "Doubled Big Rush's bonus damage, but made it roll from 0 to value.",
                                             "t4 hero-specific talents are listed ahead of armor ability talents and can be metamorphed.",
-                                            "Buffed Durable Projectiles by a 25%.")),
-                            bugFixes(list("Fixed Abyssal Nightmare crashes.",
+                                            "Buffed Durable Projectiles by a 25%.",
+                                            "Added brawler special to Spirit and Kromer bows.",
+                                            "Shadowflare has unique sprites for each class.",
+                                            "Added anticheese to Kromer Crown.")),
+                            bugFixes(list( "Fixed Abyssal Nightmare crashes.",
+                                    "Fixed Domain of Hell crashes.",
+                                    "Fixed certain special action crashes.",
+                                    "Fixed Shadow Clone crashes.",
+                                    "Fixed crash related to In My Memories",
+                                    "Fixed crash with Shadowflare",
+                                    "Fixed crash with Terminus Blade's transmutation.",
+                                    "Fixed crash with Studded Gloves's brawler special.",
                                     "Fixed missing items on Unenchanted.",
                                     "Fixed 0 HP enemies on Crowd Diversity.",
                                     "Fixed Archery Mark crashes.",
