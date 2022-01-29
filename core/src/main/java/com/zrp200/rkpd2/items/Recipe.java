@@ -313,6 +313,7 @@ public abstract class Recipe {
 		new TerminusBlade.Recipe(),
 		new SoulOfYendor.Recipe(),
 		new KromerCrown.Recipe(),
+		new KromerMask.Recipe(),
 		new MeatPie.Recipe()
 	};
 	
