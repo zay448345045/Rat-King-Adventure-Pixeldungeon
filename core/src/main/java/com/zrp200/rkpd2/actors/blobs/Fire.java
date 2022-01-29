@@ -77,7 +77,7 @@ public class Fire extends Blob {
 
 					}
 
-				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) {
+				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0 && Dungeon.level.insideMap(cell)) {
 
 					if (flamable[cell]
 							&& !Dungeon.isChallenged(Challenges.BURN)
