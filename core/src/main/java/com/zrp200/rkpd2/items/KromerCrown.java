@@ -145,7 +145,7 @@ public class KromerCrown extends TengusMask {
 		GameScene.flash(Window.SHPX_COLOR, true);
 		Camera.main.shake(1f, 1f);
 		GLog.p( Messages.get(this, way != HeroSubClass.KING ? "used" : "used_rk") );
-		
+		Buff.detach(Dungeon.hero, ExploitHandler.class);
 	}
 
 	public static class ExploitHandler extends Buff {
