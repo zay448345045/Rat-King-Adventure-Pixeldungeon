@@ -128,8 +128,16 @@ public class RKPD2Changes {
 
     final ChangeInfo[][] changes = {
             {
-                    new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, ""),
-                    Changes(
+                    new ChangeInfo("1.4.14", true, TITLE_COLOR, "Renamed from DLC into Rat King Adventure (RKA)",
+                    bugFixes(list(
+                            "Fixed Homing Boomerang hitting invulnerable targets.",
+                            "Fixed the depth 25 duplication and item duplication glitches connected it.",
+                            "Fixed Domain of Hell bugs, added Aqua Blasts for each depth.",
+                            "Fixed Rat King's Battlemage form crashes.",
+                            "Fixed glitches connected to RK boss badge.",
+                            "Fixed Scout's Barrier having old Nature's Aid effect."))
+                    ),
+                    new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, "",
                             new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "RKPD Changes",
                                     list(2,
                                             "Successfully ported RKPD2 0.3.0. Have fun with metamorph!")),
