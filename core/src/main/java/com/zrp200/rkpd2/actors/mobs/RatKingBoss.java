@@ -708,7 +708,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case FIREBLAST:
                                             for (int ii : PathFinder.NEIGHBOURS4) {
-                                                if (!Dungeon.level.solid[finalDest + ii]) {
+                                                if (Dungeon.level.insideMap(finalDest + ii) && !Dungeon.level.solid[finalDest + ii]) {
                                                     GameScene.add(Blob.seed(finalDest + ii, 3, Fire.class));
                                                 }
                                             }
@@ -722,7 +722,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case FROST:
                                             for (int k : PathFinder.NEIGHBOURS4) {
-                                                if (!Dungeon.level.solid[finalDest + k]) {
+                                                if (Dungeon.level.insideMap(finalDest + k) && !Dungeon.level.solid[finalDest + k]) {
                                                     GameScene.add(Blob.seed(finalDest + k, 3, Freezing.class));
                                                 }
                                             }
@@ -751,7 +751,7 @@ public class RatKingBoss extends Mob {
                                             }
                                             if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 for (int k : PathFinder.NEIGHBOURS4) {
-                                                    if (!Dungeon.level.solid[finalDest + k]) {
+                                                    if (Dungeon.level.insideMap(finalDest + k) && !Dungeon.level.solid[finalDest + k]) {
                                                         GameScene.add(Blob.seed(finalDest + k, 3, Electricity.class));
                                                     }
                                                 }
@@ -791,7 +791,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case RED_FIRE:
                                             for (int ii : PathFinder.NEIGHBOURS4) {
-                                                if (!Dungeon.level.solid[finalDest + ii]) {
+                                                if (Dungeon.level.insideMap(finalDest + ii) && !Dungeon.level.solid[finalDest + ii]) {
                                                     GameScene.add(Blob.seed(finalDest + ii, 3, GodSlayerFire.class));
                                                 }
                                             }
