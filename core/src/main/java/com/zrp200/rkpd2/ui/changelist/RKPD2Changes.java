@@ -135,7 +135,8 @@ public class RKPD2Changes {
                             "Fixed Domain of Hell bugs, added Aqua Blasts for each depth.",
                             "Fixed Rat King's Battlemage form crashes.",
                             "Fixed glitches connected to RK boss badge.",
-                            "Fixed Scout's Barrier having old Nature's Aid effect."))
+                            "Fixed Scout's Barrier having old Nature's Aid effect.",
+                            "Fixed targeted cell VFX."))
                     ),
                     new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, "",
                             new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "RKPD Changes",
