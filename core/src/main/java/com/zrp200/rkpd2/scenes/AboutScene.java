@@ -75,7 +75,7 @@ public class AboutScene extends PixelScene {
 		content.add(pa);
 
 		CreditsBlock tb = new CreditsBlock(false, 0x3c9efa,
-				"Creator of DLC:",
+				"Creator of RKA:",
 				Icons.TRASHBOXBOBYLEV.get(),
 				"Trashbox Bobylev",
 				"trashboxbobylev.itch.io",

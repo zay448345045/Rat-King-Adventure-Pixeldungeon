@@ -12,11 +12,11 @@ buildscript {
 allprojects {
 
     ext {
-        appName = 'RKPD2 DLC'
+        appName = 'Rat King Adventures'
         appPackageName = 'com.zrp200.rkpd2abyssal'
 1
-        appVersionCode = 627
-        appVersionName = 'DLC-1.4.13'
+        appVersionCode = 700
+        appVersionName = '1.4.14'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
