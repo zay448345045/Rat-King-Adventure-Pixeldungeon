@@ -21,18 +21,21 @@
 
 package com.zrp200.rkpd2.items.spells;
 
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Paralysis;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.potions.exotic.PotionOfStormClouds;
 import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class AquaBlast extends TargetedSpell {
 	
@@ -50,6 +53,8 @@ public class AquaBlast extends TargetedSpell {
 			if (i == 0 || Random.Int(5) != 0){
 				Dungeon.level.setCellToWater(false, cell+i);
 			}
+			if (Actor.findChar(cell) == null)
+				GameScene.add(Blob.seed(cell + i, 1, Freezing.class));
 		}
 		
 		Char target = Actor.findChar(cell);

@@ -43,7 +43,7 @@ public class Fire extends Blob {
 
 		boolean[] flamable = Dungeon.level.flamable;
 		int cell;
-		int fire;
+		int fire = 0;
 		
 		Freezing freeze = (Freezing)Dungeon.level.blobs.get( Freezing.class );
 
@@ -65,7 +65,7 @@ public class Fire extends Blob {
 					fire = cur[cell] - 1;
 
 					if (Dungeon.isChallenged(Challenges.BURN)){
-						fire++;
+						fire = cur[cell];
 					}
 
 					if (fire <= 0 && flamable[cell]) {
@@ -77,10 +77,9 @@ public class Fire extends Blob {
 
 					}
 
-				} else if (freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0 && Dungeon.level.insideMap(cell)) {
+			} else if ((freeze == null || freeze.volume <= 0 || freeze.cur[cell] <= 0) && !Dungeon.isChallenged(Challenges.BURN)) {
 
 					if (flamable[cell]
-							&& !Dungeon.isChallenged(Challenges.BURN)
 							&& (cur[cell-1] > 0
 							|| cur[cell+1] > 0
 							|| cur[cell-Dungeon.level.width()] > 0
@@ -93,9 +92,13 @@ public class Fire extends Blob {
 					}
 
 				} else {
-					fire = 0;
+					if (!Dungeon.isChallenged(Challenges.BURN))
+						fire = 0;
 				}
-				volume += (off[cell] = fire);
+				if (!Dungeon.isChallenged(Challenges.BURN))
+					volume += (off[cell] = fire);
+				else
+					volume += 1;
 			}
 		}
 

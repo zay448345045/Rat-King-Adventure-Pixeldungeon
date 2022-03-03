@@ -501,6 +501,9 @@ public class Hero extends Char {
 		if (Dungeon.isChallenged(Challenges.FORGET_PATH)){
 			Buff.affect(this, AmnesiaBuff.class);
 		}
+		if (Dungeon.isChallenged(Challenges.BURN)){
+			Buff.affect(this, DomainOfHell.class);
+		}
 	}
 	
 	public int tier() {
