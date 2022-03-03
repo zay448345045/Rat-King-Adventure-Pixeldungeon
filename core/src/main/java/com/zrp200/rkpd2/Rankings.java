@@ -29,7 +29,6 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
-import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
@@ -310,9 +309,6 @@ public enum Rankings {
 				cause   = bundle.getClass( CAUSE );
 			} else {
 				cause = null;
-			}
-			if (cause == RatKing.class){
-				Badges.addGlobal(Badges.Badge.DEFEATED_RK);
 			}
 			
 			win		= bundle.getBoolean( WIN );
