@@ -68,7 +68,7 @@ public abstract class Plant implements Bundlable {
 				// 3/5 turns based on talent points spent
 				Buff.affect(Dungeon.hero, Barkskin.class)
 						.set(talent == Talent.NATURES_AID ? 3 : 2, 1 + 2 * points),
-				Talent.NATURES_AID, Talent.NOBLE_CAUSE);
+				Talent.NOBLE_CAUSE);
 
 		wither();
 		activate( ch );
