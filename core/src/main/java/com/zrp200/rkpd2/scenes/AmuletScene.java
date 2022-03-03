@@ -95,9 +95,8 @@ public class AmuletScene extends PixelScene {
 		RedButton btnMastery = new RedButton( Messages.get(this, "mastery") ) {
 			@Override
 			protected void onClick() {
-				Dungeon.depth = 26;
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-				Game.switchScene(InterlevelScene.class);
+					InterlevelScene.mode = InterlevelScene.Mode.ABYSS;
+					Game.switchScene(InterlevelScene.class);
 			}
 		};
 		btnMastery.setSize( WIDTH, BTN_HEIGHT );

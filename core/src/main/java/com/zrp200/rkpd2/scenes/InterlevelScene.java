@@ -58,7 +58,7 @@ public class InterlevelScene extends PixelScene {
 	private static float fadeTime;
 	
 	public enum Mode {
-		DESCEND, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE
+		DESCEND, ABYSS, ASCEND, CONTINUE, RESURRECT, RETURN, FALL, RESET, NONE
 	}
 	public static Mode mode;
 	
@@ -117,6 +117,11 @@ public class InterlevelScene extends PixelScene {
 						fadeTime = SLOW_FADE;
 					}
 				}
+				scrollSpeed = 5;
+				break;
+			case ABYSS:
+				loadingDepth = 26;
+				fadeTime = SLOW_FADE;
 				scrollSpeed = 5;
 				break;
 			case FALL:
@@ -247,6 +252,9 @@ public class InterlevelScene extends PixelScene {
 							case DESCEND:
 								descend();
 								break;
+							case ABYSS:
+								abyssDescend();
+								break;
 							case ASCEND:
 								ascend();
 								break;
@@ -350,6 +358,32 @@ public class InterlevelScene extends PixelScene {
 			}
 			break;
 		}
+	}
+
+	private void abyssDescend() throws IOException {
+
+		if (Dungeon.hero == null) {
+			Mob.clearHeldAllies();
+			Dungeon.init();
+			if (noStory) {
+				Dungeon.chapters.add( WndStory.ID_SEWERS );
+				noStory = false;
+			}
+			GameLog.wipe();
+		} else {
+			Mob.holdAllies( Dungeon.level );
+			Dungeon.saveAll();
+		}
+
+		Level level;
+		Dungeon.depth = 26;
+		if (Dungeon.depth >= Statistics.deepestFloor) {
+			level = Dungeon.newLevel();
+		} else {
+			Dungeon.depth = Dungeon.depth + 1;
+			level = Dungeon.loadLevel( GamesInProgress.curSlot );
+		}
+		Dungeon.switchLevel( level, level.entrance );
 	}
 
 	private void descend() throws IOException {
