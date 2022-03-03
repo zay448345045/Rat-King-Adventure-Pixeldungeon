@@ -56,7 +56,7 @@ public class GitHubUpdates implements UpdateService {
 		}
 
 		Net.HttpRequest httpGet = new Net.HttpRequest(Net.HttpMethods.GET);
-		httpGet.setUrl("https://api.github.com/repos/TrashboxBobylev/rkpd2/releases");
+		httpGet.setUrl("https://api.github.com/repos/TrashboxBobylev/Rat-King-Adventure/releases");
 		httpGet.setHeader("Accept", "application/vnd.github.v3+json");
 
 		Gdx.net.sendHttpRequest(httpGet, new Net.HttpResponseListener() {
