@@ -1,8 +1,8 @@
-# Rat King Pixel Dungeon 2
+# Rat King Adventure
 
 ![image](https://imgur.com/8Wx4a38.png)
 
-Rat King Adventures is expansive fork of [RKPD2](https://github.com/Zrp200/rkpd2/releases), introducing a lot of new content:
+Rat King Adventure is expansive fork of [RKPD2](https://github.com/Zrp200/rkpd2/releases), introducing a lot of new content:
 - Brand new area after Yog, the Abyss, with difficult enemies and endless length
 - Tier-6 weapons with many interesting effects
 - New challenges unlocked with already existing challenges to explore drawbacks to player's power
