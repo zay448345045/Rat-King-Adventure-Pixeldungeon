@@ -31,7 +31,7 @@ public class TargetedCell extends Image {
 	private float alpha;
 
 	public TargetedCell( int pos, int color ) {
-		super(Icons.get(Icons.COLORLESS_TARGET));
+		super(Icons.get(Icons.TARGET));
 		hardlight(color);
 
 		origin.set( width/2f );
