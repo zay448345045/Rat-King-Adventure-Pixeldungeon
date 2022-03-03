@@ -884,7 +884,7 @@ public class Hero extends Char {
 					Barkskin.getGrassDuration(this),
 					/*Dungeon.hero.hasTalent(Talent.BARKSKIN) ? 2 :*/ 1);
 		}
-		if (buff(DomainOfHell.class) == null)
+		if (buff(DomainOfHell.class) == null && Dungeon.isChallenged(Challenges.BURN))
 			Buff.affect(this, DomainOfHell.class);
 
 		if (belongings.weapon instanceof NuclearHatchet){
