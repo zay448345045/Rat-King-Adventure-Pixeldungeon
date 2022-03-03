@@ -61,7 +61,7 @@ public class HomingBoomerang extends MissileWeapon {
 			for (Mob m : mobs){
 				if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
 						&& Dungeon.level.distance(cell, m.pos) < Dungeon.level.distance(cell, targetPos) && m != enemy
-					&& m.alignment == Char.Alignment.ENEMY){
+					&& m.alignment == Char.Alignment.ENEMY && !m.isInvulnerable(this.getClass())){
 					targetPos = m.pos;
 				}
 			}
