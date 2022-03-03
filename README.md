@@ -1,14 +1,19 @@
 # Rat King Pixel Dungeon 2
 
-![image](https://user-images.githubusercontent.com/7078074/119247071-a6277380-bb3b-11eb-9452-e9f0d8c040d2.png)
+![image](https://imgur.com/8Wx4a38.png)
 
-First released on April 1 2021, this fork is all about introducing more power to the game. The King, a one-off character in Pixel Dungeon already, debuts here as a playable hero whose power is unmatched.
-
-Challenges are left in for those that want to push their opness to the limit.
+Rat King Adventures is expansive fork of [RKPD2](https://github.com/Zrp200/rkpd2/releases), introducing a lot of new content:
+- Brand new area after Yog, the Abyss, with difficult enemies and endless length
+- Tier-6 weapons with many interesting effects
+- New challenges unlocked with already existing challenges to explore drawbacks to player's power
+- Rat enemies living in dungeon and replacing other common enemies
+- Huge expansion on talent side of the game, including tier-4 talents
+- Expanded concept of secret subclasses for each subclass in the game
+- Chaotic and unpredictable Kromers with high risk and high reward
 
 ---
-Forked from the [source code of Shattered Pixel Dungeon](https://github.com/00-evan/shattered-pixel-dungeon/) by [00-Evan](https://shatteredpixel.com/), inspired by Rat King Dungeon by the same author.
+RKPD2 is forked from the [source code of Shattered Pixel Dungeon](https://github.com/00-evan/shattered-pixel-dungeon/) by [00-Evan](https://shatteredpixel.com/), inspired by Rat King Dungeon by the same author.
 
-This will remain in sync with updates coming from Shattered Pixel Dungeon for the foreseeable future.
+This will remain in sync with updates coming from RKPD2 and ShatteredPD for the foreseeable future.
 
-RKPD2 currently compiles for Android and desktop platforms. It is currently only available from [GitHub](https://github.com/Zrp200/rkpd2/releases), but it may expand to other distribution sites such as Google Play in the future.
+Rat King Adventure currently compiles for Android and desktop platforms. It is currently only available from [GitHub](https://github.com/TrashboxBobylev/Rat-King-Adventure), but it may expand to other distribution sites such as Google Play in the future.
