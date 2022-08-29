@@ -21,17 +21,14 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.input.ControllerHandler;
 import com.watabou.input.GameAction;
+import com.watabou.input.KeyBindings;
 import com.watabou.noosa.*;
-import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.QuickSlot;
-import com.zrp200.rkpd2.SPDAction;
-import com.zrp200.rkpd2.SPDSettings;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.items.Item;
@@ -43,22 +40,7 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.DungeonTerrainTilemap;
-import com.zrp200.rkpd2.windows.WndBag;
-import com.zrp200.rkpd2.windows.WndKeyBindings;
-import com.zrp200.rkpd2.windows.WndMessage;
-import com.zrp200.rkpd2.windows.WndQuickBag;
-import com.zrp200.rkpd2.windows.WndUseItem;
-import com.watabou.input.ControllerHandler;
-import com.watabou.input.GameAction;
-import com.watabou.input.KeyBindings;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Gizmo;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.PointerArea;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
+import com.zrp200.rkpd2.windows.*;
 
 import java.util.ArrayList;
 

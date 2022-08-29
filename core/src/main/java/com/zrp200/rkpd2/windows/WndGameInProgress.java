@@ -23,9 +23,6 @@ package com.zrp200.rkpd2.windows;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Button;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.FileUtils;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
@@ -37,8 +34,8 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.scenes.StartScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
-import java.io.IOException;
 import java.util.Locale;
 
 public class WndGameInProgress extends Window {

@@ -70,7 +70,7 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image getIcon() {
+    public Image actionIcon() {
         return new WraithSprite();
     }
 

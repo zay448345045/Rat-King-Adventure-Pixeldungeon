@@ -48,7 +48,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.RAT_KING;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
 public class ScrollOfMetamorphosis extends ExoticScroll {
@@ -134,25 +135,9 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 			initClassTalents(Dungeon.hero.heroClass, talents, Dungeon.hero.metamorphedTalents);
 
-
 			for (LinkedHashMap<Talent, Integer> tier : talents){
-				for (Talent talent : tier.keySet()) {
+				for (Talent talent : tier.keySet()){
 					tier.put(talent, Dungeon.hero.pointsInTalent(talent));
-				}
-			}
-			for (int i = 0; i < talents.size(); i++){
-				LinkedHashMap<Talent, Integer> heroTalents = Dungeon.hero.talents.get(i);
-				LinkedHashMap<Talent, Integer> lolTalents = talents.get(i);
-				for (Talent talent : heroTalents.keySet()){
-					if (!lolTalents.containsKey(talent)){
-						if ((i == 3 &&
-								!(talent == HEROIC_RATINESS || talent == HEROIC_ARCHERY ||
-										talent == HEROIC_ENDURANCE || talent == HEROIC_STAMINA || talent == HEROIC_WIZARDRY))){
-							continue;
-						}
-						if (i == 2) continue;
-						lolTalents.put(talent, Dungeon.hero.pointsInTalent(talent));
-					}
 				}
 			}
 
@@ -187,21 +172,17 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			pane.setPos(pane.left(), pane.top()); //triggers layout
 		}
 	}
+	//talents that can only be used by one hero class
+	public static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
+	static {
 
-	public static class WndMetamorphReplace extends Window {
+		// rework made metamorph effect unreasonable.
+		restrictedTalents.put(IRON_WILL, WARRIOR);
 
-		//talents that can only be used by one hero class
-		private static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
-		static {
-
-			// rework made metamorph effect unreasonable.
-			restrictedTalents.put(IRON_WILL, WARRIOR);
-
-			restrictedTalents.put(Talent.RUNIC_TRANSFERENCE, HeroClass.WARRIOR);
-			restrictedTalents.put(Talent.WAND_PRESERVATION, HeroClass.MAGE);
+		restrictedTalents.put(Talent.RUNIC_TRANSFERENCE, HeroClass.WARRIOR);
+		restrictedTalents.put(Talent.WAND_PRESERVATION, HeroClass.MAGE);
 
 		// rat king talents that contain restricted talents are removed.
-
 		restrictedTalents.put(POWER_WITHIN, RAT_KING);
 	}
 

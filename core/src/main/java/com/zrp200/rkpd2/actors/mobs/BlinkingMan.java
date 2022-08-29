@@ -87,7 +87,7 @@ public class BlinkingMan extends AbyssalMob {
 			//trim it to just be the part that goes past them
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
 			//knock them back along that ballistica
-			WandOfBlastWave.throwChar(enemy, trajectory, Random.Int(1, 2), false);
+			WandOfBlastWave.throwChar(enemy, trajectory, Random.Int(1, 2), false, true, getClass());
 		}
 
 		return damage;
@@ -167,7 +167,7 @@ public class BlinkingMan extends AbyssalMob {
 	}
 
 	@Override
-	protected Item createLoot() {
+	public Item createLoot() {
 		Class<?extends Scroll> loot;
 		do{
 			loot = (Class<? extends Scroll>) Random.oneOf(Generator.Category.SCROLL.classes);

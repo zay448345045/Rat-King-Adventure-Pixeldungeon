@@ -23,9 +23,7 @@ package com.zrp200.rkpd2.ui;
 
 import com.watabou.input.GameAction;
 import com.watabou.noosa.*;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.ColorMath;
 import com.zrp200.rkpd2.Assets;
@@ -41,18 +39,6 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.windows.WndHero;
 import com.zrp200.rkpd2.windows.WndKeyBindings;
-import com.watabou.input.GameAction;
-import com.watabou.input.KeyBindings;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.ColorMath;
-
-import java.util.ArrayList;
 
 public class StatusPane extends Component {
 

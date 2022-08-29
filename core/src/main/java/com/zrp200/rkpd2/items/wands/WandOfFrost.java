@@ -68,6 +68,16 @@ public class WandOfFrost extends DamageWand {
 			}
 		}
 		effect(collisionPos);
+
+		MagicalFireRoom.EternalFire eternalFire = (MagicalFireRoom.EternalFire)Dungeon.level.blobs.get(MagicalFireRoom.EternalFire.class);
+		if (eternalFire != null && eternalFire.volume > 0) {
+			eternalFire.clear( bolt.collisionPos );
+			//bolt ends 1 tile short of fire, so check next tile too
+			if (bolt.path.size() > bolt.dist+1){
+				eternalFire.clear( bolt.path.get(bolt.dist+1) );
+			}
+
+		}
 	}
 
 	public void effect(int collisionPos) {
@@ -78,17 +88,7 @@ public class WandOfFrost extends DamageWand {
 
 		Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
 		if (fire != null && fire.volume > 0) {
-			fire.clear( bolt.collisionPos );
-		}
-
-		MagicalFireRoom.EternalFire eternalFire = (MagicalFireRoom.EternalFire)Dungeon.level.blobs.get(MagicalFireRoom.EternalFire.class);
-		if (eternalFire != null && eternalFire.volume > 0) {
-			eternalFire.clear( bolt.collisionPos );
-			//bolt ends 1 tile short of fire, so check next tile too
-			if (bolt.path.size() > bolt.dist+1){
-				eternalFire.clear( bolt.path.get(bolt.dist+1) );
-			}
-
+			fire.clear( collisionPos );
 		}
 
 		Char ch = Actor.findChar(collisionPos);

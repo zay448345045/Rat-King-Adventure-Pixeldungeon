@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2;
 
 import com.watabou.noosa.Game;
+import com.watabou.utils.Random;
 import com.watabou.utils.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -45,6 +46,7 @@ import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
 import com.zrp200.rkpd2.items.wands.WandOfWarding;
 import com.zrp200.rkpd2.journal.Notes;
 import com.zrp200.rkpd2.levels.*;
+import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.levels.rooms.secret.SecretRoom;
 import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.messages.Messages;
@@ -57,11 +59,7 @@ import com.zrp200.rkpd2.windows.WndResurrect;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 public class Dungeon {
 

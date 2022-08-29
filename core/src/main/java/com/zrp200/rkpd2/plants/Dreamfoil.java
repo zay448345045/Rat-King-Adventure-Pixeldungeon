@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.actors.buffs.BlobImmunity;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.MagicalSleep;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;

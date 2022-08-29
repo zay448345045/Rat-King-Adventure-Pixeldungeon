@@ -21,41 +21,24 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.QuickSlot;
-import com.zrp200.rkpd2.Rankings;
-import com.zrp200.rkpd2.SPDSettings;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.DeviceCompat;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.BadgesGrid;
-import com.zrp200.rkpd2.ui.BadgesList;
-import com.zrp200.rkpd2.ui.CheckBox;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.ItemSlot;
-import com.zrp200.rkpd2.ui.RedButton;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.TalentButton;
-import com.zrp200.rkpd2.ui.TalentsPane;
-import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.zrp200.rkpd2.ui.Button;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -371,18 +354,23 @@ public class WndRanking extends WndTabbed {
 			camera = WndRanking.this.camera;
 
 			float pos = 0;
+			OrderedMap<String, Integer> challenges = Challenges.availableChallenges();
+			OrderedMap<String, Integer> activeChallenges = new OrderedMap<>();
+			for (ObjectMap.Entry<String, Integer> chal : challenges.entries()){
+				if ((Dungeon.challenges & chal.value) != 0) activeChallenges.put(chal.key, chal.value);
+			}
+			challenges = new OrderedMap<>(activeChallenges);
 
-			for (int i=0; i < Challenges.NAME_IDS.length; i++) {
+			for (ObjectMap.Entry<String, Integer> chal : challenges.entries()) {
 
-				final String challenge = Challenges.NAME_IDS[i];
+				final String challenge = chal.key;
 
 				CheckBox cb = new CheckBox( Messages.titleCase(Messages.get(Challenges.class, challenge)) );
-				cb.checked( (Dungeon.challenges & Challenges.MASKS[i]) != 0 );
+				cb.checked( true );
 				cb.active = false;
 
-				if (i > 0) {
-					pos += 1;
-				}
+				pos += 1;
+
 				cb.setRect( 0, pos, WIDTH-16, 15 );
 
 				add( cb );

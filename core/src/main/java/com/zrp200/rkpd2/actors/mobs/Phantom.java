@@ -80,7 +80,7 @@ public class Phantom extends AbyssalMob {
 		super.rollToDropLoot();
 	}
 
-	protected Item createLoot() {
+	public Item createLoot() {
 		Dungeon.LimitedDrops.PHANTOM_EQUIP.count++;
 		//uses probability tables for dwarf city
 		if (loot == Generator.Category.WEAPON){

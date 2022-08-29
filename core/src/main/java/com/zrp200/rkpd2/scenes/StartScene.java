@@ -25,7 +25,6 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.ui.Button;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.GamesInProgress;
@@ -36,11 +35,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.windows.WndGameInProgress;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NinePatch;
-import com.zrp200.rkpd2.ui.Button;
 
 import java.util.ArrayList;
 

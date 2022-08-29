@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.ui;
 
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Button;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.QuickSlot;
@@ -40,9 +39,6 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndKeyBindings;
-import com.watabou.input.GameAction;
-import com.watabou.noosa.Image;
-import com.watabou.utils.PathFinder;
 
 public class QuickSlotButton extends Button {
 	

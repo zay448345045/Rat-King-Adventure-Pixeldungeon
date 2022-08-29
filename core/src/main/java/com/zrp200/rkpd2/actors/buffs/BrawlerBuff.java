@@ -33,8 +33,8 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         return 15 + Dungeon.hero.pointsInTalent(Talent.POWER_STABILIZER)*5;
     }
 
-    public int damageFactor(int damage){
-        return (int) (damage*(1f + Math.min(damageModifier()*maxCharge(), count()*damageModifier())));
+    public float damageFactor(float damage){
+        return (damage*(1f + Math.min(damageModifier()*maxCharge(), count()*damageModifier())));
     }
 
     public float damageModifier(){
@@ -62,7 +62,7 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image getIcon() {
+    public Image actionIcon() {
         Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
         actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.RING_FORCE));
         actionIco.scale.set(2f);

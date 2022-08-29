@@ -21,9 +21,12 @@
 
 package com.zrp200.rkpd2.items.artifacts;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -38,18 +41,11 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Shopkeeper;
 import com.zrp200.rkpd2.effects.Surprise;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
-import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -247,6 +243,13 @@ public class MasterThievesArmband extends Artifact {
 		if (exp > Math.round(10 + level()*3.33f)){
 			exp = 0;
 		}
+	}
+
+	public static interface ThieveryBuff {
+		public boolean isCursed();
+		public int chargesToUse(Item item);
+		public boolean steal(Item item);
+		public float stealChance(Item item);
 	}
 
 	public class Thievery extends ArtifactBuff {

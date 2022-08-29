@@ -40,6 +40,7 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.quest.Chaosstone;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -754,6 +755,21 @@ public class SoulOfYendor extends Artifact {
             //get lvl*50 gold or lvl*3.33% item value of free charge, whichever is less.
             int chargeBonus = Math.min(level()*50, (value*level())/30);
             return (((float)charge*3 + chargeBonus)/value);
+        }
+
+        @Override
+        public int chargesToUse(Item item) {
+            return 0;
+        }
+
+        @Override
+        public boolean steal(Item item) {
+            return false;
+        }
+
+        @Override
+        public float stealChance(Item item) {
+            return 0;
         }
     }
 

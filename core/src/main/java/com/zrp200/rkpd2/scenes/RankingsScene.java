@@ -25,7 +25,6 @@ import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.ui.Button;
 import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
@@ -38,21 +37,10 @@ import com.zrp200.rkpd2.items.quest.Chaosstone;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.Archs;
-import com.zrp200.rkpd2.ui.ExitButton;
-import com.zrp200.rkpd2.ui.IconButton;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.windows.WndDailies;
 import com.zrp200.rkpd2.windows.WndError;
 import com.zrp200.rkpd2.windows.WndRanking;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
-import com.zrp200.rkpd2.ui.Button;
-import com.watabou.utils.GameMath;
 
 public class RankingsScene extends PixelScene {
 	
@@ -233,7 +221,7 @@ public class RankingsScene extends PixelScene {
 			
 			if (rec.win) {
 				if (rec.cause == Chaosstone.class){
-					shield.view(ItemSpriteSheet.CHAOSSTONE, new ItemSprite.Glowing());
+					shield.copy(new ItemSprite(ItemSpriteSheet.CHAOSSTONE, new ItemSprite.Glowing()));
 					position.hardlight(TEXT_WIN[odd]);
 					desc.hardlight(TEXT_WIN[odd]);
 					depth.hardlight(TEXT_WIN[odd]);

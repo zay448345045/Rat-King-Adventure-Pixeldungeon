@@ -344,12 +344,17 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		}
 
 		@Override
-		public Image getIcon() {
+		public Image actionIcon() {
 			Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
 			actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.SCROLL_TELEPORT));
 			actionIco.scale.set(2f);
 			actionIco.hardlight(0xc44dd6);
 			return actionIco;
+		}
+
+		@Override
+		public String actionName() {
+			return null;
 		}
 
 		@Override

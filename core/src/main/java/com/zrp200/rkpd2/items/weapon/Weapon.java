@@ -40,6 +40,7 @@ import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.rings.RingOfFuror;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
+import com.zrp200.rkpd2.items.weapon.curses.Explosive;
 import com.zrp200.rkpd2.items.weapon.curses.*;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;

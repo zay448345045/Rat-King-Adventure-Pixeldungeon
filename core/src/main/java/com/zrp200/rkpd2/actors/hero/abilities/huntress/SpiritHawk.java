@@ -189,23 +189,24 @@ public class SpiritHawk extends ArmorAbility {
 		@Override
 		public int attackProc(Char enemy, int damage) {
 			damage = super.attackProc( enemy, damage );
-			switch (Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES)){
+			switch (Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES)) {
 				case 1:
-					Buff.prolong( enemy, Blindness.class, 2);
+					Buff.prolong(enemy, Blindness.class, 2);
 					break;
 				case 2:
-					Buff.prolong( enemy, Blindness.class, 5);
+					Buff.prolong(enemy, Blindness.class, 5);
 					break;
 				case 3:
-					Buff.prolong( enemy, Blindness.class, 5);
-					Buff.prolong( enemy, Cripple.class, 2);
+					Buff.prolong(enemy, Blindness.class, 5);
+					Buff.prolong(enemy, Cripple.class, 2);
 					break;
 				case 4:
-					Buff.prolong( enemy, Blindness.class, 5);
-					Buff.prolong( enemy, Cripple.class, 5);
+					Buff.prolong(enemy, Blindness.class, 5);
+					Buff.prolong(enemy, Cripple.class, 5);
 					break;
 				default:
 					//do nothing
+			}
 			if (Dungeon.hero.hasTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE)) {
 				Buff.prolong( enemy, Blindness.class, 2*Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE) );
 			}

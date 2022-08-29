@@ -6,7 +6,6 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
-import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
@@ -96,28 +95,6 @@ public class KromerCloak extends CloakOfShadows {
         public boolean act(){
             turnsToCost--;
             Hero target = (Hero)this.target;
-            if(target.hasTalent(Talent.MENDING_SHADOWS)
-                    && !Buff.affect(target, Hunger.class).isStarving()) {
-                // heal every 4/2 turns when not starving. effectively a 1.5x boost to standard protective shadows, plus it doesn't go away.
-                incHeal += target.pointsInTalent(Talent.MENDING_SHADOWS)/4f;
-                if (incHeal >= 1 && target.HP < target.HT){
-                    incHeal = 0;
-                    target.HP++;
-                    target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-                }
-            }
-            //barrier every 2/1 turns, to a max of 3/5
-            if (target.hasTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE)){
-                Barrier barrier = Buff.affect(target, Barrier.class);
-                int points = target.pointsInTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE);
-                if (barrier.shielding() < 1 + 2*points) {
-                    incShield += 0.5f*points;
-                }
-                if (incShield >= 1 ){
-                    incShield = 0;
-                    barrier.incShield(1);
-                }
-            }
 
             if (turnsToCost <= 0){
                 charge--;

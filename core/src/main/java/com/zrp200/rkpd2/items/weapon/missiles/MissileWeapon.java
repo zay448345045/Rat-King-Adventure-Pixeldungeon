@@ -28,7 +28,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
-import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -242,7 +241,7 @@ abstract public class MissileWeapon extends Weapon {
 		if (Random.Int(8) < Dungeon.hero.pointsInTalent(Talent.POINT_BLANK) && Dungeon.level.adjacent(attacker.pos, defender.pos)){
 			Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
-			WandOfBlastWave.throwChar(defender, trajectory, 2, false);
+			WandOfBlastWave.throwChar(defender, trajectory, 2, false, true, getClass());
 		}
 
 		return super.proc(attacker, defender, damage);

@@ -110,6 +110,7 @@ public enum Icons {
 	RAT_KING,
 
 	//icons that appear in the about screen, variable spacing
+	TRASHBOXBOBYLEV,
 	LIBGDX,
 	ALEKS,
 	WATA,
@@ -150,6 +151,9 @@ public enum Icons {
 				break;
 			case SHPX:
 				icon.frame( icon.texture.uvRectBySize( 119, 0, 16, 16 ) );
+				break;
+			case TRASHBOXBOBYLEV:
+				icon.frame( icon.texture.uvRectBySize( 139, 0, 17, 17 ) );
 				break;
 
 			case STAIRS:

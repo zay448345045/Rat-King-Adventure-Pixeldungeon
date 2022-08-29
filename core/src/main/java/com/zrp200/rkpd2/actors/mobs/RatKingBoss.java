@@ -782,7 +782,7 @@ public class RatKingBoss extends Mob {
                                                 if (c != null) {
                                                     Ballistica trajectory = new Ballistica(pos, c.pos, Ballistica.STOP_TARGET);
                                                     trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-                                                    WandOfBlastWave.throwChar(c, trajectory, 3, true);
+                                                    WandOfBlastWave.throwChar(c, trajectory, 3, true, true, getClass());
                                                     if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                         Buff.affect(c, Paralysis.class, 1f);
                                                     }

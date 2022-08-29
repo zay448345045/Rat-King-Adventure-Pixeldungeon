@@ -101,7 +101,7 @@ public class LegacyWrath extends ArmorAbility {
                 if (hero.hasTalent(Talent.AVALON_POWER_UP)) {
                     Ballistica trajectory = new Ballistica(mob.pos, mob.pos + i, Ballistica.MAGIC_BOLT);
                     int strength = 1 + hero.pointsInTalent(Talent.AVALON_POWER_UP)*2;
-                    WandOfBlastWave.throwChar(mob, trajectory, strength, true);
+                    WandOfBlastWave.throwChar(mob, trajectory, strength, true, true, getClass());
                 }
                 if (hero.hasTalent(Talent.RAT_AGE)){
                         Buff.prolong(mob, TimedShrink.class, 1 + hero.pointsInTalent(Talent.RAT_AGE));

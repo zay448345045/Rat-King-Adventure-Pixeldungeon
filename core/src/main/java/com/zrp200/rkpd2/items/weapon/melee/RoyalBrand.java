@@ -151,7 +151,7 @@ public class RoyalBrand extends Crossbow {
             //trim it to just be the part that goes past them
             trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
             //knock them back along that ballistica
-            WandOfBlastWave.throwChar(enemy, trajectory, 2, true, false);
+            WandOfBlastWave.throwChar(enemy, trajectory, 2, true, false, getClass());
             Buff.prolong(enemy, Vertigo.class, Random.NormalIntRange(1, 4));
         }
         Buff.affect(Dungeon.hero, Barrier.class).setShield(damage / 6 + 1 + Dungeon.hero.drRoll()/2);
@@ -162,7 +162,7 @@ public class RoyalBrand extends Crossbow {
             //knock out target and get blocking
             trajectory = new Ballistica(Dungeon.hero.pos, enemy.pos, Ballistica.STOP_TARGET);
             trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
-            WandOfBlastWave.throwChar(enemy, trajectory, 1, true);
+            WandOfBlastWave.throwChar(enemy, trajectory, 1, true, true, getClass());
             Buff.affect(Dungeon.hero, RoundShield.Block.class, 8f);
             damage*=1.5;
         }

@@ -681,7 +681,7 @@ public abstract class Mob extends Char {
 
 	@Override
 	public float speed() {
-		return super.speed() * AscensionChallenge.enemySpeedModifier(this);
+		return super.speed() * AscensionChallenge.enemySpeedModifier(this)/(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (0.8f * scaleFactor) : 1);
 	}
 
 	public final boolean surprisedBy( Char enemy ){
@@ -703,12 +703,6 @@ public abstract class Mob extends Char {
 	
 	public boolean isTargeting( Char ch){
 		return enemy == ch;
-	}
-
-	//2.5x speed to 0.71x speed
-	@Override
-	public float speed() {
-		return super.speed()/(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (0.8f * scaleFactor) : 1);
 	}
 
 	//2.5x speed to 0.71x speed

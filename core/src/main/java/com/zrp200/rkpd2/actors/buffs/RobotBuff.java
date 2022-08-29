@@ -21,7 +21,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image getIcon() {
+    public Image actionIcon() {
         if (target != null && target.buff(RobotTransform.class) != null)
             return HeroSprite.avatar(HeroClass.ROGUE, 7);
         else

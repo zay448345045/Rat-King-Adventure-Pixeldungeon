@@ -173,7 +173,9 @@ public class ActionIndicator extends Tag {
 
 	public interface Action{
 
-		public String actionName();
+		public default String actionName() {
+			return Messages.get(this, "action_name");
+		}
 
 		public Image actionIcon();
 

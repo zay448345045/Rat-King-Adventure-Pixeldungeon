@@ -30,9 +30,10 @@ import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.Game;
+import com.zrp200.rkpd2.utils.GLog;
 
 public class Fadeleaf extends Plant {
 	

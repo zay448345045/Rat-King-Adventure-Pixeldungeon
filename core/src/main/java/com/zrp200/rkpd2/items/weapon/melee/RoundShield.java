@@ -72,7 +72,7 @@ public class RoundShield extends MeleeWeapon {
 			//knock out target and get blocking
 			Ballistica trajectory = new Ballistica(Dungeon.hero.pos, enemy.pos, Ballistica.STOP_TARGET);
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
-			WandOfBlastWave.throwChar(enemy, trajectory, 1, true);
+			WandOfBlastWave.throwChar(enemy, trajectory, 1, true, true, getClass());
 			Buff.affect(Dungeon.hero, Block.class, 8f);
 		}
 		return 0;
