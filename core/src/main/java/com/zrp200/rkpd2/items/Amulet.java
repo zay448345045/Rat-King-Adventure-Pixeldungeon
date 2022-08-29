@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.AmuletScene;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -77,7 +78,7 @@ public class Amulet extends Item {
 			Dungeon.level.pressCell( cell );
 			Sample.INSTANCE.play(Assets.Sounds.SHATTER);
 			GameScene.flash(0xFFFFFF, true);
-			Dungeon.depth = -1;
+			InterlevelScene.curTransition = new LevelTransition(Dungeon.level, -1, LevelTransition.Type.REGULAR_ENTRANCE, 0, Dungeon.branch, LevelTransition.Type.REGULAR_EXIT);
 			Statistics.deepestFloor = -1;
 			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 			Game.switchScene(InterlevelScene.class);

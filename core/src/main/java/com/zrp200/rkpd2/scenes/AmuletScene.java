@@ -38,7 +38,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.StyledButton;
 
@@ -57,7 +56,7 @@ public class AmuletScene extends PixelScene {
 	{
 		inGameScene = true;
 	}
-StyledButton btnExit = null;
+	StyledButton btnExit = null;
 	StyledButton btnStay = null;
 
 	@Override
@@ -115,13 +114,14 @@ StyledButton btnExit = null;
 		btnStay.setSize( WIDTH, BTN_HEIGHT );
 		add( btnStay );
 
-		RedButton btnMastery = new RedButton( Messages.get(this, "mastery") ) {
+		StyledButton btnMastery = new StyledButton(Chrome.Type.GREY_BUTTON_TR,  Messages.get(this, "mastery") ) {
 			@Override
 			protected void onClick() {
 					InterlevelScene.mode = InterlevelScene.Mode.ABYSS;
 					Game.switchScene(InterlevelScene.class);
 			}
 		};
+		btnMastery.icon(Icons.CHALLENGE_ON.get());
 		btnMastery.setSize( WIDTH, BTN_HEIGHT );
 		add( btnMastery );
 
