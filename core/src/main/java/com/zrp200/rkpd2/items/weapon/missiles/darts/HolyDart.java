@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,14 @@
 
 package com.zrp200.rkpd2.items.weapon.missiles.darts;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Bless;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class HolyDart extends TippedDart {
@@ -35,10 +40,17 @@ public class HolyDart extends TippedDart {
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		
-		Buff.affect(defender, Bless.class, Bless.DURATION);
-		
 		if (attacker.alignment == defender.alignment){
+			Buff.affect(defender, Bless.class, Math.round(Bless.DURATION));
 			return 0;
+		}
+
+		if (Char.hasProp(defender, Char.Property.UNDEAD) || Char.hasProp(defender, Char.Property.DEMONIC)){
+			defender.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10+buffedLvl() );
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			defender.damage(Random.NormalIntRange(10 + Dungeon.scalingDepth()/3, 20 + Dungeon.scalingDepth()/3), this);
+		} else {
+			Buff.affect(defender, Bless.class, Math.round(Bless.DURATION));
 		}
 		
 		return super.proc(attacker, defender, damage);

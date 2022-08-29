@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
@@ -31,8 +33,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.GreatCrabSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Random;
 
 public class GreatCrab extends Crab {
 
@@ -70,17 +70,37 @@ public class GreatCrab extends Crab {
 
 	@Override
 	public void damage( int dmg, Object src ){
-		//crab blocks all attacks originating from its current enemy if it sees them.
-		//All direct damage is negated, no exceptions. environmental effects go through as normal.
-		if ((enemySeen && state != SLEEPING && paralysed == 0)
-				&& ((src instanceof Wand && enemy == Dungeon.hero)
-				|| (src instanceof Char && enemy == src))){
+		//crab blocks all wand damage from the hero if it sees them.
+		//Direct damage is negated, but add-on effects and environmental effects go through as normal.
+		if (enemySeen
+				&& state != SLEEPING
+				&& paralysed == 0
+				&& src instanceof Wand
+				&& enemy == Dungeon.hero
+				&& enemy.invisible == 0){
 			GLog.n( Messages.get(this, "noticed") );
-			sprite.showStatus( CharSprite.NEUTRAL, Messages.get(this, "blocked") );
+			sprite.showStatus( CharSprite.NEUTRAL, Messages.get(this, "def_verb") );
 			Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
 		} else {
 			super.damage( dmg, src );
 		}
+	}
+
+	@Override
+	public int defenseSkill( Char enemy ) {
+		//crab blocks all melee attacks from its current target
+		if (enemySeen
+				&& state != SLEEPING
+				&& paralysed == 0
+				&& enemy == this.enemy
+				&& enemy.invisible == 0){
+			if (sprite != null && sprite.visible) {
+				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
+				GLog.n( Messages.get(this, "noticed") );
+			}
+			return INFINITE_EVASION;
+		}
+		return super.defenseSkill( enemy );
 	}
 
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,11 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.Assets;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.NoosaScriptNoLighting;
-import com.watabou.noosa.SkinnedBlock;
+import com.watabou.noosa.*;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.Assets;
 
 public class Archs extends Component {
 

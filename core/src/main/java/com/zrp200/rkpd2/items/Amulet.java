@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,11 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.AmuletScene;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
@@ -49,7 +51,11 @@ public class Amulet extends Item {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_END );
+		if (hero.buff(AscensionChallenge.class) != null){
+			actions.clear();
+		} else {
+			actions.add(AC_END);
+		}
 		return actions;
 	}
 	
@@ -78,7 +84,7 @@ public class Amulet extends Item {
 			Invisibility.dispel();
 		}
 	}
-	
+
 	@Override
 	public boolean doPickUp(Hero hero, int pos) {
 		Badges.validateRatKingUnlock();
@@ -106,26 +112,25 @@ public class Amulet extends Item {
 	}
 	
 	private void showAmuletScene( boolean showText ) {
-		try {
-			Dungeon.saveAll();
-			AmuletScene.noText = !showText;
-			Game.switchScene( AmuletScene.class, new Game.SceneChangeCallback() {
-				@Override
-				public void beforeCreate() {
+		AmuletScene.noText = !showText;
+		Game.switchScene( AmuletScene.class, new Game.SceneChangeCallback() {
+			@Override
+			public void beforeCreate() {
 
-				}
+			}
 
-				@Override
-				public void afterCreate() {
-					Badges.validateVictory();
-					Badges.validateSecretMastery();
+			@Override
+			public void afterCreate() {
+				Badges.validateVictory();
+				Badges.validateSecretMastery();
 					Badges.validateChampion(Challenges.activeChallenges(), Dungeon.challenges);
-					Badges.saveGlobal();
+				try {
+					Dungeon.saveAll();
+				} catch (IOException e) {
+					ShatteredPixelDungeon.reportException(e);
 				}
-			});
-		} catch (IOException e) {
-			ShatteredPixelDungeon.reportException(e);
-		}
+			}
+		});
 	}
 	
 	@Override
@@ -138,4 +143,16 @@ public class Amulet extends Item {
 		return false;
 	}
 
+	@Override
+	public String desc() {
+		String desc = super.desc();
+
+		if (Dungeon.hero.buff(AscensionChallenge.class) == null){
+			desc += "\n\n" + Messages.get(this, "desc_origins");
+		} else {
+			desc += "\n\n" + Messages.get(this, "desc_ascent");
+		}
+
+		return desc;
+	}
 }

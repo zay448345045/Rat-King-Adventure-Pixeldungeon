@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,6 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
@@ -33,9 +29,9 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Wandmaker;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.CorpseDust;
 import com.zrp200.rkpd2.items.quest.Embers;
-import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Rotberry;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.ItemSlot;
@@ -43,6 +39,9 @@ import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.NinePatch;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
 
 public class WndWandmaker extends Window {
 
@@ -102,7 +101,7 @@ public class WndWandmaker extends Window {
 
 		questItem.detach( Dungeon.hero.belongings.backpack );
 
-		reward.identify();
+		reward.identify(false);
 		if (reward.doPickUp( Dungeon.hero )) {
 			GLog.i( Messages.get(Dungeon.hero, "you_now_have", reward.name()) );
 		} else {
@@ -111,7 +110,7 @@ public class WndWandmaker extends Window {
 		if (Random.Int(2) == 0){
 			Dungeon.level.drop(new Kromer(), wandmaker.pos).sprite.drop();
 		}
-		
+
 		wandmaker.yell( Messages.get(this, "farewell", Dungeon.hero.name()) );
 		wandmaker.destroy();
 		
@@ -142,7 +141,7 @@ public class WndWandmaker extends Window {
 				@Override
 				protected void onClick() {
 					if (Dungeon.hero.belongings.contains(questItem)) {
-						ShatteredPixelDungeon.scene().addToFront(new RewardWindow(item));
+						GameScene.show(new RewardWindow(item));
 					} else {
 						hide();
 					}

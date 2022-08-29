@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -29,7 +30,6 @@ import com.zrp200.rkpd2.actors.buffs.Poison;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.sprites.BanditSprite;
-import com.watabou.utils.Random;
 
 public class Bandit extends Thief {
 	
@@ -47,7 +47,7 @@ public class Bandit extends Thief {
 		if (super.steal( hero )) {
 			
 			Buff.prolong( hero, Blindness.class, Blindness.DURATION/2f );
-			Buff.affect( hero, Poison.class ).set(Random.Int(5, 7) );
+			Buff.affect( hero, Poison.class ).set(Random.IntRange(5, 6) );
 			Buff.prolong( hero, Cripple.class, Cripple.DURATION/2f );
 			Dungeon.observe();
 			

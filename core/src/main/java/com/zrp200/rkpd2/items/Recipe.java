@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,10 +354,14 @@ public abstract class Recipe {
 	
 	public static boolean usableInRecipe(Item item){
 		if (item instanceof EquipableItem){
-			if (item instanceof MissileWeapon || item instanceof SpiritBow) return true;
-			else return !item.isEquipped(Dungeon.hero);
+			//only thrown weapons and wands allowed among equipment items
+			return item.isIdentified() && !item.cursed && item instanceof MissileWeapon;
+		} else if (item instanceof Wand) {
+			return item.isIdentified() && !item.cursed;
+		} else {
+			//other items can be unidentified, but not cursed
+			return !item.cursed;
 		}
-		return (!item.cursed || item instanceof Kromer);
 	}
 }
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -49,6 +50,7 @@ public class PotionOfCleansing extends ExoticPotion {
 		identify();
 		
 		cleanse( hero );
+		new Flare( 6, 32 ).color(0xFF4CD2, true).show( curUser.sprite, 2f );
 	}
 	
 	@Override
@@ -67,8 +69,12 @@ public class PotionOfCleansing extends ExoticPotion {
 			}
 		}
 	}
-	
+
 	public static void cleanse(Char ch){
+		cleanse(ch, Cleanse.DURATION);
+	}
+
+	public static void cleanse(Char ch, float duration){
 		for (Buff b : ch.buffs()){
 			if (b.type == Buff.buffType.NEGATIVE
 					&& !(b instanceof AllyBuff)
@@ -79,10 +85,14 @@ public class PotionOfCleansing extends ExoticPotion {
 				((Hunger) b).satisfy(Hunger.STARVING);
 			}
 		}
-		Buff.affect(ch, Cleanse.class, Cleanse.DURATION);
+		Buff.affect(ch, Cleanse.class, duration);
 	}
 
 	public static class Cleanse extends FlavourBuff {
+
+		{
+			type = buffType.POSITIVE;
+		}
 
 		public static final float DURATION = 5f;
 

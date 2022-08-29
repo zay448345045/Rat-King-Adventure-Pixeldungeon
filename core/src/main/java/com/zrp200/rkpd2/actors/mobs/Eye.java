@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,11 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -179,7 +181,9 @@ public class Eye extends Mob {
 			}
 
 			if (hit( this, ch, true )) {
-				ch.damage( Random.NormalIntRange( 30, 50 ), new DeathGaze() );
+				int dmg = Random.NormalIntRange( 30, 50 );
+				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
+				ch.damage( dmg, new DeathGaze() );
 
 				if (Dungeon.level.heroFOV[pos]) {
 					ch.sprite.flash();
@@ -187,6 +191,7 @@ public class Eye extends Mob {
 				}
 
 				if (!ch.isAlive() && ch == Dungeon.hero) {
+					Badges.validateDeathFromEnemyMagic();
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(this, "deathgaze_kill") );
 				}
@@ -205,7 +210,7 @@ public class Eye extends Mob {
 
 	//generates an average of 1 dew, 0.25 seeds, and 0.25 stones
 	@Override
-	protected Item createLoot() {
+	public Item createLoot() {
 		Item loot;
 		switch(Random.Int(4)){
 			case 0: case 1: default:
@@ -221,10 +226,10 @@ public class Eye extends Mob {
 				}
 				break;
 			case 2:
-				loot = Generator.random(Generator.Category.SEED);
+				loot = Generator.randomUsingDefaults(Generator.Category.SEED);
 				break;
 			case 3:
-				loot = Generator.random(Generator.Category.STONE);
+				loot = Generator.randomUsingDefaults(Generator.Category.STONE);
 				break;
 		}
 		return loot;

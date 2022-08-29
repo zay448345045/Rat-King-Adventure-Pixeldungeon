@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,11 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.windows.WndGameInProgress;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.NinePatch;
+import com.zrp200.rkpd2.ui.Button;
 
 import java.util.ArrayList;
 
@@ -172,7 +177,7 @@ public class StartScene extends PixelScene {
 					}
 					add(hero);
 					
-					steps = new Image(Icons.get(Icons.DEPTH));
+					steps = new Image(Icons.get(Icons.STAIRS));
 					add(steps);
 					depth = new BitmapText(PixelScene.pixelFont);
 					add(depth);
@@ -202,7 +207,13 @@ public class StartScene extends PixelScene {
 					depth.resetColor();
 					level.resetColor();
 				}
-				
+
+				if (info.daily){
+					steps.hardlight(0.5f, 1f, 2f);
+				} else if (!info.customSeed.isEmpty()){
+					steps.hardlight(1f, 1.5f, 0.67f);
+				}
+
 			}
 			
 			layout();

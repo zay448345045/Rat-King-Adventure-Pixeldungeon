@@ -4,6 +4,7 @@ import com.watabou.utils.function.Function;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.ui.TalentButton;
@@ -19,6 +20,7 @@ public class WndInfoArmorAbility extends WndTitledMessage {
 
 		LinkedHashMap<Talent, Integer> talents = initializeArmorTalents.apply(ability);
 		if(talents.isEmpty()) return;
+		Ratmogrify.useRatroicEnergy = ability instanceof Ratmogrify;
 
 		TalentsPane.TalentTierPane talentPane = new TalentsPane.TalentTierPane(talents, 4, TalentButton.Mode.INFO);
 		talentPane.title.text( Messages.titleCase(Messages.get(WndHeroInfo.class, "talents")));

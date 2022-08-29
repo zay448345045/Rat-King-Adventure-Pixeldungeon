@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.items.food;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
-import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -33,7 +32,6 @@ import com.zrp200.rkpd2.items.potions.*;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant.Seed;
-import com.zrp200.rkpd2.plants.Sungrass;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -247,11 +245,6 @@ public class Blandfruit extends Food {
 			
 			if (fruit.quantity() >= 1 && fruit.potionAttrib == null
 				&& seed.quantity() >= 1){
-
-				if (Dungeon.isChallenged(Challenges.NO_HEALING)
-						&& seed instanceof Sungrass.Seed){
-					return false;
-				}
 
 				return true;
 			}

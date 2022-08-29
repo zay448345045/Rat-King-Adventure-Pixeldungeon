@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ package com.zrp200.rkpd2.actors;
 
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.SparseArray;
 import com.watabou.utils.Callback;
+import com.watabou.utils.SparseArray;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -186,6 +186,11 @@ public abstract class Actor implements Bundlable {
 		
 		for (Mob mob : Dungeon.level.mobs) {
 			add( mob );
+		}
+
+		//mobs need to remember their targets after every actor is added
+		for (Mob mob : Dungeon.level.mobs) {
+			mob.restoreEnemy();
 		}
 		
 		for (Blob blob : Dungeon.level.blobs.values()) {

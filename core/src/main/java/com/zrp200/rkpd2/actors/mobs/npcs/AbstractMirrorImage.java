@@ -3,7 +3,7 @@
      * Copyright (C) 2012-2015 Oleg Dolya
      *
      * Shattered Pixel Dungeon
-     * Copyright (C) 2014-2021 Evan Debenham
+     * Copyright (C) 2014-2022 Evan Debenham
      *
      * This program is free software: you can redistribute it and/or modify
      * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,7 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
     import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
     import com.zrp200.rkpd2.actors.blobs.ToxicGas;
     import com.zrp200.rkpd2.actors.buffs.AllyBuff;
-import com.zrp200.rkpd2.actors.buffs.Burning;
-    import com.zrp200.rkpd2.actors.buffs.Corruption;
+    import com.zrp200.rkpd2.actors.buffs.Burning;
     import com.zrp200.rkpd2.actors.hero.Hero;
     import com.zrp200.rkpd2.actors.hero.Talent;
     import com.zrp200.rkpd2.actors.mobs.Mob;

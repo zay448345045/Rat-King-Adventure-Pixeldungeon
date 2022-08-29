@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@ import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.blobs.SacrificialFire;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
-import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
@@ -59,7 +59,6 @@ import com.zrp200.rkpd2.items.potions.exotic.PotionOfDivineInspiration;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfDebug;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -78,23 +77,26 @@ import com.zrp200.rkpd2.journal.Notes;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.Chasm;
+import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.mechanics.ShadowCaster;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Earthroot;
-import com.zrp200.rkpd2.scenes.*;
+import com.zrp200.rkpd2.scenes.AlchemyScene;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.InterlevelScene;
+import com.zrp200.rkpd2.scenes.SurfaceScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.HeroSprite;
+import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.StatusPane;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.zrp200.rkpd2.windows.WndHero;
-import com.zrp200.rkpd2.windows.WndMessage;
-import com.zrp200.rkpd2.windows.WndResurrect;
-import com.zrp200.rkpd2.windows.WndTradeItem;
+import com.zrp200.rkpd2.windows.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,7 +172,7 @@ public class Hero extends Char {
 	private ArrayList<Mob> visibleEnemies;
 
 	//This list is maintained so that some logic checks can be skipped
-	// for enemies we know we aren't seeing normally, resultign in better performance
+	// for enemies we know we aren't seeing normally, resulting in better performance
 	public ArrayList<Mob> mindVisionEnemies = new ArrayList<>();
 
 	public double getViewDistanceModifier() {
@@ -189,12 +191,6 @@ public class Hero extends Char {
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
-
-		if(DeviceCompat.isDesktop() && DeviceCompat.isDebug()) {
-			// scroll of debug: autocollect, put in last slot as that's least likely to be occupied.
-			ScrollOfDebug debug = new ScrollOfDebug();
-			if(debug.collect(belongings.backpack)) Dungeon.quickslot.setSlot(3, debug);
-		}
 
 		visibleEnemies = new ArrayList<>();
 	}
@@ -507,6 +503,7 @@ public class Hero extends Char {
 	}
 	
 	public int tier() {
+		Armor armor = belongings.armor();
 		if ((subClass != null && subClass == HeroSubClass.DECEPTICON) ||
 				(subClass2 != null && subClass2 == HeroSubClass.DECEPTICON)){
 			if (RobotBuff.isVehicle())
@@ -515,8 +512,8 @@ public class Hero extends Char {
 		}
 		if (belongings.armor() instanceof ClassArmor){
 			return 6;
-		} else if (belongings.armor() != null){
-			return belongings.armor().tier;
+		} else if (armor != null){
+			return armor.tier;
 		} else {
 			return 0;
 		}
@@ -707,6 +704,8 @@ public class Hero extends Char {
 												Talent.SILVA_RANGE, 0.25f));
 		}
 
+		speed = AscensionChallenge.modifyHeroSpeed(speed);
+
 		return speed;
 		
 	}
@@ -752,8 +751,7 @@ public class Hero extends Char {
 	}
 	
 	public float attackDelay() {
-		if (buff(Talent.LethalMomentumTracker.class) != null){
-			buff(Talent.LethalMomentumTracker.class).detach();
+		if (Talent.LethalMomentumTracker.apply(this)){
 			return 0;
 		}
 
@@ -862,11 +860,8 @@ public class Hero extends Char {
 			} else if (curAction instanceof HeroAction.Unlock) {
 				actResult = actUnlock((HeroAction.Unlock) curAction);
 				
-			} else if (curAction instanceof HeroAction.Descend) {
-				actResult = actDescend( (HeroAction.Descend)curAction );
-				
-			} else if (curAction instanceof HeroAction.Ascend) {
-				actResult = actAscend( (HeroAction.Ascend)curAction );
+			} else if (curAction instanceof HeroAction.LvlTransition) {
+				actResult = actTransition( (HeroAction.LvlTransition)curAction );
 				
 			} else if (curAction instanceof HeroAction.Attack) {
 				actResult = actAttack( (HeroAction.Attack)curAction );
@@ -918,14 +913,15 @@ public class Hero extends Char {
 		ready = true;
 
 		AttackIndicator.updateState();
-		
+		BuffIndicator.refreshBoss();
+
 		GameScene.ready();
 	}
 	
 	public void interrupt() {
 		if (isAlive() && curAction != null &&
 			((curAction instanceof HeroAction.Move && curAction.dst != pos) ||
-			(curAction instanceof HeroAction.Ascend || curAction instanceof HeroAction.Descend))) {
+			(curAction instanceof HeroAction.LvlTransition))) {
 			lastAction = curAction;
 		}
 		curAction = null;
@@ -1152,7 +1148,12 @@ public class Hero extends Char {
 					&& Notes.keyCount(new IronKey(Dungeon.getDepth())) > 0) {
 				
 				hasKey = true;
-				
+
+			} else if (door == Terrain.CRYSTAL_DOOR
+					&& Notes.keyCount(new CrystalKey(Dungeon.depth)) > 0) {
+
+				hasKey = true;
+
 			} else if (door == Terrain.LOCKED_EXIT
 					&& Notes.keyCount(new SkeletonKey(Dungeon.getDepth())) > 0) {
 
@@ -1183,68 +1184,17 @@ public class Hero extends Char {
 		}
 	}
 	
-	private boolean actDescend( HeroAction.Descend action ) {
+	private boolean actTransition(HeroAction.LvlTransition action ) {
 		int stairs = action.dst;
+		LevelTransition transition = Dungeon.level.getTransition(stairs);
 
 		if (rooted) {
 			Camera.main.shake(1, 1f);
 			ready();
 			return false;
-		//there can be multiple exit tiles, so descend on any of them
-		//TODO this is slightly brittle, it assumes there are no disjointed sets of exit tiles
-		} else if ((Dungeon.level.map[pos] == Terrain.EXIT || Dungeon.level.map[pos] == Terrain.UNLOCKED_EXIT)) {
+		} else if (transition != null && transition.inside(pos)) {
 
-			if (Dungeon.depth == 0){
-				Game.runOnRenderThread(new Callback() {
-					@Override
-					public void call() {
-						GameScene.show( new WndMessage( Messages.get(Hero.this, "leave_rk") ) );
-					}
-				});
-				ready();
-				return false;
-			} else {
-
-				curAction = null;
-				lastMovPos = -1;
-
-				TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
-				if (timeFreeze != null) timeFreeze.detach();
-
-				InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
-				Game.switchScene(InterlevelScene.class);
-
-				return false;
-			}
-
-		} else if (getCloser( stairs )) {
-
-			return true;
-
-		} else {
-			ready();
-			return false;
-		}
-	}
-	
-	private boolean actAscend( HeroAction.Ascend action ) {
-		int stairs = action.dst;
-
-
-		if (rooted){
-			Camera.main.shake( 1, 1f );
-			ready();
-			return false;
-		//there can be multiple entrance tiles, so descend on any of them
-		//TODO this is slightly brittle, it assumes there are no disjointed sets of entrance tiles
-		} else if (Dungeon.level.map[pos] == Terrain.ENTRANCE) {
-
-			if (Dungeon.depth == 0){
-				Dungeon.win(RatKing.class);
-				Dungeon.deleteGame( GamesInProgress.curSlot, true );
-				Game.switchScene(RankingsScene.class);
-			} else if (Dungeon.getDepth() == 1) {
-				
+			if (transition.type == LevelTransition.Type.SURFACE){
 				if (belongings.getItem( Amulet.class ) == null) {
 					Game.runOnRenderThread(new Callback() {
 						@Override
@@ -1254,14 +1204,40 @@ public class Hero extends Char {
 					});
 					ready();
 				} else {
+					Statistics.ascended = true;
 					Badges.silentValidateHappyEnd();
 					Dungeon.win( Amulet.class );
 					Dungeon.deleteGame( GamesInProgress.curSlot, true );
 					Game.switchScene( SurfaceScene.class );
 				}
-				
+
+			} else if (transition.type == LevelTransition.Type.REGULAR_ENTRANCE
+					&& Dungeon.depth == 25
+					//ascension challenge only works on runs started on v1.3+
+					&& Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3
+					&& belongings.getItem(Amulet.class) != null
+					&& buff(AscensionChallenge.class) == null) {
+
+				Game.runOnRenderThread(() ->
+						GameScene.show( new WndOptions( new ItemSprite(ItemSpriteSheet.AMULET),
+								Messages.get(Amulet.class, "ascent_title"),
+								Messages.get(Amulet.class, "ascent_desc"),
+								Messages.get(Amulet.class, "ascent_yes"),
+								Messages.get(Amulet.class, "ascent_no")){
+							@Override
+							protected void onSelect(int index) {
+								if (index == 0){
+									Buff.affect(Hero.this, AscensionChallenge.class);
+									Statistics.highestAscent = 25;
+									actTransition(action);
+								}
+							}
+						})
+				);
+				ready();
+
 			} else {
-				
+
 				curAction = null;
 
 				TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
@@ -1269,8 +1245,15 @@ public class Hero extends Char {
 
 				lastMovPos = -1;
 
-				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
-				Game.switchScene( InterlevelScene.class );
+				InterlevelScene.curTransition = transition;
+				//TODO probably want to make this more flexible when more types exist
+				if (transition.type == LevelTransition.Type.REGULAR_EXIT) {
+					InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+				} else {
+					InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+				}
+				Game.switchScene(InterlevelScene.class);
+
 			}
 
 			return false;
@@ -1523,7 +1506,7 @@ public class Hero extends Char {
 		if (!(src instanceof Char)){
 			//reduce damage here if it isn't coming from a character (if it is we already reduced it)
 			if (endure != null){
-				dmg = endure.adjustDamageTaken(dmg);
+				dmg = Math.round(endure.adjustDamageTaken(dmg));
 			}
 			//the same also applies to challenge scroll damage reduction
 			if (buff(ScrollOfChallenge.ChallengeArena.class) != null){
@@ -1655,6 +1638,10 @@ public class Hero extends Char {
 	}
 	public boolean visibleEnemy( Mob mob ) {
 		return visibleEnemies.contains(mob);
+	}
+
+	public ArrayList<Mob> getVisibleEnemies(){
+		return new ArrayList<>(visibleEnemies);
 	}
 
 	private boolean walkingToVisibleTrapInFog = false;
@@ -1830,22 +1817,17 @@ public class Hero extends Char {
 				curAction = new HeroAction.OpenChest( cell );
 			}
 			
-		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
+		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
 			
 			curAction = new HeroAction.Unlock( cell );
 			
-		}  else if ((cell == Dungeon.level.exit || Dungeon.level.map[cell] == Terrain.EXIT || Dungeon.level.map[cell] == Terrain.UNLOCKED_EXIT)
-				&& Dungeon.getDepth() != 26) {
-			boolean canDo = true;
+		} else if (Dungeon.level.getTransition(cell) != null
+				&& !Dungeon.level.locked
+				&& (Dungeon.depth < 26 || Dungeon.level.getTransition(cell).type == LevelTransition.Type.REGULAR_ENTRANCE) ) {
 
-			if (canDo) curAction = new HeroAction.Descend(cell);
-			else GLog.w(Messages.get(Level.class, "seal"));
+			curAction = new HeroAction.LvlTransition( cell );
 
-		} else if (cell == Dungeon.level.entrance || Dungeon.level.map[cell] == Terrain.ENTRANCE && Dungeon.getDepth() != 27) {
-
-			curAction = new HeroAction.Ascend( cell );
-
-		} else  {
+		}  else {
 			
 			if (!Dungeon.level.visited[cell] && !Dungeon.level.mapped[cell]
 					&& Dungeon.level.traps.get(cell) != null && Dungeon.level.traps.get(cell).visible) {
@@ -1875,7 +1857,10 @@ public class Hero extends Char {
 		
 		AlchemistsToolkit.kitEnergy kit = buff(AlchemistsToolkit.kitEnergy.class);
 		if (kit != null) kit.gainCharge(percent);
-		
+
+		MasterThievesArmband.Thievery armband = buff(MasterThievesArmband.Thievery.class);
+		if (armband != null) armband.gainCharge(percent);
+
 		Berserk berserk = buff(Berserk.class);
 		if (berserk != null) berserk.recover(percent);
 		
@@ -2054,6 +2039,15 @@ public class Hero extends Char {
 					}
 				});
 
+				if (cause instanceof Hero.Doom) {
+					((Hero.Doom)cause).onDeath();
+				}
+
+				SacrificialFire.Marked sacMark = buff(SacrificialFire.Marked.class);
+				if (sacMark != null){
+					sacMark.detach();
+				}
+
 			}
 			return;
 		}
@@ -2118,12 +2112,18 @@ public class Hero extends Char {
 			}
 		}
 
-		GameScene.gameOver();
-		
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				GameScene.gameOver();
+				Sample.INSTANCE.play( Assets.Sounds.DEATH );
+			}
+		});
+
 		if (cause instanceof Hero.Doom) {
 			((Hero.Doom)cause).onDeath();
 		}
-		
+
 		Dungeon.deleteGame( GamesInProgress.curSlot, true );
 	}
 
@@ -2210,6 +2210,13 @@ public class Hero extends Char {
 				if (door == Terrain.LOCKED_DOOR) {
 					hasKey = Notes.remove(new IronKey(Dungeon.getDepth()));
 					if (hasKey) Level.set(doorCell, Terrain.DOOR);
+				} else if (door == Terrain.CRYSTAL_DOOR) {
+					hasKey = Notes.remove(new CrystalKey(Dungeon.depth));
+					if (hasKey) {
+						Level.set(doorCell, Terrain.EMPTY);
+						Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+						CellEmitter.get( doorCell ).start( Speck.factory( Speck.DISCOVER ), 0.025f, 20 );
+					}
 				} else {
 					hasKey = Notes.remove(new SkeletonKey(Dungeon.getDepth()));
 					if (hasKey) Level.set(doorCell, Terrain.UNLOCKED_EXIT);
@@ -2217,7 +2224,6 @@ public class Hero extends Char {
 				
 				if (hasKey) {
 					GameScene.updateKeyDisplay();
-					Level.set(doorCell, door == Terrain.LOCKED_DOOR ? Terrain.DOOR : Terrain.UNLOCKED_EXIT);
 					GameScene.updateMap(doorCell);
 					spend(Key.TIME_TO_UNLOCK);
 				}
@@ -2429,7 +2435,7 @@ public class Hero extends Char {
 		for (Item i : belongings){
 			if (i instanceof EquipableItem && i.isEquipped(this)){
 				((EquipableItem) i).activate(this);
-			} else if (i instanceof CloakOfShadows && i.keptThoughLostInvent && hasTalent(Talent.LIGHT_CLOAK)){
+			} else if (i instanceof CloakOfShadows && i.keptThoughLostInvent && hasTalent(Talent.LIGHT_CLOAK, Talent.RK_FREERUNNER)){
 				((CloakOfShadows) i).activate(this);
 			} else if (i instanceof Wand && i.keptThoughLostInvent){
 				if (holster != null && holster.contains(i)){
@@ -2441,6 +2447,8 @@ public class Hero extends Char {
 				((MagesStaff) i).applyWandChargeBuff(this);
 			}
 		}
+
+		updateHT(false);
 	}
 
 	@Override

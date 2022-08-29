@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,13 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
+import java.text.DecimalFormat;
+
 public class Berserk extends Buff {
+
+	{
+		type = buffType.POSITIVE;
+	}
 
 	private enum State{
 		NORMAL, BERSERK, RECOVERING
@@ -128,14 +134,18 @@ public class Berserk extends Buff {
 		return true;
 	}
 
-	public float damageMult() {
+	public float rageAmount(){
 		if (berserker()){
 			return Math.min(2f,1+power/0.9f);
 		}
-		return Math.min(1.5f,1+power/2f);
+		return Math.min(1f, power);
 	}
+
 	public int damageFactor(int dmg){
 		return Math.round(dmg * damageMult());
+	}
+	private float damageMult() {
+		return Math.min(1.5f, 1f + (power / 2f));
 	}
 
 	public boolean berserking(){
@@ -166,15 +176,11 @@ public class Berserk extends Buff {
 		return damage/(weight*target.HP+(1-weight)*target.HT)/3f;
 	}
 
-	public float rageAmount(){
-		return Math.min(1f, power);
-	}
-
 	public void damage(int damage){
 		if (state == State.RECOVERING && !berserker()) return;
 		float maxPower = 1f + Dungeon.hero.byTalent(
 				Talent.ENDLESS_RAGE, 0.0f,
-				Talent.RK_BERSERKER, 0.15f);
+				Talent.RK_BERSERKER, 0.1f);
 		power = Math.min(maxPower*recovered(), power + rageFactor(damage)*recovered() );
 		BuffIndicator.refreshHero(); //show new power immediately
 		powerLossBuffer = 3; //2 turns until rage starts dropping
@@ -228,6 +234,15 @@ public class Berserk extends Buff {
 				return recovered() == 0 ? 0 : 1 - power/recovered();
 			case BERSERK:
 				return 0f;
+		}
+	}
+
+	public String iconTextDisplay(){
+		switch (state){
+			case NORMAL: case BERSERK: default:
+				return (int)(power*100) + "%";
+			case RECOVERING:
+				return new DecimalFormat("#.#").format(levelRecovery);
 		}
 	}
 

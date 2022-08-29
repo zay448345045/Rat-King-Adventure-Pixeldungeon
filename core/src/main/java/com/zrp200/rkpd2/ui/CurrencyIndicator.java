@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,11 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.scenes.PixelScene;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ui.Component;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.scenes.PixelScene;
 
 public class CurrencyIndicator extends Component {
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ public class SpiritHawk extends ArmorAbility {
 		@Override
 		public int defenseSkill(Char enemy) {
 			if (Dungeon.hero.hasTalent(Talent.SWIFT_SPIRIT) &&
-					dodgesUsed < 1 + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)) {
+					dodgesUsed < 2*Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)) {
 				dodgesUsed++;
 				return Char.INFINITE_EVASION;
 			}
@@ -189,6 +189,23 @@ public class SpiritHawk extends ArmorAbility {
 		@Override
 		public int attackProc(Char enemy, int damage) {
 			damage = super.attackProc( enemy, damage );
+			switch (Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES)){
+				case 1:
+					Buff.prolong( enemy, Blindness.class, 2);
+					break;
+				case 2:
+					Buff.prolong( enemy, Blindness.class, 5);
+					break;
+				case 3:
+					Buff.prolong( enemy, Blindness.class, 5);
+					Buff.prolong( enemy, Cripple.class, 2);
+					break;
+				case 4:
+					Buff.prolong( enemy, Blindness.class, 5);
+					Buff.prolong( enemy, Cripple.class, 5);
+					break;
+				default:
+					//do nothing
 			if (Dungeon.hero.hasTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE)) {
 				Buff.prolong( enemy, Blindness.class, 2*Dungeon.hero.pointsInTalent(Talent.GO_FOR_THE_EYES, Talent.SHADOWSPEC_SLICE) );
 			}
@@ -250,7 +267,7 @@ public class SpiritHawk extends ArmorAbility {
 				die(null);
 				return true;
 			}
-			viewDistance = (int)GameMath.gate(6, 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE), 8);
+			viewDistance = 6+Dungeon.hero.pointsInTalent(Talent.EAGLE_EYE);
 			baseSpeed = 2f + Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)/2f;
 			boolean result = super.act();
 			Dungeon.level.updateFieldOfView( this, fieldOfView );
@@ -297,8 +314,8 @@ public class SpiritHawk extends ArmorAbility {
 			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
 				message = Messages.get(this, "desc_rat", (int)timeRemaining);
 			}
-			if (dodgesUsed < Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)){
-				message += "\n" + Messages.get(this, "desc_dodges", (Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN) - dodgesUsed));
+			if (dodgesUsed < 2*Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN)){
+				message += "\n" + Messages.get(this, "desc_dodges", (2*Dungeon.hero.pointsInTalent(Talent.SWIFT_SPIRIT, Talent.BLOODFLARE_SKIN) - dodgesUsed));
 			}
 			return message;
 		}

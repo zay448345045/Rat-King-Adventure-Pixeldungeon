@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,11 @@ public class Buff extends Actor {
 		return 0;
 	}
 
+	//text to display on large buff icons in the desktop UI
+	public String iconTextDisplay(){
+		return "";
+	}
+
 	//visual effect usually attached to the sprite of the character the buff is attacked to
 	public void fx(boolean on) {
 		//do nothing by default
@@ -133,13 +138,13 @@ public class Buff extends Actor {
 	@Override public String toString() {
 		String name = Messages.get(this, "name");
 		//noinspection StringEquality
-		return name != Messages.NULL ? name : super.toString();
+		return name != Messages.NO_TEXT_FOUND ? name : super.toString();
 	}
 
 	public String desc(){
 		String desc = Messages.get(this, "desc");
 		//noinspection StringEquality
-		return desc != Messages.NULL ? desc : "";
+		return desc != Messages.NO_TEXT_FOUND ? desc : "";
 	}
 
 	//to handle the common case of showing how many turns are remaining in a buff description.

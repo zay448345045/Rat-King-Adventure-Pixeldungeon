@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
@@ -29,6 +30,9 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.effects.particles.BloodParticle;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.windows.WndInfoMob;
 
 public class BossHealthBar extends Component {
 
@@ -37,6 +41,10 @@ public class BossHealthBar extends Component {
 	private Image rawShielding;
 	private Image shieldedHP;
 	private Image hp;
+	private BitmapText hpText;
+
+	private Button bossInfo;
+	private BuffIndicator buffs;
 
 	private static Mob boss;
 
@@ -48,10 +56,17 @@ public class BossHealthBar extends Component {
 	private static BossHealthBar instance;
 	private static boolean bleeding;
 
-	BossHealthBar() {
+	public BossHealthBar() {
 		super();
 		visible = active = (boss != null);
 		instance = this;
+	}
+
+	@Override
+	public synchronized void destroy() {
+		super.destroy();
+		if (instance == this) instance = null;
+		if (buffs != null) BuffIndicator.setBossInstance(null);
 	}
 
 	@Override
@@ -72,6 +87,35 @@ public class BossHealthBar extends Component {
 		hp = new Image(asset, 15, 19, 47, 4);
 		add(hp);
 
+		hpText = new BitmapText(PixelScene.pixelFont);
+		hpText.alpha(0.6f);
+		add(hpText);
+
+		bossInfo = new Button(){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				if (boss != null){
+					GameScene.show(new WndInfoMob(boss));
+				}
+			}
+
+			@Override
+			protected String hoverText() {
+				if (boss != null){
+					return boss.name();
+				}
+				return super.hoverText();
+			}
+		};
+		add(bossInfo);
+
+		if (boss != null) {
+			buffs = new BuffIndicator(boss, false);
+			BuffIndicator.setBossInstance(buffs);
+			add(buffs);
+		}
+
 		skull = new Image(asset, 5, 18, 6, 6);
 		add(skull);
 
@@ -89,7 +133,19 @@ public class BossHealthBar extends Component {
 		bar.y = y;
 
 		hp.x = shieldedHP.x = rawShielding.x = bar.x+15;
-		hp.y = shieldedHP.y = rawShielding.y = bar.y+6;
+		hp.y = shieldedHP.y = rawShielding.y = bar.y+3;
+
+		hpText.scale.set(PixelScene.align(0.5f));
+		hpText.x = hp.x + 1;
+		hpText.y = hp.y + (hp.height - (hpText.baseLine()+hpText.scale.y))/2f;
+		hpText.y -= 0.001f; //prefer to be slightly higher
+		PixelScene.align(hpText);
+
+		bossInfo.setRect(x, y, bar.width, bar.height);
+
+		if (buffs != null) {
+			buffs.setRect(hp.x, hp.y + 5, 110, 7);
+		}
 
 		skull.x = bar.x+5;
 		skull.y = bar.y+5;
@@ -104,13 +160,13 @@ public class BossHealthBar extends Component {
 				visible = active = false;
 			} else {
 
-				float health = boss.HP;
-				float shield = boss.shielding();
-				float max = boss.HT;
+				int health = boss.HP;
+				int shield = boss.shielding();
+				int max = boss.HT;
 
-				hp.scale.x = Math.max( 0, (health-shield)/max);
-				shieldedHP.scale.x = health/max;
-				rawShielding.scale.x = shield/max;
+				hp.scale.x = Math.max( 0, (health-shield)/(float)max);
+				shieldedHP.scale.x = health/(float)max;
+				rawShielding.scale.x = shield/(float)max;
 				if (boss instanceof RatKingBoss && ((RatKingBoss) boss).phase3()){
 					hp.scale.x = 1;
 					hp.color(0xffff00);
@@ -123,15 +179,34 @@ public class BossHealthBar extends Component {
 					else            skull.resetColor();
 					blood.on = bleeding;
 				}
+
+				if (shield <= 0){
+					hpText.text(health + "/" + max);
+				} else {
+					hpText.text(health + "+" + shield +  "/" + max);
+				}
+
 			}
 		}
 	}
 
 	public static void assignBoss(Mob boss){
+		if (BossHealthBar.boss == boss) {
+			return;
+		}
 		BossHealthBar.boss = boss;
 		bleed(false);
 		if (instance != null) {
 			instance.visible = instance.active = true;
+			if (boss != null){
+				if (instance.buffs != null){
+					instance.buffs.killAndErase();
+				}
+				instance.buffs = new BuffIndicator(boss, false);
+				BuffIndicator.setBossInstance(instance.buffs);
+				instance.add(instance.buffs);
+				instance.layout();
+			}
 		}
 	}
 	

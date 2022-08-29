@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
@@ -59,6 +61,10 @@ public class Blacksmith extends NPC {
 	
 	@Override
 	protected boolean act() {
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
+			die(null);
+			return true;
+		}
 		if (Dungeon.level.heroFOV[pos] && !Quest.reforged){
 			Notes.add( Notes.Landmark.TROLL );
 		}
@@ -126,6 +132,7 @@ public class Blacksmith extends NPC {
 					
 					Quest.completed = true;
 					Quest.reforged = false;
+					Statistics.questScores[2] = 3000;
 				}
 			} else {
 				*/
@@ -145,6 +152,7 @@ public class Blacksmith extends NPC {
 
 					Quest.completed = true;
 					Quest.reforged = false;
+					Statistics.questScores[2] = 3000;
 				}
 				//}
 			}
@@ -176,7 +184,11 @@ public class Blacksmith extends NPC {
 			return Messages.get(Blacksmith.class, "un_ided");
 		}
 		
-		if (item1.cursed || item2.cursed) {
+		if (item1.cursed || item2.cursed ||
+				(item1 instanceof Armor && ((Armor) item1).hasCurseGlyph()) ||
+				(item2 instanceof Armor && ((Armor) item2).hasCurseGlyph()) ||
+				(item1 instanceof Weapon && ((Weapon) item1).hasCurseEnchant()) ||
+				(item2 instanceof Weapon && ((Weapon) item2).hasCurseEnchant())) {
 			return Messages.get(Blacksmith.class, "cursed");
 		}
 		

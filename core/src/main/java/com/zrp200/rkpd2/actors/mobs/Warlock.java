@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,10 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
@@ -98,7 +100,7 @@ public class Warlock extends Mob implements Callback {
 	//used so resistances can differentiate between melee and magical attacks
 	public static class DarkBolt{}
 	
-	private void zap() {
+	protected void zap() {
 		spend( TIME_TO_ZAP );
 		
 		if (hit( this, enemy, true )) {
@@ -111,9 +113,11 @@ public class Warlock extends Mob implements Callback {
 			int dmg = Random.NormalIntRange( 12, 18 );
 			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 			ChampionEnemy.AntiMagic.effect(enemy, this);
+			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 			enemy.damage( dmg, new DarkBolt() );
 			
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Badges.validateDeathFromEnemyMagic();
 				Dungeon.fail( getClass() );
 				GLog.n( Messages.get(this, "bolt_kill") );
 			}
@@ -136,15 +140,15 @@ public class Warlock extends Mob implements Callback {
 	public Item createLoot(){
 
 		// 1/6 chance for healing, scaling to 0 over 8 drops
-		if (Random.Int(2) == 0 && Random.Int(8) > Dungeon.LimitedDrops.WARLOCK_HP.count ){
+		if (Random.Int(3) == 0 && Random.Int(8) > Dungeon.LimitedDrops.WARLOCK_HP.count ){
 			Dungeon.LimitedDrops.WARLOCK_HP.count++;
 			return new PotionOfHealing();
 		} else {
-			Item i = Generator.random(Generator.Category.POTION);
+			Item i = Generator.randomUsingDefaults(Generator.Category.POTION);
 			int healingTried = 0;
 			while (i instanceof PotionOfHealing){
 				healingTried++;
-				i = Generator.random(Generator.Category.POTION);
+				i = Generator.randomUsingDefaults(Generator.Category.POTION);
 			}
 
 			//return the attempted healing potion drops to the pool

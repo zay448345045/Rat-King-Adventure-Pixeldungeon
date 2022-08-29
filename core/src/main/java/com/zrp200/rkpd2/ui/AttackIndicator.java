@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,10 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.windows.WndKeyBindings;
 
 import java.util.ArrayList;
 
@@ -56,7 +58,7 @@ public class AttackIndicator extends Tag {
 			instance = this;
 			lastTarget = null;
 
-			setSize(24, 24);
+			setSize(SIZE, SIZE);
 			visible(false);
 			enable(false);
 		}
@@ -75,10 +77,11 @@ public class AttackIndicator extends Tag {
 	@Override
 	protected synchronized void layout() {
 		super.layout();
-		
+
 		if (sprite != null) {
-			sprite.x = x + (width - sprite.width()) / 2 + 1;
-			sprite.y = y + (height - sprite.height()) / 2;
+			if (!flipped)   sprite.x = x + (SIZE - sprite.width()) / 2f + 1;
+			else            sprite.x = x + width - (SIZE + sprite.width()) / 2f - 1;
+			sprite.y = y + (height - sprite.height()) / 2f;
 			PixelScene.align(sprite);
 		}
 	}
@@ -88,13 +91,15 @@ public class AttackIndicator extends Tag {
 		super.update();
 
 		if (!bg.visible){
+			if (sprite != null) sprite.visible = false;
 			enable(false);
 			if (delay > 0f) delay -= Game.elapsed;
 			if (delay <= 0f) active = false;
 		} else {
 			delay = 0.75f;
 			active = true;
-		
+			if (bg.width > 0 && sprite != null)sprite.visible = true;
+
 			if (Dungeon.hero.isAlive()) {
 
 				enable(Dungeon.hero.ready);
@@ -165,21 +170,23 @@ public class AttackIndicator extends Tag {
 	
 	private synchronized void visible( boolean value ) {
 		bg.visible = value;
-		if (sprite != null) {
-			sprite.visible = value;
-		}
 	}
 	
 	@Override
 	protected void onClick() {
-		if (enabled) {
+		if (enabled && Dungeon.hero.ready) {
 			if (Dungeon.hero.handle( lastTarget.pos )) {
 				Dungeon.hero.next();
 			}
 		}
 	}
-	
-	public static void target( Char target ) {
+
+	@Override
+	protected String hoverText() {
+		return Messages.titleCase(Messages.get(WndKeyBindings.class, "tag_attack"));
+	}
+
+	public static void target(Char target ) {
 		synchronized (instance) {
 			if (target != null) {
 				instance.lastTarget = (Mob) target;

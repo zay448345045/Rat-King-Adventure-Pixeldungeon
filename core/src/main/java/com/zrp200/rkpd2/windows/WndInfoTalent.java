@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,10 +28,17 @@ import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.TalentIcon;
 
+import static com.zrp200.rkpd2.Dungeon.hero;
+
 public class WndInfoTalent extends WndTitledMessage {
 
 	public WndInfoTalent(Talent talent, int points, TalentButtonCallback buttonCallback){
-		super( new TalentIcon( talent ), Messages.titleCase(talent.title() + (points > 0 ? " +" + points: "")), talent.desc(), WIDTH_MIN );
+		super(
+		    new TalentIcon( talent ),
+		    Messages.titleCase(talent.title() + (points > 0 ? " +" + points: "")),
+		    talent.desc((buttonCallback != null && buttonCallback.metamorphDesc()) ||
+		        (hero != null && hero.metamorphedTalents.containsValue(talent))),
+            WIDTH_MIN );
 
 		if (buttonCallback != null) {
 			addToBottom(new RedButton( buttonCallback.prompt() ) {
@@ -52,6 +59,10 @@ public class WndInfoTalent extends WndTitledMessage {
 
 	public interface TalentButtonCallback extends Callback {
 		String prompt();
+
+		default boolean metamorphDesc(){
+		    return false;
+		}
 	}
 
 }

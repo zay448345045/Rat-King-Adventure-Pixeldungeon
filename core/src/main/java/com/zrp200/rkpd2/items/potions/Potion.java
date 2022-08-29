@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,7 @@
 package com.zrp200.rkpd2.items.potions;
 
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Fire;
@@ -77,6 +74,7 @@ import com.watabou.utils.Reflection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 public class Potion extends Item {
 
@@ -87,7 +85,7 @@ public class Potion extends Item {
 
 	private static final float TIME_TO_DRINK = 1f;
 
-	private static final HashMap<String, Integer> colors = new HashMap<String, Integer>() {
+	private static final LinkedHashMap<String, Integer> colors = new LinkedHashMap<String, Integer>() {
 		{
 			put("crimson",ItemSpriteSheet.POTION_CRIMSON);
 			put("amber",ItemSpriteSheet.POTION_AMBER);
@@ -352,8 +350,8 @@ public class Potion extends Item {
 	}
 	
 	@Override
-	public Item identify() {
-		super.identify();
+	public Item identify( boolean byHero ) {
+		super.identify(byHero);
 
 		if (!isKnown()) {
 			setKnown();
@@ -514,8 +512,7 @@ public class Potion extends Item {
 			}
 
 			while (result instanceof PotionOfHealing
-					&& (Dungeon.isChallenged(Challenges.NO_HEALING)
-					|| Random.Int(10) < Dungeon.LimitedDrops.COOKING_HP.count)) {
+					&& Random.Int(10) < Dungeon.LimitedDrops.COOKING_HP.count) {
 
 				result = (Potion) Generator.randomUsingDefaults(Generator.Category.POTION);
 			}

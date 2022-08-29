@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -75,7 +75,9 @@ public class v0_7_X_Changes {
 				"_-_ Released October 2nd, 2019\n" +
 				"_-_ 76 days after Shattered v0.7.4\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.5 was a precursor update to v0.8.0, with reworks and expansions to enemies and bosses in the first two regions of the game. I focused on the first two regions for this update as I was already reasonably happy with them after improvements from much earlier updates, and so the changes needed were more minor. I was originally planning to do each future region in its own update, but ended up balling them all up into v0.8.0, which took half a year as a result!\n" +
+				"\n" +
+				"The only major correction to these changes that I needed to make in the future were to Tengu's boss fight. In the second phase of the fight in v0.7.5 the player had to navigate around traps while Tengu was offscreen. I wanted this to be a bit of a break, but it felt more like it interrupted the fight than anything else. After v0.8.0 it was clear to me that multi-phase bosses did not need break phases, and so I removed the second phase from Tengu."));
 		
 		changes.addButton( new ChangeButton(new Image(Assets.Sprites.SNAKE, 12, 0, 12, 11), "Sewer Enemies",
 				"Two new enemies have been added to the sewers!\n\n" +
@@ -97,7 +99,7 @@ public class v0_7_X_Changes {
 				"The game's text renderer is now using libGDX freetype. This looks almost identical to the existing text but is slightly crisper, platform-independent, and much more efficient!\n\n" +
 				"Text rendering was the last bit of android-dependant code, so the game's core code modules (~98% of its code) are now being compiled as general code and not android-specific code!"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 		
@@ -135,7 +137,7 @@ public class v0_7_X_Changes {
 				"Added new Language: Japanese!\n\n" +
 				"Updated Translations and Translator Credits!"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
@@ -157,7 +159,7 @@ public class v0_7_X_Changes {
 				"_-_ Proc chance for corruption enchant increased by ~25% at all levels\n\n" +
 				"_-_ Proc chance for glyph of affection increased by ~50% at +0, scaling to ~10% at +10"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
@@ -181,7 +183,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -189,7 +191,11 @@ public class v0_7_X_Changes {
 				"_-_ Released July 18th, 2019\n" +
 				"_-_ 56 days after Shattered v0.7.3\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.4 was mainly focused around allies, featuring two new ally-focused wands and a bunch of changes to existing ally-granting items. In particular, the changes to ally AI made a huge impact on how usable they were as dedicated partners through the dungeon. Disposable allies (such as mirror images) always worked decently, but prior to v0.7.4 it was usually a liability to invest upgrades into ally-granting items.\n" +
+				"\n" +
+				"The two wands added in this update were actually originally concepted all the way back in v0.3.0. I ended up shelving them at the time as I wasn't confident that I would be able to implement them well.\n" +
+				"\n" +
+				"v0.7.4 was also the first update to begin laying groundwork for releasing Shattered on other platforms! While it would still take a while after this to actually release there, these technical changes were an important first step."));
 
 		changes.addButton( new ChangeButton(new WandOfWarding(),
 				"This brand new wand spawns autonomous wards which attack enemies. Wards can be upgraded by being zapped again, and eventually form up into sentry turrets.\n\n" +
@@ -204,7 +210,7 @@ public class v0_7_X_Changes {
 				"Keyboard input handling and text rendering are still coupled to Android however. I will convert these game systems to use libGDX in a later update.\n\n" +
 				"Note that Shattered will not immediately release on other platforms once libGDX conversion is complete, but it is a big step towards that."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 
@@ -244,7 +250,7 @@ public class v0_7_X_Changes {
 		changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
 				"Updated Translations"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 
@@ -278,7 +284,7 @@ public class v0_7_X_Changes {
 				"_-_ Stone of Clairvoyance radius increased to 12 from 8. This increases the area by ~2.25x.\n\n" +
 				"_-_ Allies are now healed by magical sleep, just like the hero."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
@@ -307,7 +313,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -315,7 +321,9 @@ public class v0_7_X_Changes {
 				"_-_ Released May 23rd, 2019\n" +
 				"_-_ 66 days after Shattered v0.7.2\n" +
 				"\n" +
-				"Dev commentary will be added here in the next update."));
+				"v0.7.3 was another variety update, focused on several incremental additions, improvements, buffs, and nerfs. This update came out relatively quickly as I wanted to respond to feedback from the enchantment changes in v0.7.2. Several of the new enchantments added in v0.7.2 were adjusted or replaced entirely, as I came up with better ideas for enchantments that weren't just damage boosts.\n" +
+				"\n" +
+				"There were also significant additions and improvements to alchemy and thrown weapons. Just like with enchantments, I was still working on finding the best balancing for many alchemy recipes. v0.7.3 helped, but more changes were needed to the system itself in future updates. One notable change was allowing players to create tipped darts anywhere, instead of having it by part of the alchemy system. This led to a huge increase to the usage of tipped darts."));
 		
 		changes.addButton( new ChangeButton(new ItemSprite(ItemSpriteSheet.LONGSWORD, new ItemSprite.Glowing(0xFFFF00)), "Enchantment Changes",
 				"Several changes have been made to enchantments, based on feedback from 0.7.2:\n\n" +
@@ -336,7 +344,7 @@ public class v0_7_X_Changes {
 				"_-_ Elixir of arcane armor requires a goo blob and a potion of earthen armor. It grants a long-lasting resistance to magic.\n\n" +
 				"_-_ Wild energy requires a metal shard and a scroll of mystical energy. It grants large amounts of recharging, but with some unpredictable effects attached!"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 		
@@ -371,7 +379,7 @@ public class v0_7_X_Changes {
 		changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
 				"Updated Translations"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
@@ -402,7 +410,7 @@ public class v0_7_X_Changes {
 				"_-_ Affection charm duration up to 8-12 from 4-12. This means an affection proc now guarantees a free hit.\n\n" +
 				"_-_ Potential no longer grants small amounts of partial charge on every hit, now has a chance to grant one full charge instead. Overall amount of charge given increased by ~20%."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
@@ -437,7 +445,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -472,7 +480,7 @@ public class v0_7_X_Changes {
 				"_-_ Recipe changed to: upgrade + catalyst + 4 energy.\n" +
 				"_-_ No longer applies an enchant/glyph, instead is guaranteed to preserve one while upgrading."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 		
@@ -545,7 +553,7 @@ public class v0_7_X_Changes {
 				"_-_ Tengu spawning on top of other characters\n" +
 				"_-_ Cloak of shadows only being usable from quickslots if it has 1 charge"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
@@ -579,7 +587,7 @@ public class v0_7_X_Changes {
 				"This means more damage versus regular enemies, and less versus bosses. " +
 				"Several bosses have lost their resistances to these effects as a result of this change."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
@@ -595,7 +603,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -631,7 +639,7 @@ public class v0_7_X_Changes {
 				"_-_ Darts are not upgradeable, but tipped darts can get extra durability\n\n" +
 				"Ring of sharpshooting has been slightly adjusted to tie into this new upgrade system."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 		
@@ -669,7 +677,7 @@ public class v0_7_X_Changes {
 				"Updated translations\n\n" +
 				"Updated translator credits"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
@@ -699,7 +707,7 @@ public class v0_7_X_Changes {
 				"_-_ Dwarf King is now able to summon skeletons even if he cannot see the hero\n" +
 				"_-_ Dwarf King is now resistant to fire and toxic gas"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		
@@ -729,7 +737,7 @@ public class v0_7_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 		
@@ -740,7 +748,7 @@ public class v0_7_X_Changes {
 				"\n" +
 				"v0.7.0 was Shattered's second longest-developed update at almost 6 months! This update took so long because it included my first attempt at an entirely new gameplay system: item crafting via alchemy!\n" +
 				"\n" +
-				"Crafting was actually something I wanted to do for years but I kept ended up scrapping my plans because they were too complex. Finally I settled on a system that was aimed at giving consumable items new uses, and that didn't interact with equipment at all. Despite my best efforts the system still ended up not quite doing its job while also being too complex. I've ended up steadily improving the system over future updates.\n" +
+				"Crafting was actually something I wanted to do for years but I kept ending up scrapping my plans because they were too complex. Finally I settled on a system that was aimed at giving consumable items new uses, and that didn't interact with equipment at all. Despite my best efforts the system still ended up not quite doing its job while also being too complex. I've ended up steadily improving the system over future updates.\n" +
 				"\n" +
 				"Also, before v0.7.0 there were a few unique artifacts which only dropped from particular enemies. I standardized these items in v0.7.0 to either be universal, or scrapped them entirely and put some of their functionality into other game systems."));
 		
@@ -781,7 +789,7 @@ public class v0_7_X_Changes {
 				"Most of these recipes require alchemical energy, and information about them can be found within alchemy guidebook pages in the prison and deeper in the dungeon.\n\n" +
 				"All of these items are only available through alchemy."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 		
@@ -868,7 +876,7 @@ public class v0_7_X_Changes {
 		changes.addButton( new ChangeButton(Icons.get(Icons.LANGS), Messages.get(ChangesScene.class, "language"),
 				"Updated Translations\n\nUpdated translator credits\n\nAdded new language: Basque!"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 		
@@ -895,7 +903,7 @@ public class v0_7_X_Changes {
 				"Terror now has it's duration reduced by 5 whenever damage is taken, rather than being removed entirely. Scroll of terror duration has been increased to 20 from 10.\n\n" +
 				"Charm now has it's duration reduced by 5 whenever damage is taken, rather than not losing any duration. Succubi have been given a life-drain ability in compensation, and various charming effects have had their durations adjusted."));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 		

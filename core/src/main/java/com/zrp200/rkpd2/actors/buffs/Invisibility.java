@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.utils.SafeCast;
 
 public class Invisibility extends FlavourBuff {
 
@@ -47,10 +48,15 @@ public class Invisibility extends FlavourBuff {
 	public boolean attachTo( Char target ) {
 		if (super.attachTo( target )) {
 			target.invisible++;
-			if (target instanceof Hero
-					&& (((Hero) target).isSubclassed(HeroSubClass.ASSASSIN)
-						|| ((Hero) target).isSubclassed(HeroSubClass.KING))) {
-				Buff.affect(target, Preparation.class);
+			Hero hero = SafeCast.cast(target, Hero.class);
+			if(hero != null) {
+				if(hero.subClass == HeroSubClass.ASSASSIN
+						|| hero.subClass == HeroSubClass.KING) {
+					Buff.affect(target, Preparation.class);
+				}
+				if(hero.hasTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE)) {
+					 Buff.affect(target, Talent.ProtectiveShadowsTracker.class);
+				}
 			}
 			return true;
 		} else {

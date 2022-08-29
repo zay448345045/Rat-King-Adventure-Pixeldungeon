@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
@@ -256,10 +257,10 @@ public abstract class Wand extends Item {
 	}
 	
 	@Override
-	public Item identify() {
+	public Item identify( boolean byHero ) {
 		
 		curChargeKnown = true;
-		super.identify();
+		super.identify(byHero);
 		
 		updateQuickslot();
 		
@@ -323,7 +324,10 @@ public abstract class Wand extends Item {
 			curseInfusionBonus = false;
 			updateLevel();
 		}
-		return super.level() + resinBonus + (curseInfusionBonus ? 1 : 0);
+		int level = super.level();
+		if (curseInfusionBonus) level += 1 + level/6;
+		level += resinBonus;
+		return level;
 	}
 	
 	@Override
@@ -372,11 +376,11 @@ public abstract class Wand extends Item {
 			}
 
 			if (charger.target.buff(WildMagic.WildMagicTracker.class) != null){
-				int bonus = 2 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER, Talent.ASTRAL_CHARGE);
+				int bonus = 4 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER, Talent.ASTRAL_CHARGE);
 				if (Random.Int(2) == 0) bonus++;
-				bonus /= 2; // +1/+1.5/+2/+2.5/+3 at 0/1/2/3/4 talent points
+				bonus /= 2; // +2/+2.5/+3/+3.5/+4 at 0/1/2/3/4 talent points
 
-				int maxBonusLevel = 2 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
+				int maxBonusLevel = 3 + ((Hero)charger.target).pointsInTalent(Talent.WILD_POWER);
 				if (lvl < maxBonusLevel) {
 					lvl = Math.min(lvl + bonus, maxBonusLevel);
 				}
@@ -435,20 +439,20 @@ public abstract class Wand extends Item {
 
 	protected void wandUsed() {
 		if (!isIdentified()) {
-			float uses = Math.min( availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this) );
+			float uses = Math.min(availableUsesToID, Talent.itemIDSpeedFactor(Dungeon.hero, this));
 			availableUsesToID -= uses;
 			usesLeftToID -= uses;
 			if (usesLeftToID <= 0 || Dungeon.hero.pointsInTalent(Talent.SCHOLARS_INTUITION, Talent.ROYAL_INTUITION) == 2) {
 				identify();
-				GLog.p( Messages.get(Wand.class, "identify") );
-				Badges.validateItemLevelAquired( this );
-			} else if(!levelKnown && Dungeon.hero.hasTalent(Talent.SCHOLARS_INTUITION)) {
+				GLog.p(Messages.get(Wand.class, "identify"));
+				Badges.validateItemLevelAquired(this);
+			} else if (!levelKnown && Dungeon.hero.hasTalent(Talent.SCHOLARS_INTUITION)) {
 				levelKnown = true;
 				updateQuickslot();
-				Badges.validateItemLevelAquired( this );
+				Badges.validateItemLevelAquired(this);
 			}
 		}
-		
+
 		curCharges -= cursed ? 1 : chargesPerCast();
 
 		//remove magic charge at a higher priority, if we are benefiting from it are and not the
@@ -458,11 +462,11 @@ public abstract class Wand extends Item {
 		if (buff != null
 				&& buff.wandJustApplied() != this
 				&& buff.level() == buffedLvl()
-				&& buffedLvl() > super.buffedLvl()){
+				&& buffedLvl() > super.buffedLvl()) {
 			buff.detach();
 		} else {
 			ScrollEmpower empower = curUser.buff(ScrollEmpower.class);
-			if (empower != null){
+			if (empower != null) {
 				empower.use();
 			}
 		}
@@ -476,33 +480,39 @@ public abstract class Wand extends Item {
 			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeMissileTracker.class, 1f);
 		}
 
-		//if the wand is owned by the hero, but not in their inventory, it must be in the staff
 		if (charger != null
-				&& charger.target == Dungeon.hero) {
-			if (!Dungeon.hero.belongings.contains(this)) {
-				if (curCharges == getMinCharges() && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE)) {
+				&& charger.target == Dungeon.hero){
+
+			if (curCharges == 0 && Dungeon.hero.hasTalent(Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE)) {
+				//if the wand is owned by the hero, but not in their inventory, it must be in the staff
+				boolean backupBarrierWand = !Dungeon.hero.belongings.contains(this);
+				//otherwise process logic for metamorphed backup barrier
+				if (!backupBarrierWand && Dungeon.hero.belongings.getItem(MagesStaff.class) == null) {
+					boolean highest = true;
+					for (Item i : Dungeon.hero.belongings.getAllItems(Wand.class)) {
+						if (i.level() > level()) {
+							highest = false;
+						}
+					}
+					backupBarrierWand = highest;
+				}
+				if (backupBarrierWand) {
 					//grants 3/5 shielding
 					final int[] total = new int[1];
-				// currently this stacks.
-				Dungeon.hero.byTalent( (talent, points) -> {int shielding = 1 + 2 * points;
-					if (talent == Talent.BACKUP_BARRIER)
-						 shielding = (int) Math.ceil(shielding * 1.5f);total[0] += shielding;
-				}, Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
+					// currently this stacks.
+					Dungeon.hero.byTalent((talent, points) -> {
+						int shielding = 1 + 2 * points;
+						if (talent == Talent.BACKUP_BARRIER)
+							shielding = (int) Math.ceil(shielding * 1.5f);
+						total[0] += shielding;
+					}, Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
 					Buff.affect(Dungeon.hero, Barrier.class).setShield(total[0]);
 				}
-				if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE, Talent.RK_BATTLEMAGE)) {
-					Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
-				}
-			} else {
-				if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && curCharges == getMinCharges() &&
-						(Dungeon.hero.buff(Talent.EnergizingUpgradeCooldown.class) == null &&
-								Dungeon.hero.buff(Talent.EnergizingUpgradeTracker.class) == null)) {
-					Buff.affect(Dungeon.hero, Talent.EnergizingUpgradeTracker.class, 4f);
-					charger.energizeTime = 5;
-				}
+			}
+			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE,Talent.RK_BATTLEMAGE)) {
+				Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
 			}
 		}
-
 		Invisibility.dispel();
 		updateQuickslot();
 
@@ -653,10 +663,10 @@ public abstract class Wand extends Item {
 				int cell = shot.collisionPos;
 				
 				if (target == curUser.pos || cell == curUser.pos) {
-					if (target == curUser.pos && curUser.hasTalent(Talent.SHIELD_BATTERY,Talent.RESTORATION)){
-						float shield = curUser.HT * (curWand.curCharges-curWand.getMinCharges()) *
-								curUser.byTalent(Talent.SHIELD_BATTERY, 0.0625f, Talent.RESTORATION, 0.05f);
-						shield *= Math.pow(1.5f, curUser.pointsInTalent(Talent.SHIELD_BATTERY, Talent.RESTORATION)-1);
+					if (target == curUser.pos){
+						float shield = curUser.HT * (0.04f*curWand.curCharges);
+						// shield battery gives 1.5x boost compared to standard, the minus one lets restoration at +2 give the 1.5x boost as well.
+						shield *= Math.pow(1.5f, curUser.shiftedPoints(Talent.SHIELD_BATTERY, Talent.RESTORATION)-1);
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
 						curWand.curCharges = curWand.getMinCharges();
 						curUser.sprite.operate(curUser.pos);

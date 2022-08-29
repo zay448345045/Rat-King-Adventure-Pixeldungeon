@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ package com.zrp200.rkpd2.ui;
 
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Button;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 
 public class ActionIndicator extends Tag {
@@ -42,7 +42,7 @@ public class ActionIndicator extends Tag {
 
 		instance = this;
 
-		setSize( 24, 24 );
+		setSize( SIZE, SIZE );
 		visible = false;
 	}
 	
@@ -64,8 +64,9 @@ public class ActionIndicator extends Tag {
 		super.layout();
 		
 		if (icon != null){
-			icon.x = x + (width - icon.width()) / 2;
-			icon.y = y + (height - icon.height()) / 2;
+			if (!flipped)   icon.x = x + (SIZE - icon.width()) / 2f + 1;
+			else            icon.x = x + width - (SIZE + icon.width()) / 2f - 1;
+			icon.y = y + (height - icon.height()) / 2f;
 			PixelScene.align(icon);
 			if (!members.contains(icon))
 				add(icon);
@@ -100,8 +101,19 @@ public class ActionIndicator extends Tag {
 
 	@Override
 	protected void onClick() {
-		if (action != null && Dungeon.hero.ready)
+		if (action != null && Dungeon.hero.ready) {
 			action.doAction();
+		}
+	}
+
+	@Override
+	protected String hoverText() {
+		String text = (action == null ? null : action.actionName());
+		if (text != null){
+			return Messages.titleCase(text);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -152,7 +164,7 @@ public class ActionIndicator extends Tag {
 					instance.icon = null;
 				}
 				if (action != null) {
-					instance.icon = action.getIcon();
+					instance.icon = action.actionIcon();
 					instance.needsLayout = true;
 				}
 			}
@@ -161,7 +173,9 @@ public class ActionIndicator extends Tag {
 
 	public interface Action{
 
-		public Image getIcon();
+		public String actionName();
+
+		public Image actionIcon();
 
 		public void doAction();
 

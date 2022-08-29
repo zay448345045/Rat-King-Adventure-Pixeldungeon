@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,10 @@ import com.zrp200.rkpd2.windows.WndCombo;
 import java.util.HashMap;
 
 public class Combo extends Buff implements ActionIndicator.Action {
+
+	{
+		type = buffType.POSITIVE;
+	}
 	
 	private int count = 0;
 	private float comboTime = 0f;
@@ -81,6 +85,11 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	@Override
 	public float iconFadePercent() {
 		return Math.max(0, (initialComboTime - comboTime)/ initialComboTime);
+	}
+
+	@Override
+	public String iconTextDisplay() {
+		return Integer.toString((int)comboTime);
 	}
 
 	@Override
@@ -180,9 +189,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		count = bundle.getInt( COUNT );
 		comboTime = bundle.getFloat( TIME );
 
-		//pre-0.9.2
-		if (bundle.contains(INITIAL_TIME))  initialComboTime = bundle.getFloat( INITIAL_TIME );
-		else                                initialComboTime = 5;
+		initialComboTime = bundle.getFloat( INITIAL_TIME );
 
 		clobberUsed = bundle.getBoolean(CLOBBER_USED);
 		parryUsed = bundle.getBoolean(PARRY_USED);
@@ -191,7 +198,12 @@ public class Combo extends Buff implements ActionIndicator.Action {
 	}
 
 	@Override
-	public Image getIcon() {
+	public String actionName() {
+		return Messages.get(this, "action_name");
+	}
+
+	@Override
+	public Image actionIcon() {
 		Image icon;
 		if (((Hero)target).belongings.weapon() != null){
 			icon = new ItemSprite(((Hero)target).belongings.weapon().image, null);
@@ -271,6 +283,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		if (move == ComboMove.PARRY){
 			parryUsed = true;
 			comboTime = 5f;
+			Invisibility.dispel();
 			Buff.affect(target, ParryTracker.class, Actor.TICK);
 			((Hero)target).spendAndNext(Actor.TICK);
 			Dungeon.hero.busy();
@@ -371,7 +384,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							dist--;
 						}
 					}
-					WandOfBlastWave.throwChar(enemy, trajectory, dist, true, false);
+					WandOfBlastWave.throwChar(enemy, trajectory, dist, true, false, hero.getClass());
 					break;
 				case PARRY:
 					hit(enemy);

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,10 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
 		Transmuting.show(curUser, oldTalent, newTalent);
+
+		if (Dungeon.hero.hasTalent(newTalent)) {
+			Talent.onTalentUpgraded(Dungeon.hero, newTalent);
+		}
 	}
 
 	private void confirmCancelation( Window chooseWindow ) {
@@ -103,6 +107,8 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	public static class WndMetamorphChoose extends Window {
 
 		public static WndMetamorphChoose INSTANCE;
+
+		TalentsPane pane;
 
 		public WndMetamorphChoose(){
 			super();
@@ -150,12 +156,12 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				}
 			}
 
-			TalentsPane p = new TalentsPane(TalentButton.Mode.METAMORPH_CHOOSE, talents);
-			add(p);
-			p.setPos(0, top);
-			p.setSize(120, p.content().height());
-			resize((int)p.width(), (int)p.bottom());
-			p.setPos(0, top);
+			pane = new TalentsPane(TalentButton.Mode.METAMORPH_CHOOSE, talents);
+			add(pane);
+			pane.setPos(0, top);
+			pane.setSize(120, pane.content().height());
+			resize((int)pane.width(), (int)pane.bottom());
+			pane.setPos(0, top);
 		}
 
 		@Override
@@ -174,33 +180,28 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				curItem.collect();
 			}
 		}
+
+		@Override
+		public void offset(int xOffset, int yOffset) {
+			super.offset(xOffset, yOffset);
+			pane.setPos(pane.left(), pane.top()); //triggers layout
+		}
 	}
 
-	//talents that can only be used by one hero class
-	//TODO could some of these be made more generic?
-	public static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
-	static {
-		restrictedTalents.put(IRON_WILL, WARRIOR);
-		restrictedTalents.put(RESTORED_WILLPOWER, WARRIOR);
-		restrictedTalents.put(RUNIC_TRANSFERENCE, WARRIOR);
+	public static class WndMetamorphReplace extends Window {
 
-		restrictedTalents.put(BACKUP_BARRIER, MAGE);
-		restrictedTalents.put(ENERGIZING_UPGRADE, MAGE);
-		restrictedTalents.put(WAND_PRESERVATION, MAGE);
-		restrictedTalents.put(ARCANE_BOOST, MAGE);
+		//talents that can only be used by one hero class
+		private static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
+		static {
 
-		restrictedTalents.put(MENDING_SHADOWS, ROGUE);
-		restrictedTalents.put(LIGHT_CLOAK, ROGUE);
-		restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
+			// rework made metamorph effect unreasonable.
+			restrictedTalents.put(IRON_WILL, WARRIOR);
 
-		restrictedTalents.put(SEER_SHOT, HUNTRESS);
-		restrictedTalents.put(RESTORED_NATURE, HUNTRESS);
-		restrictedTalents.put(NATURES_AID, HUNTRESS);
-		restrictedTalents.put(NATURE_AID_2, HUNTRESS);
+			restrictedTalents.put(Talent.RUNIC_TRANSFERENCE, HeroClass.WARRIOR);
+			restrictedTalents.put(Talent.WAND_PRESERVATION, HeroClass.MAGE);
 
 		// rat king talents that contain restricted talents are removed.
-		restrictedTalents.put(NOBLE_CAUSE, RAT_KING);
-		restrictedTalents.put(RESTORATION, RAT_KING);
+
 		restrictedTalents.put(POWER_WITHIN, RAT_KING);
 	}
 

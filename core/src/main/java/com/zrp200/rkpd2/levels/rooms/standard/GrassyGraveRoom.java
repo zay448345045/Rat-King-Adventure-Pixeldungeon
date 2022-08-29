@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 
 package com.zrp200.rkpd2.levels.rooms.standard;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Random;
 
 public class GrassyGraveRoom extends StandardRoom {
 	

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,16 +67,13 @@ public class Gold extends Item {
 		Statistics.goldCollected += quantity;
 		Badges.validateGoldCollected();
 
-		MasterThievesArmband.ThieveryBuff thievery = hero.buff(MasterThievesArmband.ThieveryBuff.class);
-		if (thievery != null)
-			thievery.collect(quantity);
-
 		GameScene.pickUp( this, pos );
 		hero.sprite.showStatus( CharSprite.NEUTRAL, TXT_VALUE, quantity );
 		hero.spendAndNext( TIME_TO_PICK_UP );
 		
 		Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
-		
+		updateQuickslot();
+
 		return true;
 	}
 	
@@ -92,7 +89,7 @@ public class Gold extends Item {
 	
 	@Override
 	public Item random() {
-		quantity = Random.round(1.5f*Random.Int( 30 + Dungeon.getDepth() * 10, 60 + Dungeon.getDepth() * 20 ));
+		quantity = Random.round(1.5f*Random.IntRange( 30 + Dungeon.getDepth() * 10, 60 + Dungeon.getDepth() * 20 ));
 		return this;
 	}
 

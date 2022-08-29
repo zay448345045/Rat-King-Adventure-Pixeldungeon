@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -29,12 +30,14 @@ import com.zrp200.rkpd2.actors.buffs.Corrosion;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
-import com.watabou.utils.Bundle;
 
 public class CorrosiveGas extends Blob {
 
 	//FIXME should have strength per-cell
 	private int strength = 0;
+
+	//used in specific cases where the source of the corrosion is important for death logic
+	private Class source;
 
 	@Override
 	protected void evolve() {
@@ -42,6 +45,7 @@ public class CorrosiveGas extends Blob {
 
 		if (volume == 0){
 			strength = 0;
+			source = null;
 		} else {
 			Char ch;
 			int cell;
@@ -51,7 +55,7 @@ public class CorrosiveGas extends Blob {
 					cell = i + j*Dungeon.level.width();
 					if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
 						if (!ch.isImmune(this.getClass()))
-							Buff.affect(ch, Corrosion.class).set(2f, strength);
+							Buff.affect(ch, Corrosion.class).set(2f, strength, source);
 					}
 				}
 			}
@@ -59,24 +63,32 @@ public class CorrosiveGas extends Blob {
 	}
 
 	public CorrosiveGas setStrength(int str){
+		return setStrength(str, null);
+	}
+
+	public CorrosiveGas setStrength(int str, Class source){
 		if (str > strength) {
 			strength = str;
+			this.source = source;
 		}
 		return this;
 	}
 
 	private static final String STRENGTH = "strength";
+	private static final String SOURCE	= "source";
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		strength = bundle.getInt( STRENGTH );
+		source = bundle.getClass( SOURCE );
 	}
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put( STRENGTH, strength );
+		bundle.put( SOURCE, source );
 	}
 
 	@Override

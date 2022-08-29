@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class v0_8_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -66,7 +66,7 @@ public class v0_8_X_Changes {
 				"_-_ Released August 6th, 2020\n" +
 				"_-_ 40 days after Shattered v0.8.1\n" +
 				"\n" +
-				"Dev commentary will be added here in the future."));
+				"Dev commentary will be added here in the next major update."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_HORN1), "Fifth Equipment Slot!",
 				"_An extra slot has been added for rings/artifacts_, bringing the total number of equip slots up to 5!\n\n" +
@@ -83,7 +83,7 @@ public class v0_8_X_Changes {
 				"_-_ Ring of Energy wand recharge boost down to 20% from 30%\n" +
 				"_-_ Ring of Energy now increases artifact recharge speed by 10%"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
@@ -176,7 +176,7 @@ public class v0_8_X_Changes {
 				"_-_ Acidic scorpios not always dropping potions of experience\n" +
 				"_-_ Some immovable enemies not knocking items away"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
@@ -210,7 +210,7 @@ public class v0_8_X_Changes {
 				"_- Wand of Lightning_ self damage down to 0.5x from 0.67x\n\n" +
 				"_- Wand of Magic Missile_ can now empower other wands of magic missile (but this does not create an empower loop)"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
@@ -243,7 +243,7 @@ public class v0_8_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo( Messages.get( ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo( Messages.get( ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 
@@ -251,7 +251,7 @@ public class v0_8_X_Changes {
 				"_-_ Released June 27th, 2020\n" +
 				"_-_ 72 days after Shattered v0.8.0\n" +
 				"\n" +
-				"Dev commentary will be added here in the future."));
+				"Dev commentary will be added here in the next major update."));
 
 		changes.addButton( new ChangeButton(Icons.get(Icons.DISPLAY), "New Hero Select!",
 				"The game's hero select screen has been completely overhauled, and how shows off the heroes in more detail than ever before.\n\n" +
@@ -300,7 +300,7 @@ public class v0_8_X_Changes {
 				"My hope with this change is to make magic missile more worthy of upgrades if the player is going for a sort of 'wandslinger' build, while still maintaining the wands weakness when used solo.\n\n" +
 				"I intend to closely watch how this change plays out, and make adjustments if it ends up messing with the Mage too much. As a start to this, the _Battlemage_ on-hit effect for magic missile has been toned down, to prevent a magic missile staff plus a single low-level wand being stronger than just imbuing that wand."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 
@@ -358,7 +358,7 @@ public class v0_8_X_Changes {
 				"_-_ Fireblast applying debuffs to dead enemies\n" +
 				"_-_ Update checker using data on metered networks"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 
@@ -413,7 +413,7 @@ public class v0_8_X_Changes {
 				"_- Flow_ speed multiplier increased to 2 + 0.25xlvl from 2.\n" +
 				"_- Corrupting_ proc rate scaling increased by ~20%"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 
@@ -451,7 +451,7 @@ public class v0_8_X_Changes {
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo( Messages.get( ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo( Messages.get( ChangesScene.class, "new"), false);
 		changes.hardlight( Window.TITLE_COLOR );
 		changeInfos.add(changes);
 
@@ -460,7 +460,7 @@ public class v0_8_X_Changes {
 				"_-_ 546 days after Shattered v0.7.0\n" +
 				"_-_ 197 days after Shattered v0.7.5\n" +
 				"\n" +
-				"Dev commentary will be added here in the future."));
+				"Dev commentary will be added here in the next major update."));
 
 		changes.addButton( new ChangeButton(new Image(new DM100Sprite()), "Misc Enemies",
 				"_DM-100s_ have been added to the prison to replace gnoll shamans. They behave very similarly to prison shamans, but have a few stat tweaks:\n" +
@@ -522,7 +522,7 @@ public class v0_8_X_Changes {
 				"Most notably, the fight is now much more evenly paced. Rather than summoning the same two fists every time at the start of the fight, Yog now summons fists steadily as the fight progresses. The fists also won't be the same each time, which gives the fight some variance.\n\n" +
 				"To discourage skipping the demon halls, the fight is also affected by how many demon spawners were left alive on the previous floors. Expect the fight to be much harder if demon spawners are left alive!"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight( CharSprite.WARNING );
 		changeInfos.add(changes);
 
@@ -651,7 +651,7 @@ public class v0_8_X_Changes {
 				"_-_ Many rare crash bugs\n" +
 				"_-_ Many minor audio and visual bugs"));
 		
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight( CharSprite.POSITIVE );
 		changeInfos.add(changes);
 
@@ -678,7 +678,7 @@ public class v0_8_X_Changes {
 				"To better balance overall prison difficulty, I've strengthened necromancers slightly:\n" +
 				"_-_ Necromancer evasion increased by ~18%"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight( CharSprite.NEGATIVE );
 		changeInfos.add(changes);
 

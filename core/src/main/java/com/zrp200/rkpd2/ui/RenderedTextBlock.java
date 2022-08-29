@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ public class RenderedTextBlock extends Component {
 	private int size;
 	private float zoom;
 	private int color = -1;
+
+	public float[] padding = new float[2]; // extends width and height, respectively.
 	
 	private int hightlightColor = Window.TITLE_COLOR;
 	private boolean highlightingEnabled = true;
@@ -198,7 +200,7 @@ public class RenderedTextBlock extends Component {
 	}
 
 	@Override
-	protected synchronized void layout() {
+	public synchronized void layout() {
 		super.layout();
 		float x = this.x;
 		float y = this.y;
@@ -264,5 +266,8 @@ public class RenderedTextBlock extends Component {
 				}
 			}
 		}
+
+		this.width += padding[0];
+		this.height += padding[1];
 	}
 }

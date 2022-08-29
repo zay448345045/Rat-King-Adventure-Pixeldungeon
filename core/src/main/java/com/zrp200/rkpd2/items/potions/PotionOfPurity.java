@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.BArray;
@@ -67,16 +68,7 @@ public class PotionOfPurity extends Potion {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				
 				for (Blob blob : blobs) {
-					
-					int value = blob.cur[i];
-					if (value > 0) {
-						
-						blob.clear(i);
-						blob.cur[i] = 0;
-						blob.volume -= value;
-						
-					}
-					
+					blob.clear(i);
 				}
 				
 				if (Dungeon.level.heroFOV[i]) {
@@ -101,6 +93,7 @@ public class PotionOfPurity extends Potion {
 	public void apply( Hero hero ) {
 		GLog.w( Messages.get(this, "protected") );
 		Buff.prolong( hero, BlobImmunity.class, BlobImmunity.DURATION );
+		SpellSprite.show(hero, SpellSprite.PURITY);
 		identify();
 	}
 	

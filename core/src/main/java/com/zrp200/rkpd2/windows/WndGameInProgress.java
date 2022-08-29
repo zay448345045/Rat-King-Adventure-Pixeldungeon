@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,24 +70,7 @@ public class WndGameInProgress extends Window {
 		title.color(Window.TITLE_COLOR);
 		title.setRect( 0, 0, WIDTH, 0 );
 		add(title);
-		
-		//manually produces debug information about a run, mainly useful for levelgen errors
-		Button debug = new Button(){
-			@Override
-			protected boolean onLongClick() {
-				try {
-					Bundle bundle = FileUtils.bundleFromFile(GamesInProgress.gameFile(slot));
-					ShatteredPixelDungeon.scene().addToFront(new WndMessage("_Debug Info:_\n\n" +
-							"Version: " + Game.version + " (" + Game.versionCode + ")\n" +
-							"Seed: " + bundle.getLong("seed") + "\n" +
-							"Challenge Mask: " + info.challenges));
-				} catch (IOException ignored) { }
-				return true;
-			}
-		};
-		debug.setRect(0, 0, title.imIcon.width(), title.imIcon.height);
-		add(debug);
-		
+
 		if (info.challenges > 0) GAP -= 2;
 		
 		pos = title.bottom() + GAP;
@@ -120,7 +103,14 @@ public class WndGameInProgress extends Window {
 		pos += GAP;
 		statSlot( Messages.get(this, "gold"), info.goldCollected );
 		statSlot( Messages.get(this, "depth"), info.maxDepth );
-		
+		if (info.daily) {
+			statSlot( Messages.get(this, "daily_for"), "_" + info.customSeed + "_" );
+		} else if (!info.customSeed.isEmpty()){
+			statSlot( Messages.get(this, "custom_seed"), "_" + info.customSeed + "_" );
+		} else {
+			statSlot( Messages.get(this, "dungeon_seed"), DungeonSeed.convertToCode(info.seed) );
+		}
+
 		pos += GAP;
 		
 		RedButton cont = new RedButton(Messages.get(this, "continue")){
@@ -131,6 +121,7 @@ public class WndGameInProgress extends Window {
 				GamesInProgress.curSlot = slot;
 				
 				Dungeon.hero = null;
+				Dungeon.daily = false;
 				ActionIndicator.action = null;
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
 				ShatteredPixelDungeon.switchScene(InterlevelScene.class);
@@ -150,8 +141,7 @@ public class WndGameInProgress extends Window {
 					@Override
 					protected void onSelect( int index ) {
 						if (index == 0) {
-							FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
-							GamesInProgress.setUnknown(slot);
+							Dungeon.deleteGame(slot, true);
 							ShatteredPixelDungeon.switchNoFade(StartScene.class);
 						}
 					}
@@ -175,9 +165,12 @@ public class WndGameInProgress extends Window {
 		RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );
 		txt.setPos(0, pos);
 		add( txt );
-		
-		txt = PixelScene.renderTextBlock( value, 8 );
-		txt.setPos(WIDTH * 0.6f, pos);
+
+		int size = 8;
+		if (value.length() >= 14) size -=2;
+		if (value.length() >= 18) size -=1;
+		txt = PixelScene.renderTextBlock( value, size );
+		txt.setPos(WIDTH * 0.55f, pos + (6 - txt.height())/2);
 		PixelScene.align(txt);
 		add( txt );
 		

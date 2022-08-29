@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -167,10 +167,11 @@ abstract public class Weapon extends KindOfWeapon {
 			encumbrance = STRReq() - ((Hero)owner).STR();
 		}
 
-		if (hasEnchant(Wayward.class, owner))
-			encumbrance = Math.max(2, encumbrance+2);
-
 		float ACC = this.ACC;
+
+		if (owner.buff(Wayward.WaywardBuff.class) != null && enchantment instanceof Wayward){
+			ACC /= 5;
+		}
 
 		return encumbrance > 0 ? (float)(ACC / Math.pow( 1.5, encumbrance )) : ACC;
 	}
@@ -241,7 +242,9 @@ abstract public class Weapon extends KindOfWeapon {
 
 	@Override
 	public int level() {
-		return super.level() + (curseInfusionBonus ? 1 : 0);
+		int level = super.level();
+		if (curseInfusionBonus) level += 1 + level/6;
+		return level;
 	}
 
 	@Override
@@ -365,8 +368,9 @@ abstract public class Weapon extends KindOfWeapon {
 		};
 		
 		private static final Class<?>[] curses = new Class<?>[]{
-				Annoying.class, Displacing.class, Exhausting.class, Fragile.class,
-				Sacrificial.class, Wayward.class, Polarized.class, Friendly.class
+				Annoying.class, Displacing.class, Dazzling.class, Explosive.class,
+				Sacrificial.class, Wayward.class, Polarized.class, Friendly.class,
+				Chaotic.class
 		};
 		
 			
@@ -399,10 +403,10 @@ abstract public class Weapon extends KindOfWeapon {
 		public static float procChanceMultiplier( Char attacker ){
 			float multi = 1f;
 			Berserk rage = attacker.buff(Berserk.class);
-			if (attacker instanceof Hero && rage != null) {
+			if (rage != null) {
 				multi += rage.rageAmount() * ((Hero) attacker).byTalent(
 						Talent.ENRAGED_CATALYST, 1/5f,
-						Talent.RK_BERSERKER, 1/6f);
+						Talent.RK_BERSERKER, 0.15f);
 			}
 			// note I'm specifically preventing it from lowering the chance. I already handled that in Weapon#attackProc.
 			multi += Math.max(0, Talent.SpiritBladesTracker.getProcModifier()-1);

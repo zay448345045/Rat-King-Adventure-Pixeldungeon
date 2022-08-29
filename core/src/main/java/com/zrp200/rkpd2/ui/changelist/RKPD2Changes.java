@@ -24,38 +24,43 @@ package com.zrp200.rkpd2.ui.changelist;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges.Badge;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
-import com.zrp200.rkpd2.items.armor.RatKingArmor;
+import com.zrp200.rkpd2.effects.BadgeBanner;
 import com.zrp200.rkpd2.items.armor.WarriorArmor;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
-import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.KingSprite;
-import com.zrp200.rkpd2.sprites.RatKingBossSprite;
 import com.zrp200.rkpd2.ui.Icons;
 
 import java.util.ArrayList;
 
-import static com.zrp200.rkpd2.Assets.Interfaces.TALENT_ICONS;
 import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
 import static com.zrp200.rkpd2.actors.hero.HeroSubClass.*;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
+
 import static com.zrp200.rkpd2.messages.Messages.get;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
+
 import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
+
 import static com.zrp200.rkpd2.ui.Icons.DEPTH;
+import static com.zrp200.rkpd2.ui.Icons.DISPLAY_LAND;
 import static com.zrp200.rkpd2.ui.Icons.INFO;
-import static com.zrp200.rkpd2.ui.Icons.PREFS;
+import static com.zrp200.rkpd2.ui.Icons.TALENT;
 import static com.zrp200.rkpd2.ui.Icons.TARGET;
+import static com.zrp200.rkpd2.ui.Icons.PREFS;
 import static com.zrp200.rkpd2.ui.Icons.get;
-import static com.zrp200.rkpd2.ui.Window.SHPX_COLOR;
-import static com.zrp200.rkpd2.ui.Window.TITLE_COLOR;
+
+import static com.zrp200.rkpd2.ui.Window.*;
+
 import static java.util.Arrays.asList;
 
 // TODO should I have a separate section for shattered changes?
@@ -127,214 +132,138 @@ public class RKPD2Changes {
     // in this case I made it so you could add buttons in the ChangeInfo constructor; this is 'lustrous' style
 
     final ChangeInfo[][] changes = {
-            {
-                    new ChangeInfo("1.4.14", true, TITLE_COLOR, "Renamed from DLC into Rat King Adventure (RKA)",
-                    bugFixes(list(
-                            "Fixed Homing Boomerang hitting invulnerable targets.",
-                            "Fixed the depth 25 duplication and item duplication glitches connected it.",
-                            "Fixed Domain of Hell bugs, added Aqua Blasts for each depth.",
-                            "Fixed Rat King's Battlemage form crashes.",
-                            "Fixed glitches connected to RK boss badge.",
-                            "Fixed Scout's Barrier having old Nature's Aid effect.",
-                            "Fixed targeted cell VFX."))
+        { // v0.4
+            new ChangeInfo("v1.0.0",true,TITLE_COLOR,
+                    info(Messages.get(this, "100")),
+                    new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "New Curse!", "In addition to the new curses added in Shattered v1.3, I've added an RKPD2-exclusive curse:\n\n_Chaotic_ weapons will usually roll a random weapon curse on hit, but every once in a while it'll roll a wand curse!"),
+                    new ChangeButton(new ItemSprite(CLEANSING_DART), "Vetoed Sleep Dart Removal",
+                            "In Shattered v1.2, Evan came up with the brilliant idea of nerfing _sleep darts_ into the ground. To avoid suspicion, he also made _dreamfoil_ unable to inflict magical sleep, so as to appear to be fair."
+                                    + "\n\nIn Shattered v1.3, it became clear that this was a horrible mistake---dreamfoil not being able to inflict sleep proved incredibly confusing to players, and the 'nerfed' sleep darts---now cleansing darts---were almost completely useless.\n\nHowever, Evan was unwilling to go back, and instead retconned Dreamfoil, renaming it to Mageroyal without changing its description at all. He also buffed what were now cleansing darts to have certain 'sleep dart-like' properties, while keeping them almost completely useless for what we really wanted to use them for.\n\nFEAR NOT, HOWEVER!\n\nNot only does dreamfoil still inflict magical sleep in this game blessed by the King himself, RAT KING in his infinite wisdom has decided to enhance the sleep dart into Dream™ darts!"),
+                    new ChangeButton(Icons.get(TALENT), "Talent and Armor Ability Changes",
+                            "Several talents that were previously exempt from being chosen by the scroll of metamorphosis now have alternative effects that let them be used by any hero:"+list("Light Cloak", "Noble Cause", "Restored Willpower", "Energizing Upgrade","Mystical Upgrade","Restoration","Seer Shot","Light Cloak")
+                                    +"\nBuffs from Shattered v1.2:"+list("_Energizing Upgrade_/_Restoration_ charge boost up to 4/6, from 3/5", "_Power Within_ wand preserve chance at +1 reduced to 50%, but now grants 1 arcane resin if it fails to preserve. Max uses increased to 5.", "_Rat Magic_'s empowering scrolls now gives +3 on the next 1/2/3 wand zaps", "_Timeless Running_ light cloak charge rate boosted to 25/50/75%, from 17/33/50%.")
+                                    +"\nNerfs from Shattered v1.2:"+list("_Restoration_ Shield Battery nerfed to 4%/6%", "_Shield Battery_ nerfed to 6/9%", "_Inevitability_ Enraged Catalyst proc boost now 15/30/45%, standard enraged catalyst unchanged.", "_Inevitability_ max rage boost now +10%/+20%/+30%") + list("_Wand Preservation_ chance to preserve at +1 reverted to 67% from 50%, still grants 1 arcane resin if it fails to preserve")),
+                    new ChangeButton(new ItemSprite(CROWN), "Armor Abilities",
+                            list("_Endure_ damage bonus increased to 1/2 of damage taken from 1/3")
+                                    +list("_Wild Magic_ base wand boost and max boost increased by 1","_Fire Everything_ now has a 25% chance per point to let a wand be usable 3 times","_Conserved Magic_ no longer lets a wand be usable 3 times, now grants a chance for wild magic to take 0 turns instead")
+                                    +list("_Elemental power_ boost per point up to 33%, from 25%, to match Shattered's buff from 20% to 25%","_Reactive Barrier_ shielding per point up to 2.5, from 2, and max targets now increases by 1 per point.")
+                                    +list("_Shadow Clone_ now costs 35 energy, down from 50. Initial HP down to 80 from 100","_Shadow Blade_ damage per point up to 8%, from 7.5%","_Cloned Armor_ armor per point down to 16%, from 20%, to match Shattered's nerf from 15% to 12%.")
+                                    +list("_Eagle Eye_ now grants 9 and 10 vision range at 3 and 4 points", "_Go for the Eyes_ now cripples at ranks 3 and 4","_Swift Spirit_ now grants 2/4/6/8 dodges, up from 2/3/4/5")
+                                    +list("_Heroic Leap_ energy cost up to 35 from 25", "_Body Slam_ now adds 1-4 base damage per point in talent", "_Impact Wave_ now applies vulnerable for 5 turns, up from 3", "_Double Jump_ energy cost reduction increased by 20%")
+                                    +list("_Smoke Bomb_ energy cost up to 50 from 35, but max range up to 12 from 8 (Shattered buffed it from 6 to 10)")
+                                    + "\nThis has led me to adjust _Rat King's Wrath:_"
+                                    +list("Energy cost up to 70 from 60", "Range up to 10 from 6", "_Rat Blast_ boost per point up to 25% from 20%", "_Rat Blast_ shielding per point up to 2.5, from 2, and max targets now increases by 1 per point.")
+                                    +list("_Ratforcements_ stat-scaling adjusted to take into account ascension challenge")
                     ),
-                    new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, "",
-                            new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "RKPD Changes",
-                                    list(2,
-                                            "Successfully ported RKPD2 0.3.0. Have fun with metamorph!")),
-                            new ChangeButton(new ItemSprite(KROMER_CROWN), "Second subclass",
-                                    "_-_ You can sacrifice DK's crown to get a second subclass instead of armor ability.\n\n" +
-                                            "_-_ Some subclasses are blacklisted and 3 are randomly chosen."),
-                            new ChangeButton(new ItemSprite(KROMER_MASK), "Second class",
-                                    "_-_ You can use Tengu's mask with kromer to get a second class instead of subclass.\n\n" +
-                                            "_-_ 2 are randomly chosen."),
-                            misc(list(
-                                    "Arcane Resin has no limit for level.",
-                                            "Nerfed Protein Infusion by 33%.",
-                                            "Nerfed Trapper's Mastery: no longer reclaims traps, decreased cooldown to compensate.",
-                                            "Kromer follows the same rules as Scroll of Metamorphosis.",
-                                            "Doubled Big Rush's bonus damage, but made it roll from 0 to value.",
-                                            "t4 hero-specific talents are listed ahead of armor ability talents and can be metamorphed.",
-                                            "Buffed Durable Projectiles by a 25%.",
-                                            "Added brawler special to Spirit and Kromer bows.",
-                                            "Shadowflare has unique sprites for each class.",
-                                            "Added anticheese to Kromer Crown.")),
-                            bugFixes(list( "Fixed Abyssal Nightmare crashes.",
-                                    "Fixed Domain of Hell crashes.",
-                                    "Fixed certain special action crashes.",
-                                    "Fixed Shadow Clone crashes.",
-                                    "Fixed crash related to In My Memories",
-                                    "Fixed crash with Shadowflare",
-                                    "Fixed crash with Terminus Blade's transmutation.",
-                                    "Fixed crash with Studded Gloves's brawler special.",
-                                    "Fixed missing items on Unenchanted.",
-                                    "Fixed 0 HP enemies on Crowd Diversity.",
-                                    "Fixed Archery Mark crashes.",
-                                    "Fixed old toolkit limitation on enemy presence for Soul of Yendor."))
+                    misc(list("Ability to run challenges is now tied to unlocking rat king.")
+                            + "\n\nFrom Shattered v1.3:"
+                            // buff and spell icons
+                            +list("All buffs now have a unique image, even if it is just a recolor.", "A few new overhead spell icons have been added as well")
+                            +list("Characters with guarenteed dodges (e.g.) spirit hawk) can now evade Yog's laser")
+                            +list("Minor visual improvements to the amulet scene")
+                            // misc
+                            +list("Updated various code dependencies", "Made major internal changes in prep for quest improvements in v1.4", "Added a slight delay to chasm jump confirmation window, to prevent mistaps", "Progress is now shown for badges that need to be unlocked with multiple heroes", " Multiple unlocked badges can now be shown at once", "Various minor tweaks to item and level generation to support seeded runs", "Keys now appear on top of other items in pit rooms", "Large floors now spawn two torches with the 'into darkness' challenge enabled", "Blazing champions no longer explode if they are killed by chasms", "Red sentries no longer fire on players with lost inventories")
+                            + "\n\nFrom v1.2:"
+                            + list("Improved blinking behavior of journal", "Improved depth display to include level feelings", "Added challenge indicator", "Secrets level feeling less extreme in hiding things", "Improved save system resilience")
                     ),
-                    // v0.3
-                    new ChangeInfo("v0.3.0", true, TITLE_COLOR, ""),
-                    new ChangeInfo("", false, ""), // placeholder
-                    new ChangeInfo("v0.3.1", false, TITLE_COLOR, "",
-                            misc("By misc, these are really small changes.\n" + list("Omniability's Warp Beacon destroys itself after warping once to let it get rerolled more often.", "Slightly changed the frequency of Wrath and Ratmogrify in Omniability", "Added some comments to more metamorphed talents.")),
-                            bugFixes(list("Lethal Momentum not working.") + list("crash when attempting to target a character with sniper's mark when no possible valid targets are present") + list("Heroic Energy sometimes applying to Wrath under OmniAbility", "OmniAbility now shows actual charge use in descriptions, as opposed to default charge use.", "Omniability icon sometimes covering level icon in quickslot") + list("Fixed a few minor genderizing textual fails created by metamorphing talents. Huntress is she/her/hers, it's 2022, we should realize the value of pronouns by now."))),
-                    NewContent(
-                            info(Messages.get(this, "030")), // trying something different with this.
-                            new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "New Rat King Armor Ability!", "_Omni-Ability_ is an armor ability generator. Every time you use it, it will generate a new armor ability for you to use out of the existing ones. It's currently a tad unwieldy (especially with abilities that summon things) and more than a little bit confusing, but it should finally give Rat King what many have been waiting for: access to every armor ability without exception in one slot!")
-                    ),
-                    new ChangeInfo("From SHPD v1.1", false, SHPX_COLOR, "",
-                            new ChangeButton(new ItemSprite(ARTIFACT_TOOLKIT), "Alchemy and Artifacts", "Implemented SHPD's alchemy rework:" + list("Energy is now a resource the player carries around.", "Less energy is provided naturally, but consumables can be converted into energy") + "\nChanges to Exotics:" + list("Exotics now require energy instead of seeds or stones", "Potion of Holy Furor is now _Potion of Divine Inspiration_, which gives bonus talent points.", "Potion of Adrenaline Surge is now _Potion of Mastery_, which reduces the strength requirement of one item by 2."/*\n*/, "Scroll of Petrification is now _Scroll of Dread_, which causes enemies to flee the dungeon entirely.", "Scroll of Affection is now _Scroll of Siren's Song_, which permanently makes an enemy into an ally.", "Scroll of Confusion is now _Scroll of Challenge_, which attracts enemies but creates an arena where you take reduced damage.", "Scroll of Polymorph is now _Scroll of Metamorphosis_, which lets you swap out a talent to one from another class (including Rat King, though he is somewhat less common).") + "\nSpells:" + list("Added _Summon Elemental_ and _Telekinetic Grab_.", "_Alchemize_ reworked, replaces Merchant's Beacon and can also convert consumables to energy.", "Removed _Magical Porter_") + "\nExotic Buffs:" + list("_Potions of Storm Clouds, Shrouding Fog, and Corrosion_ initial gas AOE up to 3x3 from 1x1", "_Potion of Shrouding Fog_ now only blocks enemy vision", "_Potion of Corrosion_ starting damage increased by 1", "_Potion of Magical Sight_ vision range up to 12 from 8", "_Potion of Cleansing_ now applies debuff immunity for 5 turns\n", "_Scroll of Foresight_ now increases detection range to 8 (from 2), but lasts 250 turns (from 600)", "_Scroll of Prismatic Image_ hp +2 and damage +20%") + "\n\n_Artifact Changes_:" + list("Energy required to level up _Alchemist's Toolkit_ halved, kit can now be levelled and used anywhere", "Toolkit warmup is now based on time, and gets faster as it levels up\n", "The _Horn of Plenty_  now has a 'snack' option that always consumes 1 charge.", "To counterbalance this, the total number of charges and charge speed have been halved, but each charge is worth twice as much as before.\n", "_Dried Rose_: Ghost HP regen doubled, to match the rose's recharge speed (500 turns to full HP)")),
-                            misc(list("Added Shattered's new music tracks.") + list("Item drops and special room spawns are now more consistent, and getting loads of the same item is now much less likely.", "Items present on boss floors are now preserved if the hero is revived via unblessed ankh.", "Teleport mechanics now work on boss levels.", "Traps that teleport no longer work on items in chests or similar containers", "Rewards from piranha and trap rooms now always appear in chests") + list("Tipped darts can now be transmuted and recycled", "Thrown weapons no longer stick to allies", "Liquid metal production from upgraded thrown weapons now caps at +3") + list("Updated game icons on Android and Desktop platforms to match Shattered's new ones.", "Tabs in rankings and hero info windows now use icons, not text", "'potions cooked' badge and stats are now 'items crafted'") + list("Newborn elementals no longer have a ranged attack")),
-                            bugFixes(list("Specific cases where guidebook windows could be stacked.", "Remove curse stating nothing was cleansed when it removed the degrade debuff", "Various minor/rare visual and textual errors", "Cases where pausing/resuming the game at precise moments would cancel animations or attacks", "Endure damage reduction applying after some specific other damage-reducing effects", "Unblessed ankh resurrection windows disappearing in some cases", "Lucky enchantment rarely not trigger in some cases", "Artifacts spawning upgraded from golden mimics", "Unblessed ankh revival cancelling corpse dust curse", "Unstable spellbook letting the player select unidentified scrolls", "Desktop version not working correctly with FreeBSD", "Liquid metal being usable on darts", "Teleportation working on immovable characters in some cases", "Various quirks with thrown weapon durability", "Rare cases where ghouls would get many extra turns when reviving", "Magical infusion not preserving curses on armor", "Vertigo and teleportation effects rarely interfering", "Layout issues in the hero info window with long buff names", "Cursed wands being usable to create arcane resin", "Unblessed ankh revival rarely causing crashes or placing the player on hazards", "Some glyphs not working for armored statues or the ghost hero", "Various oddities with inferno gas logic", "Spirit bow having negative damage values in rare cases", "Artifact recharging buff working on cursed artifacts", "Scrolls of upgrade revealing whether unidentified rings/wands were cursed", "Ring of Might not updating hero health total in rare cases", "Specific cases where darts would not recognize an equipped crossbow", "Cap on regrowth wand being affect by level boosts", "Some on-hit effects not triggering on ghost or armored statues", "Rare errors when gateway traps teleported multiple things at once", "Various rare errors when multiple inputs were given in the same frame", "Fog of War errors in Tengu's arena", "Rare errors with sheep spawning items and traps")),
-                            new ChangeButton(new ItemSprite(MAGES_STAFF), "Heroes", "Note that both Rat King and the corresponding class are affected by SHPD buffs unless indicated otherwise.\n" + list("Rage now starts expiring after not taking damage for 2 turns, rather than instantly. This should make it easier to hold onto rage during combat.") + list("Staff damage reduced to 1-6, from 1-7.", "Preparation bonus damage reduced, is now 10/20/35/50 instead of 15/30/45/60.") + "\n" + list("_Wild Magic_ Charge cost reduced to 25, from 35.", "_Spirit Hawk_ Duration up to 100 turns, from 60.\n", "_Empowering Scrolls_ (and the variant provided by _Rat Magic_) now lasts for 2 wand zaps, up from 1.", "_Timeless Running_'s Light Cloak aspect now grants 16.6% charge speed per rank, up from 13.3%", "_Shrug it Off_ now caps damage taken at 20% at +4, up from 25%.") + list("_Double Jump_ nerfed, now requires the user to jump within 3 turns rather than 5 and has a charge reduction of 16%/30%/41%/50/59%, from 20%/36%/50%/60%/75% in a compromise between existing mechanics and SHPD's changes"))),
-                    Changes(
-                            new ChangeButton(HUNTRESS, list(2, "Replaced huntress's +durability perk with a perk that passively boosts the damage of thrown weapons (+1 level).", "_Durable Projectiles_ has been buffed to compensate (now gives +100%/+150% durability, up from +50/+75%), though the amount of durability is slightly nerfed overall.", "_Seer Shot_ reworked. Instead of being available really fast, now applies to an increasingly large area with upgrades (3x3/5x5/7x7 at +1/+2/+3), though cooldown is also increased with upgrades.", "_Point Blank_ partially reworked. It's no longer level-shifted and gives SHPD point blank effects, but it also increases ranged accuracy now.")),
-                            new ChangeButton(Random.Int(2) == 0 ? LETHAL_MOMENTUM : LETHAL_MOMENTUM_2, "Made Lethal Momentum more distinct from its SHPD counterpart (and Pursuit):" + list(2, "Lethal Momentum now procs when your blow would have killed, regardless of enemy mechanics (such as those of brutes or ghouls) or other factors (enchantments like grim or blazing) that would otherwise stop SHPD Lethal Momentum.", "Lethal Momentum (T2) now gives double accuracy on the turn that it procs, allowing for easier chaining.", "Reverted T2 Lethal Momentum's +1 proc chance to be 67%, down from 75%.", "Lethal Momentum (Assassin) now requires preparation to trigger the first time, but follow-up kills do not have this limitation.")),
-                            misc(list("Modified Dwarf King's phase skip mechanics to produce greater overall stability and fix all reported issues with this mechanic.", "It is now possible to use multihit attacks such as Fury on Dwarf King and successfully skip his second phase, but doing this incurs damage penalties that make it less consistent at completely skipping than just doing a single large attack.", "Changed Dwarf King FX for skipping slightly.") + list("You no longer have to equip class armor to use the armor ability, though it will no longer charge naturally.") + list("Changed and added descriptions and comments to talents. Some talents have unique comments when metamorphed.")),
-                            bugFixes("Added Trashbox Bobylev's crash message handler for easier bug reporting on Android." + "\n"
-                                    + list("Nature Power not giving its distinctive vfx", "Death mark doing +67% damage instead of +33%")
-                                    + list("Rare cases where looking at class descriptions crashes the game.")
-                                    + list("Crash when selecting an empty tile with a free-targeted sniper's mark.", "Rare cases where free-target would become unusable until the game is reloaded.")
-                                    + list("Smart targeting not prompting when no targets are around.")
-                                    + list("Dwarf King having an incorrect amount of health for phase 3 in Badder Bosses.", "Dwarf King not saying lines in Badder Bosses when partially skipped.", "Dwarf King sometimes saying lines out of order.")
-                                    // TODO
-                                    + list(Messages.NULL + " when looking at Elemental Blast description of firebolt", Messages.NULL + " when targeting yourself with shadowstepping Wrath.")
-                                    + list("Rat statues not being given the respect they deserve."))
-                    ),
-                    Nerfs(
-                            new ChangeButton(BARKSKIN, "I'm testing something out, and Barkskin ended up being the guinea pig. Expect a buff to Warden mechanics in the future."
-                                    + "\n" + list("Barkskin granted by the talent now degrades every 1 turn, down from every two turns (current behavior of SHPD/Natural Dominance)", "Barkskin amounts adjusted, now 40/80/160/240% instead of 0/100/150/200% at +0/1/2/3. (+0 effect was bugged).", "For reference, SHPD's Barkskin is 0/50/100/150% at +0/1/2/3.")
-                                    + "\nThere really no reason to have it be multi-turn when you can refresh the duration so easily by planting a seed or via rejuvenating steps.\nRelatedly, Warden now automatically gets Rejuvenating Steps (10 turn cooldown) if the subclass is chosen without any points in Rejuvenating Steps, so it is now impossible for a warden to be completely without access to grass."),
-                            new ChangeButton(WARLOCKS_TOUCH, "Removed Warlock's Touch's instant-proc chance."), new ChangeButton(PERFECT_COPY, "Removed +0 effect of instant swapping.\n\nThere will be another pass over armor abilities in the future so they work more predictably with Omni-Ability.")),
-                    new ChangeInfo("DLC-1.4", true, TITLE_COLOR, "",
-                            new ChangeButton(WARRIOR,
-                                    list(2,
-                                            "Added _Bearing Paw_ as t3 talent: gives extra range, bleeding and lifesteal on low HP.",
-                                            "Added _Combo Meal_ as gladiator talent: gives combo time and combo hits on eating.",
-                                            "Added _Bravery_ as berserker talent: gives extra rage when hero is unarmored against damage.",
-                                            "Added _Pride of Steel_ as brawler talent: armor piercing, extra items and aggro control with specials.",
-                                            "Reworked _Heroic Endurance_ into _Heroic Enchanting_: allows to use glyphs as enchantments while attacking.")),
-                            new ChangeButton(MAGE,
-                                    list(2,
-                                            "Added _Cryonic Spell_ as t3 talent: makes fire-related wands more frosty and buffs frost wand.",
-                                            "Added _Spectre Allies_ as battlemage talent: buffs mirror images to use battlemage's perks.",
-                                            "Added _Banished_ as warlock talent: allows to instakill soul-marked enemies on cooldown.",
-                                            "Added _Mind Break_ as spirit caller talent: wraiths summoned by hero can possess enemies they attack.")),
-                            new ChangeButton(ROGUE,
-                                    list(2,
-                                            "Added _Trapper's Mastery_ as t3 talent: reclaims traps hero steps on with cooldown.",
-                                            "Added _Energizing Steps_ as assassin talent: assassinations give artifact recharge.",
-                                            "Added _Olympic Stats_ as freerunner talent: more freerun speed at cost of extra exhaustion.",
-                                            "Added _Mechanical Power_ as Shadowflare talent: buffs melee attacks in robot form.",
-                                            "Assasination-related talents can proc with 40% chance even if kill did not proc assassination.",
-                                            "Innate Lethality have been buffed to +3 (_6%, 20%, 40%, 100%_)")),
-                            new ChangeButton(HUNTRESS,
-                                    list(2,
-                                            "Added _Auto-Reload_ as t3 talent: repairs throwning weapons with liquid metal on go.",
-                                            "Buffed _Point Blank_, now provides the chance to knockback in melee range.",
-                                            "Added _Archery's Mark_ as sniper talent: arrows bounce for extra damage to nearby enemy.",
-                                            "Added _Indirect Benefits_ as warden talent: warden's plant effects can trigger when mob steps on plant.",
-                                            "Moved Super-Shot damage boosts to _Heroic Archery_." +
-                                                    "Added an actual effect to _Heroic Archery_: thrown weapons have a chance for not consuming their durability.")),
-                            new ChangeButton(new Kromer(),
-                                    list(2,
-                                            "Added brand new material, coming from otherworldy darkness: kromer!",
-                                            "Kromer can be obtained by completing quests or by buying them in shops (beware of scam!)",
-                                            "Usages of kromer include giving you extra talents, significantly upgrading starting items, crafting ultimate versions of PoS and SoU and even potion that allows you to not die!",
-                                            "_This seems a little too fishy to be true..._")),
-                            new ChangeButton(new ItemSprite(TERMINUS, new ItemSprite.Glowing()), "New weapons!",
-                                    list(2,
-                                            "Added _Terminus Blade_, which is made with chaosstones and kromer. It has exceptional damage and ability to instakill.",
-                                            "Added a clone of _dagger_ that makes you stunlocked after using it.",
-                                            "Added an upgraded version of Wand of His Ratiness.")),
-                            new ChangeButton(new ItemSprite(ARTIFACT_OMNI, new ItemSprite.Glowing()), "Soul of Yendor",
-                                    "_-_ Added the artifact, that is 8 other artifacts at once.\n\n" +
-                                            "_-_ This item combines properties of Horn of Plenty, Alchemical Toolkit, Ethereal Chains, Chalice of Blood, Sandals of Nature, Master Thieves\' Armband, Timekeeper\'s Hourglass and Unstable Spellbook.\n\n" +
-                                            "_-_ To make it, use cursed wand in some way to combine all artifacts together.\n\n" +
-                                            "_-_ Alternatively, use kromer, chaosstone, Amulet of Yendor and 101 energy."),
-                            new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
-                                    list(2,
-                                            "Added 21 new challenges that are accessible from beating challenges!",
-                                            "Each new challenge is connected to one that unlocks it but has separate effects.",
-                                            "First 9 challenges are unlocked from regular challenges, another nine are from beating previous 9 challenges, and last three are from beating 6/12/18 challenges at once.",
-                                            "Have fun for trying all of them!")),
-                            misc("_-_ Abyss stages grow in size up to depth 75 with 2x size of depth 27.\n\n" +
-                                    "_-_ Heroes can level up beyond level 30 but more XP is required for each new level; each 3rd level up beyond 30 will also give talent point to every tier.\n\n" +
-                                    "_-_ Abyssal enemies give 40%-50% less XP.\n\n" +
-                                    "_-_ Much more items can be put into alchemy interface.\n\n" +
-                                    "_-_ Ring of Force can be enchanted by curse enchantments with Curse Infusion.\n\n" +
-                                    "_-_ Dried Rose's ghost heals 2.5x faster and has more HP and unarmed damage if hero is beyond level 30.\n\n" +
-                                    "_-_ Buffed Final Froggit's HP from 90 to 180.\n\n" +
-                                    "_-_ Nerfed Abyssal Nightmare's ability to split by making it only work for initial mob, also nerfed HP regen from 10 to 7.\n\n" +
-                                    "_-_ Changed UI to better differentate from regular RKPD2."),
-                            bugFixes("_-_ Fixed Frostburn not slowing down characters.\n\n" +
-                                    "_-_ Fixed Molten Strife's brawler special damaging hero.\n\n" +
-                                    "_-_ Fixed Ring of Force being \"augmentable\".\n\n" +
-                                    "_-_ Fixed crash for In My Memories if player has no broken seal.\n\n" +
-                                    "_-_ Fixed crash after examining weak floor pit in higher levels of Abyss.\n\n" +
-                                    "_-_ Fixed sprite of Spectral Necromancer.\n\n" +
-                                    "_-_ Fixed Rat King's boss depth always putting you at stairs on loading the level.\n\n" +
-                                    "_-_ Fixed Wand of Firebolt's elemental blast description.\n\n" +
-                                    "_-_ Fixed Thinking with Portals consuming all of cloak's charge independant on distance.")
-                    ),
-                    new ChangeInfo("DLC-1.3", true, TITLE_COLOR, ""),
-                    NewContent(
-                            new ChangeButton(new ItemSprite(MASK), "Secret Subs",
-                                    list(2,
-                                            "Added secret subclasses for each hero! They can be accessed in same way as huntress's one.",
-                                            "You can permanently unlock secret subclass by winning with it or defeating Rat King boss as any subclass.")),
-                            new ChangeButton(FUN, "Rat King's Wrath",
-                                    "_-_ Added new talent for Wrath, which makes ability more fun.\n\n" +
-                                            "_-_ Old Wrath have been renamed to _Divine Fury_."),
-                            new ChangeButton(new ItemSprite(RING_RUBY), "Ring of Force rework",
-                                    "_-_ Can hold enchantments and proc them.\n\n" +
-                                            "_-_ Reduced direct unarmed damage, but armed damage pierces armor and is buffed by 66%."),
-                            new ChangeButton(ASSASSIN,
-                                    list(2,
-                                            "All 3 Shattered's assassin talents got replaced by new ones.",
-                                            "_Bloodbath_ allows for AoE damage from assassinations.",
-                                            "_Thinking with Portals_ gives Assassin an ability to teleport and gain preparation instantly.",
-                                            "_Adapt and Overcome_ patches Assassin's weaknesses such as no synergy with wands, bad damage rolls and unsuccessful attacks.",
-                                            "Old Enhanced Lethality and Assassin's Reach are now innate abilities."))
-                    ),
-                    Changes(
-                            new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
-                                    "_-_ RK boss will teleport if he is stuck.\n\n" +
-                                            "_-_ RK boss will move in emperor phase 3 state.\n\n" +
-                                            "_-_ Reduced amount of statues and water on level 0.\n\n" +
-                                            "_-_ Fixed issues with Tengu's tricks used by RK.\n\n" +
-                                            "_-_ RK boss is resistant to corrosion.\n\n" +
-                                            "_-_ Any rat will attack you during the fight.\n\n" +
-                                            "_-_ RK boss has far better accuracy against wraiths and kills all of them while switching to new phase.\n\n" +
-                                            "_-_ Rat King (class) can fight Rat King (boss) now. Throw something very important on the ground.\n\n" +
-                                            "_-_ Reduced amount of monster spam."),
-                            new ChangeButton(BERSERKER, "_-_ Buffed rage damage boost to up +100% on 90% rage."),
-                            new ChangeButton(KING, "Reintoduced certain perks for Rat King subclass:\n\n" +
-                                    "_-_ Berserker's rage\n" +
-                                    "_-_ Warlock's soulmark\n" +
-                                    "_-_ Assassin's preparation\n" +
-                                    "_-_ Sniper's armor penetration\n" +
-                                    "_-_ Warden's seed effects"),
-                            new ChangeButton(SOUL_SIPHON, "_-_ Added unique icons for Huntress's secret subclass."),
-                            new ChangeButton(HEROIC_WIZARDRY, "_-_ Changed Heroic Wizardry to properly act as additional max charges for every possible occasion."),
-                            new ChangeButton(SEER_SHOT, "Previously was Seer Shot.\n\n" +
-                                    "_-_ Removed and replaced by _Like a Bullet_. Point Blank's Super-shot buffs were moved here, with very mild nerf.\n" +
-                                    "_-_ Seer Shot is now Huntress's innate ability.\n" +
-                                    "_-_ Natural Dominance still has Seer Shot part."),
-                            new ChangeButton(new ItemSprite(RING_AMETHYST), "Ring of Wealth change",
-                                    "_-_ Upgrades affect drop rates, at +16 it maxes out at 1 item per kill."),
-                            bugFixes("_-_ Fixed Elemental Blast doing not as much damage as intended.\n" +
-                                    "_-_ Fixed Heroic Endurance not working at all.\n" +
-                                    "_-_ Fixed Burning and Red Burning conflicting between each other.\n" +
-                                    "_-_ Fixed Big Rush killing quest givers and shopkeepers.\n" +
-                                    "_-_ Fixed Eldritch Blessing not working properly.\n" +
-                                    "_-_ Fixed DK getting stuck if his progression damage is affected by some modifier.\n\n" +
-                                    "RKPD2 bugs:\n\n" +
-                                    "_-_ Fixed talent window description having extra whitespace in title.\n" +
-                                    "_-_ Fixed miscolored icons for heroes and talents.")
-                    ),
-            },
-        { // v0.2
+                    bugFixes(
+                            // rkpd2
+                            list("Dwarf King's health being handled incorrectly in Badder Bosses",
+                                    "Thief's Intuition having incorrect mechanics; now has 33% chance to id curse at +1, rather than 50% chance at +0.", "Text at the very top and very bottom of scrollpanes being cut off.")
+                            //v1.2
+                            +list("Very rare cases where dried rose is unusable", "Corruption affecting smoke bomb decoy", "Character mind vision persisting after a character dies", "Dwarf King not being targeted by wands or thrown weapons while on his throne", "Floor 5 entrance rooms sometimes being smaller than intended", "Exploits involving Corruption and Ratmogrify", "Rare cases where lullaby scrolls were generated by the Unstable Spellbook", "Red flash effects stacking on each other in some cases", "Game forgetting previous window size when maximized and minimized", "Various rare cases of save corruption on Android", "Various minor textual and visual errors", "Unidentified wands being usable in alchemy", "Various rare cases where the hero could perform two actions at once", "Pharmacophobia challenge incorrectly blocking some alchemy recipes", "Various rare cases where giant enemies could enter enclosed spaces", "Rare cases where the freerunner could gain momentum while freerunning", "On-hit effects still triggering when the great crab blocks", "Various bugs with the potion of dragon's breath", "Assassinate killing enemies right after they were corrupted by a corrupting weapon", "Layout issues with the loot indicator", "Artifact recharging not charging the horn of plenty in some cases when it should", "Some items rarely not being consumed when they should be", "Fog of War not properly updating when warp beacon is used")
+                            //v1.3
+                            +list("Various minor textual and visual bugs", "Final boss's summons being slightly weaker than intended when badder bosses is enabled", "Great crab not blocking right after loading a save", "Exploits that could force DM-300 to dig outside of its arena", "Various 'cause of death' badges not being awarded if death occurred with an ankh.", "Wraiths from spectral necromancers not always dying when the necromancer dies", "The mystical charge talent giving more charge than intended", "Ring of might HP bonus not applying in specific cases", "Stones of blink disappearing if they fail to teleport", "Beacon of returning not working at all in boss arenas", "Earthen guardian not being immune to poison, gas, and bleed", "Transmogrified enemies awarding exp when the effect ends", "Gateway traps being able to teleport containers")
+                    )
+            ),
+            new ChangeInfo("From SHPD v1.2,v1.3", false, SHPX_COLOR,
+                    new ChangeButton(Icons.get(Icons.SEED), "Seeded Runs!",
+                            "_It's now possible to enter a custom seed when starting a new game!_\n\n" +
+                                    "Seeds are used to determine dungeon generation, and two runs with the same seed and game version will produce the exact same dungeon to play though.\n\n" +
+                                    "If you don't enter a custom seed, the game will use a random one to generate a random dungeon, just like it did prior to this update.\n\n" +
+                                    "Note that only players who have won at least once can enter custom seeds, and games with custom seeds are not eligible to appear in rankings."
+                                    + "\n\n"
+                                    + "_Daily runs_ have also been implemented. Each day there is a specific seeded run that is available to all players, making it easy to compete against others."
+                    ) {{ icon.hardlight(1f, 1.5f, 0.67f); }},
+                    new ChangeButton(BadgeBanner.image( Badge.HIGH_SCORE_2.image ), "Ascension and New Score System!",
+                            "_The game's scoring system has been overhauled to go along with seeded runs and dailies!_\n\n"
+                                    + "The score system now factors in a bunch of new criteria like exploration, performance during boss fights, quest completions, and enabled challenges. This should make score a much better measure of player performance.\n\n"
+                                    + "A score breakdown page has also been added to the rankings screen. This page even works for old games, and retroactively applies the challenge bonus!"
+                                    +"\n\n" +
+                                    "_A bunch of adjustments have been made to the ascension route to make it a proper challenge!_\n\n"
+                                    + "Enemies will get much stronger as you ascend, and it's impossible to teleport back up or flee and avoid all combat. Expect to have to work a little bit more for an ascension win!"),
+                    new ChangeButton(Icons.get(DISPLAY_LAND), "UI/UX improvements", ""
+                            +list("new main UI for larger displays", "Full controller support, better keyboard controls, better mouse support", "Two additional quickslots")
+                            +list("Boss health bars have been expanded to show current health and active buffs/debuffs", "Changes scene expanded on large enough displays.")
+                            +list("Boss music implemented", "Badge changes implemented from Shattered")
+                            +"\n"
+                            +list("The settings menu has been adjusted with a few new and rearranged options.","Added radial menus for controller users, and redid default controller bindings.","Keyboard and controller key bindings now have separate windows", "Added a few new key/button bindings actions", "Default 'Next Special Ability' keybind is now F")),
+
+                    // this is the merge of 3 different shpd stuff
+                    new ChangeButton(BadgeBanner.image( Badge.BOSS_CHALLENGE_5.image ), "Implemented Badge Changes",
+                            "_Badges now have names, and 21 new badges have been added!_"
+                                + "\n"
+                                + list("8 of these new badges are mostly part of the existing series badges (e.g. defeat X enemies), and exist around the gold badge level.","Five of these badges are 'high score' badges, meant to tie into the new score system.", "Another five of these badges are 'boss challenge' badges, which each require you to defeat a boss in a particular way", "Four new 'cause of death' badges have also been added, which should be a little trickier than the existing ones.")
+                                + "\n"
+                                + "Several of these badges are on the harder end, in particular the final high score and boss challenge badge should be a real challenge, even for veteran players."
+                                + "\n\n"
+                                + "The 'games played' badges have also been adjusted to unlock either on a large number of games played, or a smaller number of games won."
+                    )
+            ),
+            new ChangeInfo("From SHPD v1.2,v1.3", false, SHPX_COLOR,
+                new ChangeButton(new Image(Assets.Environment.TILES_SEWERS, 48, 80, 16, 16), "Levelgen and Enemies", "Implemented new special rooms from Shattered v1.2:" + list("sacrifical fire room", "crystal path rooms", "crystal choice rooms", "sentry room", "magical fire room", "toxic gas room")
+                        +"\nFloor 16's spawn rates have been adjusted to smooth over a difficulty spike on that floor" + list("Ghouls up to 60% from 40%","Elementals down to 20% from 40%")
+                        + "\nOther changes:"+list("_Soiled Fist_ is now immune to burning, but the grass it generates still burns", "_Burning Fist_ is now immune to freezing, but it can still be chilled", "_Rotting and Rusted Fists_ now take less damage from retribution, grim, and psionic blast")
+                ),
+                new ChangeButton(new ItemSprite(ARTIFACT_ARMBAND), "Armband", "Armband reworked, now lets you steal from enemies as well as shops."
+                ),
+                new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "Curse Redesigns",
+                        "Weapon and Armor curses have been redesigned:"
+                                +list("_Fragile_ has been replaced by _explosive,_ which builds power and then explodes!","_Wayward_ has been redesigned to sometimes apply an accuracy reducing debuff, instead of always reducing accuracy.","_Exhausting_ has been replaced by _dazzling,_ which can blind both the attacker and defender.")
+                                +list("_Anti-Entropy_ now spreads less fire to the player, and freezes all adjacent tiles instead of just the enemy.", "_Sacrifical_ now more heavily scales on current HP, bleeding for a bit more at high health, and very little at medium to low health.")),
+                new ChangeButton(new ItemSprite(ItemSpriteSheet.CLEANSING_DART), "Alchemy", "Buffs from v1.3:"
+                        + list("_Woolly Bombs_ now summon sheep for 200 turns, or 20 turns during boss fights, up from 12-16 turns. However, sheep no longer totally prevent bosses from summoning minions.")
+                        +list("_Rot Dart_ uses increased to 5 from 1","_Shocking Dart_ damage now slightly scales with depth", "_Poison Dart_ damage scaling increased", "_Displacing Dart_ now more consistently teleports enemies away", "_Holy Dart_ now heavily damages undead or demonic enemies, instead of blessing them", "_Adrenaline Dart_ now cripples enemies for 5 turns, instead of giving them adrenaline")
+                        +"\nBuffs from v1.2:"
+                        +list("_ Bomb Recipe_ energy costs down across the board\n", "_ Infernal, Blizzard, and Caustic Brew_ energy costs down by 1\n", "_ Telekinetic Grab_ energy cost down to 2 from 4, liquid metal cost reduced to 10 from 15", "_ Phase Shift_ energy cost down to 4 from 6", "_ Wild Energy_ energy cost down to 4 from 6", "_ Beacon of Returning_ energy cost down to 6 from 8", "_ Summon Elemental_ energy cost down to 6 from 8", "_ Alchemize_ energy cost down to 2 from 3")
+                        + list("_ Scroll of Foresight_ duration up to 400 from 250", "_ Scroll of Dread_ now grants 1/2 exp for defeated enemies", "_ Potion of Shrouding Fog_ gas quantity increased bt 50%\n", "Items and effects which create water now douse fire")
+                        +list("_Caustic Brew_ damage per turn increased by 1", "_ Infernal and Blizzard Brew_ now start their gas in a 3x3 AOE", "_ Shocking Brew_ AOE up to 7x7 from 5x5\n", "_ Phase Shift_ now stuns whatever it teleports", "_ Summon Elemental_ quantity up to 5 from 3, elemental's stats now scale with depth, and elementals can be re-summoned", "_ Aqua Blast_ now acts like a geyser trap, quantity down to 8 from 12", "_ Reclaim Trap_ quantity up to 4 from 3", "_Curse Infusion_ now boosts highly levelled gear by more than +1, quantity up to 4 from 3.", "_Recycle_ quantity up to 12 from 8, cost up to 8 from 6")
+                        +"\nNerfs from v1.2:"
+                        +list("_Magical Infusion_ energy cost up to 4 from 3", "_Holy Bomb_ bonus damage reduced to 50% from 67%", "_Goo Blob and Metal Shard_ energy value reduced to 3", "_Alchemize_ quantity in shops reduced by 1")
+                )
+            )
+        },
+        { // v0.3
+            new ChangeInfo("v0.3",true, TITLE_COLOR),
+            NewContent(
+                info(Messages.get(this, "030")), // trying something different with this.
+                new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "New Rat King Armor Ability!", "_Omni-Ability_ is an armor ability generator. Every time you use it, it will generate a new armor ability for you to use out of the existing ones. It's currently a tad unwieldy (especially with abilities that summon things) and more than a little bit confusing, but it should finally give Rat King what many have been waiting for: access to every armor ability without exception in one slot!")
+            ),
+            new ChangeInfo("From SHPD v1.1", false, SHPX_COLOR, "",
+                new ChangeButton(new ItemSprite(ARTIFACT_TOOLKIT), "Alchemy and Artifacts", "Implemented SHPD's alchemy rework:" + list("Energy is now a resource the player carries around.", "Less energy is provided naturally, but consumables can be converted into energy") + "\nChanges to Exotics:" + list("Exotics now require energy instead of seeds or stones","Potion of Holy Furor is now _Potion of Divine Inspiration_, which gives bonus talent points.", "Potion of Adrenaline Surge is now _Potion of Mastery_, which reduces the strength requirement of one item by 2."/*\n*/, "Scroll of Petrification is now _Scroll of Dread_, which causes enemies to flee the dungeon entirely.", "Scroll of Affection is now _Scroll of Siren's Song_, which permanently makes an enemy into an ally.", "Scroll of Confusion is now _Scroll of Challenge_, which attracts enemies but creates an arena where you take reduced damage.", "Scroll of Polymorph is now _Scroll of Metamorphosis_, which lets you swap out a talent to one from another class (including Rat King, though he is somewhat less common).") + "\nSpells:" + list("Added _Summon Elemental_ and _Telekinetic Grab_.", "_Alchemize_ reworked, replaces Merchant's Beacon and can also convert consumables to energy.", "Removed _Magical Porter_") + "\nExotic Buffs:" + list("_Potions of Storm Clouds, Shrouding Fog, and Corrosion_ initial gas AOE up to 3x3 from 1x1","_Potion of Shrouding Fog_ now only blocks enemy vision","_Potion of Corrosion_ starting damage increased by 1","_Potion of Magical Sight_ vision range up to 12 from 8","_Potion of Cleansing_ now applies debuff immunity for 5 turns\n","_Scroll of Foresight_ now increases detection range to 8 (from 2), but lasts 250 turns (from 600)","_Scroll of Prismatic Image_ hp +2 and damage +20%") + "\n\n_Artifact Changes_:" + list("Energy required to level up _Alchemist's Toolkit_ halved, kit can now be levelled and used anywhere", "Toolkit warmup is now based on time, and gets faster as it levels up\n", "The _Horn of Plenty_  now has a 'snack' option that always consumes 1 charge.", "To counterbalance this, the total number of charges and charge speed have been halved, but each charge is worth twice as much as before.\n", "_Dried Rose_: Ghost HP regen doubled, to match the rose's recharge speed (500 turns to full HP)")),
+                misc(list("Added Shattered's new music tracks.") + list("Item drops and special room spawns are now more consistent, and getting loads of the same item is now much less likely.", "Items present on boss floors are now preserved if the hero is revived via unblessed ankh.", "Teleport mechanics now work on boss levels.","Traps that teleport no longer work on items in chests or similar containers", "Rewards from piranha and trap rooms now always appear in chests") + list("Tipped darts can now be transmuted and recycled", "Thrown weapons no longer stick to allies", "Liquid metal production from upgraded thrown weapons now caps at +3") + list("Updated game icons on Android and Desktop platforms to match Shattered's new ones.","Tabs in rankings and hero info windows now use icons, not text" ,"'potions cooked' badge and stats are now 'items crafted'") + list("Newborn elementals no longer have a ranged attack")),
+                bugFixes(list("Specific cases where guidebook windows could be stacked.", "Remove curse stating nothing was cleansed when it removed the degrade debuff","Various minor/rare visual and textual errors","Cases where pausing/resuming the game at precise moments would cancel animations or attacks","Endure damage reduction applying after some specific other damage-reducing effects","Unblessed ankh resurrection windows disappearing in some cases","Lucky enchantment rarely not trigger in some cases","Artifacts spawning upgraded from golden mimics", "Unblessed ankh revival cancelling corpse dust curse","Unstable spellbook letting the player select unidentified scrolls", "Desktop version not working correctly with FreeBSD","Liquid metal being usable on darts","Teleportation working on immovable characters in some cases","Various quirks with thrown weapon durability","Rare cases where ghouls would get many extra turns when reviving", "Magical infusion not preserving curses on armor","Vertigo and teleportation effects rarely interfering","Layout issues in the hero info window with long buff names","Cursed wands being usable to create arcane resin","Unblessed ankh revival rarely causing crashes or placing the player on hazards","Some glyphs not working for armored statues or the ghost hero","Various oddities with inferno gas logic","Spirit bow having negative damage values in rare cases","Artifact recharging buff working on cursed artifacts","Scrolls of upgrade revealing whether unidentified rings/wands were cursed","Ring of Might not updating hero health total in rare cases","Specific cases where darts would not recognize an equipped crossbow","Cap on regrowth wand being affect by level boosts","Some on-hit effects not triggering on ghost or armored statues", "Rare errors when gateway traps teleported multiple things at once","Various rare errors when multiple inputs were given in the same frame", "Fog of War errors in Tengu's arena","Rare errors with sheep spawning items and traps")),
+                new ChangeButton(new ItemSprite(MAGES_STAFF), "Heroes","Note that both Rat King and the corresponding class are affected by SHPD buffs unless indicated otherwise.\n" + list("Rage now starts expiring after not taking damage for 2 turns, rather than instantly. This should make it easier to hold onto rage during combat.") + list("Staff damage reduced to 1-6, from 1-7.", "Preparation bonus damage reduced, is now 10/20/35/50 instead of 15/30/45/60.") + "\n" + list("_Wild Magic_ Charge cost reduced to 25, from 35.", "_Spirit Hawk_ Duration up to 100 turns, from 60.\n", "_Empowering Scrolls_ (and the variant provided by _Rat Magic_) now lasts for 2 wand zaps, up from 1.", "_Timeless Running_'s Light Cloak aspect now grants 16.6% charge speed per rank, up from 13.3%", "_Shrug it Off_ now caps damage taken at 20% at +4, up from 25%.") + list("_Double Jump_ nerfed, now requires the user to jump within 3 turns rather than 5 and has a charge reduction of 16%/30%/41%/50/59%, from 20%/36%/50%/60%/75% in a compromise between existing mechanics and SHPD's changes"))),
+            Changes(
+                new ChangeButton(HUNTRESS, list(2,"Replaced huntress's +durability perk with a perk that passively boosts the damage of thrown weapons (+1 level).", "_Durable Projectiles_ has been buffed to compensate (now gives +100%/+150% durability, up from +50/+75%), though the amount of durability is slightly nerfed overall.", "_Seer Shot_ reworked. Instead of being available really fast, now applies to an increasingly large area with upgrades (3x3/5x5/7x7 at +1/+2/+3), though cooldown is also increased with upgrades.", "_Point Blank_ partially reworked. It's no longer level-shifted and gives SHPD point blank effects, but it also increases ranged accuracy now.")),
+                new ChangeButton(Random.Int(2) == 0 ? LETHAL_MOMENTUM : LETHAL_MOMENTUM_2, "Made Lethal Momentum more distinct from its SHPD counterpart (and Pursuit):" + list(2, "Lethal Momentum now procs when your blow would have killed, regardless of enemy mechanics (such as those of brutes or ghouls) or other factors (enchantments like grim or blazing) that would otherwise stop SHPD Lethal Momentum.","Lethal Momentum (T2) now gives double accuracy on the turn that it procs, allowing for easier chaining.","Reverted T2 Lethal Momentum's +1 proc chance to be 67%, down from 75%.", "Lethal Momentum (Assassin) now requires preparation to trigger the first time, but follow-up kills do not have this limitation.")),
+                misc(list("Modified Dwarf King's phase skip mechanics to produce greater overall stability and fix all reported issues with this mechanic.", "It is now possible to use multihit attacks such as Fury on Dwarf King and successfully skip his second phase, but doing this incurs damage penalties that make it less consistent at completely skipping than just doing a single large attack.","Changed Dwarf King FX for skipping slightly.") + list("You no longer have to equip class armor to use the armor ability, though it will no longer charge naturally.") + list("Changed and added descriptions and comments to talents. Some talents have unique comments when metamorphed.")),
+                bugFixes("Added Trashbox Bobylev's crash message handler for easier bug reporting on Android." + "\n"
+                        + list("Nature Power not giving its distinctive vfx","Death mark doing +67% damage instead of +33%")
+                        + list("Rare cases where looking at class descriptions crashes the game.")
+                        + list("Crash when selecting an empty tile with a free-targeted sniper's mark.","Rare cases where free-target would become unusable until the game is reloaded.")
+                        + list("Smart targeting not prompting when no targets are around.", "crash when attempting to target a character with sniper's mark when no possible valid targets are present")
+                        + list("Dwarf King having an incorrect amount of health for phase 3 in Badder Bosses.", "Dwarf King not saying lines in Badder Bosses when partially skipped.", "Dwarf King sometimes saying lines out of order.")
+                        // TODO
+                        + list(Messages.NO_TEXT_FOUND + " when looking at Elemental Blast description of firebolt", Messages.NO_TEXT_FOUND + " when targeting yourself with shadowstepping Wrath.")
+                        + list("Rat statues not being given the respect they deserve."))
+            ),
+            Nerfs(
+                new ChangeButton(BARKSKIN, "I'm testing something out, and Barkskin ended up being the guinea pig. Expect a buff to Warden mechanics in the future."
+                    + "\n" + list("Barkskin granted by the talent now degrades every 1 turn, down from every two turns (current behavior of SHPD/Natural Dominance)", "Barkskin amounts adjusted, now 40/80/160/240% instead of 0/100/150/200% at +0/1/2/3. (+0 effect was bugged).","For reference, SHPD's Barkskin is 0/50/100/150% at +0/1/2/3.")
+                    + "\nThere really no reason to have it be multi-turn when you can refresh the duration so easily by planting a seed or via rejuvenating steps.\nRelatedly, Warden now automatically gets Rejuvenating Steps (10 turn cooldown) if the subclass is chosen without any points in Rejuvenating Steps, so it is now impossible for a warden to be completely without access to grass."),
+                new ChangeButton(WARLOCKS_TOUCH, "Removed Warlock's Touch's instant-proc chance."), new ChangeButton(PERFECT_COPY, "Removed +0 effect of instant swapping.\n\nThere will be another pass over armor abilities in the future so they work more predictably with Omni-Ability."))
+        },{ // v0.2
             new ChangeInfo("v0.2", true, TITLE_COLOR, ""),
             NewContent(
                     info("As of v0.2.1, I shifted to Shattered's new major.minor.patch versioning system. As such v0.2.1 was really the equivalent of v0.2.0a."),
@@ -351,14 +280,14 @@ public class RKPD2Changes {
                             "Has changed free-targeting logic (thanks to smart-targeting) to make these new interactions smoother; enemies that are already targeted will be highlighted while manually targeting.")
                             + "\nMulti-shot should now be more complex, but in exchange it should (somewhat ironically) be easier to use and understand. It's also much more flexible with its free-targeted sniper special functionality."),
                     new ChangeButton(KINGS_WISDOM, "New Talent Icons!", "Most of my added talents now have unique icons! Many of these are personally done, but some credit to _Trashbox Bobylev_ is needed.\n\nAlso, the new music and UI changes from SHPD v1.0.0 have been implemented into the game.")),
-            new ChangeInfo("From SHPD v1.0.1", false, SHPX_COLOR, "",
+            new ChangeInfo("From SHPD v1.0.3", false, SHPX_COLOR, "",
                     // alchemy stuff once it's added in.
                     new ChangeButton(new ItemSprite(CROWN), "Armor Ability Changes", ""
                         + "_Buffs:_\n"
                         + list("_Endure_ bonus damage conversion rate up to 1/3 from 1/4.")
                         + list("_Striking Wave_ effectiveness increased by 20%."/*,"_Shock Force_ now actually adds 20% damage per level as stated. Previously it only added 15%."*/, "Relatedly, Striking Force is no longer level shifted with regards to damage, but its boost is now +25/+50/+75/+100% damage.")
                         + list("_Wild Magic_ now boosts wand levels, instead of overriding them.","_Conserved Magic_ now has a chance to give each wand a 3rd shot.","_Conserved Magic_ charge cost reduction down to 33/55/70/80% from 44/69/82/90%.")
-                        + list("_Elemental Blast_ base damage increased to 15-25 from 10-20.")
+                        + list("_Elemental Blast_ base damage increased to 15-25 from 10-20.", "Elemental Power scaling increased to 20%/40%/60%/80% (Rat Blast) and 25/50/75/100 (Elemental Blast).")
                         + list("_Remote Beacon_ range per level increased to 4, from 3.")
                         + list("_Shadow Clone_ now follows the hero at 2x speed.","_Shadow Blade_ unshifted, damage per level increased to 7.5% from 6.25%.","_Cloned Armor_ unshifted, armor per level increased to 15% from 12.5%.")
                         + list("_Spirit Hawk_ evasion, accuracy, and duration increased by 20%.","_Swift Spirit_ now gives 2/3/4/5 dodges, up from 1/2/3/4.","_Go for the Eyes_ now gives 2/4/6/8 turns of blind, up from 2/3/4/5.")
@@ -390,22 +319,7 @@ public class RKPD2Changes {
                         + list("statues not becoming aggressive when debuffed", "swapping places with allies reducing momentum", "DK minions dropping imp quest tokens", "giant succubi teleporting into enclosed spaces", "spectral blades being blocked by allies", "Spirit Hawk and Shadow Clone being corruptible")
                         + list("wands losing max charge on save/load in rare cases", "magical infusion clearing curses", "dewdrops stacking on each other in rare cases", "exploding skeletons not being blocked by transfusion shield in rare cases", "rare incorrect interactions between swiftthistle and golden lotus")
                         + list("various minor errors with electricity effects", "soul mark not working properly on low HP enemies with shielding", "various rare errors with shadows buff", "errors with time freeze and inter-floor teleportation mechanics", "rooted characters not being immune to knockback effects")
-                        + list("gladiator combos dealing much more damage than intended in certain cases", "magical charge and scroll empower interacting incorrectly", "magical sight not working with farsight talent", "perfect copy talent giving very slightly more HP than intended", "wild magic using cursed wands as if they're normal") + list("Disarming traps opening chests.", "Body replacement ally being vulnerable to various AI-related debuffs.") + list("Disarming traps opening chests", "Body replacement ally being vulnerable to various AI-related debuffs", "Some ranged enemies becoming frozen if they were attacked from out of their vision"))),
-            NewContent(
-                new ChangeButton(new Wrath(), "Rat King's Wrath Redesign!", "I've finally gotten around to updating Rat King's Wrath to reflect v0.9.3 reworks to armor abilities!"
-                        + "\n\nWhile the previous Wrath was a combination of all armor abilities, the prospect of combining 13 different abilities into one isn't possible under the Wrath design, so I have instead decided to adapt the ones that have similar functionality to each part of the previous Wrath: _Smoke Bomb, Shockwave, Elemental Blast, and Spectral Blades._"
-                        + "\n\nNote, however, that Wrath is not a perfect mirror of these abilities, though all their mechanics are there in some form." + "\n"
-                        + list("Energy cost increased to 60 from 35.") + list("Added four new talents to Wrath.", "Each new talent corresponds as closely as possible to the talents of the respective armor ability.", "Wrath does not have Heroic Energy.") + list("Smoke Bomb no longer grants invisibility, mechanic instead moved to corresponding talent.", "Range is reduced to 6, from 8.") + list("Molten Earth effect replaced with Elemental Blast.") + list("Wrath's leap no longer stuns adjacent foes, instead sends out a 360 degree AOE Shockwave that covers a 3x3 area.", "Aftershock's Striking Wave and Shock Force are less effective than the real thing.", "Stun inflicted through through Aftershock cannot be broken during Wrath itself.") + list("Spectral Blades retains the ability to hit all targets in sight (removing the need to target it).", "Spectral Blades instead has damage and proc penalties when attacking multiple targets, though upgrading its respective talent lowers the degree to which this occurs.")
-                        + "\nWrath should be much more powerful now, but also much less cheesy; the consistent stun and root are gone, and it's much more bound to set ranges than before, but upgrading its talents can hugely increase Wrath's power output and flexibility."),
-                new ChangeButton(HUNTRESS, list(2,
-                        "Added a _secret subclass_ to Huntress, accessible by a secret interaction while choosing a subclass.",
-                        "_Restored Nature_ root duration reverted to 2/3, down from 4/6, but it now also causes health potions and related alchemy products to be used instantly.")
-                        + "_Multi-Shot:_" + list("Now uses multiple buffs to show that more than one target is marked.",
-                        "Allows stacking of free-targeted marks instead of overriding them when a new target is marked.",
-                        "Has changed free-targeting logic (thanks to smart-targeting) to make these new interactions smoother; enemies that are already targeted will be highlighted while manually targeting.")
-                        + "\nMulti-shot should now be more complex, but in exchange it should (somewhat ironically) be easier to use and understand. It's also much more flexible with its free-targeted sniper special functionality."),
-                    new ChangeButton(KINGS_WISDOM, "New Talent Icons!", "Most of my added talents now have unique icons! Some credit to _Trashbox Bobylev_ is needed."
-                            + "\n\nAlso, the new music and UI changes from SHPD v1.0.0 have been implemented into the game.")),
+                        + list("gladiator combos dealing much more damage than intended in certain cases", "magical charge and scroll empower interacting incorrectly", "magical sight not working with farsight talent", "perfect copy talent giving very slightly more HP than intended", "wild magic using cursed wands as if they're normal") + list("Disarming traps opening chests.", "Body replacement ally being vulnerable to various AI-related debuffs.") + list("Disarming traps opening chests", "Body replacement ally being vulnerable to various AI-related debuffs", "Some ranged enemies becoming frozen if they were attacked from out of their vision", "Time stasis sometimes not preventing harmful effects in its last turn."))),
             Changes(
                 new ChangeButton(WARLOCKS_TOUCH, "Warlock's Touch is currently extremely situational and often requires giving up warlock's other gimmicks to work at its best. At the same time, when exploited it's incredibly overpowered. These changes are intended to instead generalize its use, increasing its versatility and amount of situations in which it is applicable."
                     + list(2,
@@ -424,6 +338,7 @@ public class RKPD2Changes {
                                 "Grim no longer has specifically boosted chances to appear.")),
                 misc(list(2,
                         //"TODO _Energizing Meal I_ now adds new recharging buffs instead of stacking on existing ones.",
+                        "Magic Missile Elemental Blast now adds new recharge buffs rather than extending recharging to prevent exploits.",
                         "Talents that identify curses now declare whether an item is cursed when activated.",
                         // ui
                         "Most windows now scroll if they would not fit on the screen.",
@@ -445,101 +360,10 @@ public class RKPD2Changes {
                         + "\nIn addition, I'm making these changes based on player feedback:"
                         + list("_Cached Rations_ now gives 3/5 rations, down from 4/6.", "_Light Cloak_ effectiveness now 20%/40%/60%, down from 25/50/75.")),
                 new ChangeButton(RAT_KING, list(2,
-                        "The recent Strongman buff has turned Tactics into a monster, while Imperial Wrath is still rather niche in comparison. Thus, Imperial Wrath now has Strongman instead of Tactics.",
+                        "The recent Strongman buff has turned Tactics into a monster, while Imperial Wrath is still rather niche in comparison. Thus, Imperial Wrath now has Strongman instead of Tactics. I've also taken the liberty of renaming Imperial Wrath to be Inevitability to commemorate this change.",
                         "Royal Intuition's +1 effect is now additive with the SHPD Survialist's Intuition rather than multiplicative. It is now 2.75x/3.75x id speed, down from 3.5x/5.25x.",
                         "Rat King is also affected by the v1.0.0 staff nerf.")),
                 new ChangeButton(RATFORCEMENTS, "I've successfully made Ratforcements the best talent Ratmogrify has. That said, it's so powerful now that it's making the other aspects of Ratmogrify much less useful." + list(2, "Ratforcements stats reduced by ~20% across the board.") + "Don't be fooled though into thinking it's bad now, it is still VERY superior to Shattered's Ratforcements."))
-        },
-
-        {
-                new ChangeInfo("DLC (Abyssal 1.2)", true, TITLE_COLOR, "From this update, the mod is called RKPD2 DLC.",
-                        new ChangeButton(avatar(RAT_KING,6), "Another attempt at Rat King Nerfs (rat king nerfs)",
-                                "_-_ Reverted HP nerf.\n\n" +
-                                        "_-_ Subclass powers are acquired via talents instead of being given by default.\n\n" +
-                                        "_-_ Restoration works with drinking from waterskin."),
-                        new ChangeButton(new RatKingBossSprite(), "Rat King Boss",
-                                "Added new extremely hard boss, which can be fought, when you try to talk with RK while having an amulet.\n\nHis attacks are based on hero classes and some bosses, and Rat King will frequently switch between them.\n\n_Beware of his power while doing challenge run._")
-                ),
-                new ChangeInfo("Talents", false, 0x44d1d3, "",
-                        new ChangeButton(NOBLE_CAUSE, "RK",
-                                "_-_ Changed every Rat King talent to have unique sprite.\n" +
-                                        "_-_ Imperial Wrath now get both _Hold Fast_ and _Strongman_, to make it more relevant.\n" +
-                                        "_-_ Added _Advanced Education_ talent as additional T4: allows to get bonus points for previous tiers.\n" +
-                                        "_-_ Ratmogrify talents are level-shifted for Rat King.\n"+
-                                        "_-_ Added _Drratedon_ talent for Ratmogrify: gives buffs to allied ratmogrified enemies and summoned rats.\n" +
-                                        "_-_ Revamped Wrath's talents to have more rounded distribution of powers.\n" +
-                                        "_-_ Added _Avalon Power-Up_ talent for Wrath: enhances wrath with powers related to Ratmogrify, Heroic Leap, Elemental Blast.\n\n" +
-                                        "_-_ Added _Mus Rex Ira_ armor ability, combining the powers of _Spirit Hawk_, _Shadow Clone_, _Remote Beacon_, _Wild Magic_, _Endure_ and _Nature's Power_.\n" +
-                                        "_-_ It has four talents:\n" +
-                                        "_-_ _Bloodflare Skin_ buffs enduring and enhances clone and hawk's survivability.\n" +
-                                        "_-_ _Astral Charge_ buffs beacon and wild magic.\n" +
-                                        "_-_ _Shadowspec Blade_ buffs clone and hawk's offensive capabilities.\n" +
-                                        "_-_ _Silva Range_ buffs nature's power and gives ranged attack to clone."
-                        ),
-                        new ChangeButton(IRON_WILL, "Warrior",
-                                "_-_ Changed One Man Army and Skill to have unique sprite.\n" +
-                                        "_-_ Replaced _Restored Willpower_ with _Willpower of Injured_: makes seal's shielding regenerate faster on low HP.\n" +
-                                        "_-_ Added _Weapon Mastery_ talent as 5th T1: increases the minimum amount of weapons.\n"+
-                                        "_-_ Added _Big Rush_ talent as 6th T2: causes warrior to ram enemies instead of going around them, with bonus damage from seal's shielding.\n" +
-                                        "_-_ Changed _Hold Fast_: now gives minimal armor value.\n" +
-                                        "_-_ Reworked _Endless Rage_: now gives ability to gain rage from DoT, magic spells and Viscosity.\n" +
-                                        "_-_ Changed _Berserkering Stamina_: now also makes shielding decay slower, but gives slighty less of it; level-shifting for bonus shielding is removed.\n" +
-                                        "_-_ Gladiator gets 25 turns of combo after killing an enemy, from 15.\n" +
-                                        "_-_ Replaced _Cleave_ with _Battle Tendency_: causes combo to decay instead of resetting.\n" +
-                                        "_-_ Added _Heroic Endurance_ talent as additional T4: adds bonus upgrades to any armor.\n" +
-                                        "_-_ Added _Alice Gambit_ to Heroic Leap: causes enemies around landing place to shrink after leap.\n" +
-                                        "_-_ Reworked _Double Jump_: gives second jump for free at +2 and adjusts cost for third jump starting from +3.\n" +
-                                        "_-_ Added _Cockatriocious_ to Shockwave: turns enemies caught in shockwave into stone.\n" +
-                                        "_-_ Added _Demonshader_ to Endure: imbues endure-empowered attacks with fire damage and ability to generate rage and combo."),
-                        new ChangeButton(SORCERY, "Mage",
-                                "_-_ Changed Sorcery and Warlock's Touch to have unique sprite.\n" +
-                                        "_-_ Added _Arcane Boost_ talent as 5th T1: slightly increases recharge speed on wands not in staff.\n" +
-                                        "_-_ Nerfed _Shield Battery_ by 17.3%.\n" +
-                                        "_-_ Added _Pyromaniac_ talent as 6th T2: increases damage from all fire in the game.\n" +
-                                        "_-_ Nerfed _Excess Charge_: 50% reduced shielding.\n" +
-                                        "_-_ Added _Heroic Wizardry_ talent as additional T4: allows to use wand charges beyond 0.\n" +
-                                        "_-_ Buffed _Elemental Blast_ to have its base damage based on staff's melee damage.\n" +
-                                        "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
-                                        "_-_ Added _Eldritch Blessing_ to Wild Magic: makes all zaps cursed, cursed effects are safer and stronger while using the ability.\n" +
-                                        "_-_ Added _Chrono Screw_ to Remote Beacon: gives time bubble after successful teleportation."),
-                        new ChangeButton(MYSTICAL_UPGRADE, "Rogue",
-                                "_-_ Changed Lethal Momentum and Marathon Runner to have unique sprite.\n" +
-                                        "_-_ Added _Faraday Cage_ talent as 5th T1: protects hero from electricity.\n"+
-                                        "_-_ Replaced _Rogue's Foresight_ with _Protein Infusion_: gives bonus speed and evasion depending on satiety.\n" +
-                                        "_-_ Added _Efficient Shadows_ talent as 6th T2: removes cloak's charge speed boost for more invisibility time per charge.\n" +
-                                        "_-_ Fixed _Dual Wielding_: no longer causes softlocks.\n" +
-                                        "_-_ Added _Heroic Stamina_ talent as additional T4: gives movespeed boost for using artifacts.\n" +
-                                        "_-_ Added _Frigid Touch_ to Smoke Bomb: sets the hero's FOV on frost fire after blinking.\n" +
-                                        "_-_ Reworked _Double Mark_: gives second use for free at +2 and adjusts cost for third use starting from +3.\n" +
-                                        "_-_ Added _Cataclysmic Energy_ to Death Mark: increases the duration of death mark and removes damage boost, but marked enemies at 0 HP will combust each turn.\n" +
-                                        "_-_ Added _Dar Magic_ to Shadow Clone: gives various ranged capabilities to shadow clone."),
-                        new ChangeButton(NATURES_AID, "Huntress",
-                                "_-_ Changed Nature's Better Aid to have unique sprite.\n" +
-                                        "_-_ Added _Greenfields_ talent as 5th T1: increases regeneration while in furrowed grass.\n"+
-                                        "_-_ Replaced _Nature's Aid_ with _Scout's Barrier_: gives shielding for successful Super-Shots.\n" +
-                                        "_-_ Added _Scout's Agility_ talent as 6th T2: makes heroine dodge ranged attacks better.\n" +
-                                        "_-_ Armored Cloak is preserved when using DK's crown.\n" +
-                                        "_-_ Added _Heroic Archery_ talent as additional T4: adds bonus upgrades to thrown weapons.\n" +
-                                        "_-_ Added _Spectral Shot_ to Spectral Blades: makes blades behave like throwing weapons and summon arrows from her bow.\n" +
-                                        "_-_ Added _Primal Awakening_ to Nature's Power: with small chance turns enemies into gnoll trickster while buff is active.\n" +
-                                        "_-_ Added _Beak of Power_ to Spirit Hawk: increases utility power of hawk and gives it ranged attack at +4.")
-                ),
-                NewContent(new ChangeButton(new ItemSprite(ROYAL_SWORD), "Tier 6 weapons",
-                                "Added 10 melee and 4 thrown exceptionally rare tier 6 weapons.\n\n" +
-                                        "_-_ They appear in ebony chest and have many special abilities.\n" +
-                                        "_-_ T6 weapons also omni-melee weapon and omni-thrown weapon, called _Royal Brand_ and _Steel Axe_, respectively."),
-                        new ChangeButton(new ItemSprite(WAND_UNSTABLE), "New wand",
-                                "Added wand of His Ratiness, which will create random wand zaps and use random wand effects for Battlemage and Elemental Blast."),
-                        new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "New champions",
-                                "Added a lot of champion types, increasing their number to 15.")),
-                new ChangeInfo("", false, 0x000000, "",
-                        bugFixes("_-_ Fixed light cloak charge speed being wrong (was higher than intended for Rogue and lower for RK)\n\n" +
-                                "_-_ Fixed Wealth and Might using wrong percentages in their descriptions.\n" +
-                                "_-_ Fixed Shrinking being only cosmetic effect.\n" +
-                                "_-_ Fixed shop appearing on D21."),
-                        misc("_-_ Added some additional lore and sprite edits for dungeon monsters.\n\n" +
-                                "_-_ Added missing loot into abyssal shops.")
-                )
         },
             // v0.1.0
         {
@@ -653,37 +477,6 @@ public class RKPD2Changes {
                         +"\nOverall Strongman is a bit worse at +3 and a bit better at +2 and +1. Its ability to be exploited is down due to now being reliant on having strength, but in return it also gives true strength bonuses (thus opening up synergies with rings of force and might...)"
                 ),
                 new ChangeButton(BACKUP_BARRIER, "Backup barrier now generates 5/8 shield, down from 6/9, to reflect the Shattered nerf to Backup Barrier."))
-        },
-
-        {
-                new ChangeInfo("Abyssal", true, TITLE_COLOR, "",
-                        new ChangeButton(get(Icons.DEPTH),"New chapter!",
-                                "Added endless abyss chapter from Summoning PD, excluding exclusive traps"),
-                        new ChangeButton(avatar(RAT_KING,6), "Rat King Nerfs (rat king nerfs)",
-                                "Rat King's incomprehensible power bugged me during development of abyss too much.\n\n" +
-                                        "_-_ Reduced HP by 60%"),
-                        new ChangeButton(new Image(Assets.Sprites.HUNTRESS, 0, 15, 12, 15), "Huntress changes",
-                                "The Huntress recieved brand new starting armor to make her more stylish and strong.\n\n" +
-                                        "_-_ With new armor, she can use _Super-Shots_ to shoot stronger arrow which does more damage with distance.\n\n" +
-                                        "_-_ This ability has 35 turns cooldown.\n\n" +
-                                        "_-_ The armor works as +1 cloak armor, but still can be viable in endgame."),
-                        new ChangeButton(new ItemSprite(new RatKingArmor()), "Rat King's Wrath",
-                                "Reworked Rat King's Wrath into full armor ability with 3 exclusive talents:\n\n" +
-                                        "_-_ _Auric Tesla Ability_ twists Wrath's components to have properties of 0.9.3 Shattered armor abilities.\n\n" +
-                                        "_-_ _Quantum Positioning_ significantly extends Wrath's range.\n\n" +
-                                        "_-_ _Rat Age Origins_ turns Smoke Bomb component into gas spreader which can freeze, confuse and damage enemies.\n\n" +
-                                        "Molten Earth damage, Heroic Leap paralysis, Smoke Bomb invis and Spectral Blades range have been signficantly adjusted, cost increased from _35_ to _100_."),
-                        new ChangeButton(new ItemSprite(RING_AGATE), "Ring caps",
-                                "Most of the rings have been capped at 2x of their effect (2.5x for Furor, 60% damage reduction for defense rings and no cap for SS and Wealth)."),
-
-                        new ChangeButton(new Image(TALENT_ICONS, 16*5,16,16,16), "Talent changes",
-                                "_-_ Reworked _Energized Upgrade_ to recharge auxiliary wands when they are fully used.\n\n" +
-                                        "_-_ Replaced _Mystical Upgrade_ with _Dual Wielding_, allowing player to use wands and missiles at same time.\n\n" +
-                                        "_-_ Healing potion talents work on drinking from waterskin.\n\n" +
-                                        "_-_ Replaced _Restored Nature_ with _Ivylash_, which augments super-shots with Rooting.\n\n" +
-                                        "_-_ Huntress T3 and T4 talents boost the damage potential of Super-Shots."
-                        )
-                )
         },
             // v0.0.1
         {

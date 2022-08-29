@@ -1,3 +1,24 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2022 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.zrp200.rkpd2.actors.hero.abilities;
 
 import com.watabou.noosa.audio.Sample;
@@ -34,6 +55,9 @@ public class Ratmogrify extends ArmorAbility {
 	{
 		baseChargeUse = 50f;
 	}
+
+	//this is sort of hacky, but we need it to know when to use alternate name/icon for heroic energy
+	public static boolean useRatroicEnergy = false;
 
 	@Override
 	public String targetingPrompt() {
@@ -188,6 +212,10 @@ public class Ratmogrify extends ArmorAbility {
 
 		}
 
+		public Mob getOriginal(){
+			return original;
+		}
+
 		private float timeLeft = 6f;
 
 		@Override
@@ -199,6 +227,7 @@ public class Ratmogrify extends ArmorAbility {
 				GameScene.add(original);
 				if(original.HP == 0) original.die(this); // avoid shittery.
 
+				EXP = 0;
 				destroy();
 				sprite.killAndErase();
 				CellEmitter.get(original.pos).burst(Speck.factory(Speck.WOOL), 4);
@@ -273,6 +302,10 @@ public class Ratmogrify extends ArmorAbility {
 			return Messages.get(this, "name", original.name());
 		}
 
+		{
+			immunities.add(AllyBuff.class);
+		}
+
 		private static final String ORIGINAL = "original";
 		private static final String ALLIED = "allied";
 
@@ -297,8 +330,11 @@ public class Ratmogrify extends ArmorAbility {
 	}
 
 	// summons.
-	private static double getModifier() { return Math.max(1, (Dungeon.getDepth() /5d)*0.8f); }
-	public static class SummonedRat extends Rat {
+	private static float getModifier() { return Math.max(1, Dungeon.scalingDepth()/5f)*.8f; }
+
+	public interface Ratforcements { }
+
+	public static class SummonedRat extends Rat implements Ratforcements {
 		{
 			HP = HT *= getModifier();
 
@@ -320,7 +356,7 @@ public class Ratmogrify extends ArmorAbility {
 			return (int)( super.attackSkill(target) * getModifier()*5 );
 		}
 	}
-	public static class SummonedAlbino extends Albino {
+	public static class SummonedAlbino extends Albino implements Ratforcements {
 		{
 			HP = HT *= getModifier()*2;
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -208,8 +209,19 @@ abstract public class MissileWeapon extends Weapon {
     public void onThrow(int cell) {
 		Char enemy = Actor.findChar( cell );
 		if (enemy == null || enemy == curUser) {
-				parent = null;
-				super.onThrow( cell );
+			parent = null;
+
+			//metamorphed seer shot logic
+			if (curUser.hasTalent(Talent.SEER_SHOT)
+					&& curUser.heroClass != HeroClass.HUNTRESS
+					&& curUser.buff(Talent.SeerShotCooldown.class) == null){
+				if (Actor.findChar(cell) == null) {
+					// manually made consistent with rkpd2 logic
+					new RevealedArea(cell, Dungeon.depth).attachTo(curUser);
+				}
+			}
+
+			super.onThrow( cell );
 		} else curUser.shoot(enemy, this);
 	}
 
@@ -276,6 +288,7 @@ abstract public class MissileWeapon extends Weapon {
 			Buff.detach(user, Talent.MysticalUpgradeMissileTracker.class);
 			return 0;
 		}
+		if(Talent.LethalMomentumTracker.apply(user)) return 0;
 		float speedFactor = delayFactor( user );
 		if(user instanceof Hero && ((Hero)user).hasTalent(Talent.ONE_MAN_ARMY)) {
 			Hero hero = (Hero)user;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -46,8 +47,8 @@ import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.quest.MetalShard;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
-import com.zrp200.rkpd2.levels.CavesBossLevel;
 import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.CavesBossLevel;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
@@ -58,6 +59,14 @@ import com.zrp200.rkpd2.sprites.DM300Sprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -301,6 +310,14 @@ public class DM300 extends Mob {
 	}
 
 	@Override
+	public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti, int rolls) {
+		if (enemy == Dungeon.hero && supercharged){
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
+		return super.attack(enemy, dmgMulti, dmgBonus, accMulti, rolls);
+	}
+
+	@Override
 	protected Char chooseEnemy() {
 		Char enemy = super.chooseEnemy();
 		if (supercharged && enemy == null){
@@ -407,7 +424,7 @@ public class DM300 extends Mob {
 		if (Dungeon.level.adjacent(pos, target.pos)){
 			int oppositeAdjacent = target.pos + (target.pos - pos);
 			Ballistica trajectory = new Ballistica(target.pos, oppositeAdjacent, Ballistica.MAGIC_BOLT);
-			WandOfBlastWave.throwChar(target, trajectory, 2, false, false);
+			WandOfBlastWave.throwChar(target, trajectory, 2, false, false, getClass());
 			if (target == Dungeon.hero){
 				Dungeon.hero.interrupt();
 			}
@@ -550,6 +567,10 @@ public class DM300 extends Mob {
 		Badges.validateBossSlain();
 		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
 			new PotionOfExperience().apply(Dungeon.hero);
+		if (Statistics.qualifiedForBossChallengeBadge){
+			Badges.validateBossChallengeCompleted();
+		}
+		Statistics.bossScores[2] += 3000;
 
 		LloydsBeacon beacon = Dungeon.hero.belongings.getItem(LloydsBeacon.class);
 		if (beacon != null) {
@@ -584,8 +605,11 @@ public class DM300 extends Mob {
 				for (int i : PathFinder.NEIGHBOURS9){
 					if (Dungeon.level.map[pos+i] == Terrain.WALL || Dungeon.level.map[pos+i] == Terrain.WALL_DECO){
 						Point p = Dungeon.level.cellToPoint(pos+i);
-						if (p.y < gate.bottom && p.x > gate.left-2 && p.x < gate.right+2){
+						if (p.y < gate.bottom && p.x >= gate.left-2 && p.x < gate.right+2){
 							continue; //don't break the gate or walls around the gate
+						}
+						if (!CavesBossLevel.diggableArea.inside(p)){
+							continue; //Don't break any walls out of the boss arena
 						}
 						Level.set(pos+i, Terrain.EMPTY_DECO);
 						GameScene.updateMap(pos+i);
@@ -663,6 +687,9 @@ public class DM300 extends Mob {
 				Char ch = Actor.findChar(i);
 				if (ch != null && !(ch instanceof DM300)){
 					Buff.prolong( ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3 );
+					if (ch == Dungeon.hero){
+						Statistics.bossScores[2] -= 100;
+					}
 				}
 			}
 

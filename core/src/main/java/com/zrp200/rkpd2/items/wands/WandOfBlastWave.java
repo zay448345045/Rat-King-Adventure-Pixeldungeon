@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -49,6 +50,14 @@ import com.zrp200.rkpd2.levels.traps.TenguDartTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.PointF;
+import com.watabou.utils.Random;
 
 public class WandOfBlastWave extends DamageWand {
 
@@ -91,7 +100,7 @@ public class WandOfBlastWave extends DamageWand {
 				if (ch.pos == bolt.collisionPos + i) {
 					Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
 					int strength = 1 + Math.round(buffedLvl() / 2f);
-					throwChar(ch, trajectory, strength, false);
+					throwChar(ch, trajectory, strength, false, true, getClass());
 				}
 
 			}
@@ -107,23 +116,14 @@ public class WandOfBlastWave extends DamageWand {
 			if (bolt.path.size() > bolt.dist+1 && ch.pos == bolt.collisionPos) {
 				Ballistica trajectory = new Ballistica(ch.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
 				int strength = buffedLvl() + 3;
-				throwChar(ch, trajectory, strength, false);
+				throwChar(ch, trajectory, strength, false, true, getClass());
 			}
 		}
-		
-	}
 
-	public static void throwChar(final Char ch, final Ballistica trajectory, int power){
-		throwChar(ch, trajectory, power, true);
 	}
 
 	public static void throwChar(final Char ch, final Ballistica trajectory, int power,
-	                             boolean closeDoors) {
-		throwChar(ch, trajectory, power, closeDoors, true);
-	}
-
-	public static void throwChar(final Char ch, final Ballistica trajectory, int power,
-	                             boolean closeDoors, boolean collideDmg){
+	                             boolean closeDoors, boolean collideDmg, Class cause){
 		if (ch.properties().contains(Char.Property.BOSS)) {
 			power /= 2;
 		}
@@ -132,7 +132,7 @@ public class WandOfBlastWave extends DamageWand {
 
 		boolean collided = dist == trajectory.dist;
 
-		if (dist == 0
+		if (dist <= 0
 				|| ch.rooted
 				|| ch.properties().contains(Char.Property.IMMOVABLE)) return;
 
@@ -175,6 +175,12 @@ public class WandOfBlastWave extends DamageWand {
 				if (finalCollided && ch.isAlive()) {
 					ch.damage(Random.NormalIntRange(finalDist, 2*finalDist), this);
 					Paralysis.prolong(ch, Paralysis.class, 1 + finalDist/2f);
+					if (ch == Dungeon.hero && !ch.isAlive()){
+						if ( cause == WandOfBlastWave.class){
+							Badges.validateDeathFromFriendlyMagic();
+						}
+						Dungeon.fail(cause);
+					}
 				}
 				if (closeDoors && Dungeon.level.map[oldPos] == Terrain.OPEN_DOOR){
 					Door.leave(oldPos);
@@ -184,7 +190,6 @@ public class WandOfBlastWave extends DamageWand {
 					Buff.affect(ch, Haste.class, 0.4f * finalPower);
 				}
 				if (ch == Dungeon.hero){
-					//FIXME currently no logic here if the throw effect kills the hero
 					Dungeon.observe();
 				}
 			}

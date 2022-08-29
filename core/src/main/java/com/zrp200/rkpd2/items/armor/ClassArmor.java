@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,31 +21,30 @@
 
 package com.zrp200.rkpd2.items.armor;
 
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.tiles.DungeonTileSheet;
-import com.zrp200.rkpd2.ui.QuickSlotButton;
-import com.zrp200.rkpd2.utils.SafeCast;
-import com.zrp200.rkpd2.windows.WndChooseAbility;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.LockedFloor;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
+import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.utils.GLog;
-import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
+import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndChooseAbility;
+import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
+import com.zrp200.rkpd2.windows.WndOptions;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -57,7 +56,8 @@ import static com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility.additi
 abstract public class ClassArmor extends Armor {
 
 	private static final String AC_ABILITY = "ABILITY";
-	
+	private static final String AC_TRANSFER = "TRANSFER";
+
 	{
 		levelKnown = true;
 		cursedKnown = true;
@@ -65,8 +65,6 @@ abstract public class ClassArmor extends Armor {
 
 		bones = false;
 	}
-
-	private int armorTier;
 
 	private Charger charger;
 	public float charge = 0;
@@ -123,7 +121,7 @@ abstract public class ClassArmor extends Armor {
 			classArmor.affixSeal(seal);
 		}
 
-		classArmor.level(armor.level() - (armor.curseInfusionBonus ? 1 : 0));
+		classArmor.level(armor.trueLevel());
 		classArmor.tier = armor.tier;
 		classArmor.augment = armor.augment;
 		classArmor.inscribe( armor.glyph );
@@ -159,6 +157,7 @@ abstract public class ClassArmor extends Armor {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_ABILITY );
 		actions.addAll( additionalActions().keySet() );
+		actions.add( AC_TRANSFER );
 		return actions;
 	}
 
@@ -170,7 +169,7 @@ abstract public class ClassArmor extends Armor {
 			String actionName = super.actionName(action, hero);
 			//overriding the default to suppress NULL so that OmniAbility can communicate with itself.
 			//noinspection StringEquality
-			return actionName != Messages.NULL ? actionName : action;
+			return actionName != Messages.NO_TEXT_FOUND ? actionName : action;
 		}
 	}
 
@@ -214,10 +213,61 @@ abstract public class ClassArmor extends Armor {
 
 		super.execute( hero, action );
 
-		if (action.equals(AC_ABILITY)) {
+		if (action.equals(AC_ABILITY)){
+
 			useAbility(hero, hero.armorAbility);
 		} else if(additionalActions().containsKey(action)) {
 			useAbility(hero, additionalActions().get(action));
+		} else if (action.equals(AC_TRANSFER)){
+			GameScene.show(new WndOptions(new ItemSprite(ItemSpriteSheet.CROWN),
+					Messages.get(ClassArmor.class, "transfer_title"),
+					Messages.get(ClassArmor.class, "transfer_desc"),
+					Messages.get(ClassArmor.class, "transfer_prompt"),
+					Messages.get(ClassArmor.class, "transfer_cancel")){
+				@Override
+				protected void onSelect(int index) {
+					if (index == 0){
+						GameScene.selectItem(new WndBag.ItemSelector() {
+							@Override
+							public String textPrompt() {
+								return Messages.get(ClassArmor.class, "transfer_prompt");
+							}
+
+							@Override
+							public boolean itemSelectable(Item item) {
+								return item instanceof Armor;
+							}
+
+							@Override
+							public void onSelect(Item item) {
+								if (item == null || item == ClassArmor.this) return;
+
+								Armor armor = (Armor)item;
+								armor.detach(hero.belongings.backpack);
+								if (hero.belongings.armor == armor){
+									hero.belongings.armor = null;
+								}
+								level(armor.trueLevel());
+								tier = armor.tier;
+								augment = armor.augment;
+								inscribe( armor.glyph );
+								cursed = armor.cursed;
+								curseInfusionBonus = armor.curseInfusionBonus;
+								masteryPotionBonus = armor.masteryPotionBonus;
+								identify();
+
+								GLog.p( Messages.get(ClassArmor.class, "transfer_complete") );
+								hero.sprite.operate(hero.pos);
+								hero.sprite.emitter().burst( Speck.factory( Speck.CROWN), 12 );
+								Sample.INSTANCE.play( Assets.Sounds.EVOKE );
+								hero.spend(Actor.TICK);
+								hero.busy();
+
+							}
+						});
+					}
+				}
+			});
 		}
 	}
 	private void useAbility(Hero hero, ArmorAbility armorAbility) {

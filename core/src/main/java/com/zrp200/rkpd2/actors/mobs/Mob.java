@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.artifacts.MasterThievesArmband;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
@@ -109,6 +110,7 @@ public abstract class Mob extends Char {
 	public int maxLvl = 100000;
 
 	public Char enemy;
+	protected int enemyID = -1; //used for save/restore
 	protected boolean enemySeen;
 	protected boolean alerted = false;
 
@@ -118,8 +120,11 @@ public abstract class Mob extends Char {
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
 	private static final String MAX_LVL	= "max_lvl";
+
+	private static final String ENEMY_ID	= "enemy_id";
+
 	private static final String SCALE   = "scale";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		
@@ -139,6 +144,10 @@ public abstract class Mob extends Char {
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
 		bundle.put( MAX_LVL, maxLvl );
+
+		if (enemy != null) {
+			bundle.put(ENEMY_ID, enemy.id() );
+		}
 		bundle.put( SCALE, scaleFactor);
 	}
 	
@@ -167,6 +176,15 @@ public abstract class Mob extends Char {
 		if (bundle.contains(SCALE)) scaleFactor = bundle.getFloat( SCALE);
 
 		if (bundle.contains(MAX_LVL)) maxLvl = bundle.getInt(MAX_LVL);
+
+		if (bundle.contains(ENEMY_ID)) {
+			enemyID = bundle.getInt(ENEMY_ID);
+		}
+	}
+
+	//mobs need to remember their targets after every actor is added
+	public void restoreEnemy(){
+		if (enemyID != -1 && enemy == null) enemy = (Char)Actor.findById(enemyID);
 	}
 	
 	public CharSprite sprite() {
@@ -616,17 +634,13 @@ public abstract class Mob extends Char {
 			return 0;
 		}
 	}
-	
-	protected boolean hitWithRanged = false;
-	
+
 	@Override
 	public int defenseProc( Char enemy, int damage ) {
 		
 		if (enemy instanceof Hero
-				&& ((Hero) enemy).belongings.weapon() instanceof MissileWeapon
-				&& !hitWithRanged){
-			hitWithRanged = true;
-			Statistics.thrownAssists++;
+				&& ((Hero) enemy).belongings.weapon() instanceof MissileWeapon){
+			Statistics.thrownAttacks++;
 			Badges.validateHuntressUnlock();
 		}
 		
@@ -665,10 +679,19 @@ public abstract class Mob extends Char {
 		return damage;
 	}
 
-	public boolean surprisedBy( Char enemy ){
+	@Override
+	public float speed() {
+		return super.speed() * AscensionChallenge.enemySpeedModifier(this);
+	}
+
+	public final boolean surprisedBy( Char enemy ){
+		return surprisedBy( enemy, true);
+	}
+
+	public boolean surprisedBy( Char enemy, boolean attacking ){
 		return enemy == hero
 				&& (enemy.invisible > 0 || !enemySeen)
-				&& ((Hero)enemy).canSurpriseAttack();
+				&& (!attacking || ((Hero)enemy).canSurpriseAttack());
 	}
 
 	public void aggro( Char ch ) {
@@ -718,14 +741,21 @@ public abstract class Mob extends Char {
 		super.destroy();
 		
 		Dungeon.level.mobs.remove( this );
-		
+
+		if (Dungeon.hero.buff(MindVision.class) != null){
+			Dungeon.observe();
+			GameScene.updateFog(pos, 2);
+		}
+
 		if (hero.isAlive()) {
 			
 			if (alignment == Alignment.ENEMY) {
 				Statistics.enemiesSlain++;
 				Badges.validateMonstersSlain();
 				Statistics.qualifiedForNoKilling = false;
-				
+
+				AscensionChallenge.processEnemyKill(this);
+
 				int exp = !isRewardSuppressed() ? EXP : 0;
 				if (exp > 0) {
 					hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
@@ -814,16 +844,24 @@ public abstract class Mob extends Char {
 	}
 
 	public final boolean isRewardSuppressed() { return hero.lvl > maxLvl + 2; }
+
+	public float lootChance(){
+		float lootChance = this.lootChance;
+
+		lootChance *= RingOfWealth.dropChanceMultiplier( Dungeon.hero );
+
+		return lootChance;
+	}
 	public void rollToDropLoot(){
 		if (isRewardSuppressed()) return;
-		
-		float lootChance = this.lootChance;
-		lootChance *= RingOfWealth.dropChanceMultiplier( hero );
-		
-		if (Random.Float() < lootChance) {
-			Item loot = createLoot();
-			if (loot != null) {
-				Dungeon.level.drop(loot, pos).sprite.drop();
+
+		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
+		if (stolen == null || !stolen.itemWasStolen()) {
+			if (Random.Float() < lootChance()) {
+				Item loot = createLoot();
+				if (loot != null) {
+					Dungeon.level.drop(loot, pos).sprite.drop();
+				}
 			}
 		}
 		
@@ -872,11 +910,11 @@ public abstract class Mob extends Char {
 	}
 
     @SuppressWarnings("unchecked")
-	protected Item createLoot() {
+	public Item createLoot() {
 		Item item;
 		if (loot instanceof Generator.Category) {
 
-			item = Generator.random( (Generator.Category)loot );
+			item = Generator.randomUsingDefaults( (Generator.Category)loot );
 
 		} else if (loot instanceof Class<?>) {
 

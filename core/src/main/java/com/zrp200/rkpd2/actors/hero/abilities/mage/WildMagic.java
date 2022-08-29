@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,10 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.tweeners.Delayer;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -91,7 +95,7 @@ public class WildMagic extends ArmorAbility {
 					seconds.remove(w);
 				}
 				if (totalCharge < 3*chargeUsePerShot - 3*hero.pointsInTalent(Talent.HEROIC_WIZARDRY)
-					|| Dungeon.hero.hasTalent(Talent.ELDRITCH_BLESSING) || Random.Int(4) > Dungeon.hero.pointsInTalent(Talent.CONSERVED_MAGIC)){
+					|| Dungeon.hero.hasTalent(Talent.ELDRITCH_BLESSING) || Random.Int(4) >= Dungeon.hero.pointsInTalent(Talent.FIRE_EVERYTHING)){
 					thirds.remove(w);
 				}
 			}
@@ -141,29 +145,48 @@ public class WildMagic extends ArmorAbility {
 		}
 	};
 
-	public static void zapWand(ArrayList<Wand> wands, Hero hero, int target){
+	public static void zapWand(ArrayList<Wand> wands, Hero hero, int cell){
 		Wand cur = wands.remove(0);
 
-		Ballistica aim = new Ballistica(hero.pos, target, cur.collisionProperties(target));
+		Ballistica aim = new Ballistica(hero.pos, cell, cur.collisionProperties(cell));
 
-		hero.sprite.zap(target);
+		hero.sprite.zap(cell);
 
+		float startTime = Game.timeTotal;
 		if (!hero.hasTalent(Talent.ELDRITCH_BLESSING) && !cur.cursed) {
 			cur.fx(aim, new Callback() {
 				@Override
 				public void call() {
 					cur.onZap(aim);
-					afterZap(cur, wands, hero, target);
+					if (Game.timeTotal - startTime < 0.33f){
+						hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+							@Override
+							protected void onComplete() {
+								afterZap(cur, wands, hero, cell);
+							}
+						});
+					} else {
+						afterZap(cur, wands, hero, cell);
+					}
 				}
 			});
 		} else {
 			CursedWand.cursedZap(cur,
 					hero,
-					new Ballistica(hero.pos, target, Ballistica.MAGIC_BOLT),
+					new Ballistica(hero.pos, cell, Ballistica.MAGIC_BOLT),
 					new Callback() {
 						@Override
 						public void call() {
-							afterZap(cur, wands, hero, target);
+							if (Game.timeTotal - startTime < 0.33f){
+								hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+									@Override
+									protected void onComplete() {
+										afterZap(cur, wands, hero, cell);
+									}
+								});
+							} else {
+								afterZap(cur, wands, hero, cell);
+							}
 						}
 					});
 		}
@@ -175,7 +198,7 @@ public class WildMagic extends ArmorAbility {
 			cur.partialCharge++;
 			cur.curCharges--;
 		}
-		if (!wands.isEmpty()) {
+		if (!wands.isEmpty() && hero.isAlive()) {
 			zapWand(wands, hero, target);
 		} else {
 			if (hero.buff(WildMagicTracker.class) != null) {
@@ -184,7 +207,11 @@ public class WildMagic extends ArmorAbility {
 			CursedWand.eldritchLevel = 0;
 			Item.updateQuickslot();
 			Invisibility.dispel();
-			hero.spendAndNext(Actor.TICK);
+			if (Random.Int(4) >= hero.pointsInTalent(Talent.CONSERVED_MAGIC)) {
+				hero.spendAndNext(Actor.TICK);
+			} else {
+				hero.next();
+			}
 		}
 	}
 

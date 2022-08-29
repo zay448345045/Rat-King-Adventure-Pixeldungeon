@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,12 +45,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 
 public class Ring extends KindofMisc {
 	
 	protected Buff buff;
 
-	private static final HashMap<String, Integer> gems = new HashMap<String, Integer>() {
+	private static final LinkedHashMap<String, Integer> gems = new LinkedHashMap<String, Integer>() {
 		{
 			put("garnet",ItemSpriteSheet.RING_GARNET);
 			put("ruby",ItemSpriteSheet.RING_RUBY);
@@ -116,6 +117,10 @@ public class Ring extends KindofMisc {
 	}
 	
 	public void activate( Char ch ) {
+		if (buff != null){
+			buff.detach();
+			buff = null;
+		}
 		buff = buff();
 		buff.attachTo( ch );
 	}
@@ -124,8 +129,10 @@ public class Ring extends KindofMisc {
 	public boolean doUnequip( Hero hero, boolean collect, boolean single ) {
 		if (super.doUnequip( hero, collect, single )) {
 
-			hero.remove( buff );
-			buff = null;
+			if (buff != null) {
+				buff.detach();
+				buff = null;
+			}
 
 			return true;
 
@@ -212,10 +219,10 @@ public class Ring extends KindofMisc {
 	}
 	
 	@Override
-	public Item identify() {
+	public Item identify( boolean byHero ) {
 		setKnown();
 		levelsToID = 0;
-		return super.identify();
+		return super.identify(byHero);
 	}
 	
 	@Override

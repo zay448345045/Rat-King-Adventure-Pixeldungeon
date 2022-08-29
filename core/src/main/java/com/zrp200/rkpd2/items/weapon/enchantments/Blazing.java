@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -48,7 +47,7 @@ public class Blazing extends Weapon.Enchantment {
 			
 			if (defender.buff(Burning.class) != null){
 				Buff.affect(defender, Burning.class).reignite(defender, 8f);
-				int burnDamage = (int) (Random.NormalIntRange( 1, 3 + Dungeon.getDepth() /4 ) * (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.125f));
+				int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 				defender.damage( Math.round(burnDamage * 0.67f), this );
 			} else {
 				Buff.affect(defender, Burning.class).reignite(defender, 8f);

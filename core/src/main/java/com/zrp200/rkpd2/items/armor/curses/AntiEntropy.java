@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,14 @@
 
 package com.zrp200.rkpd2.items.armor.curses;
 
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
-import com.zrp200.rkpd2.actors.buffs.Frost;
-import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.SnowParticle;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.Armor.Glyph;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -41,19 +40,20 @@ public class AntiEntropy extends Glyph {
 	{
 		beneficial = false;
 	}
-	
+
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 		float procChance = 1/8f * procChanceModifier(defender);
 
 		if (Random.Float() < procChance) {
 
-			if (Dungeon.level.adjacent( attacker.pos, defender.pos )) {
-				Buff.prolong(attacker, Frost.class, Frost.DURATION);
-				CellEmitter.get(attacker.pos).start(SnowParticle.FACTORY, 0.2f, 6);
+			for (int i : PathFinder.NEIGHBOURS8){
+				Freezing.affect(defender.pos+i);
 			}
-			
-			Buff.affect( defender, Burning.class ).reignite( defender );
+
+			if (!Dungeon.level.water[defender.pos]) {
+				Buff.affect(defender, Burning.class).reignite(defender, 4);
+			}
 			defender.sprite.emitter().burst( FlameParticle.FACTORY, 5 );
 
 		}

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,16 +39,44 @@ import com.watabou.noosa.Game;
 import com.watabou.utils.PlatformSupport;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.scrollofdebug.PackageTrie;
+import dalvik.system.DexFile;
 
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AndroidPlatformSupport extends PlatformSupport {
-	
+
+	@Override
+	public PackageTrie findClasses(String pkgName) throws ClassNotFoundException {
+		return new PackageTrie() {
+			{
+				try {
+					Enumeration<String> entries = new DexFile(AndroidLauncher.instance
+							.getContext()
+							.getPackageCodePath()
+					).entries();
+					String n; while(entries.hasMoreElements()) {
+						n = entries.nextElement();
+						if(n.contains(pkgName)) try {
+							addClass(Class.forName(n), pkgName);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (IOException e) {
+					//e.printStackTrace();
+				}
+			}
+		};
+	}
+
 	public void updateDisplaySize(){
 		if (SPDSettings.landscape() != null) {
-			AndroidGame.instance.setRequestedOrientation( SPDSettings.landscape() ?
+			AndroidLauncher.instance.setRequestedOrientation( SPDSettings.landscape() ?
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 					ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT );
 		}
@@ -62,7 +90,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 		Game.dispHeight = view.getMeasuredHeight();
 
 		boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-				|| !AndroidGame.instance.isInMultiWindowMode();
+				|| !AndroidLauncher.instance.isInMultiWindowMode();
 
 		if (fullscreen && SPDSettings.landscape() != null
 				&& (Game.dispWidth >= Game.dispHeight) != SPDSettings.landscape()){
@@ -97,7 +125,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 			final int finalH = Math.round(renderHeight);
 			if (finalW != Game.width || finalH != Game.height){
 				
-				AndroidGame.instance.runOnUiThread(new Runnable() {
+				AndroidLauncher.instance.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						view.getHolder().setFixedSize(finalW, finalH);
@@ -106,7 +134,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 				
 			}
 		} else {
-			AndroidGame.instance.runOnUiThread(new Runnable() {
+			AndroidLauncher.instance.runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					view.getHolder().setSizeFromLayout();
@@ -117,29 +145,29 @@ public class AndroidPlatformSupport extends PlatformSupport {
 	
 	public void updateSystemUI() {
 		
-		AndroidGame.instance.runOnUiThread(new Runnable() {
+		AndroidLauncher.instance.runOnUiThread(new Runnable() {
 			@SuppressLint("NewApi")
 			@Override
 			public void run() {
 				boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-						|| !AndroidGame.instance.isInMultiWindowMode();
+						|| !AndroidLauncher.instance.isInMultiWindowMode();
 				
 				if (fullscreen){
-					AndroidGame.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					AndroidLauncher.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				} else {
-					AndroidGame.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+					AndroidLauncher.instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 							WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 				}
 				
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
 					if (SPDSettings.fullscreen()) {
-						AndroidGame.instance.getWindow().getDecorView().setSystemUiVisibility(
+						AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 								View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 										| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN
 										| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY );
 					} else {
-						AndroidGame.instance.getWindow().getDecorView().setSystemUiVisibility(
+						AndroidLauncher.instance.getWindow().getDecorView().setSystemUiVisibility(
 								View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
 					}
 				}
@@ -152,7 +180,7 @@ public class AndroidPlatformSupport extends PlatformSupport {
 	@SuppressWarnings("deprecation")
 	public boolean connectedToUnmeteredNetwork() {
 		//Returns true if using unmetered connection, use shortcut method if available
-		ConnectivityManager cm = (ConnectivityManager) AndroidGame.instance.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager cm = (ConnectivityManager) AndroidLauncher.instance.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 			return !cm.isActiveNetworkMetered();
 		} else {

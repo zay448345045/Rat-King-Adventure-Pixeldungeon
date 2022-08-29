@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.*;
-import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -36,7 +35,7 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.LiquidMetal;
 import com.zrp200.rkpd2.items.Recipe;
 import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
-import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -214,6 +213,11 @@ public class AlchemyScene extends PixelScene {
 				
 				});
 			}
+
+			@Override
+			protected String hoverText() {
+				return Messages.titleCase(Document.ALCHEMY_GUIDE.title());
+			}
 		};
 		btnGuide.setRect(0, 0, 20, 20);
 		add(btnGuide);
@@ -374,10 +378,12 @@ public class AlchemyScene extends PixelScene {
 	private void combine( int slot ){
 		
 		ArrayList<Item> ingredients = filterInput(Item.class);
-
 		if (ingredients.isEmpty()) return;
 
-		Recipe recipe = Recipe.findRecipes(ingredients).get(slot);
+		ArrayList<Recipe> recipes = Recipe.findRecipes(ingredients);
+		if (recipes.size() <= slot) return;
+
+		Recipe recipe = recipes.get(slot);
 		
 		Item result = null;
 		

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,10 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
-import com.watabou.noosa.Camera;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.Shrink;
-import com.zrp200.rkpd2.actors.buffs.TimedShrink;
-import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -99,6 +94,7 @@ public class DM100 extends Mob implements Callback {
 				int dmg = Random.NormalIntRange(3, 10);
 				if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 				ChampionEnemy.AntiMagic.effect(enemy, this);
+				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 				enemy.damage( dmg, new LightningBolt() );
 
 				if (enemy.sprite.visible) {
@@ -111,6 +107,7 @@ public class DM100 extends Mob implements Callback {
 					Camera.main.shake( 2, 0.3f );
 					
 					if (!enemy.isAlive()) {
+						Badges.validateDeathFromEnemyMagic();
 						Dungeon.fail( getClass() );
 						GLog.n( Messages.get(this, "zap_kill") );
 					}

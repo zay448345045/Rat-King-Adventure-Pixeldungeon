@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -37,6 +38,8 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
+import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
+import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
@@ -50,10 +53,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
-import com.zrp200.rkpd2.items.wands.WandOfFireblast;
-import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
-import com.zrp200.rkpd2.items.wands.WandOfFrost;
-import com.zrp200.rkpd2.items.wands.WandOfLightning;
+import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
@@ -307,7 +307,7 @@ public abstract class Char extends Actor {
 
 		} else if (hit( this, enemy, accMulti )) {
 			
-			int dr = enemy.drRoll();
+			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
 			if (enemy instanceof Mob) dr *= ((Mob) enemy).scaleFactor;
 
 			Barkskin bark = enemy.buff(Barkskin.class);
@@ -335,7 +335,9 @@ public abstract class Char extends Actor {
 				dr = 0;
 			}
 
-			int dmg = 0;
+			//we use a float here briefly so that we don't have to constantly round while
+			// potentially applying various multiplier effects
+			float dmg = 0;
 			Preparation prep = buff(Preparation.class);
 			while(rolls-- > 0) {
 				if (prep != null) {
@@ -351,7 +353,7 @@ public abstract class Char extends Actor {
 			dmg = Math.round(dmg*dmgMulti);
 
 			Berserk berserk = buff(Berserk.class);
-			if (berserk != null) dmg = berserk.damageFactor(dmg);
+			if (berserk != null) dmg = berserk.damageFactor((int)dmg);
 
 			BrawlerBuff brawler = buff(BrawlerBuff.class);
 			if (brawler != null){
@@ -364,6 +366,13 @@ public abstract class Char extends Actor {
 				dmg *= 1.75f;
 			}
 
+			for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
+				dmg *= buff.meleeDamageFactor();
+			}
+
+			dmg *= AscensionChallenge.statModifier(this);
+
+			//flat damage bonus is applied after positive multipliers, but before negative ones
 			dmg += dmgBonus;
 
 			//friendly endure
@@ -382,7 +391,11 @@ public abstract class Char extends Actor {
 				dmg *= 0.67f;
 			}
 
-			int effectiveDamage = enemy.defenseProc( this, dmg );
+			if ( buff(Weakness.class) != null ){
+				dmg *= 0.67f;
+			}
+
+			int effectiveDamage = enemy.defenseProc( this, Math.round(dmg) );
 			if (Ratmogrify.drratedonActive(this)){
 				dr = 0;
 			}
@@ -402,6 +415,8 @@ public abstract class Char extends Actor {
 			}
 
 
+
+			//vulnerable specifically applies after armor reductions
 			if ( enemy.buff( Vulnerable.class ) != null){
 				effectiveDamage *= 1.33f;
 			}
@@ -454,12 +469,20 @@ public abstract class Char extends Actor {
 
 			if (buff(FireImbue.class) != null)
 				buff(FireImbue.class).proc(enemy);
-			if (buff(EarthImbue.class) != null)
-				buff(EarthImbue.class).proc(enemy);
 			if (buff(FrostImbue.class) != null)
 				buff(FrostImbue.class).proc(enemy);
 
-
+			if (enemy.isAlive() && enemy.alignment != alignment && prep != null && prep.canKO(enemy)){
+				enemy.HP = 0;
+				if (!enemy.isAlive()) {
+					enemy.die(this);
+				} else {
+					//helps with triggering any on-damage effects that need to activate
+					enemy.damage(-1, this);
+					DeathMark.processFearTheReaper(enemy, true);
+				}
+				enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
+			}
 
 			enemy.sprite.bloodBurstA( sprite.center(), effectiveDamage );
 			enemy.sprite.flash();
@@ -473,6 +496,10 @@ public abstract class Char extends Actor {
 						return true;
 					}
 
+					if (this instanceof WandOfLivingEarth.EarthGuardian
+							|| this instanceof MirrorImage || this instanceof PrismaticImage){
+						Badges.validateDeathFromFriendlyMagic();
+					}
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
 					
@@ -493,11 +520,9 @@ public abstract class Char extends Actor {
 			return true;
 			
 		} else {
-			
-			if (visibleFight) {
-				String defense = enemy.defenseVerb();
-				enemy.sprite.showStatus( CharSprite.NEUTRAL, defense );
 
+			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
+			if (visibleFight) {
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when the parry
 				if (enemy.buff(RoundShield.Block.class)!=null) {
 					enemy.buff(RoundShield.Block.class).detach();
@@ -581,6 +606,7 @@ public abstract class Char extends Actor {
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
+acuRoll *= AscensionChallenge.statModifier(attacker);
 
 		float defRoll = Random.Float( defStat );
 		if (defender == hero && hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE) && accMulti == 2f) {
@@ -599,6 +625,8 @@ public abstract class Char extends Actor {
 		if (Dungeon.isChallenged(Challenges.NO_ACCURACY)){
 			return true;
 		}
+
+		defRoll *= AscensionChallenge.statModifier(defender);
 
 		return (acuRoll * accMulti) >= defRoll;
 	}
@@ -648,7 +676,6 @@ public abstract class Char extends Actor {
 				}
 		}
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
-			damage *= buff.meleeDamageFactor();
 			buff.onAttackProc( enemy );
 		}
 
@@ -732,6 +759,7 @@ public abstract class Char extends Actor {
 				dmg = (int) Math.ceil(dmg * buff.damageTakenFactor());
 			}
 		}
+		dmg = (int)Math.ceil(dmg / AscensionChallenge.statModifier(this));
 
 		if (!(src instanceof LifeLink) && buff(LifeLink.class) != null){
 			HashSet<LifeLink> links = buffs(LifeLink.class);

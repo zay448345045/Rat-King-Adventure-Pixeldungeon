@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,7 +202,8 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void detach() {
-			if (target instanceof Mob) {
+			//don't trigger when killed by being knocked into a pit
+			if (target.flying || !Dungeon.level.pit[target.pos]) {
 				for (int i : PathFinder.NEIGHBOURS9) {
 					if (!Dungeon.level.solid[target.pos + i]) {
 						GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));

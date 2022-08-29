@@ -54,7 +54,7 @@ public class v0_9_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -79,11 +79,11 @@ public class v0_9_X_Changes {
 				"_- Yog's_ fists now seek the hero out when they're wandering.\n" +
 				"_- Yog's_ fists are now immune to sleeping effects."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
-		changes.addButton(new ChangeButton(Icons.get(Icons.DEPTH), "Dungeon Changes",
+		changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), "Dungeon Changes",
 				"I'm making some slight tweaks to level sizes and layouts, to make the game overall a little shorter, and to put a bit more emphasis on the final region:\n\n" +
 				"_-_ Standard room count down by roughly 10/20/15/15/5%, for each region\n" +
 				"_-_ Connection room frequency down by ~25%\n\n" +
@@ -175,7 +175,7 @@ public class v0_9_X_Changes {
 				"_-_ Wells of healing not fully healing the hero in all cases\n" +
 				"_-_ Game log entries not appearing from alchemy scene"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
@@ -203,7 +203,7 @@ public class v0_9_X_Changes {
 				"_- Nature's Bounty_ is now more consistent in how it drops berries.\n" +
 				"_- Shared Upgrades_ damage boost increased to 10/20/30% from 7/12/20%." ));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
@@ -221,7 +221,7 @@ public class v0_9_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -251,7 +251,7 @@ public class v0_9_X_Changes {
 				"_-_ Freerunning lasts for up to 20 turns, based on amount of momentum.\n" +
 				"_-_ There is a cooldown after freerunning before momentum can be build again."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
@@ -318,7 +318,7 @@ public class v0_9_X_Changes {
 				"_-_ damage numbers appearing in incorrect locations when a target is vertigoed\n" +
 				"_-_ various rare VFX issues with Goo"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
@@ -349,7 +349,7 @@ public class v0_9_X_Changes {
 				"_- Energizing Upgrade_ staff charges increased to 2/3 at +1/+2, up from 1/2 at +1/+2.\n" +
 				"_- Mystical Upgrade_ cloak of shadows charges increased to 2/3 at +1/+2, up from 1/2 at +1/+2."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
@@ -375,7 +375,7 @@ public class v0_9_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -390,7 +390,7 @@ public class v0_9_X_Changes {
 				"The second talent tier is similar to the first, but talent powers are much less focused on the early game. Expect effects that are useful all game long.\n\n" +
 				"Look forward to tier 3 of the talent system coming in v0.9.2, which will span levels 13-20."));
 
-		changes.addButton(new ChangeButton(Icons.get(Icons.DEPTH), "Levelgen Improvements!",
+		changes.addButton(new ChangeButton(Icons.get(Icons.STAIRS), "Levelgen Improvements!",
 				"_The game's level generation system has received a number of improvements!:_\n\n" +
 				"_-_ A new region specific room has been added to each dungeon region, 5 in total.\n" +
 				"_-_ Three new level feelings have been added: large, secrets, and traps.\n" +
@@ -398,7 +398,7 @@ public class v0_9_X_Changes {
 				"_-_ Adjacent rooms can now be merged in many more cases.\n" +
 				"_-_ Several existing room types have received small tweaks and improvements."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 
@@ -479,7 +479,7 @@ public class v0_9_X_Changes {
 				"_-_ Characters rarely appearing inside doors or the hero\n" +
 				"_-_ Talent points being spendable when the hero is dead"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "buffs"), false);
 		changes.hardlight(CharSprite.POSITIVE);
 		changeInfos.add(changes);
 
@@ -505,7 +505,7 @@ public class v0_9_X_Changes {
 				"The _Ring of Energy_ is doing better after being buffed to apply to artifacts, but there is still room to make its effect stronger without making it overpowered:\n\n" +
 				"_-_ Bonus artifact charging increased from 10% to 15%"));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "nerfs"), false);
 		changes.hardlight(CharSprite.NEGATIVE);
 		changeInfos.add(changes);
 
@@ -526,7 +526,7 @@ public class v0_9_X_Changes {
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "new"), false);
 		changes.hardlight(Window.TITLE_COLOR);
 		changeInfos.add(changes);
 
@@ -551,7 +551,7 @@ public class v0_9_X_Changes {
 				"The badges screen now shows which badges are locked, rather than just using a generic 'locked badge' visual.\n\n" +
 				"Badges now have different border colors based on their difficulty (bronze, silver, gold, platinum, diamond), and are ordered based on these colors."));
 
-		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false, null);
+		changes = new ChangeInfo(Messages.get(ChangesScene.class, "changes"), false);
 		changes.hardlight(CharSprite.WARNING);
 		changeInfos.add(changes);
 

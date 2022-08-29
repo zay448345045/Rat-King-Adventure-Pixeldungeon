@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,11 @@ public class Viscosity extends Glyph {
 		public int icon() {
 			return BuffIndicator.DEFERRED;
 		}
+
+		@Override
+		public String iconTextDisplay() {
+			return Integer.toString(damage);
+		}
 		
 		@Override
 		public String toString() {
@@ -145,10 +150,10 @@ public class Viscosity extends Glyph {
 				target.damage( damageThisTick, this );
 				if (target == Dungeon.hero && !target.isAlive()) {
 
+					Badges.validateDeathFromFriendlyMagic();
+
 					Dungeon.fail( getClass() );
 					GLog.n( Messages.get(this, "ondeath") );
-
-					Badges.validateDeathFromGlyph();
 				}
 				spend( TICK );
 

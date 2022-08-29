@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
@@ -75,7 +76,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
-
 public enum HeroClass {
 
 	WARRIOR(HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR),
@@ -380,7 +380,7 @@ public enum HeroClass {
 	
 	public boolean isUnlocked(){
 		//always unlock on debug builds
-		return /*DeviceCompat.isDebug() ||*/ this != RAT_KING || Badges.isUnlocked(Badges.Badge.UNLOCK_RAT_KING);
+		return DeviceCompat.isDebug() || this != RAT_KING || Badges.isUnlocked(Badges.Badge.UNLOCK_RAT_KING);
 		/*
 		switch (this){
 			case WARRIOR: default:

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ public class Wraith extends Mob {
 	
 	private int level;
 	private int blinkCooldown = 0;
-	
+
 	{
 		spriteClass = WraithSprite.class;
 		
@@ -66,7 +66,7 @@ public class Wraith extends Mob {
 	
 	private static final String LEVEL = "level";
 	private static final String BLINK_CD = "blink_cd";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -97,7 +97,7 @@ public class Wraith extends Mob {
 	}
 
 
-	
+
 	@Override
 	public int attackSkill( Char target ) {
 		return 10 + level;
@@ -254,7 +254,7 @@ public class Wraith extends Mob {
 		if ((!Dungeon.level.solid[pos] || Dungeon.level.passable[pos]) && Actor.findChar( pos ) == null) {
 			
 			Wraith w = new Wraith();
-			w.adjustStats(Dungeon.getDepth());
+			w.adjustStats( Dungeon.scalingDepth() );
 			w.pos = pos;
 			w.state = w.HUNTING;
 			GameScene.add( w, SPAWN_DELAY );

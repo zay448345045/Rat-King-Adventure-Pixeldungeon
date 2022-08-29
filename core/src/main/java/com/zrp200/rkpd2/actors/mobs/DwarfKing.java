@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
@@ -49,8 +50,11 @@ import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
+import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.levels.CityBossLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -189,6 +193,10 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	@Override
 	protected boolean act() {
+		if (pos == CityBossLevel.throne){
+			throwItems();
+		}
+
 		if(yellSpecialNotice && paralysed == 0) { // takes him a hot second to realize who he's fighting.
 			yell(Messages.get(this, "notice2"));
 			yellSpecialNotice = false;
@@ -500,10 +508,20 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	@Override
 	public void damage(int dmg, Object src) {
+		//hero only counts as unarmed if they have no weapon and aren't benefiting from force
+		if (src == Dungeon.hero && (Dungeon.hero.belongings.weapon() != null || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
+			Statistics.qualifiedForBossChallengeBadge = false;
+		//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
+		//Transfusion damages DK and so doesn't need custom logic
+		//Lightning has custom logic so that chaining it doesn't DQ for the badge
+		} else if (src instanceof Wand && !(src instanceof WandOfLightning)){
+			Statistics.qualifiedForBossChallengeBadge = false;
+		}
+
 		if (isInvulnerable(src.getClass())){
 			super.damage(dmg, src);
 			return;
-		} else if (!isAlive() || dmg < 0) return;
+		} else if (!isAlive()) return;
 
 		if(phase == 0) notice();
 
@@ -513,6 +531,12 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 			sprite.showStatus( CharSprite.WARNING, Messages.get(Viscosity.class, "deferred", dmg) );
 		}
 		else if (phase < 2) {
+			if(dmg < 0)
+			{
+				// preparation calls #damage(-1) to update the state after assassination.
+				// but -1 might have weird behavior so we need to handle it as zero.
+				dmg = 0;
+			}
 			// yay custom logic
 			int preHP = HP;
 			if(phaseChange != null) dmg = Random.round(dmg * phaseChange.remaining());
@@ -534,7 +558,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				damage(excess, src);
 			}
 		}
-		else {
+		else // phase is 2.
+		{
 			int preHP = HP;
 			super.damage(dmg, src);
 			if (phase == 2 && shielding() == 0) { // standard entry into phase 3
@@ -608,12 +633,13 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		}
 	}
 	private void enterPhase3 () {
-			properties.remove(Property.IMMOVABLE);
-			phase = 3;
-			summonsMade = 1; //monk/warlock on 3rd summon
-			sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
-			Sample.INSTANCE.play( CHALLENGE );
-		}
+		HP = PHASE2_HP; // force him into the proper amount of starting HP.
+		properties.remove(Property.IMMOVABLE);
+		phase = 3;
+		summonsMade = 1; //monk/warlock on 3rd summon
+		sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
+		Sample.INSTANCE.play( CHALLENGE );
+	}
 
 	@Override
 	public boolean isAlive() {
@@ -643,6 +669,10 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		Badges.validateBossSlain();
 		if (Dungeon.isChallenged(Challenges.NO_LEVELS))
 			new PotionOfExperience().apply(Dungeon.hero);
+		if (Statistics.qualifiedForBossChallengeBadge){
+			Badges.validateBossChallengeCompleted();
+		}
+		Statistics.bossScores[3] += 4000;
 
 		Dungeon.level.unseal();
 
@@ -659,7 +689,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		int MAX_QUOTES = 2;
 		// the special quote is more likely to appear if one is defined, but not guaranteed.
 		//noinspection StringEquality
-		if(defeated == Messages.NULL || Random.Int(MAX_QUOTES) != 0) {
+		if(defeated == Messages.NO_TEXT_FOUND || Random.Int(MAX_QUOTES) != 0) {
 			defeated = Messages.get(this, "defeated_" + Random.Int(1, MAX_QUOTES));
 		}
 		yell( defeated );
@@ -697,6 +727,14 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	public static class DKWarlock extends Warlock implements Subject {
 		{
 			state = HUNTING;
+		}
+
+		@Override
+		protected void zap() {
+			if (enemy == Dungeon.hero){
+				Statistics.bossScores[3] -= 400;
+			}
+			super.zap();
 		}
 	}
 
@@ -765,6 +803,11 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 					}
 				}
 
+				//kill sheep that are right on top of the spawner instead of failing to spawn
+				if (Actor.findChar(pos) instanceof Sheep){
+					Actor.findChar(pos).die(null);
+				}
+
 				DwarfKing king = king();
 				if (Actor.findChar(pos) == null) {
 					Mob m = Reflection.newInstance(summon);
@@ -779,7 +822,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 					if(firstSummon) {
 						king.yell(Messages.get(king(), "first_summon"));
 						String outmatched = Messages.get(king, "outmatched");
-						if(outmatched != Messages.NULL) king.yell(outmatched);
+						if(outmatched != Messages.NO_TEXT_FOUND) king.yell(outmatched);
 					}
 					if(strong && king.yellStrong) {
 						king.yell(Messages.get(king, "strong"));

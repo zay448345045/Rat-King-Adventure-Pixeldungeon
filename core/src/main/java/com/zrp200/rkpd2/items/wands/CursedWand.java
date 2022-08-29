@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.*;
@@ -216,7 +213,7 @@ public class CursedWand {
 			case 1:
 				final Char target = Actor.findChar( targetPos );
 				if (target != null) {
-					int damage = Dungeon.getDepth() * 2 + eldritchLevel > 1 ? Dungeon.getDepth() : 0;
+					int damage = Dungeon.scalingDepth() * 2;
 					Char toHeal, toDamage;
 
 					if (Random.Int(2 + eldritchLevel) == 0){
@@ -235,9 +232,11 @@ public class CursedWand {
 						Sample.INSTANCE.play(Assets.Sounds.CURSED);
 						if (!toDamage.isAlive()) {
 							if (origin != null) {
+								Badges.validateDeathFromFriendlyMagic();
 								Dungeon.fail( origin.getClass() );
 								GLog.n( Messages.get( CursedWand.class, "ondeath", origin.name() ) );
 							} else {
+								Badges.validateDeathFromFriendlyMagic();
 								Dungeon.fail( toHeal.getClass() );
 							}
 						}
@@ -253,6 +252,9 @@ public class CursedWand {
 			//Bomb explosion
 			case 2:
 				new Bomb().explode(targetPos);
+				if (user == Dungeon.hero && !user.isAlive()){
+					Badges.validateDeathFromFriendlyMagic();
+				}
 				tryForWandProc(Actor.findChar(targetPos), origin);
 				return true;
 
@@ -304,7 +306,7 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
-				if (Dungeon.getDepth() > 1 && !Dungeon.bossLevel() && user == Dungeon.hero) {
+				if (Dungeon.getDepth() > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero) {
 
 					//each depth has 1 more weight than the previous depth.
 					float[] depths = new float[Dungeon.getDepth() -1];
@@ -316,6 +318,7 @@ public class CursedWand {
 
 					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 					InterlevelScene.returnDepth = depth;
+					InterlevelScene.returnBranch = 0;
 					InterlevelScene.returnPos = -1;
 					Game.switchScene(InterlevelScene.class);
 
@@ -429,7 +432,7 @@ public class CursedWand {
 			//random transmogrification
 			case 3:
 				//skips this effect if there is no item to transmogrify
-				if (origin == null || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin) || eldritchLevel > 1){
+				if (origin == null || origin.unique || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin) || eldritchLevel > 1){
 					return cursedEffect(origin, user, targetPos);
 				}
 				origin.detach(Dungeon.hero.belongings.backpack);

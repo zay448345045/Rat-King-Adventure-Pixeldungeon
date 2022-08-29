@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,13 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Statistics;
+import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
+import com.zrp200.rkpd2.items.KingsCrown;
+import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
+import com.zrp200.rkpd2.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Badges;
@@ -89,18 +96,18 @@ public class RatKing extends NPC {
 	@Override
 	protected boolean act() {
 		if (Dungeon.getDepth() < 5){
-			if (pos == Dungeon.level.exit){
+			if (pos == Dungeon.level.exit()){
 				destroy();
 				sprite.killAndErase();
 			} else {
-				target = Dungeon.level.exit;
+				target = Dungeon.level.exit();
 			}
 		} else if (Dungeon.getDepth() > 5){
-			if (pos == Dungeon.level.entrance){
+			if (pos == Dungeon.level.entrance()){
 				destroy();
 				sprite.killAndErase();
 			} else {
-				target = Dungeon.level.entrance;
+				target = Dungeon.level.entrance();
 			}
 		}
 		return super.act();

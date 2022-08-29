@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.ui.Button;
 import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Rankings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -37,9 +38,21 @@ import com.zrp200.rkpd2.items.quest.Chaosstone;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.Archs;
+import com.zrp200.rkpd2.ui.ExitButton;
+import com.zrp200.rkpd2.ui.IconButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.windows.WndDailies;
 import com.zrp200.rkpd2.windows.WndError;
 import com.zrp200.rkpd2.windows.WndRanking;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
+import com.zrp200.rkpd2.ui.Button;
+import com.watabou.utils.GameMath;
 
 public class RankingsScene extends PixelScene {
 	
@@ -137,9 +150,40 @@ public class RankingsScene extends PixelScene {
 		btnExit.setPos( Camera.main.width - btnExit.width(), 0 );
 		add( btnExit );
 
+		int left = 0;
+
+		if (Rankings.INSTANCE.latestDaily != null) {
+			IconButton btnDailies = new IconButton(Icons.CALENDAR.get()) {
+				@Override
+				protected void onClick() {
+					ShatteredPixelDungeon.scene().addToFront(new WndDailies());
+				}
+
+				@Override
+				protected void onPointerUp() {
+					icon.hardlight(0.5f, 1f, 2f);
+				}
+			};
+			btnDailies.icon().hardlight(0.5f, 1f, 2f);
+			btnDailies.setRect( left, 0, 20, 20 );
+			left += 20;
+			add(btnDailies);
+		}
+
+		if (Dungeon.daily){
+			addToFront(new WndDailies());
+		}
+
 		fadeIn();
 	}
-	
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		//so that opening daily records does not trigger WndDailies opening on future visits
+		Dungeon.daily = false;
+	}
+
 	@Override
 	protected void onBackPressed() {
 		ShatteredPixelDungeon.switchNoFade(TitleScene.class);
@@ -156,7 +200,7 @@ public class RankingsScene extends PixelScene {
 		
 		private Rankings.Record rec;
 		
-		protected ItemSprite shield;
+		protected Image shield;
 		private Flare flare;
 		private BitmapText position;
 		private RenderedTextBlock desc;
@@ -195,7 +239,7 @@ public class RankingsScene extends PixelScene {
 					depth.hardlight(TEXT_WIN[odd]);
 					level.hardlight(TEXT_WIN[odd]);
 				} else {
-					shield.view(rec.cause == RatKing.class ? ItemSpriteSheet.ARMOR_RAT_KING : ItemSpriteSheet.AMULET, null);
+					shield.copy( new ItemSprite(rec.cause == RatKing.class ? ItemSpriteSheet.ARMOR_RAT_KING : ItemSpriteSheet.AMULET, null));
 					position.hardlight(TEXT_WIN[odd]);
 					desc.hardlight(TEXT_WIN[odd]);
 					depth.hardlight(TEXT_WIN[odd]);
@@ -210,12 +254,25 @@ public class RankingsScene extends PixelScene {
 				if (rec.depth != 0){
 					depth.text( Integer.toString(rec.depth) );
 					depth.measure();
-					steps.copy(Icons.DEPTH.get());
+					steps.copy(Icons.STAIRS.get());
 
 					add(steps);
 					add(depth);
 				}
 
+				if (rec.ascending){
+					shield.copy( new ItemSprite(ItemSpriteSheet.AMULET, null) );
+					shield.hardlight(0.4f, 0.4f, 0.7f);
+				}
+
+			}
+
+			if (rec.daily){
+				shield.copy( Icons.get(Icons.CALENDAR) );
+				shield.hardlight(0.5f, 1f, 2f);
+			} else if (!rec.customSeed.isEmpty()){
+				shield.copy( Icons.get(Icons.SEED) );
+				shield.hardlight(1f, 1.5f, 0.67f);
 			}
 
 			if (rec.herolevel != 0){
@@ -236,7 +293,7 @@ public class RankingsScene extends PixelScene {
 			
 			super.createChildren();
 			
-			shield = new ItemSprite( ItemSpriteSheet.TOMB, null );
+			shield = new Image(new ItemSprite( ItemSpriteSheet.TOMB, null ));
 			add( shield );
 			
 			position = new BitmapText( PixelScene.pixelFont);
@@ -260,7 +317,7 @@ public class RankingsScene extends PixelScene {
 			
 			super.layout();
 			
-			shield.x = x;
+			shield.x = x + (16 - shield.width) / 2f;
 			shield.y = y + (height - shield.height) / 2f;
 			align(shield);
 			
@@ -288,8 +345,8 @@ public class RankingsScene extends PixelScene {
 			depth.y = steps.y + (steps.height - depth.height()) / 2f + 1;
 			align(depth);
 
-			desc.maxWidth((int)(steps.x - (shield.x + shield.width + GAP)));
-			desc.setPos(shield.x + shield.width + GAP, shield.y + (shield.height - desc.height()) / 2f + 1);
+			desc.maxWidth((int)(steps.x - (x + 16 + GAP)));
+			desc.setPos(x + 16 + GAP, shield.y + (shield.height - desc.height()) / 2f + 1);
 			align(desc);
 		}
 		

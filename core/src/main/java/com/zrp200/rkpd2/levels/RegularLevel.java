@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,17 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.SacrificialFire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.actors.mobs.Statue;
 import com.zrp200.rkpd2.items.*;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
@@ -42,10 +46,10 @@ import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.keys.GoldenKey;
-import com.zrp200.rkpd2.items.potions.PotionOfStrength;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
-import com.zrp200.rkpd2.items.weapon.Weapon;
+import com.zrp200.rkpd2.items.keys.Key;
 import com.zrp200.rkpd2.journal.Document;
+import com.zrp200.rkpd2.journal.Journal;
+import com.zrp200.rkpd2.journal.Notes;
 import com.zrp200.rkpd2.levels.builders.Builder;
 import com.zrp200.rkpd2.levels.builders.FigureEightBuilder;
 import com.zrp200.rkpd2.levels.builders.LoopBuilder;
@@ -53,6 +57,7 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.connection.TunnelRoom;
 import com.zrp200.rkpd2.levels.rooms.secret.SecretRoom;
+import com.zrp200.rkpd2.levels.rooms.special.MagicalFireRoom;
 import com.zrp200.rkpd2.levels.rooms.special.PitRoom;
 import com.zrp200.rkpd2.levels.rooms.special.ShopRoom;
 import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
@@ -187,8 +192,11 @@ public abstract class RegularLevel extends Level {
 	}
 	
 	@Override
-	public int nMobs() {
-		if (Dungeon.getDepth() <= 1 && !Dungeon.isChallenged(Challenges.KROMER)) return 0;
+	public int mobLimit() {
+		if (Dungeon.getDepth() <= 1 && !Dungeon.isChallenged(Challenges.KROMER)){
+			if (!Statistics.amuletObtained) return 0;
+			else                            return 10;
+		}
 
 		int mobs = 3 + Dungeon.getDepth() % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
@@ -203,7 +211,7 @@ public abstract class RegularLevel extends Level {
 	@Override
 	protected void createMobs() {
 		//on floor 1, 8 pre-set mobs are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.getDepth() == 1 ? 8 : nMobs();
+		int mobsToSpawn = Dungeon.getDepth() == 1 ? 8 : mobLimit();
 		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
 			mobsToSpawn *= 16;
 		}
@@ -268,7 +276,7 @@ public abstract class RegularLevel extends Level {
 				do {
 					mob.pos = pointToCell(roomToSpawn.random());
 					tries--;
-				} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
+				} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit()
 						|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
 
 				if (tries >= 0) {
@@ -283,7 +291,7 @@ public abstract class RegularLevel extends Level {
 						do {
 							mob.pos = pointToCell(roomToSpawn.random());
 							tries--;
-						} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit
+						} while (tries >= 0 && (findMob(mob.pos) != null || !passable[mob.pos] || solid[mob.pos] || mob.pos == exit()
 								|| (!openSpace[mob.pos] && mob.properties().contains(Char.Property.LARGE))));
 
 						if (tries >= 0) {
@@ -328,7 +336,7 @@ public abstract class RegularLevel extends Level {
 					&& !solid[cell]
 					&& (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])
 					&& room.canPlaceCharacter(cellToPoint(cell), this)
-					&& cell != exit) {
+					&& cell != exit()) {
 				return cell;
 			}
 
@@ -351,10 +359,13 @@ public abstract class RegularLevel extends Level {
 			if (room == null) {
 				continue;
 			}
-			
-			cell = pointToCell(room.random());
-			if (passable[cell] && (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])) {
-				return cell;
+
+			ArrayList<Point> points = room.charPlaceablePoints(this);
+			if (!points.isEmpty()){
+				cell = pointToCell(Random.element(points));
+				if (passable[cell] && (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])) {
+					return cell;
+				}
 			}
 			
 		}
@@ -455,7 +466,8 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//use a separate generator for this to prevent held items, meta progress, and talents from affecting levelgen
-		Random.pushGenerator( Dungeon.seedCurDepth() );
+		//we can use a random long for the seed as it will be the same long every time
+		Random.pushGenerator( Random.Long() );
 
 		Item item = Bones.get();
 		if (item != null) {
@@ -488,29 +500,37 @@ public abstract class RegularLevel extends Level {
 		}
 
 		//cached rations try to drop in a special room on floors 2/3/4/6/7/8, to a max of 4/6 (3/5 for rogue, but actual rations)
-		if (Dungeon.hero.hasTalent(Talent.CACHED_RATIONS,Talent.ROYAL_PRIVILEGE)){
+		if (Dungeon.hero.hasTalent(Talent.CACHED_RATIONS,Talent.ROYAL_PRIVILEGE)) {
 			Talent.CachedRationsDropped dropped = Buff.affect(Dungeon.hero, Talent.CachedRationsDropped.class);
 			int large = Dungeon.hero.pointsInTalent(Talent.CACHED_RATIONS),
-				small = Dungeon.hero.pointsInTalent(Talent.ROYAL_PRIVILEGE);
-			if(small > 0) small = (small+1)*2;
-			if(large > 0) large++;
+					small = Dungeon.hero.pointsInTalent(Talent.ROYAL_PRIVILEGE);
+			if (small > 0) small = (small + 1) * 2;
+			if (large > 0) large++;
 			int total = small + large;
-			if (dropped.count() < total){
+			if (dropped.count() < total) {
 				int cell;
+				int tries = 100;
+				boolean valid;
 				do {
 					cell = randomDropCell(SpecialRoom.class);
-				} while (room(cell) instanceof SecretRoom);
-				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
-					map[cell] = Terrain.GRASS;
-					losBlocking[cell] = false;
-				}
-				// rogue gets regular food.
-				if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
+					valid = cell != -1 && !(room(cell) instanceof SecretRoom)
+							&& !(room(cell) instanceof ShopRoom)
+							&& map[cell] != Terrain.EMPTY_SP
+							&& map[cell] != Terrain.WATER
+							&& map[cell] != Terrain.PEDESTAL;
+				} while (tries-- > 0 && !valid);
+				if (valid) {
+					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
+						map[cell] = Terrain.GRASS;
+						losBlocking[cell] = false;
+					}
+					// rogue gets regular food.
+					if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
 					drop( new MysteryMeat(), cell).type = Heap.Type.CHEST;
 				}
 				else
 					drop( dropped.count() < large ? new Food() : new SmallRation(), cell).type = Heap.Type.CHEST;
-				dropped.countUp(1);
+				dropped.countUp(1);}
 			}
 		}
 
@@ -588,7 +608,7 @@ public abstract class RegularLevel extends Level {
 			if (room != null && room != roomEntrance) {
 				int pos = pointToCell(room.random());
 				if (passable[pos] && !solid[pos]
-						&& pos != exit
+						&& pos != exit()
 						&& heaps.get(pos) == null
 						&& (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS) || findMob(pos) == null)) {
 					
@@ -644,7 +664,57 @@ public abstract class RegularLevel extends Level {
 		
 		return super.fallCell( false );
 	}
-	
+
+	@Override
+	public boolean isLevelExplored( int depth ) {
+		//A level is considered fully explored if:
+
+		//There are no levelgen heaps which are undiscovered, in an openable container, or which contain keys
+		for (Heap h : heaps.valueList()){
+			if (h.autoExplored) continue;
+
+			if (!h.seen || (h.type != Heap.Type.HEAP && h.type != Heap.Type.FOR_SALE && h.type != Heap.Type.CRYSTAL_CHEST)){
+				return false;
+			}
+			for (Item i : h.items){
+				if (i instanceof Key){
+					return false;
+				}
+			}
+		}
+
+		//There is no magical fire or sacrificial fire
+		for (Blob b : blobs.values()){
+			if (b.volume > 0 && (b instanceof MagicalFireRoom.EternalFire || b instanceof SacrificialFire)){
+				return false;
+			}
+		}
+
+		//There are no statues or mimics (unless they were made allies)
+		for (Mob m : mobs.toArray(new Mob[0])){
+			if (m.alignment != Char.Alignment.ALLY && (m instanceof Statue || m instanceof Mimic)){
+				return false;
+			}
+		}
+
+		//There are no barricades, locked doors, or hidden doors
+		for (int i = 0; i < length; i++){
+			if (map[i] == Terrain.BARRICADE || map[i] == Terrain.LOCKED_DOOR || map[i] == Terrain.SECRET_DOOR){
+				return false;
+			}
+		}
+
+		//There are no unused keys for this depth in the journal
+		for (Notes.KeyRecord rec : Notes.getRecords(Notes.KeyRecord.class)){
+			if (rec.depth() == depth){
+				return false;
+			}
+		}
+
+		//Note that it is NOT required for the player to see every tile or discover every trap.
+		return true;
+	}
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );

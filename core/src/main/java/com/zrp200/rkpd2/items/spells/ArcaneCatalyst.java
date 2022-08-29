@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,26 +21,15 @@
 
 package com.zrp200.rkpd2.items.spells;
 
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.scrolls.Scroll;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfLullaby;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfMirrorImage;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRage;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTerror;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
+import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +71,12 @@ public class ArcaneCatalyst extends Spell {
 	public int value() {
 		return 40 * quantity;
 	}
-	
+
+	@Override
+	public int energyVal() {
+		return 8 * quantity;
+	}
+
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe {
 		
 		@Override

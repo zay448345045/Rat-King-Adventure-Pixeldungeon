@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -41,6 +42,8 @@ import com.zrp200.rkpd2.items.food.Berry;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
+
+import static com.zrp200.rkpd2.utils.SafeCast.cast;
 
 public class HighGrass {
 	
@@ -102,23 +105,40 @@ public class HighGrass {
 				}
 
 				//berries try to drop on floors 2/3/4/6/7/8, to a max of 4/6
-				Talent.NatureBerriesAvailable berries = ch.buff(Talent.NatureBerriesAvailable.class);
-				if (berries != null) {
-					int targetFloor = 2 + 2*((Hero)ch).pointsInTalent(Talent.NATURES_BOUNTY);
-					targetFloor -= berries.count();
-					targetFloor += (targetFloor >= 5) ? 3 : 2;
+				Hero hero = cast(ch, Hero.class);
+				int totalBerries = hero == null
+						// drawback of using shifted points is that I have to make this check
+						|| !hero.hasTalent(Talent.NATURES_BOUNTY, Talent.ROYAL_PRIVILEGE)
+						? 0 : (int)hero.byTalent(false, true,
+													Talent.NATURES_BOUNTY , 3,
+													Talent.ROYAL_PRIVILEGE, 2);
+				if (totalBerries > 0){
 
-					//If we're behind: 1/10, if we're on page: 1/30, if we're ahead: 1/90
-					boolean droppingBerry = false;
-					if (Dungeon.getDepth() > targetFloor)        droppingBerry = Random.Int(10) == 0;
-					else if (Dungeon.getDepth() == targetFloor)  droppingBerry = Random.Int(30) == 0;
-					else if (Dungeon.getDepth() < targetFloor)   droppingBerry = Random.Int(90) == 0;
+					//pre-1.3.0 saves
+					Talent.NatureBerriesAvailable oldAvailable = ch.buff(Talent.NatureBerriesAvailable.class);
+					if (oldAvailable != null){
+						Buff.affect(ch, Talent.NatureBerriesDropped.class).countUp(totalBerries - oldAvailable.count());
+						oldAvailable.detach();
+					}
 
-					if (droppingBerry){
-						berries.countDown(1);
-						level.drop(new Berry(), pos).sprite.drop();
-						if (berries.count() <= 0){
-							berries.detach();
+					Talent.NatureBerriesDropped dropped = Buff.affect(ch, Talent.NatureBerriesDropped.class);
+					// this is strictly equivalent to what shattered did.
+					int droppedBerries = (int)dropped.count();
+
+					if (totalBerries > droppedBerries) {
+						int targetFloor = droppedBerries + (droppedBerries >= 5 ? 3 : 2);
+
+						//If we're behind: 1/10, if we're on page: 1/30, if we're ahead: 1/90;
+						int difference = Dungeon.depth - targetFloor;
+						if (Random.Int(
+								difference > 0
+									? 10 :
+								difference == 0
+									? 30
+									: 90
+						) == 0) {
+							dropped.countUp(1);
+							level.drop(new Berry(), pos).sprite.drop();
 						}
 					}
 

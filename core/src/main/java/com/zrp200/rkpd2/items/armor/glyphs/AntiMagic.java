@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2022 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,34 +21,16 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.actors.buffs.Degrade;
-import com.zrp200.rkpd2.actors.buffs.Hex;
-import com.zrp200.rkpd2.actors.buffs.MagicalSleep;
-import com.zrp200.rkpd2.actors.buffs.Vulnerable;
-import com.zrp200.rkpd2.actors.buffs.Weakness;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
-import com.zrp200.rkpd2.actors.mobs.DM100;
-import com.zrp200.rkpd2.actors.mobs.Eye;
-import com.zrp200.rkpd2.actors.mobs.Shaman;
-import com.zrp200.rkpd2.actors.mobs.Warlock;
-import com.zrp200.rkpd2.actors.mobs.YogFist;
+import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.items.armor.Armor;
-import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
-import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
-import com.zrp200.rkpd2.items.wands.WandOfFireblast;
-import com.zrp200.rkpd2.items.wands.WandOfFrost;
-import com.zrp200.rkpd2.items.wands.WandOfLightning;
-import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
-import com.zrp200.rkpd2.items.wands.WandOfMagicMissile;
-import com.zrp200.rkpd2.items.wands.WandOfPrismaticLight;
-import com.zrp200.rkpd2.items.wands.WandOfTransfusion;
-import com.zrp200.rkpd2.items.wands.WandOfWarding;
+import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.levels.traps.GrimTrap;
 import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
