@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
+import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.effects.particles.GodfireParticle;
@@ -1195,7 +1196,7 @@ public class Hero extends Char {
 		} else if (transition != null && transition.inside(pos)) {
 
 			if (transition.type == LevelTransition.Type.SURFACE){
-				if (belongings.getItem( Amulet.class ) == null) {
+				if (belongings.getItem( Amulet.class ) == null && Dungeon.depth > 0) {
 					Game.runOnRenderThread(new Callback() {
 						@Override
 						public void call() {
@@ -1206,7 +1207,10 @@ public class Hero extends Char {
 				} else {
 					Statistics.ascended = true;
 					Badges.silentValidateHappyEnd();
-					Dungeon.win( Amulet.class );
+					if (Dungeon.depth == 0)
+						Dungeon.win(RatKing.class);
+					else
+						Dungeon.win( Amulet.class );
 					Dungeon.deleteGame( GamesInProgress.curSlot, true );
 					Game.switchScene( SurfaceScene.class );
 				}
@@ -1236,6 +1240,16 @@ public class Hero extends Char {
 				);
 				ready();
 
+			} else if (transition.type == LevelTransition.Type.REGULAR_EXIT
+					&& Dungeon.depth == 0){
+				Game.runOnRenderThread(new Callback() {
+					@Override
+					public void call() {
+						GameScene.show( new WndMessage( Messages.get(Hero.this, "leave_rk") ) );
+					}
+				});
+				ready();
+				return false;
 			} else {
 
 				curAction = null;

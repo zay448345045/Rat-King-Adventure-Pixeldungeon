@@ -21,13 +21,6 @@
 
 package com.zrp200.rkpd2.actors.mobs.npcs;
 
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Statistics;
-import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
-import com.zrp200.rkpd2.items.KingsCrown;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
-import com.zrp200.rkpd2.windows.WndOptions;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Badges;
@@ -39,6 +32,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
+import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
@@ -134,8 +128,8 @@ public class RatKing extends NPC {
 								Dungeon.hero.belongings.getItem(Amulet.class).detach(Dungeon.hero.belongings.backpack);
 							else
 								Dungeon.hero.belongings.getItem(SoulOfYendor.class).detach(Dungeon.hero.belongings.backpack);
-							Dungeon.depth = -1;
 							Statistics.deepestFloor = -1;
+							InterlevelScene.curTransition = new LevelTransition(Dungeon.level, -1, LevelTransition.Type.REGULAR_ENTRANCE, 0, Dungeon.branch, LevelTransition.Type.REGULAR_EXIT);
 							InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 							Game.switchScene(InterlevelScene.class);
 						}

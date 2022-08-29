@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -77,6 +78,24 @@ public class RatBossLevel extends Level {
 	}
 
 	@Override
+	public int entrance() {
+		LevelTransition l = getTransition(LevelTransition.Type.REGULAR_EXIT);
+		if (l != null){
+			return l.cell();
+		}
+		return 0;
+	}
+
+	@Override
+	public int exit() {
+		LevelTransition l = getTransition(LevelTransition.Type.SURFACE);
+		if (l != null){
+			return l.cell();
+		}
+		return 0;
+	}
+
+	@Override
 	protected boolean build() {
 
 		setSize(WIDTH, HEIGHT);
@@ -100,7 +119,8 @@ public class RatBossLevel extends Level {
 			Painter.fill(this, 4 + i * 5, top, 5, bottom - top + 1, Terrain.EMPTY);
 
 			if (i == 2) {
-				exit = (6 + i * 5) + (bottom - 1) * width();
+				int entrance = (6 + i * 5) + (bottom - 1) * width();
+				transitions.add(new LevelTransition(this, entrance, LevelTransition.Type.REGULAR_EXIT));
 			}
 
 		}
@@ -112,7 +132,7 @@ public class RatBossLevel extends Level {
 			}
 		}
 
-		map[exit] = Terrain.EXIT;
+		map[entrance()] = Terrain.EXIT;
 
 		Painter.fill(this, ROOM_LEFT-1, ROOM_TOP-1, 11, 11, Terrain.EMPTY );
 
@@ -137,7 +157,12 @@ public class RatBossLevel extends Level {
 
 		Painter.fill(this, ROOM_LEFT+3, ROOM_TOP+2, 3, 4, Terrain.EMPTY );
 
-		entrance = width/2 + ((ROOM_TOP+1) * width);
+		int exitCell = width/2 + ((ROOM_TOP+1) * width);
+		LevelTransition exit = new LevelTransition(this, exitCell, LevelTransition.Type.SURFACE);
+		exit.top--;
+		exit.left--;
+		exit.right++;
+		transitions.add(exit);
 
 		CustomTilemap vis = new CenterPieceVisuals();
 		vis.pos(ROOM_LEFT, ROOM_TOP+1);
@@ -153,7 +178,7 @@ public class RatBossLevel extends Level {
 		}
 
 		//ensures a path to the exit exists
-		return (PathFinder.getStep(entrance, exit, passable) != -1);
+		return (PathFinder.getStep(entrance(), exit(), passable) != -1);
 	}
 
 	@Override
@@ -171,7 +196,7 @@ public class RatBossLevel extends Level {
 			int pos;
 			do {
 				pos = randomRespawnCell(null);
-			} while (pos == entrance);
+			} while (pos == entrance());
 			drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
 		}
 	}
@@ -192,8 +217,8 @@ public class RatBossLevel extends Level {
 	public void occupyCell( Char ch ) {
 		super.occupyCell( ch );
 
-		if (map[exit] == Terrain.EXIT && map[entrance] != Terrain.ENTRANCE
-				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance) >= 1) {
+		if (map[entrance()] == Terrain.EXIT && map[exit()] != Terrain.ENTRANCE
+				&& ch == Dungeon.hero && Dungeon.level.distance(ch.pos, entrance()) >= 2) {
 			seal();
 		}
 	}
@@ -201,29 +226,30 @@ public class RatBossLevel extends Level {
 	@Override
 	public void seal() {
 		super.seal();
-		set( exit, Terrain.EMPTY_SP );
-		GameScene.updateMap( exit );
-		CellEmitter.get( exit ).start( FlameParticle.FACTORY, 0.1f, 10 );
+		int entrance = entrance();
+		set( entrance, Terrain.EMPTY_SP );
+		GameScene.updateMap( entrance );
+		CellEmitter.get( entrance ).start( FlameParticle.FACTORY, 0.1f, 10 );
 
 		Dungeon.observe();
 
 		RatKingBoss boss = new RatKingBoss();
-		boss.pos = entrance + width*3;
+		boss.pos = exit() + width*3;
 		GameScene.add( boss );
 	}
 
 	@Override
 	public void unseal() {
 		super.unseal();
-		set( exit, Terrain.EXIT );
-		GameScene.updateMap( entrance );
+		set( entrance(), Terrain.ENTRANCE );
+		GameScene.updateMap( entrance() );
 
-		set( entrance, Terrain.ENTRANCE );
-		GameScene.updateMap( exit );
+		set( exit(), Terrain.EXIT );
+		GameScene.updateMap( exit() );
 
-		CellEmitter.get(exit-1).burst(ShadowParticle.UP, 25);
-		CellEmitter.get(exit).burst(ShadowParticle.UP, 100);
-		CellEmitter.get(exit+1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(exit()-1).burst(ShadowParticle.UP, 25);
+		CellEmitter.get(exit()).burst(ShadowParticle.UP, 100);
+		CellEmitter.get(exit()+1).burst(ShadowParticle.UP, 25);
 		for( CustomTilemap t : customTiles){
 			if (t instanceof CenterPieceVisuals){
 				((CenterPieceVisuals) t).updateState();

@@ -332,6 +332,7 @@ public class InterlevelScene extends PixelScene {
 		case STATIC:
 			if (error != null) {
 				String errorMsg;
+				ShatteredPixelDungeon.reportException(error);
 				if (error instanceof FileNotFoundException)     errorMsg = Messages.get(this, "file_not_found");
 				else if (error instanceof IOException)          errorMsg = Messages.get(this, "io_error");
 				else if (error.getMessage() != null &&
@@ -381,7 +382,7 @@ public class InterlevelScene extends PixelScene {
 		}
 
 		Level level;
-		Dungeon.depth = 26;
+		Dungeon.depth = 27;
 		if (Dungeon.depth >= Statistics.deepestFloor) {
 			level = Dungeon.newLevel();
 		} else {
