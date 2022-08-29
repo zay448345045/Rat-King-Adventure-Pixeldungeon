@@ -37,8 +37,8 @@ public class Chaotic extends Weapon.Enchantment{
 
     @Override
     public ItemSprite.Glowing glowing() {
-        // black
-        return new ItemSprite.Glowing(0);
+        // chaotic
+        return new ItemSprite.Glowing();
     }
 
     private static final String CURSES = "CURSES";
