@@ -48,8 +48,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import static com.zrp200.rkpd2.actors.hero.HeroClass.RAT_KING;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
 public class ScrollOfMetamorphosis extends ExoticScroll {
@@ -181,6 +180,12 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 
 		restrictedTalents.put(Talent.RUNIC_TRANSFERENCE, HeroClass.WARRIOR);
 		restrictedTalents.put(Talent.WAND_PRESERVATION, HeroClass.MAGE);
+		restrictedTalents.put(Talent.NATURES_AID, HeroClass.HUNTRESS);
+		restrictedTalents.put(RESTORED_NATURE, HeroClass.HUNTRESS);
+		restrictedTalents.put(SEER_SHOT, HeroClass.HUNTRESS);
+		restrictedTalents.put(BIG_RUSH, WARRIOR);
+		restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
+		restrictedTalents.put(NATURE_AID_2, HUNTRESS);
 
 		// rat king talents that contain restricted talents are removed.
 		restrictedTalents.put(POWER_WITHIN, RAT_KING);
