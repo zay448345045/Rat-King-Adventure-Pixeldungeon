@@ -65,8 +65,8 @@ public class Dungeon {
 
 	public static int getDepth() {
 		if (depth == 0)
-			return 25;
-		return depth;
+			return ASCENSION_DEPTH;
+		return Dungeon.scalingDepth();
 	}
 
 	//enum of items which have limited spawns, records how many have spawned
