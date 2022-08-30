@@ -28,7 +28,7 @@ public class TerminusBlade extends MeleeWeapon {
         hitSoundPitch = 0.75f;
 
         tier = 7;
-        DLY = 2.0f;
+        DLY = 2.5f;
 
         defaultAction = "NONE";
     }
@@ -39,8 +39,8 @@ public class TerminusBlade extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  8*(tier+1) +    //base
-                lvl*(tier+5);   //level scaling
+        return  6*(tier+1) +    //base
+                lvl*(tier+2);   //level scaling
     }
 
     private static final ItemSprite.Glowing CHAOTIC = new ItemSprite.Glowing( 0.2f  );
@@ -116,7 +116,7 @@ public class TerminusBlade extends MeleeWeapon {
             inputs =  new Class[]{Kromer.class, Chaosstone.class};
             inQuantity = new int[]{2, 1};
 
-            cost = 100;
+            cost = 150;
 
             output = TerminusBlade.class;
             outQuantity = 1;
