@@ -25,6 +25,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.utils.WarpPile;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,7 @@ public class RenderedTextBlock extends Component {
 	public float[] padding = new float[2]; // extends width and height, respectively.
 	
 	private int hightlightColor = Window.TITLE_COLOR;
+	private int warpHightlightColor = WarpPile.COLOR;
 	private boolean highlightingEnabled = true;
 
 	public static final int LEFT_ALIGN = 1;
@@ -115,10 +117,13 @@ public class RenderedTextBlock extends Component {
 		clear();
 		words = new ArrayList<>();
 		boolean highlighting = false;
+		boolean warpHighlighting = false;
 		for (String str : tokens){
 			
 			if (str.equals("_") && highlightingEnabled){
 				highlighting = !highlighting;
+			} else if (str.equals("#") && highlightingEnabled){
+				warpHighlighting = !warpHighlighting;
 			} else if (str.equals("\n")){
 				words.add(NEWLINE);
 			} else if (str.equals(" ")){
@@ -127,6 +132,7 @@ public class RenderedTextBlock extends Component {
 				RenderedText word = new RenderedText(str, size);
 				
 				if (highlighting) word.hardlight(hightlightColor);
+				else if (warpHighlighting) word.hardlight(warpHightlightColor);
 				else if (color != -1) word.hardlight(color);
 				word.scale.set(zoom);
 				
