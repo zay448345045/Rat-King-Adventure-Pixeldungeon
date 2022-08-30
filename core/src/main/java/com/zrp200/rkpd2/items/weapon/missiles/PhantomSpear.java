@@ -126,12 +126,13 @@ public class PhantomSpear extends MissileWeapon {
 						}
 						if (durability <= 0){
 							detach(user.belongings.backpack);
+							durability = 100;
 						}
 					}
 				}
 			};
 
-			MissileSprite m = ((MissileSprite)user.sprite.parent.recycle( MissileSprite.class ));
+			MissileSprite m = user.sprite.parent.recycle( MissileSprite.class );
 			m.reset( user.sprite, ch.pos, this, callback );
 			m.alpha(0.5f);
 
