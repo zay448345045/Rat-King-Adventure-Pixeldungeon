@@ -192,15 +192,15 @@ public class Badges {
 		CHAMPION_3                  ( 124 ),
 
 		//neutronium
-		DEFEATED_RK					(115),
-		CHAMPION_4                  (116),
-		CHAMPION_5                  (117),
-		CHAMPION_6                  (118),
-		CHAMPION_7                  (119),
-		CHAMPION_8                  (120),
-		CHAMPION_9                  (121),
-		CHAMPION_10                  (122),
-		CHAMPION_11                  (123);
+		DEFEATED_RK					(112),
+		CHAMPION_4                  (125),
+		CHAMPION_5                  (126),
+		CHAMPION_6                  (127),
+		CHAMPION_7                  (128),
+		CHAMPION_8                  (129),
+		CHAMPION_9                  (130),
+		CHAMPION_10                  (131),
+		CHAMPION_11                  (132);
 
 		public boolean meta;
 
@@ -1014,59 +1014,35 @@ public class Badges {
 			badge = Badge.CHAMPION_3;
 		}
 		if (challenges >= 9){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_4;
 		}
 		if (challenges >= 12){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_5;
 		}
 		if (challenges >= 15){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_6;
 		}
 		if (challenges >= 18){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_7;
 		}
 		if (challenges >= 21){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_8;
 		}
 		if (challenges >= 24){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_9;
 		}
 		if (challenges >= 27){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_10;
 		}
 		if (challenges >= 30){
-			if (!global.contains(badge)){
-				global.add(badge);
-				saveNeeded = true;
-			}
+			unlock(badge);
 			badge = Badge.CHAMPION_11;
 		}
 		local.add(badge);
@@ -1094,10 +1070,7 @@ public class Badges {
 					case Challenges.RANDOM_HP: b = Badge.CHAMPED_RANDOM_HP; break;
 					case Challenges.EVIL_MODE: b = Badge.CHAMPED_EVIL_MODE; break;
 				}
-				if (!global.contains(b)){
-					global.add(b);
-					saveNeeded = true;
-				}
+				unlock(b);
 				local.add(b);
 			}
 		}
