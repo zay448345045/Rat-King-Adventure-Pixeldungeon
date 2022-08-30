@@ -209,17 +209,6 @@ abstract public class MissileWeapon extends Weapon {
 		Char enemy = Actor.findChar( cell );
 		if (enemy == null || enemy == curUser) {
 			parent = null;
-
-			//metamorphed seer shot logic
-			if (curUser.hasTalent(Talent.SEER_SHOT)
-					&& curUser.heroClass != HeroClass.HUNTRESS
-					&& curUser.buff(Talent.SeerShotCooldown.class) == null){
-				if (Actor.findChar(cell) == null) {
-					// manually made consistent with rkpd2 logic
-					new RevealedArea(cell, Dungeon.depth).attachTo(curUser);
-				}
-			}
-
 			super.onThrow( cell );
 		} else curUser.shoot(enemy, this);
 	}
