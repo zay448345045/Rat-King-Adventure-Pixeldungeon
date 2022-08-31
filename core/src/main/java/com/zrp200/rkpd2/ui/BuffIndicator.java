@@ -115,6 +115,8 @@ public class BuffIndicator extends Component {
 	public static final int ERADICATION = 61;
 	public static final int LASTSTAND = 62;
 
+	public static final int WARP = 64;
+
     private static BuffIndicator heroInstance;
 	private static BuffIndicator bossInstance;
 	
