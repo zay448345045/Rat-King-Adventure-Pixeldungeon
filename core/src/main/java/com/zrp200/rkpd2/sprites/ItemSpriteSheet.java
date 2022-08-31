@@ -719,6 +719,11 @@ public class ItemSpriteSheet {
 	public static final int KROMER_SLINGSHOT = QUEST+14;
 	public static final int KROMER_CROWN = QUEST+15;
 	public static final int KROMER_MASK = QUEST+16;
+	public static final int NERF_GUN = QUEST+17;
+	public static final int NERF_AMMO_1 = QUEST+18;
+	public static final int NERF_AMMO_2 = QUEST+19;
+	public static final int NERF_AMMO_3 = QUEST+20;
+	public static final int FLEX_TAPE = QUEST+21;
 	static{
 		assignItemRect(SKULL,   16, 11);
 		assignItemRect(DUST,    12, 11);
@@ -737,6 +742,11 @@ public class ItemSpriteSheet {
 		assignItemRect(KROMER_SLINGSHOT, 12, 13);
 		assignItemRect(KROMER_CROWN, 13, 7);
 		assignItemRect(KROMER_MASK, 11, 9);
+		assignItemRect(NERF_GUN, 16, 16);
+		assignItemRect(NERF_AMMO_1, 14, 14);
+		assignItemRect(NERF_AMMO_2, 11, 11);
+		assignItemRect(NERF_AMMO_3, 11, 11);
+		assignItemRect(FLEX_TAPE, 14, 14);
 	}
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots
