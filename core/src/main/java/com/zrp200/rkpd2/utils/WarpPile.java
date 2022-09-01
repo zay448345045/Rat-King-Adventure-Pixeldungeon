@@ -49,11 +49,9 @@ public class WarpPile {
     public static float[] getChanceCat(int warp){
         if (warp < UNCOMMON_THRESHOLD) return categoryChances[0];
         else if (warp < RARE_THRESHOLD) return categoryChances[1];
-        else if (warp >= RARE_THRESHOLD) return categoryChances[2];
-        return new float[0];
+        else return categoryChances[2];
     }
 
-    public static int COMMON_THRESHOLD = 10;
     public static HashMap<WarpEffect, Float> commonEffects = new HashMap<>();
     static {
         commonEffects.put(new VulnerableEffect(), 15f);
