@@ -104,7 +104,7 @@ public class Warp extends Buff {
     }
 
     public void setStacks(float stacks) {
-        this.stacks = Math.min(WarpPile.MAX_WARP, this.stacks);
+        this.stacks = Math.min(WarpPile.MAX_WARP, stacks);
     }
 
     public float getDecay() {
