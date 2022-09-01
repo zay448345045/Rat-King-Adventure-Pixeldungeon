@@ -1,5 +1,6 @@
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
@@ -33,12 +34,19 @@ public class Warp extends Buff {
 
     @Override
     public String iconTextDisplay() {
-        return Integer.toString(Math.round(getStacks() * getDecay()) + Math.round(cooldown()));
+        return Integer.toString(Math.round(getStacks() * getDecay()));
+    }
+
+    @Override
+    public void tintIcon(Image icon) {
+        if (cooldown() > 0){
+            icon.tint(0x808080);
+        }
     }
 
     @Override
     public float iconFadePercent() {
-        return (totalDuration - (getDecay() * getStacks() + cooldown())) / totalDuration;
+        return (totalDuration - (getDecay() * getStacks())) / totalDuration;
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +110,7 @@ public class Warp extends Buff {
         float initialStacks = effect.stacks;
         effect.setStacks(effect.stacks + stacks);
         if (initialStacks < effect.stacks) {
-            effect.postpone(WarpPile.DECAY_DELAY * effect.decay / 2);
+            effect.postpone(WarpPile.DECAY_DELAY / 2);
             effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
         }
         return effect;
