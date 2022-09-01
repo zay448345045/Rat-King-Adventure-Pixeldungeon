@@ -6,6 +6,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.levels.traps.SummoningTrap;
 import com.zrp200.rkpd2.messages.Messages;
 
 import java.util.HashMap;
@@ -58,11 +59,19 @@ public class WarpPile {
 
     public static int UNCOMMON_THRESHOLD = 50;
     public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
+    static {
+        uncommonEffects.put(new ColdEffect(), 10f);
+    }
 
     public static int RARE_THRESHOLD = 100;
     public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
 
     public static HashMap[] effectTypes = new HashMap[]{commonEffects, uncommonEffects, rareEffects};
+    static {
+        rareEffects.put(new SummonEffect(), 10f);
+    }
+
+    /** Common effects **/
 
     public static class DegradeEffect implements WarpEffect {
         @Override
@@ -82,6 +91,25 @@ public class WarpPile {
         @Override
         public void doEffect(Hero target, float warpAmount) {
             Buff.prolong(target, Vulnerable.class, 12 + warpAmount / 4);
+        }
+    }
+
+    /** Uncommon effects **/
+
+    public static class ColdEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Frost.class, 9 + warpAmount / 8);
+            Buff.prolong(target, Chill.class, 12 + warpAmount / 6);
+        }
+    }
+
+    /** Rare effects **/
+
+    public static class SummonEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            new SummoningTrap().set(target.pos).activate();
         }
     }
 }
