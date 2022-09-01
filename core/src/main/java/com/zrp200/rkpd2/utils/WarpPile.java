@@ -29,7 +29,7 @@ public class WarpPile {
         @Override
         default void call(){
             float warpAmount = Warp.stacks();
-            Warp.modify(warpAmount/EFFECT_BASE);
+            Warp.modify(-warpAmount/EFFECT_BASE);
             Sample.INSTANCE.play(Assets.Sounds.CURSED);
             GLog.d(Messages.get(this, "message"));
             doEffect(Dungeon.hero, warpAmount);
