@@ -22,13 +22,13 @@ public class WarpPile {
     //initial wait in turns before warp will start decaying
     public static final float DECAY_DELAY = 4;
     //the (1/X) portion of warp that will be used to use an effect
-    public static final float EFFECT_BASE = 6;
+    public static final float EFFECT_BASE = 8;
     //the cap for how much warp you can have
     public static final float MAX_WARP = 150;
 
     //the (1/X) chance for effect to come out every time the warp decays
     public static int effectChance(int warpAmount){
-        return 7 - warpAmount / 50;
+        return 8 - warpAmount / 30;
     }
 
     public interface WarpEffect extends Callback {
