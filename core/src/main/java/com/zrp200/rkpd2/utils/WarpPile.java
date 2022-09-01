@@ -2,17 +2,28 @@ package com.zrp200.rkpd2.utils;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Regrowth;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.levels.traps.SummoningTrap;
+import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
+import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WarpPile {
@@ -84,6 +95,7 @@ public class WarpPile {
     public static HashMap[] effectTypes = new HashMap[]{commonEffects, uncommonEffects, rareEffects};
     static {
         rareEffects.put(new SummonEffect(), 10f);
+        rareEffects.put(new WarpingEffect(), 4f);
     }
 
     /** Common effects **/
@@ -210,7 +222,129 @@ public class WarpPile {
     public static class SummonEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            new SummoningTrap().set(target.pos).activate();
+            int nMobs = 1;
+            if (Random.Int( 2 ) == 0) {
+                nMobs++;
+                if (Random.Int( 2 ) == 0) {
+                    nMobs++;
+                }
+            }
+
+            ArrayList<Integer> candidates = new ArrayList<>();
+
+            for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+                int p = target.pos + PathFinder.NEIGHBOURS8[i];
+                if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+                    candidates.add( p );
+                }
+            }
+
+            ArrayList<Integer> respawnPoints = new ArrayList<>();
+
+            while (nMobs > 0 && candidates.size() > 0) {
+                int index = Random.index( candidates );
+
+                respawnPoints.add( candidates.remove( index ) );
+                nMobs--;
+            }
+
+            ArrayList<Mob> mobs = new ArrayList<>();
+
+            for (Integer point : respawnPoints) {
+                EnemyImage mob = new EnemyImage();
+                mob.duplicate(target, (int) (warpAmount*2f));
+                mob.state = mob.WANDERING;
+                Buff.affect(mob, Doom.class);
+                mob.pos = point;
+                GameScene.add(mob, 1);
+                mobs.add(mob);
+            }
+
+            //important to process the visuals and pressing of cells last, so spawned mobs have a chance to occupy cells first
+            Trap t;
+            for (Mob mob : mobs){
+                //manually trigger traps first to avoid sfx spam
+                if ((t = Dungeon.level.traps.get(mob.pos)) != null && t.active){
+                    if (t.disarmedByActivation) t.disarm();
+                    t.reveal();
+                    t.activate();
+                }
+                ScrollOfTeleportation.appear(mob, mob.pos);
+                Dungeon.level.occupyCell(mob);
+            }
+
+        }
+
+        public static class EnemyImage extends PrismaticImage{
+
+            {
+                alignment = Alignment.ENEMY;
+                WANDERING = new Wandering();
+            }
+
+
+            private class Wandering extends Mob.Wandering{
+
+                @Override
+                public boolean act(boolean enemyInFOV, boolean justAlerted) {
+                    return super.act(enemyInFOV, justAlerted);
+                }
+
+            }
+        }
+
+    }
+
+    public static class WarpingEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            CellEmitter.get(target.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+            Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
+
+            Char ch = Actor.findChar( target.pos);
+            if (ch instanceof Hero){
+                ScrollOfTeleportation.teleportHero( (Hero)ch);
+                BArray.setFalse(Dungeon.level.visited);
+                BArray.setFalse(Dungeon.level.mapped);
+                Dungeon.observe();
+
+            } else if (ch != null){
+                int count = 10;
+                int pos;
+                do {
+                    pos = Dungeon.level.randomRespawnCell(target);
+                    if (count-- <= 0) {
+                        break;
+                    }
+                } while (pos == -1);
+
+                if (pos == -1) {
+
+                    GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+
+                } else {
+
+                    ch.pos = pos;
+                    if (ch instanceof Mob && ((Mob) ch).state == ((Mob) ch).HUNTING){
+                        ((Mob) ch).state = ((Mob) ch).WANDERING;
+                    }
+                    ch.sprite.place(ch.pos);
+                    ch.sprite.visible = Dungeon.level.heroFOV[pos];
+
+                }
+            }
+
+            Heap heap = Dungeon.level.heaps.get(target.pos);
+
+            if (heap != null){
+                int cell = Dungeon.level.randomRespawnCell(target);
+
+                Item item = heap.pickUp();
+
+                if (cell != -1) {
+                    Dungeon.level.drop( item, cell );
+                }
+            }
         }
     }
 }
