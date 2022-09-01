@@ -44,9 +44,10 @@ public class WarpPile {
     };
 
     public static float[] getChanceCat(int warp){
-        if (warp >= COMMON_THRESHOLD && warp < UNCOMMON_THRESHOLD) return categoryChances[0];
-        else if (warp >= UNCOMMON_THRESHOLD && warp < RARE_THRESHOLD) return categoryChances[1];
-        else return categoryChances[2];
+        if (warp < UNCOMMON_THRESHOLD) return categoryChances[0];
+        else if (warp < RARE_THRESHOLD) return categoryChances[1];
+        else if (warp >= RARE_THRESHOLD) return categoryChances[2];
+        return new float[0];
     }
 
     public static int COMMON_THRESHOLD = 10;
