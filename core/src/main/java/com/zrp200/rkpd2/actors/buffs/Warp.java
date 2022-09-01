@@ -14,6 +14,7 @@ public class Warp extends Buff {
 
     private float stacks = 0;
     private float decay = 0;
+    private float totalDuration = 0;
 
     @Override
     public int icon() {
@@ -33,6 +34,11 @@ public class Warp extends Buff {
     @Override
     public String iconTextDisplay() {
         return Integer.toString(Math.round(getStacks()) * Math.round(getDecay()) + Math.round(cooldown()));
+    }
+
+    @Override
+    public float iconFadePercent() {
+        return (totalDuration - (getDecay() * getStacks() + cooldown())) / totalDuration;
     }
 
     @SuppressWarnings("unchecked")
@@ -84,6 +90,7 @@ public class Warp extends Buff {
         effect.setStacks(stacks);
         effect.setDecay(decay);
         effect.postpone(WarpPile.DECAY_DELAY*decay);
+        effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
         return effect;
     }
 
@@ -91,8 +98,10 @@ public class Warp extends Buff {
         Warp effect = Buff.affect(Dungeon.hero, Warp.class);
         float initialStacks = effect.stacks;
         effect.setStacks(effect.stacks + stacks);
-        if (initialStacks < effect.stacks)
-            effect.postpone(WarpPile.DECAY_DELAY*effect.decay/2);
+        if (initialStacks < effect.stacks) {
+            effect.postpone(WarpPile.DECAY_DELAY * effect.decay / 2);
+            effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
+        }
         return effect;
     }
 
