@@ -3,7 +3,9 @@ package com.zrp200.rkpd2.utils;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.actors.buffs.Warp;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.Hero;
 
 import java.util.HashMap;
 
@@ -21,13 +23,14 @@ public class WarpPile {
     public static final int EFFECT_CHANCE = 10;
 
     public interface WarpEffect extends Callback {
-        void doEffect();
+        void doEffect(Hero target, float warpAmount);
 
         @Override
         default void call(){
-            Warp.modify(Warp.stacks()/EFFECT_BASE);
+            float warpAmount = Warp.stacks();
+            Warp.modify(warpAmount/EFFECT_BASE);
             Sample.INSTANCE.play(Assets.Sounds.CURSED);
-            doEffect();
+            doEffect(Dungeon.hero, warpAmount);
         }
     }
 
@@ -45,6 +48,11 @@ public class WarpPile {
 
     public static int COMMON_THRESHOLD = 10;
     public static HashMap<WarpEffect, Float> commonEffects = new HashMap<>();
+    static {
+        commonEffects.put(new VulnerableEffect(), 15f);
+        commonEffects.put(new VertigoEffect(), 10f);
+        commonEffects.put(new DegradeEffect(), 6f);
+    }
 
     public static int UNCOMMON_THRESHOLD = 50;
     public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
@@ -53,4 +61,25 @@ public class WarpPile {
     public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
 
     public static HashMap[] effectTypes = new HashMap[]{commonEffects, uncommonEffects, rareEffects};
+
+    public static class DegradeEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Degrade.class, 10 + warpAmount / 5);
+        }
+    }
+
+    public static class VertigoEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Vertigo.class, 6 + warpAmount / 8);
+        }
+    }
+
+    public static class VulnerableEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Vulnerable.class, 12 + warpAmount / 4);
+        }
+    }
 }
