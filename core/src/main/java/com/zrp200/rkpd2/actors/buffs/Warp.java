@@ -16,6 +16,7 @@ public class Warp extends Buff {
     private float stacks = 0;
     private float decay = 0;
     private float totalDuration = 0;
+    private float timer = 0;
 
     @Override
     public int icon() {
@@ -55,14 +56,14 @@ public class Warp extends Buff {
         if (target.isAlive()) {
 
             spend( TICK );
+            timer++;
             stacks -= 1/decay;
-            if (Random.Int(WarpPile.effectChance(Math.round(stacks))) == 0){
+            if (timer >= WarpPile.effectTimer(stacks)){
+                timer = 0;
                 float[] category = WarpPile.getChanceCat(Math.round(getStacks()));
                 int categoryID = Random.chances(category);
-                if (Random.Int(100) < category[categoryID]){
-                    WarpPile.WarpEffect effect = (WarpPile.WarpEffect) Random.chances(WarpPile.effectTypes[categoryID]);
-                    effect.call();
-                }
+                WarpPile.WarpEffect effect = (WarpPile.WarpEffect) Random.chances(WarpPile.effectTypes[categoryID]);
+                effect.call();
             }
             if (stacks <= 0) {
                 detach();
@@ -79,6 +80,7 @@ public class Warp extends Buff {
     public static final String STACKS = "enemy_stacks";
     public static final String DAMAGE = "damage_inc";
     public static final String DURATION = "duration";
+    public static final String TIMER = "timer";
 
     @Override
     public void storeInBundle(Bundle bundle) {
@@ -86,6 +88,7 @@ public class Warp extends Buff {
         bundle.put(STACKS, getStacks());
         bundle.put(DAMAGE, getDecay());
         bundle.put(DURATION, totalDuration);
+        bundle.put(TIMER, timer);
     }
 
     @Override
@@ -94,6 +97,7 @@ public class Warp extends Buff {
         setStacks(bundle.getFloat(STACKS));
         setDecay(bundle.getFloat(DAMAGE));
         totalDuration = bundle.getFloat(DURATION);
+        timer = bundle.getFloat(TIMER);
     }
 
     public static Warp inflict(float stacks, float decay){
