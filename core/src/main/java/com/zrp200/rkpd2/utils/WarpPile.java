@@ -70,12 +70,12 @@ public class WarpPile {
     public static int UNCOMMON_THRESHOLD = 50;
     public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
     static {
-        uncommonEffects.put(new ColdEffect(), 10f);
+        uncommonEffects.put(new ColdEffect(), 12f);
         uncommonEffects.put(new RegrowthEffect(), 10f);
-        uncommonEffects.put(new ShrinkEffect(), 8f);
-        uncommonEffects.put(new VisionEffect(), 6f);
-        uncommonEffects.put(new HungerEffect(), 5f);
-        uncommonEffects.put(new RetributionEffect(), 2f);
+        uncommonEffects.put(new ShrinkEffect(), 9f);
+        uncommonEffects.put(new VisionEffect(), 8f);
+        uncommonEffects.put(new HungerEffect(), 6f);
+        uncommonEffects.put(new RetributionEffect(), 4f);
     }
 
     public static int RARE_THRESHOLD = 100;
