@@ -4,10 +4,14 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Regrowth;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.levels.traps.SummoningTrap;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.GameScene;
 
 import java.util.HashMap;
 
@@ -57,6 +61,7 @@ public class WarpPile {
         commonEffects.put(new VulnerableEffect(), 15f);
         commonEffects.put(new ScamEffect(), 12f);
         commonEffects.put(new VertigoEffect(), 10f);
+        commonEffects.put(new BlindnessEffect(), 8f);
         commonEffects.put(new AdrenalineEffect(), 9f);
         commonEffects.put(new FireEffect(), 7f);
         commonEffects.put(new DegradeEffect(), 6f);
@@ -66,7 +71,11 @@ public class WarpPile {
     public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
     static {
         uncommonEffects.put(new ColdEffect(), 10f);
-        uncommonEffects.put(new VisionEffect(), 5f);
+        uncommonEffects.put(new RegrowthEffect(), 10f);
+        uncommonEffects.put(new ShrinkEffect(), 8f);
+        uncommonEffects.put(new VisionEffect(), 6f);
+        uncommonEffects.put(new HungerEffect(), 5f);
+        uncommonEffects.put(new RetributionEffect(), 2f);
     }
 
     public static int RARE_THRESHOLD = 100;
@@ -97,6 +106,13 @@ public class WarpPile {
         @Override
         public void doEffect(Hero target, float warpAmount) {
             Buff.prolong(target, Vulnerable.class, 12 + warpAmount / 4);
+        }
+    }
+
+    public static class BlindnessEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Blindness.class, 8 + warpAmount / 5);
         }
     }
 
@@ -131,10 +147,61 @@ public class WarpPile {
         }
     }
 
+    public static class ShrinkEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, TimedShrink.class, 6 + warpAmount / 8);
+        }
+    }
+
     public static class VisionEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
             Buff.prolong(target, MagicalSight.class, 5 + warpAmount / 12);
+        }
+    }
+
+    public static class RegrowthEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            GameScene.add( Blob.seed(target.pos, Math.round(40 + warpAmount / 4), Regrowth.class));
+        }
+    }
+
+    public static class HungerEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.affect(target, Hunger.class).affectHunger(-Hunger.STARVING*2);
+        }
+    }
+
+    public static class SpawnEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            for (int i = 0; i < 1 + warpAmount / 30; i++)
+                Dungeon.level.spawnMob(8);
+        }
+    }
+
+    public static class RetributionEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            float hpPercent = (MAX_WARP - warpAmount)/(float)(MAX_WARP);
+            float power = Math.min( 4f, 4.45f*hpPercent);
+
+            Sample.INSTANCE.play( Assets.Sounds.BLAST );
+
+            for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+                if (Dungeon.level.heroFOV[mob.pos]) {
+                    //deals 5%HT, plus 0-45%HP based on scaling
+                    mob.damage(Math.round(mob.HT/20f + (mob.HP * power * 0.1125f)), this);
+                    if (mob.isAlive()) {
+                        Buff.prolong(mob, Blindness.class, Blindness.DURATION);
+                    }
+                }
+            }
+            Buff.prolong(target, Blindness.class, Blindness.DURATION/3);
+            Dungeon.observe();
         }
     }
 
