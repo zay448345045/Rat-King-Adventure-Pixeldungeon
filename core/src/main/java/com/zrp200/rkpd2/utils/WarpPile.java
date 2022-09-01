@@ -21,8 +21,11 @@ public class WarpPile {
     public static final float EFFECT_BASE = 6;
     //the cap for how much warp you can have
     public static final float MAX_WARP = 150;
+
     //the (1/X) chance for effect to come out every time the warp decays
-    public static final int EFFECT_CHANCE = 8;
+    public static int effectChance(int warpAmount){
+        return 7 - warpAmount / 50;
+    }
 
     public interface WarpEffect extends Callback {
         void doEffect(Hero target, float warpAmount);

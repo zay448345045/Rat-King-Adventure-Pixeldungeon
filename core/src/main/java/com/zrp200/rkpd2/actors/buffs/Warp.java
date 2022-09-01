@@ -42,7 +42,7 @@ public class Warp extends Buff {
 
             spend( TICK );
             stacks -= 1/decay;
-            if (Random.Int(WarpPile.EFFECT_CHANCE) == 0){
+            if (Random.Int(WarpPile.effectChance(Math.round(stacks))) == 0){
                 float[] category = WarpPile.getChanceCat(Math.round(getStacks()));
                 int categoryID = Random.chances(category);
                 if (Random.Int(100) < category[categoryID]){
