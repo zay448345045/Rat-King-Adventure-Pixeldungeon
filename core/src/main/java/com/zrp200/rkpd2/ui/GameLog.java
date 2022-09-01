@@ -21,12 +21,13 @@
 
 package com.zrp200.rkpd2.ui;
 
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.Signal;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.Signal;
+import com.zrp200.rkpd2.utils.WarpPile;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -81,6 +82,10 @@ public class GameLog extends Component implements Signal.Listener<String> {
 			if (text.startsWith( GLog.HIGHLIGHT )) {
 				text = text.substring( GLog.HIGHLIGHT.length() );
 				color = CharSprite.NEUTRAL;
+			}
+			if (text.startsWith( GLog.WARP )) {
+				text = text.substring( GLog.WARP.length() );
+				color = WarpPile.COLOR;
 			}
 			
 			if (lastEntry != null && color == lastColor && lastEntry.nLines < maxLines) {

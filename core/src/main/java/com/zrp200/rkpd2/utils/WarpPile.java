@@ -6,6 +6,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.messages.Messages;
 
 import java.util.HashMap;
 
@@ -30,6 +31,7 @@ public class WarpPile {
             float warpAmount = Warp.stacks();
             Warp.modify(warpAmount/EFFECT_BASE);
             Sample.INSTANCE.play(Assets.Sounds.CURSED);
+            GLog.d(Messages.get(this, "message"));
             doEffect(Dungeon.hero, warpAmount);
         }
     }

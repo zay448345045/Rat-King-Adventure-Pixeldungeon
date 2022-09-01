@@ -21,9 +21,9 @@
 
 package com.zrp200.rkpd2.utils;
 
-import com.zrp200.rkpd2.messages.Messages;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Signal;
+import com.zrp200.rkpd2.messages.Messages;
 
 public class GLog {
 
@@ -33,6 +33,7 @@ public class GLog {
 	public static final String NEGATIVE		= "-- ";
 	public static final String WARNING		= "** ";
 	public static final String HIGHLIGHT	= "@@ ";
+	public static final String WARP     	= "## ";
 
 	public static final String NEW_LINE	    = "\n";
 	
@@ -66,5 +67,9 @@ public class GLog {
 	
 	public static void h( String text, Object... args ) {
 		i( HIGHLIGHT + text, args );
+	}
+
+	public static void d( String text, Object... args ) {
+		i( WARP + text, args );
 	}
 }
