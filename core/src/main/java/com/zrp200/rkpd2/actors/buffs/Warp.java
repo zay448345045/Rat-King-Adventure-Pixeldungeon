@@ -33,7 +33,7 @@ public class Warp extends Buff {
 
     @Override
     public String iconTextDisplay() {
-        return Integer.toString(Math.round(getStacks()) * Math.round(getDecay()) + Math.round(cooldown()));
+        return Integer.toString(Math.round(getStacks() * getDecay()) + Math.round(cooldown()));
     }
 
     @Override
