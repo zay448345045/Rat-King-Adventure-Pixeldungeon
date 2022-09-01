@@ -56,9 +56,9 @@ public class WarpPile {
     }
 
     public static float[][] categoryChances = {
-            {80, 55, 25},
-            {19, 43, 70},
-            {1, 2, 5}
+            {20, 5, 1},
+            {10, 7, 1},
+            {3, 7, 2}
     };
 
     public static float[] getChanceCat(int warp){
