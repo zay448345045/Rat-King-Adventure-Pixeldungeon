@@ -92,7 +92,7 @@ public class Warp extends Buff {
         Warp effect = Buff.affect(Dungeon.hero, Warp.class);
         effect.setStacks(stacks);
         effect.setDecay(decay);
-        effect.postpone(WarpPile.DECAY_DELAY*decay);
+        effect.postpone(WarpPile.DECAY_DELAY);
         effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
         return effect;
     }

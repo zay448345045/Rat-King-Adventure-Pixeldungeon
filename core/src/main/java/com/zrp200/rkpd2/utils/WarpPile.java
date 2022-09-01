@@ -31,7 +31,7 @@ public class WarpPile {
     public static final int COLOR = 0xc22ec9;
 
     //initial wait in turns before warp will start decaying
-    public static final float DECAY_DELAY = 4;
+    public static final float DECAY_DELAY = 5;
     //the (1/X) portion of warp that will be used to use an effect
     public static final float EFFECT_BASE = 8;
     //the cap for how much warp you can have
