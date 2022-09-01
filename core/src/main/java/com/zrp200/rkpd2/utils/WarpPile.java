@@ -53,7 +53,10 @@ public class WarpPile {
     public static HashMap<WarpEffect, Float> commonEffects = new HashMap<>();
     static {
         commonEffects.put(new VulnerableEffect(), 15f);
+        commonEffects.put(new ScamEffect(), 12f);
         commonEffects.put(new VertigoEffect(), 10f);
+        commonEffects.put(new AdrenalineEffect(), 9f);
+        commonEffects.put(new FireEffect(), 7f);
         commonEffects.put(new DegradeEffect(), 6f);
     }
 
@@ -92,6 +95,27 @@ public class WarpPile {
         @Override
         public void doEffect(Hero target, float warpAmount) {
             Buff.prolong(target, Vulnerable.class, 12 + warpAmount / 4);
+        }
+    }
+
+    public static class ScamEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Scam.class, 20 + warpAmount / 3);
+        }
+    }
+
+    public static class AdrenalineEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, Adrenaline.class, 5 + warpAmount / 12);
+        }
+    }
+
+    public static class FireEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.affect(target, Burning.class).reignite(target, 2);
         }
     }
 
