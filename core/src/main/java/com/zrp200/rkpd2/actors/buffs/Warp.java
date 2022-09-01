@@ -40,7 +40,8 @@ public class Warp extends Buff {
     public boolean act() {
         if (target.isAlive()) {
 
-            spend( decay );
+            spend( TICK );
+            stacks -= 1/decay;
             if (Random.Int(WarpPile.EFFECT_CHANCE) == 0){
                 float[] category = WarpPile.getChanceCat(Math.round(getStacks()));
                 int categoryID = Random.chances(category);
@@ -49,7 +50,7 @@ public class Warp extends Buff {
                     effect.call();
                 }
             }
-            if (--stacks <= 0) {
+            if (stacks <= 0) {
                 detach();
             }
 
