@@ -122,7 +122,7 @@ public class RenderedTextBlock extends Component {
 			
 			if (str.equals("_") && highlightingEnabled){
 				highlighting = !highlighting;
-			} else if (str.equals("#") && highlightingEnabled){
+			} else if (str.equals("#")){
 				warpHighlighting = !warpHighlighting;
 			} else if (str.equals("\n")){
 				words.add(NEWLINE);
@@ -132,8 +132,8 @@ public class RenderedTextBlock extends Component {
 				RenderedText word = new RenderedText(str, size);
 				
 				if (highlighting) word.hardlight(hightlightColor);
-				else if (warpHighlighting) word.hardlight(warpHightlightColor);
 				else if (color != -1) word.hardlight(color);
+				if (warpHighlighting) word.hardlight(warpHightlightColor);
 				word.scale.set(zoom);
 				
 				words.add(word);
