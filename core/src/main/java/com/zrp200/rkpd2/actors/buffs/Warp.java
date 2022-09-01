@@ -32,7 +32,7 @@ public class Warp extends Buff {
 
     @Override
     public String iconTextDisplay() {
-        return Integer.toString(Math.round(getStacks()) * Math.round(getDecay()));
+        return Integer.toString(Math.round(getStacks()) * Math.round(getDecay()) + Math.round(cooldown()));
     }
 
     @SuppressWarnings("unchecked")
@@ -88,7 +88,10 @@ public class Warp extends Buff {
 
     public static Warp modify(float stacks){
         Warp effect = Buff.affect(Dungeon.hero, Warp.class);
+        float initialStacks = effect.stacks;
         effect.setStacks(effect.stacks + stacks);
+        if (initialStacks < effect.stacks)
+            effect.postpone(WarpPile.DECAY_DELAY*effect.decay/2);
         return effect;
     }
 
@@ -101,7 +104,7 @@ public class Warp extends Buff {
     }
 
     public void setStacks(float stacks) {
-        this.stacks = Math.min(WarpPile.MAX_WARP, this.stacks + stacks);
+        this.stacks = Math.min(WarpPile.MAX_WARP, this.stacks);
     }
 
     public float getDecay() {
