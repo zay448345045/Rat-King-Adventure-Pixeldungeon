@@ -61,6 +61,7 @@ public class WarpPile {
     public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
     static {
         uncommonEffects.put(new ColdEffect(), 10f);
+        uncommonEffects.put(new VisionEffect(), 5f);
     }
 
     public static int RARE_THRESHOLD = 100;
@@ -101,6 +102,13 @@ public class WarpPile {
         public void doEffect(Hero target, float warpAmount) {
             Buff.prolong(target, Frost.class, 9 + warpAmount / 8);
             Buff.prolong(target, Chill.class, 12 + warpAmount / 6);
+        }
+    }
+
+    public static class VisionEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong(target, MagicalSight.class, 5 + warpAmount / 12);
         }
     }
 
