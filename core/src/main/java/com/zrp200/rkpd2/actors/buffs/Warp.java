@@ -70,12 +70,14 @@ public class Warp extends Buff {
 
     public static final String STACKS = "enemy_stacks";
     public static final String DAMAGE = "damage_inc";
+    public static final String DURATION = "duration";
 
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
         bundle.put(STACKS, getStacks());
         bundle.put(DAMAGE, getDecay());
+        bundle.put(DURATION, totalDuration);
     }
 
     @Override
@@ -83,6 +85,7 @@ public class Warp extends Buff {
         super.restoreFromBundle(bundle);
         setStacks(bundle.getFloat(STACKS));
         setDecay(bundle.getFloat(DAMAGE));
+        totalDuration = bundle.getFloat(DURATION);
     }
 
     public static Warp inflict(float stacks, float decay){
