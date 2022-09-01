@@ -117,7 +117,7 @@ public class WarpPile {
     public static class FireEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            Buff.affect(target, Burning.class).reignite(target, 2);
+            Buff.affect(target, Burning.class).reignite(target, 3);
         }
     }
 
