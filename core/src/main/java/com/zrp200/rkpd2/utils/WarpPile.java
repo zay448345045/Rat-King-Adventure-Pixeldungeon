@@ -22,6 +22,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.sprites.PrismaticSprite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -267,7 +268,7 @@ public class WarpPile {
 
             for (Integer point : respawnPoints) {
                 EnemyImage mob = new EnemyImage();
-                mob.duplicate(target, (int) (warpAmount*2f));
+                mob.duplicate(target, (int) (warpAmount*1.5f));
                 mob.state = mob.WANDERING;
                 Buff.affect(mob, Doom.class);
                 mob.pos = point;
@@ -305,6 +306,14 @@ public class WarpPile {
                     return super.act(enemyInFOV, justAlerted);
                 }
 
+            }
+
+            private static class EnemyImageSprite extends PrismaticSprite {
+                @Override
+                public void update() {
+                    super.update();
+                    hardlight(0x888888);
+                }
             }
         }
 
