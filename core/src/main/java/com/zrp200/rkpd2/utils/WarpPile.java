@@ -297,6 +297,7 @@ public class WarpPile {
             {
                 alignment = Alignment.ENEMY;
                 WANDERING = new Wandering();
+                spriteClass = EnemyImageSprite.class;
             }
 
 
@@ -309,7 +310,7 @@ public class WarpPile {
 
             }
 
-            private static class EnemyImageSprite extends PrismaticSprite {
+            public static class EnemyImageSprite extends PrismaticSprite {
                 @Override
                 public void update() {
                     super.update();
