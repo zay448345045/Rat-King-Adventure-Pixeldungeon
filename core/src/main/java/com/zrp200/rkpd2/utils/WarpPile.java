@@ -34,7 +34,7 @@ public class WarpPile {
     //initial wait in turns before warp will start decaying
     public static final float DECAY_DELAY = 5;
     //the (1/X) portion of warp that will be used to use an effect
-    public static final float EFFECT_BASE = 15;
+    public static final float EFFECT_BASE = 5;
     //the cap for how much warp you can have
     public static final float MAX_WARP = 150;
 
@@ -49,7 +49,6 @@ public class WarpPile {
         @Override
         default void call(){
             float warpAmount = Warp.stacks();
-            Warp.modify(-warpAmount/EFFECT_BASE);
             Sample.INSTANCE.play(Assets.Sounds.CURSED);
             GLog.d(Messages.get(this, "message"));
             doEffect(Dungeon.hero, warpAmount);
@@ -158,6 +157,7 @@ public class WarpPile {
         uncommonEffects.put(new VisionEffect(), 8f);
         uncommonEffects.put(new HungerEffect(), 6f);
         uncommonEffects.put(new RetributionEffect(), 4f);
+        uncommonEffects.put(new WarpClearEffect(), 2f);
     }
 
     public static class ColdEffect implements WarpEffect {
@@ -223,6 +223,13 @@ public class WarpPile {
             }
             Buff.prolong(target, Blindness.class, Blindness.DURATION/3);
             Dungeon.observe();
+        }
+    }
+
+    public static class WarpClearEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Warp.modify(warpAmount/EFFECT_BASE);
         }
     }
 
