@@ -232,6 +232,7 @@ public class WarpPile {
     public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
     static {
         rareEffects.put(new SummonEffect(), 10f);
+        rareEffects.put(new EmpoweredSpawnEffect(), 6f);
         rareEffects.put(new WarpingEffect(), 4f);
     }
 
@@ -369,6 +370,14 @@ public class WarpPile {
                     Dungeon.level.drop( item, cell );
                 }
             }
+        }
+    }
+
+    public static class EmpoweredSpawnEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            for (int i = 0; i < Dungeon.level.mobLimit(); i++)
+                Dungeon.level.spawnMob(7);
         }
     }
 
