@@ -75,15 +75,17 @@ public class WarpPile {
         commonEffects.put(new ScamEffect(), 12f);
         commonEffects.put(new VertigoEffect(), 10f);
         commonEffects.put(new BlindnessEffect(), 8f);
+        commonEffects.put(new SlowEffect(), 8f);
         commonEffects.put(new AdrenalineEffect(), 9f);
         commonEffects.put(new FireEffect(), 7f);
+        commonEffects.put(new AntimagicEffect(), 7f);
         commonEffects.put(new DegradeEffect(), 6f);
     }
 
     public static class DegradeEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            Buff.prolong(target, Degrade.class, 10 + warpAmount / 5);
+            Buff.prolong(target, Degrade.class, 12 + warpAmount / 5);
         }
     }
 
@@ -126,6 +128,20 @@ public class WarpPile {
         @Override
         public void doEffect(Hero target, float warpAmount) {
             Buff.affect(target, Burning.class).reignite(target, 3);
+        }
+    }
+
+    public static class AntimagicEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.affect(target, MagicImmune.class, 6 + warpAmount / 7);
+        }
+    }
+
+    public static class SlowEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.affect(target, Slow.class, 4 + warpAmount / 9);
         }
     }
 
