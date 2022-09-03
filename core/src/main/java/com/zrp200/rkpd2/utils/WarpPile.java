@@ -67,6 +67,8 @@ public class WarpPile {
         else return categoryChances[2];
     }
 
+    /** Common effects **/
+
     public static HashMap<WarpEffect, Float> commonEffects = new HashMap<>();
     static {
         commonEffects.put(new VulnerableEffect(), 15f);
@@ -77,28 +79,6 @@ public class WarpPile {
         commonEffects.put(new FireEffect(), 7f);
         commonEffects.put(new DegradeEffect(), 6f);
     }
-
-    public static int UNCOMMON_THRESHOLD = 50;
-    public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
-    static {
-        uncommonEffects.put(new ColdEffect(), 12f);
-        uncommonEffects.put(new RegrowthEffect(), 10f);
-        uncommonEffects.put(new ShrinkEffect(), 9f);
-        uncommonEffects.put(new VisionEffect(), 8f);
-        uncommonEffects.put(new HungerEffect(), 6f);
-        uncommonEffects.put(new RetributionEffect(), 4f);
-    }
-
-    public static int RARE_THRESHOLD = 100;
-    public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
-
-    public static HashMap[] effectTypes = new HashMap[]{commonEffects, uncommonEffects, rareEffects};
-    static {
-        rareEffects.put(new SummonEffect(), 10f);
-        rareEffects.put(new WarpingEffect(), 4f);
-    }
-
-    /** Common effects **/
 
     public static class DegradeEffect implements WarpEffect {
         @Override
@@ -150,6 +130,17 @@ public class WarpPile {
     }
 
     /** Uncommon effects **/
+
+    public static int UNCOMMON_THRESHOLD = 50;
+    public static HashMap<WarpEffect, Float> uncommonEffects = new HashMap<>();
+    static {
+        uncommonEffects.put(new ColdEffect(), 12f);
+        uncommonEffects.put(new RegrowthEffect(), 10f);
+        uncommonEffects.put(new ShrinkEffect(), 9f);
+        uncommonEffects.put(new VisionEffect(), 8f);
+        uncommonEffects.put(new HungerEffect(), 6f);
+        uncommonEffects.put(new RetributionEffect(), 4f);
+    }
 
     public static class ColdEffect implements WarpEffect {
         @Override
@@ -218,6 +209,13 @@ public class WarpPile {
     }
 
     /** Rare effects **/
+
+    public static int RARE_THRESHOLD = 100;
+    public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
+    static {
+        rareEffects.put(new SummonEffect(), 10f);
+        rareEffects.put(new WarpingEffect(), 4f);
+    }
 
     public static class SummonEffect implements WarpEffect {
         @Override
@@ -347,4 +345,6 @@ public class WarpPile {
             }
         }
     }
+
+    public static HashMap[] effectTypes = new HashMap[]{commonEffects, uncommonEffects, rareEffects};
 }
