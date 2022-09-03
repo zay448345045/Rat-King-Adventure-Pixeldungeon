@@ -153,7 +153,7 @@ public class WarpPile {
         uncommonEffects.put(new ColdEffect(), 12f);
         uncommonEffects.put(new RegrowthEffect(), 10f);
         uncommonEffects.put(new ShrinkEffect(), 9f);
-        uncommonEffects.put(new SummonEffect(), 8f);
+        uncommonEffects.put(new SpawnEffect(), 8f);
         uncommonEffects.put(new VisionEffect(), 8f);
         uncommonEffects.put(new HungerEffect(), 6f);
         uncommonEffects.put(new RetributionEffect(), 4f);
