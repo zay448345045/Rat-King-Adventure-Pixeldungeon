@@ -71,18 +71,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
-import com.watabou.utils.SparseArray;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 
 import java.util.*;
 
@@ -640,9 +628,12 @@ public abstract class Level implements Bundlable {
 		@Override
 		protected boolean act() {
 
-			if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+			if (Dungeon.isChallenged(Challenges.HERO_PATHING)
+					|| Dungeon.isChallenged(Challenges.KROMER)
+					|| Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
+				int disLimit = Dungeon.isChallenged(Challenges.FORGET_PATH) ? 0 : 12;
 
-				if (Dungeon.level.spawnMob(12)){
+				if (Dungeon.level.spawnMob(disLimit)){
 					spend(Dungeon.level.respawnCooldown());
 				} else {
 					//try again in 1 turn
@@ -696,6 +687,9 @@ public abstract class Level implements Bundlable {
 			GameScene.add( mob );
 			if (!mob.buffs(ChampionEnemy.class).isEmpty()){
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
+			}
+			if (Dungeon.isChallenged(Challenges.KROMER)){
+				Buff.affect(mob, Adrenaline.class, 20000f);
 			}
 			return true;
 		} else {
