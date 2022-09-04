@@ -48,7 +48,7 @@ public class BloomingPick extends MeleeWeapon {
 
 	public static final String AC_MINE	= "MINE";
 
-	public static final float TIME_TO_MINE = 5;
+	public static final float TIME_TO_MINE = 3f;
 	
 	{
 		image = ItemSpriteSheet.BLOOMING_PICK;
@@ -61,8 +61,8 @@ public class BloomingPick extends MeleeWeapon {
 	
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2*(tier+1)) +     //12 base, down from 30
-				lvl*Math.round((tier-4));  //+3.5 per level, down from +7
+		return  Math.round(4*(tier+1)) +     //24 base, down from 30
+				lvl*Math.round((tier+1));  //+7 per level
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class BloomingPick extends MeleeWeapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		int healAmt = Math.round(damage);
+		int healAmt = Math.round(damage*0.666f);
 		healAmt = Math.min( healAmt, attacker.HT - attacker.HP );
 
 		if (healAmt > 0 && attacker.isAlive()) {
