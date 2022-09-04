@@ -27,6 +27,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -128,10 +129,11 @@ public abstract class ChampionEnemy extends Buff {
 		if (Dungeon.mobsToChampion <= 0) Dungeon.mobsToChampion = 4;
 
 		Dungeon.mobsToChampion--;
+		Class<? extends ChampionEnemy> title = getTitle();
 
-		if (Dungeon.mobsToChampion <= 0){
-			makeChampion(m);
-			if (m instanceof ThreadRipper) makeChampion(m);
+		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
+			makeChampion(m, title);
+			if (m instanceof ThreadRipper) makeChampion(m, title);
 			m.state = m.WANDERING;
 		}
 	}
@@ -159,12 +161,16 @@ public abstract class ChampionEnemy extends Buff {
 		return titleBuff.color;
 	}
 
-	private static void makeChampion(Mob m) {
-		Buff.affect(m, Random.element(championTitles));
+	private static Class<? extends ChampionEnemy> getTitle(){
+		return Random.element(championTitles);
+	}
+
+	private static void makeChampion(Mob m, Class<? extends ChampionEnemy> title) {
+		Buff.affect(m, title);
 	}
 
 	public static void rollForChampionInstantly(Mob m){
-			makeChampion(m);
+			makeChampion(m, getTitle());
 			m.state = m.WANDERING;
 	}
 
