@@ -9,6 +9,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -18,6 +19,7 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.BArray;
 
 import java.util.ArrayList;
 
@@ -33,7 +35,7 @@ public class ExoKnife extends MeleeWeapon{
 
     @Override
     public int min(int lvl) {
-        return 8 + lvl;
+        return 12 + lvl;
     }
 
     public static class RunicMissile extends Item {
@@ -54,11 +56,16 @@ public class ExoKnife extends MeleeWeapon{
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
-        for (int i : PathFinder.NEIGHBOURS8){
-            Char ch = Actor.findChar(defender.pos+i);
-            if (ch != null && ch != attacker && ch.alignment != Char.Alignment.ALLY && ch.isAlive()){
-                ch.damage(damageRoll(attacker), hero);
-                proc(ch, ch, damage);
+        PathFinder.buildDistanceMap( defender.pos, BArray.not( Dungeon.level.solid, null ), 2 );
+        for (int i = 0; i < PathFinder.distance.length; i++) {
+            if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+                Char ch = Actor.findChar(i);
+                if (ch != null && ch != attacker && ch.alignment != Char.Alignment.ALLY && ch.isAlive()){
+                    ch.damage(damageRoll(attacker), hero);
+                    if (enchantment != null)
+                        enchantment.proc(this, attacker, ch, damage);
+                }
+                CellEmitter.get(i).burst(ExoParticle.FACTORY, 5);
             }
         }
         return super.proc(attacker, defender, damage);
@@ -66,8 +73,8 @@ public class ExoKnife extends MeleeWeapon{
 
     @Override
     public int max(int lvl) {
-        return  4*(tier-2) +    //16 base, down from 35
-                lvl*(tier-3);   //scaling changed to +3
+        return  5*(tier-2) +    //20 base, down from 35
+                lvl*(tier-1);   //scaling changed to +5
     }
 
     @Override
