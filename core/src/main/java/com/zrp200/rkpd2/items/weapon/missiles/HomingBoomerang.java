@@ -44,7 +44,7 @@ public class HomingBoomerang extends MissileWeapon {
 		
 		tier = 6;
 		sticky = false;
-		baseUses = 15;
+		baseUses = 10;
 	}
 
 	@Override
@@ -53,11 +53,19 @@ public class HomingBoomerang extends MissileWeapon {
 				(tier-1) * lvl;               //+5, from +6
 	}
 
+	public int hitCounter = 0;
+
+	@Override
+	public int damageRoll(Char owner) {
+		return (int) Math.round(super.damageRoll(owner) * Math.pow(0.8f, hitCounter));
+	}
+
 	@Override
 	protected void rangedHit(Char enemy, int cell) {
 		if (durability > 0){
 			Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
 			int targetPos = Integer.MAX_VALUE-1;
+			hitCounter++;
 			for (Mob m : mobs){
 				if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
 						&& Dungeon.level.distance(cell, m.pos) < Dungeon.level.distance(cell, targetPos) && m != enemy
@@ -65,8 +73,9 @@ public class HomingBoomerang extends MissileWeapon {
 					targetPos = m.pos;
 				}
 			}
-			if (targetPos == Integer.MAX_VALUE-1){
+			if (targetPos == Integer.MAX_VALUE-1 || damageRoll(Dungeon.hero) < 4){
 				targetPos = Dungeon.hero.pos;
+				hitCounter = 0;
 			}
 			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, targetPos, Dungeon.getDepth());
 		}
@@ -80,7 +89,7 @@ public class HomingBoomerang extends MissileWeapon {
 		for (Mob m : mobs){
 			if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
 					&& Dungeon.level.distance(cell, m.pos) < Dungeon.level.distance(cell, targetPos)
-					&& m.alignment == Char.Alignment.ENEMY){
+					&& m.alignment == Char.Alignment.ENEMY && !m.isInvulnerable(getClass())){
 				targetPos = m.pos;
 			}
 		}
@@ -104,9 +113,7 @@ public class HomingBoomerang extends MissileWeapon {
 			this.thrownPos = thrownPos;
 			this.returnPos = returnPos;
 			this.returnDepth = returnDepth;
-			if (returnPos == Dungeon.hero.pos)
-				left = 3;
-			else left = 1;
+			left = 1;
 		}
 		
 		public int returnPos(){
@@ -182,6 +189,20 @@ public class HomingBoomerang extends MissileWeapon {
 			returnPos = bundle.getInt(RETURN_POS);
 			returnDepth = bundle.getInt(RETURN_DEPTH);
 		}
+	}
+
+	public static final String HITCOUNTER = "hitCounter";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(HITCOUNTER, hitCounter);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		hitCounter = bundle.getInt(HITCOUNTER);
 	}
 	
 }
