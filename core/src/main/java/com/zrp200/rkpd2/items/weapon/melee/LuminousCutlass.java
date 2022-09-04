@@ -50,8 +50,8 @@ public class LuminousCutlass extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier+1) +    //16 base, down from 20
-				lvl*(tier+1);   //scaling unchanged
+		return  4*(tier) +    //16 base, down from 20
+				lvl*(tier);   //scaling unchanged
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class LuminousCutlass extends MeleeWeapon {
 					if (enchantment != null) {
 						dmg = enchantment.proc(this, attacker, ch, damage);
 					}
-					ch.damage(Math.round(dmg * 0.95f), this);
+					ch.damage(Math.round(dmg * 0.5f), this);
 				}
 			}
 
