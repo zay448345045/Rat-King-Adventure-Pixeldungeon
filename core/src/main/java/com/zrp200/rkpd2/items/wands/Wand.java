@@ -507,6 +507,13 @@ public abstract class Wand extends Item {
 					}, Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
 					Buff.affect(Dungeon.hero, Barrier.class).setShield(total[0]);
 				}
+			} else {
+				if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && curCharges == getMinCharges() &&
+						(Dungeon.hero.buff(Talent.EnergizingUpgradeCooldown.class) == null &&
+								Dungeon.hero.buff(Talent.EnergizingUpgradeTracker.class) == null)) {
+					Buff.affect(Dungeon.hero, Talent.EnergizingUpgradeTracker.class, 4f);
+					charger.energizeTime = 5;
+				}
 			}
 			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE,Talent.RK_BATTLEMAGE)) {
 				Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
