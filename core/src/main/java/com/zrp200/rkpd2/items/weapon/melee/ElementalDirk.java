@@ -13,8 +13,13 @@ public class ElementalDirk extends AssassinsBlade {
     }
 
     @Override
+    public int max(int lvl) {
+        return  6*(tier+1) +    //36 base, down from 30
+                lvl*(tier+1);   //scaling unchanged
+    }
+
+    @Override
     public int proc(Char attacker, Char defender, int damage) {
-        if (Random.Float() < (buffedLvl()+1f/buffedLvl()+2f)) {
             switch (Random.Int(4)) {
                 case 0:
                     Buff.affect(defender, Burning.class).reignite(defender, 5);
@@ -29,7 +34,6 @@ public class ElementalDirk extends AssassinsBlade {
                     Buff.affect(defender, Poison.class).set(12);
                     break;
             }
-        }
         return super.proc(attacker, defender, damage);
     }
 
