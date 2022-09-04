@@ -21,11 +21,12 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.blobs.Blob;
-import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
+import com.zrp200.rkpd2.actors.blobs.*;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
@@ -42,13 +43,63 @@ public class NuclearHatchet extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  4*(tier-3) +    //12 base, down from 15
-				lvl*(tier-3);   //scaling unchanged
+		return  5*(tier-2) +    //20 base, down from 30
+				lvl*(tier-2);   //scaling unchanged
 	}
 
 	@Override
 	public int warriorAttack(int damage, Char enemy) {
-		GameScene.add( Blob.seed( enemy.pos, 500, CorrosiveGas.class ).setStrength((int) (2 + Dungeon.getDepth() /2.5f)));
+		GameScene.add( Blob.seed( enemy.pos, 700, CorrosiveGas.class ).setStrength((int) (2 + Dungeon.getDepth() /2.5f)));
 		return super.warriorAttack(damage, enemy);
+	}
+
+	public static class Effect extends Buff {
+
+		{
+			type = buffType.POSITIVE;
+		}
+
+		public static final float DURATION	= 50f;
+
+		protected float left;
+
+		private static final String LEFT	= "left";
+
+		@Override
+		public void storeInBundle( Bundle bundle ) {
+			super.storeInBundle( bundle );
+			bundle.put( LEFT, left );
+		}
+
+		@Override
+		public void restoreFromBundle( Bundle bundle ) {
+			super.restoreFromBundle( bundle );
+			left = bundle.getFloat( LEFT );
+		}
+
+		public void set( float duration ) {
+			this.left = duration;
+		}
+
+		@Override
+		public boolean act() {
+			GameScene.add(Blob.seed(target.pos, 75, ToxicGas.class));
+			GameScene.add(Blob.seed(target.pos, 75, ConfusionGas.class));
+			GameScene.add(Blob.seed(target.pos, 17, StenchGas.class));
+
+			spend(TICK);
+			left -= TICK;
+			if (left <= 0){
+				detach();
+			}
+
+			return true;
+		}
+
+		{
+			immunities.add( ToxicGas.class );
+			immunities.add( ConfusionGas.class );
+			immunities.add( StenchGas.class );
+		}
 	}
 }
