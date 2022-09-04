@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.items.spells;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -32,6 +33,7 @@ public class KromerScroll extends Spell{
 
     @Override
     protected void onCast(Hero hero) {
+        Warp.inflict(150, 20f);
         for (int i = 0; i < Dungeon.level.length(); i++){
             if (Dungeon.level.passable[i] && !Dungeon.level.heroFOV[i]){
                 boolean doors = false;

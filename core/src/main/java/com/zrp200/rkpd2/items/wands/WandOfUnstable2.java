@@ -4,6 +4,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
@@ -75,6 +76,7 @@ public class WandOfUnstable2 extends Wand {
                 wand.level(level()*3);
                 wand.fx(bolt, callback);
             }
+            Warp.inflict(10, 3);
         }
     }
 

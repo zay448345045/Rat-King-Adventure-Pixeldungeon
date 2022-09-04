@@ -6,10 +6,10 @@ import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.quest.Kromer;
-import com.zrp200.rkpd2.items.weapon.melee.KromerStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -260,7 +260,7 @@ public class Slingshot extends Weapon {
 
         @Override
         public int proc(Char attacker, Char defender, int damage) {
-            new KromerStaff().kromerProc(attacker, defender);
+            Warp.inflict(12, 4);
 
             if (slingshot != null) return slingshot.proc(attacker, defender, damage);
             else return damage;

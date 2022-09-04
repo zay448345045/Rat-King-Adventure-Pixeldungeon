@@ -1,8 +1,8 @@
 package com.zrp200.rkpd2.items.artifacts;
 
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -98,28 +98,7 @@ public class KromerCloak extends CloakOfShadows {
 
             if (turnsToCost <= 0){
                 charge--;
-                switch (Random.Int(10)){
-                    case 0: default:
-                        Buff.prolong(target, TimedShrink.class, stealthDuration()*1.5f); break;
-                    case 1:
-                        Buff.prolong(target, Blindness.class, stealthDuration()*1.5f); break;
-                    case 2:
-                        Buff.prolong(target, Adrenaline.class, stealthDuration()*0.8f); break;
-                    case 3:
-                        Buff.prolong(target, Vertigo.class, stealthDuration()*1.5f); break;
-                    case 4:
-                        Buff.prolong(target, Scam.class, stealthDuration()*1.5f); break;
-                    case 5:
-                        Buff.prolong(target, Roots.class, stealthDuration()*1.5f); break;
-                    case 6:
-                        Buff.prolong(target, MagicImmune.class, stealthDuration()*1.5f); break;
-                    case 7:
-                        Buff.prolong(target, Slow.class, stealthDuration()*1.5f); break;
-                    case 8:
-                        Buff.affect(target, Drowsy.class); break;
-                    case 9:
-                        Buff.affect(target, Ooze.class); break;
-                }
+                Warp.inflict(2, 1.5f);
                 if (charge < 0) {
                     charge = 0;
                     detach();

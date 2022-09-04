@@ -5,6 +5,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -95,6 +96,7 @@ public class Kromer extends Item {
                     Enchanting.show(Dungeon.hero, Kromer.this);
                     GLog.p(Messages.get(Kromer.class, "new_talent"));
                     detach(Dungeon.hero.belongings.backpack);
+                    Warp.inflict(50, 5f);
                 }
             });
         } else if (action.equals(AC_FOCUS)){
@@ -121,6 +123,7 @@ public class Kromer extends Item {
         public void shoot() {
             Ballistica shot = new Ballistica(Dungeon.hero.pos, t, Ballistica.PROJECTILE);
             Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
+            Warp.inflict(10, 0.75f);
             Dungeon.hero.HP = Math.min(Dungeon.hero.HT, Dungeon.hero.HP + 2);
             curUser.busy();
             curUser.spendAndNext(1f);
@@ -156,6 +159,7 @@ public class Kromer extends Item {
             new Wrath().activate(armor, Dungeon.hero, cell);
             new MusRexIra().activate(armor, Dungeon.hero, cell);
             new Ratmogrify().activate(armor, Dungeon.hero, cell);
+            Warp.inflict(100, 1f);
         }), -1);
     }
 

@@ -1,10 +1,9 @@
 package com.zrp200.rkpd2.items.weapon;
 
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.RingOfSharpshooting;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -61,22 +60,7 @@ public class KromerBow extends SpiritBow {
 
         @Override
         public int proc(Char attacker, Char defender, int damage) {
-            switch (Random.Int(7)){
-                case 0: default:
-                    Buff.prolong(attacker, TimedShrink.class, 2f); break;
-                case 1:
-                    Buff.prolong(attacker, Blindness.class, 2f); break;
-                case 2:
-                    Buff.prolong(attacker, Adrenaline.class, 1f); break;
-                case 3:
-                    Buff.prolong(attacker, Vertigo.class, 2f); break;
-                case 4:
-                    Buff.prolong(attacker, Scam.class, 2f); break;
-                case 5:
-                    Buff.prolong(attacker, Roots.class, 2f); break;
-                case 6:
-                    Buff.prolong(attacker, MagicImmune.class, 2f); break;
-            }
+            Warp.inflict(2, 5);
             return super.proc(attacker, defender, damage);
         }
     }

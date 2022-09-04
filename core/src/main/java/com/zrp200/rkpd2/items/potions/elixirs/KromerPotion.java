@@ -2,6 +2,7 @@ package com.zrp200.rkpd2.items.potions.elixirs;
 
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.potions.PotionOfStrength;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -19,6 +20,7 @@ public class KromerPotion extends Elixir{
 
     @Override
     public void apply(Hero hero) {
+        Warp.inflict(75, 3f);
         hero.STR += 5;
         Buff.affect(hero, Effect.class);
         hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "msg_1") );

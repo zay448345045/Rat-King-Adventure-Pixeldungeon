@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.items.potions.elixirs;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.NoDeath;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -17,6 +18,7 @@ public class DoNotDieElixir extends Elixir{
 
     @Override
     public void apply(Hero hero) {
+        Warp.inflict(50, 3f);
         Buff.prolong(hero, NoDeath.class, 20f);
     }
 

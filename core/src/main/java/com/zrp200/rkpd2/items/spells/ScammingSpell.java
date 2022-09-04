@@ -5,6 +5,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Scam;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.quest.Kromer;
@@ -21,6 +22,7 @@ public class ScammingSpell extends Spell{
 
     @Override
     protected void onCast(Hero hero) {
+        Warp.inflict(50, 3f);
         Buff.prolong(hero, Scam.class, 21f);
         hero.sprite.operate(hero.pos);
         Sample.INSTANCE.play(Assets.Sounds.CURSED, 1f, 0.3f);

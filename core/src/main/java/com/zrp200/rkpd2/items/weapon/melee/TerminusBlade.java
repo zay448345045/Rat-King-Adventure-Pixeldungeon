@@ -6,10 +6,7 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.GodSlayerBurning;
-import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
-import com.zrp200.rkpd2.actors.buffs.Scam;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
@@ -60,6 +57,7 @@ public class TerminusBlade extends MeleeWeapon {
 
     @Override
     public int proc(Char attacker, Char defender, int damage) {
+        Warp.inflict(4, 2f);
         defender.sprite.emitter().burst(ElmoParticle.FACTORY, 30);
         Camera.main.shake(2f, 0.175f);
         Buff.affect(defender, GodSlayerBurning.class).reignite(defender, 4f);

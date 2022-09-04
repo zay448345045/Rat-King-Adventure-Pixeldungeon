@@ -34,7 +34,6 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
@@ -208,7 +207,7 @@ public abstract class Wand extends Item {
 			if(staff != null) {
 				if (Random.Int(isStaff ? 20 : 10) < sorcery) staff.procBM();
 				if (Random.Int(isStaff ? 12 :  6) < sorcery) staff.procWand(target, damage);
-				if (staff instanceof KromerStaff) ((KromerStaff) staff).kromerProc(Dungeon.hero, target);
+				if (staff instanceof KromerStaff) ((KromerStaff) staff).kromerProc();
 			}
 		}
 		if (Dungeon.hero.hasTalent(Talent.POWER_IN_NUMBERS)){

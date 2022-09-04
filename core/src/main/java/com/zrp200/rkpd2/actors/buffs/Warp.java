@@ -94,9 +94,15 @@ public class Warp extends Buff {
 
     public static Warp inflict(float stacks, float decay){
         Warp effect = Buff.affect(Dungeon.hero, Warp.class);
-        effect.setStacks(stacks);
+        if (effect.stacks > 0) {
+            effect.setStacks(effect.stacks + stacks);
+            if (effect.cooldown() <= 0)
+                effect.postpone(WarpPile.DECAY_DELAY / 2);
+        } else {
+            effect.setStacks(stacks);
+            effect.postpone(WarpPile.DECAY_DELAY);
+        }
         effect.setDecay(decay);
-        effect.postpone(WarpPile.DECAY_DELAY);
         effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
         return effect;
     }
