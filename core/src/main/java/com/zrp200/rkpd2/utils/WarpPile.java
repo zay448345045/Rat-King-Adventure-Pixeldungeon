@@ -9,16 +9,21 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.blobs.Regrowth;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.levels.traps.CursingTrap;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -156,6 +161,7 @@ public class WarpPile {
         uncommonEffects.put(new SpawnEffect(), 8f);
         uncommonEffects.put(new VisionEffect(), 8f);
         uncommonEffects.put(new HungerEffect(), 6f);
+        uncommonEffects.put(new EmpoweredDegradeEffect(), 5f);
         uncommonEffects.put(new RetributionEffect(), 4f);
         uncommonEffects.put(new WarpClearEffect(), 2f);
     }
@@ -226,6 +232,13 @@ public class WarpPile {
         }
     }
 
+    public static class EmpoweredDegradeEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong( target, PowerfulDegrade.class, 8 + warpAmount / 11 );
+        }
+    }
+
     public static class WarpClearEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
@@ -238,7 +251,10 @@ public class WarpPile {
     public static int RARE_THRESHOLD = 100;
     public static HashMap<WarpEffect, Float> rareEffects = new HashMap<>();
     static {
+        rareEffects.put(new CursingEffect(), 12f);
         rareEffects.put(new SummonEffect(), 10f);
+        rareEffects.put(new CrazyBanditEffect(), 9f);
+        rareEffects.put(new RechargeEffect(), 4f);
         rareEffects.put(new EmpoweredSpawnEffect(), 6f);
         rareEffects.put(new WarpingEffect(), 4f);
     }
@@ -386,6 +402,39 @@ public class WarpPile {
         public void doEffect(Hero target, float warpAmount) {
             for (int i = 0; i < Dungeon.level.mobLimit(); i++)
                 Dungeon.level.spawnMob(7);
+        }
+    }
+
+    public static class CursingEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            CursingTrap.curse( (Hero) target );
+        }
+    }
+
+    public static class CrazyBanditEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Buff.prolong( target, Blindness.class, 10 + warpAmount / 8 );
+            Buff.affect( target, Poison.class ).set(7 + warpAmount / 11 );
+            Buff.prolong( target, Cripple.class, 10 + warpAmount / 8);
+        }
+    }
+
+    public static class RechargeEffect implements WarpEffect {
+        @Override
+        public void doEffect(Hero target, float warpAmount) {
+            Sample.INSTANCE.play( Assets.Sounds.LIGHTNING );
+            PathFinder.buildDistanceMap( target.pos, BArray.not( Dungeon.level.solid, null ), 3 );
+            for (int i = 0; i < PathFinder.distance.length; i++) {
+                if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+                    GameScene.add(Blob.seed(i, 30 + Dungeon.hero.pointsInTalent(Talent.FARADAY_CAGE)*2, Electricity.class));
+                }
+            }
+            Buff.prolong(target, Recharging.class, Recharging.DURATION);
+            Buff.affect(target, ArtifactRecharge.class).set(ArtifactRecharge.DURATION);
+            ScrollOfRecharging.charge(target);
+            SpellSprite.show(target, SpellSprite.CHARGE);
         }
     }
 
