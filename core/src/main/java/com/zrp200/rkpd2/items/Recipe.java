@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
@@ -39,6 +40,7 @@ import com.zrp200.rkpd2.items.potions.brews.InfernalBrew;
 import com.zrp200.rkpd2.items.potions.brews.ShockingBrew;
 import com.zrp200.rkpd2.items.potions.elixirs.*;
 import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.spells.*;
@@ -353,12 +355,12 @@ public abstract class Recipe {
 	public static boolean usableInRecipe(Item item){
 		if (item instanceof EquipableItem){
 			//only thrown weapons and wands allowed among equipment items
-			return item.isIdentified() && !item.cursed && item instanceof MissileWeapon;
+			return item.isIdentified() && !item.cursed && (item instanceof MissileWeapon || !item.isEquipped(Dungeon.hero));
 		} else if (item instanceof Wand) {
 			return item.isIdentified() && !item.cursed;
 		} else {
 			//other items can be unidentified, but not cursed
-			return !item.cursed;
+			return !item.cursed || item instanceof Kromer;
 		}
 	}
 }
