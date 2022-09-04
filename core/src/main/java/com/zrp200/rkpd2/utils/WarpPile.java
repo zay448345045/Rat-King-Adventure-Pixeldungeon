@@ -163,8 +163,8 @@ public class WarpPile {
     public static class ColdEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            Buff.prolong(target, Frost.class, 9 + warpAmount / 8);
-            Buff.prolong(target, Chill.class, 12 + warpAmount / 6);
+            Buff.prolong(target, Frost.class, 5 + warpAmount / 9);
+            Buff.prolong(target, Chill.class, 8 + warpAmount / 7);
         }
     }
 
