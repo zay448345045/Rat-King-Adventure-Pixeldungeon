@@ -207,7 +207,7 @@ public class WarpPile {
     public static class RetributionEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            float hpPercent = (MAX_WARP - warpAmount)/(float)(MAX_WARP);
+            float hpPercent = (MAX_WARP - warpAmount)/ MAX_WARP;
             float power = Math.min( 4f, 4.45f*hpPercent);
 
             Sample.INSTANCE.play( Assets.Sounds.BLAST );
