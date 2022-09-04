@@ -50,12 +50,12 @@ public class ConstructWand extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return 4*(tier+1) + (tier)*lvl;
+        return Math.round(4.5f*(tier+1) + (tier)*lvl);
     }
 
     @Override
     public String statsInfo() {
-        return Messages.get(this, "stats_desc", 5 + Dungeon.getDepth() * 2);
+        return Messages.get(this, "stats_desc", 7 + Dungeon.getDepth() * 3);
     }
 
     @Override
@@ -111,13 +111,13 @@ public class ConstructWand extends MeleeWeapon {
         }
 
         public GuardianKnight() {
-            HP = HT = 5 + Dungeon.getDepth() *2;
+            HP = HT = 7 + Dungeon.getDepth() *3;
             defenseSkill = Dungeon.getDepth();
         }
 
         @Override
         public int damageRoll() {
-            return super.damageRoll()/2;
+            return Math.round(super.damageRoll()*0.67f);
         }
 
         @Override
