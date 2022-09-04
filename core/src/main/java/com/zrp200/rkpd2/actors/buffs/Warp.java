@@ -1,6 +1,5 @@
 package com.zrp200.rkpd2.actors.buffs;
 
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
@@ -36,13 +35,6 @@ public class Warp extends Buff {
     @Override
     public String iconTextDisplay() {
         return Integer.toString(Math.round(getStacks() * getDecay()));
-    }
-
-    @Override
-    public void tintIcon(Image icon) {
-        if (cooldown() > 0){
-            icon.tint(0x808080);
-        }
     }
 
     @Override
