@@ -50,7 +50,7 @@ public class TerminusBlade extends MeleeWeapon {
     @Override
     public String status() {
         if (isEquipped(Dungeon.hero)) {
-            return hitCount * 2 + "%";
+            return hitCount * 3 + "%";
         }
         return super.status();
     }
@@ -69,7 +69,7 @@ public class TerminusBlade extends MeleeWeapon {
     }
 
     public void instaKill(Char enemy) {
-        if (++hitCount >= 50){
+        if (++hitCount >= 34){
             if (enemy instanceof RatKingBoss) {
                 Dungeon.hero.sprite.showStatus(CharSprite.NEGATIVE, String.valueOf(Dungeon.hero.HP - 1));
                 Dungeon.hero.HP = 1;
