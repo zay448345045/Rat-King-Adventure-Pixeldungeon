@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.effects.particles.RunicParticle;
@@ -114,10 +115,10 @@ public class RunicBladeMkII extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        int i = 5 * (tier-2) +                    //16 base, down from 25
-                Math.round(lvl * (tier-1)); //+6 per level, up from +5
-        if (!charged) i = 5 * (tier-1) +
-                Math.round(lvl * (tier));
+        int i = 6 * (tier-2) +                    //24 base, down from 30
+                Math.round(lvl * (tier)); //+6 per level, up from +7
+        if (!charged) i = 6 * (tier) + //36
+                Math.round(lvl * (tier+2)); //+8
         return i;
     }
 
@@ -210,6 +211,7 @@ public class RunicBladeMkII extends MeleeWeapon {
                                                         enemy.damage(dmg, curBlade);
                                                         if (curUser.isSubclassed(HeroSubClass.GLADIATOR)) Buff.affect( curUser, Combo.class ).hit( enemy );
                                                         curBlade.proc(curUser, enemy, dmg);
+                                                        Buff.affect(enemy, Talent.AntiMagicBuff.class, 6f);
                                                         Sample.INSTANCE.play(Assets.Sounds.HIT_MAGIC);
                                                     } else {
                                                         enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
@@ -229,7 +231,7 @@ public class RunicBladeMkII extends MeleeWeapon {
                                                     Dungeon.quickslot.setSlot( slot, curBlade );
                                                     updateQuickslot();
                                                 }
-                                                Buff.affect(curUser, RunicCooldown.class, 20*curBlade.delayFactor(curUser));
+                                                Buff.affect(curUser, RunicCooldown.class, 15*curBlade.delayFactor(curUser));
                                                 curUser.spendAndNext(curBlade.delayFactor(curUser));
                                             }
                                         });
@@ -384,12 +386,7 @@ public class RunicBladeMkII extends MeleeWeapon {
         //reapply runic's recharge to half it
         RunicCooldown cooldown = Dungeon.hero.buff(RunicCooldown.class);
         if (cooldown != null){
-            float cooldownNum = cooldown.cooldown();
-            //de hacquie: to not cause any effects, use detach from Buff.java
-            if (cooldown.target.sprite != null) cooldown.fx( false );
-            cooldown.target.remove( cooldown );
-            cooldownNum = Math.min(0, cooldownNum - 20*baseDelay(Dungeon.hero));
-            Buff.affect(curUser, RunicCooldown.class, cooldownNum);
+            cooldown.detach();
         }
         return super.warriorAttack(damage, enemy);
     }
