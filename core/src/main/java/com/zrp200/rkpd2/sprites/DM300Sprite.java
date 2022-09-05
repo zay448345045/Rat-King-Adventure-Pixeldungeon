@@ -21,17 +21,18 @@
 
 package com.zrp200.rkpd2.sprites;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.mobs.DM300;
-import com.zrp200.rkpd2.effects.MagicMissile;
-import com.zrp200.rkpd2.effects.particles.BlastParticle;
-import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Callback;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.WarpedEnemy;
+import com.zrp200.rkpd2.actors.mobs.DM300;
+import com.zrp200.rkpd2.effects.MagicMissile;
+import com.zrp200.rkpd2.effects.particles.BlastParticle;
+import com.zrp200.rkpd2.effects.particles.SparkParticle;
 
 public class DM300Sprite extends MobSprite {
 
@@ -87,8 +88,10 @@ public class DM300Sprite extends MobSprite {
 		turnTo( ch.pos , cell );
 		play( zap );
 
+		int type = ch.buff(WarpedEnemy.BossEffect.class) != null ? MagicMissile.CORROSION_CONE : MagicMissile.TOXIC_VENT;
+
 		MagicMissile.boltFromChar( parent,
-				MagicMissile.TOXIC_VENT,
+				type,
 				this,
 				cell,
 				new Callback() {

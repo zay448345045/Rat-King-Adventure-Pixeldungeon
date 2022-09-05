@@ -25,19 +25,17 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.*;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.ConfusionGas;
 import com.zrp200.rkpd2.actors.blobs.Inferno;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.EarthParticle;
@@ -47,8 +45,8 @@ import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.quest.MetalShard;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
-import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.CavesBossLevel;
+import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
@@ -58,15 +56,8 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.DM300Sprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
+import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -383,6 +374,9 @@ public class DM300 extends Mob {
 
 		int gasVented = 0;
 		Class<? extends Blob> usedGas = ToxicGas.class;
+		if (buff(WarpedEnemy.BossEffect.class) != null){
+			usedGas = ConfusionGas.class;
+		}
 		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
 			usedGas = Inferno.class;
 		}
@@ -395,16 +389,19 @@ public class DM300 extends Mob {
 		}
 
 		for (int i : trajectory.subPath(0, trajectory.dist)){
-			GameScene.add(Blob.seed(i, 20*gasMulti, usedGas));
+			Blob blob = Blob.seed(i, 20*gasMulti, usedGas);
+			GameScene.add(blob);
 			gasVented += 20*gasMulti;
 		}
 
-		GameScene.add(Blob.seed(trajectory.collisionPos, 100*gasMulti, usedGas));
+		Blob blob = Blob.seed(trajectory.collisionPos, 100*gasMulti, usedGas);
+		GameScene.add(blob);
 
 		if (gasVented < 250*gasMulti){
 			int toVentAround = (int)Math.ceil(((250*gasMulti) - gasVented)/8f);
 			for (int i : PathFinder.NEIGHBOURS8){
-				GameScene.add(Blob.seed(pos+i, toVentAround, usedGas));
+				blob = Blob.seed(pos+i, toVentAround, usedGas);
+				GameScene.add(blob);
 			}
 
 		}
@@ -477,6 +474,25 @@ public class DM300 extends Mob {
 		if (dmgTaken > 0) {
 			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
 			if (lock != null && !isImmune(src.getClass())) lock.addTime(dmgTaken*1.5f);
+		}
+
+		if (buff(WarpedEnemy.BossEffect.class) != null){
+			Sample.INSTANCE.play( Assets.Sounds.ROCKS );
+			Camera.main.shake( 2, 0.7f );
+			MagicMissile.arrangeBlast(pos, sprite, MagicMissile.FORCE_CONE, 2f);
+			PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
+			for (int i = 0; i < PathFinder.distance.length; i++) {
+				if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+					Char ch = Actor.findChar(i);
+					if (ch != null && !(ch instanceof DM300)){
+						ch.damage(damageRoll()/3, this);
+						Buff.affect(ch, Vulnerable.class, 5f);
+						if (ch == Dungeon.hero){
+							Statistics.bossScores[2] -= 100;
+						}
+					}
+				}
+			}
 		}
 
 		int threshold;
@@ -596,6 +612,22 @@ public class DM300 extends Mob {
 				if (Actor.findChar(pos+i) == null &&
 						Dungeon.level.trueDistance(bestpos, target) > Dungeon.level.trueDistance(pos+i, target)){
 					bestpos = pos+i;
+				}
+			}
+			if (buff(WarpedEnemy.BossEffect.class) != null){
+				MagicMissile.arrangeBlast(pos, sprite, MagicMissile.MAGIC_MISS_CONE, 3f);
+				PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 3 );
+				for (int i = 0; i < PathFinder.distance.length; i++) {
+					if (PathFinder.distance[i] < Integer.MAX_VALUE) {
+						Char ch = Actor.findChar(i);
+						if (ch != null && !(ch instanceof DM300)){
+							ch.damage(damageRoll()/3, this);
+							Buff.affect(ch, Vertigo.class, 4f);
+							if (ch == Dungeon.hero){
+								Statistics.bossScores[2] -= 100;
+							}
+						}
+					}
 				}
 			}
 			if (bestpos != pos){

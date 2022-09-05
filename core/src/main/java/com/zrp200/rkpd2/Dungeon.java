@@ -213,6 +213,7 @@ public class Dungeon {
 		Toolbar.swappedQuickslots = false;
 
 		depth = 1;
+		depth = 15;
 		branch = 0;
 
 		gold = 0;

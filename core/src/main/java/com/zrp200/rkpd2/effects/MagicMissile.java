@@ -30,8 +30,12 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.effects.particles.*;
+import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.mechanics.ConeAOE;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 
 public class MagicMissile extends Emitter {
@@ -302,6 +306,31 @@ public class MagicMissile extends Emitter {
 			missile.reset(type, sprite, to, callback);
 		}
 		return missile;
+	}
+
+	public static ConeAOE arrangeBlast(int pos, CharSprite sprite, int type){
+		return arrangeBlast(pos, sprite, type, 1.5f);
+	}
+
+	public static ConeAOE arrangeBlast(int pos, CharSprite sprite, int type, float range) {
+		Ballistica aim;
+		if (pos % Dungeon.level.width() > 10){
+			aim = new Ballistica(pos, pos - 1, Ballistica.WONT_STOP);
+		} else {
+			aim = new Ballistica(pos, pos + 1, Ballistica.WONT_STOP);
+		}
+		ConeAOE aoe = new ConeAOE(aim, range, 360, Ballistica.PROJECTILE);
+		if (sprite.visible) {
+			for (Ballistica ray : aoe.rays) {
+				((MagicMissile) sprite.parent.recycle(MagicMissile.class)).reset(
+						type,
+						sprite,
+						ray.path.get(ray.dist),
+						null
+				);
+			}
+		}
+		return aoe;
 	}
 
 
