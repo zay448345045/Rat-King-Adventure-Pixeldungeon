@@ -24,8 +24,8 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -33,7 +33,6 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.*;
-import com.zrp200.rkpd2.actors.buffs.Frost;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -72,6 +71,8 @@ public abstract class YogFist extends Mob {
 
 	protected void incrementRangedCooldown(){
 		rangedCooldown += Random.NormalFloat(8, 12);
+		if (Actor.findChar(Dungeon.level.exit() + 3*Dungeon.level.width()).buff(WarpedEnemy.BossEffect.class) != null)
+			rangedCooldown /= 3;
 	}
 
 	@Override
