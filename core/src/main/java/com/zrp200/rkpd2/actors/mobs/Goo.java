@@ -31,15 +31,14 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
-import com.zrp200.rkpd2.actors.buffs.Ooze;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.keys.SkeletonKey;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
 import com.zrp200.rkpd2.items.quest.GooBlob;
+import com.zrp200.rkpd2.levels.traps.OozeTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -63,6 +62,8 @@ public class Goo extends Mob {
 
 	private int pumpedUp = 0;
 	private int healInc = 1;
+	private boolean canZap;
+	private int zapCD = 2;
 
 	@Override
 	public int damageRoll() {
@@ -106,6 +107,11 @@ public class Goo extends Mob {
 	@Override
 	public boolean act() {
 
+		if (buff(WarpedEnemy.BossEffect.class) != null){
+			canZap = true;
+			if (zapCD > 0) zapCD--;
+		}
+
 		if (Dungeon.level.water[pos] && HP < HT) {
 			HP += healInc;
 			Statistics.bossScores[0] -= 10;
@@ -138,7 +144,9 @@ public class Goo extends Mob {
 
 	@Override
 	public boolean canAttack( Char enemy ) {
-		if (pumpedUp > 0){
+		if (canZap && zapCD == 0){
+			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+		} else if (pumpedUp > 0){
 			//we check both from and to in this case as projectile logic isn't always symmetrical.
 			//this helps trim out BS edge-cases
 			return Dungeon.level.distance(enemy.pos, pos) <= 2
@@ -164,6 +172,38 @@ public class Goo extends Mob {
 		return damage;
 	}
 
+	public static class DarkBolt{}
+
+	protected void zap() {
+		spend( 1f );
+
+		if (hit( this, enemy, 3 )) {
+			new OozeTrap().set(enemy.pos).activate();
+
+			int dmg = damageRoll()*2;
+			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
+			ChampionEnemy.AntiMagic.effect(enemy, this);
+			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
+			enemy.damage( dmg, new DarkBolt() );
+			pumpedUp++;
+			Statistics.qualifiedForBossChallengeBadge = false;
+			Statistics.bossScores[0] -= 100;
+
+			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Badges.validateDeathFromEnemyMagic();
+				Dungeon.fail( getClass() );
+				GLog.n( Messages.get(this, "bolt_kill") );
+			}
+		} else {
+			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+		}
+	}
+
+	public void onZapComplete() {
+		zap();
+		next();
+	}
+
 	@Override
 	public int defenseProc(Char enemy, int damage) {
 		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
@@ -187,7 +227,17 @@ public class Goo extends Mob {
 
 	@Override
 	protected boolean doAttack( Char enemy ) {
-		if (pumpedUp == 1) {
+		if (canZap && zapCD == 0){
+			canZap = false;
+			zapCD = 6;
+			if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+				sprite.zap( enemy.pos );
+				return false;
+			} else {
+				zap();
+				return true;
+			}
+		} else if (pumpedUp == 1) {
 			pumpedUp++;
 			((GooSprite)sprite).pumpUp( pumpedUp );
 

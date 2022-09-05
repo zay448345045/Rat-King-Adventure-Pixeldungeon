@@ -26,12 +26,15 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.Emitter.Factory;
 import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.mobs.Goo;
 import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 
@@ -66,6 +69,8 @@ public class GooSprite extends MobSprite {
 
 		attack = new Animation( 10, false );
 		attack.frames( frames, 8, 9, 10 );
+
+		zap = attack.clone();
 		
 		die = new Animation( 10, false );
 		die.frames( frames, 5, 6, 7 );
@@ -145,6 +150,24 @@ public class GooSprite extends MobSprite {
 		spray.visible = visible;
 	}
 
+	public void zap( int cell ) {
+
+		turnTo( ch.pos , cell );
+		play( zap );
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.SHADOW_CONE,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Goo)ch).onZapComplete();
+					}
+				} );
+		Sample.INSTANCE.play( Assets.Sounds.ZAP );
+	}
+
 	public static class GooParticle extends PixelParticle.Shrinking {
 
 		public static final Emitter.Factory FACTORY = new Factory() {
@@ -195,6 +218,8 @@ public class GooSprite extends MobSprite {
 			ch.onAttackComplete();
 		} else if (anim == die) {
 			spray.killAndErase();
+		} else if (anim == zap) {
+			idle();
 		}
 	}
 }
