@@ -402,8 +402,12 @@ public class RatKingBoss extends Mob {
             super.detach();
             ((RatKingBoss)target).changePhase();
             Sample.INSTANCE.play(Assets.Sounds.CHALLENGE, 2f, 0.85f);
+            int duration = (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20) / (((RatKingBoss) target).phase3() ? 2 : 1);
+            if (target.buff(WarpedEnemy.BossEffect.class) != null){
+                duration *= Random.Float(0.25f, 0.9f);
+            }
             Buff.affect(target, PhaseTracker.class,
-                    (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 35 : 20) / (((RatKingBoss) target).phase3() ? 2 : 1));
+                    duration);
             for (Heap heap : Dungeon.level.heaps.valueList()){
                 for (Item i :heap.items){
                     if (i instanceof Tengu.ShockerAbility.ShockerItem){
@@ -431,6 +435,7 @@ public class RatKingBoss extends Mob {
     @Override
     public void spend(float time) {
         if (buff(Vertigo.class) != null) time *= 0.333f;
+        if (buff(WarpedEnemy.BossEffect.class) != null) time *= Random.Float(0.33f, 1.25f);
         super.spend(time);
     }
 
