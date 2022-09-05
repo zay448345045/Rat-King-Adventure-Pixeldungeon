@@ -488,7 +488,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 						for (Mob m : mobs) {
 							if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
 									&& Dungeon.level.trueDistance(cell, m.pos) <= Dungeon.level.trueDistance(cell, targetPos) && m != enemy
-									&& m.alignment == Char.Alignment.ENEMY) {
+									&& m.alignment == Char.Alignment.ENEMY && !m.isInvulnerable(getClass())) {
 								targetPos = m.pos;
 								desiredMob = m;
 							}
