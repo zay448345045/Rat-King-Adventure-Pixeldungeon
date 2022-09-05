@@ -75,7 +75,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected float shadowOffset    = 0.25f;
 
 	public enum State {
-		BURNING, GODBURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED, HEARTS
+		BURNING, GODBURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, SHIELDED, FROSTBURNING, SPIRIT, SHRUNK, ALLURED, ENLARGENED, AURA, SWORDS, STONED, HEARTS, WARPED
 	}
 	private int stunStates = 0;
 
@@ -108,6 +108,7 @@ protected void copyAnimations(CharSprite other) {
 	protected Emitter frostburning;
 	protected Emitter spirit;
 	protected Emitter allured;
+	protected Emitter warped;
 	public Emitter swords;
 
 	protected IceBlock iceBlock;
@@ -470,6 +471,10 @@ protected void copyAnimations(CharSprite other) {
 				hearts = emitter();
 				hearts.pour(Speck.factory(Speck.HEART), 0.5f);
 				break;
+			case WARPED:
+				warped = emitter();
+				warped.pour(Speck.factory(Speck.WARPCLOUD), 0.35f);
+				break;
 		}
 	}
 
@@ -479,6 +484,12 @@ protected void copyAnimations(CharSprite other) {
 				if (burning != null) {
 					burning.on = false;
 					burning = null;
+				}
+				break;
+			case WARPED:
+				if (warped != null) {
+					warped.on = false;
+					warped = null;
 				}
 				break;
 			case GODBURNING:
@@ -626,6 +637,9 @@ protected void copyAnimations(CharSprite other) {
 
 		if (burning != null) {
 			burning.visible = visible;
+		}
+		if (warped != null) {
+			warped.visible = visible;
 		}
 		if (spirit != null) {
 			spirit.visible = visible;

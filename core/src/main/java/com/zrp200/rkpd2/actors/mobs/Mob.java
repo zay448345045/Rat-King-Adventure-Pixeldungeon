@@ -457,7 +457,15 @@ public abstract class Mob extends Char {
 
 		int step = -1;
 
-		if (Dungeon.level.adjacent( pos, target )) {
+		if (buff(WarpedEnemy.class) != null){
+			path = Dungeon.findPath( this, target,
+					Dungeon.level.passable,
+					fieldOfView, true );
+			if (path != null)
+				step = path.removeFirst();
+			else
+				return false;
+		} else if (Dungeon.level.adjacent( pos, target )) {
 
 			path = null;
 
@@ -674,6 +682,17 @@ public abstract class Mob extends Char {
 
 		if (buff(ChampionEnemy.Reflective.class) != null){
 			enemy.damage((int) (damage*0.5f), this);
+		}
+		if (buff(WarpedEnemy.class) != null){
+			for (int i : PathFinder.NEIGHBOURS8){
+				int pos = this.pos + i;
+				CellEmitter.center(pos).burst(Speck.factory(Speck.WARPCLOUD), 10);
+				Char ch = Actor.findChar(pos);
+				if (ch != null){
+					ch.damage(HT / 5, new Warp());
+					Buff.affect(ch, Degrade.class, 15);
+				}
+			}
 		}
 
 		return damage;

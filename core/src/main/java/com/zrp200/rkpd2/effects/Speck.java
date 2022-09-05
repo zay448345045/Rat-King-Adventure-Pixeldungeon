@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Assets;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.TextureFilm;
@@ -30,6 +29,8 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.watabou.utils.SparseArray;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.utils.WarpPile;
 
 public class Speck extends Image {
 
@@ -68,6 +69,7 @@ public class Speck extends Image {
 	public static final int STORM       = 117;
 	public static final int INFERNO     = 118;
 	public static final int BLIZZARD    = 119;
+	public static final int WARPCLOUD   = 120;
 	
 	private static final int SIZE = 7;
 	
@@ -135,6 +137,7 @@ public class Speck extends Image {
 		case SMOKE:
 		case BLIZZARD:
 		case INFERNO:
+		case WARPCLOUD:
 			frame( film.get( STEAM ) );
 			break;
 		case CALM:
@@ -355,6 +358,12 @@ public class Speck extends Image {
 			angularSpeed = Random.Float( 200, 300 ) * (Random.Int(2) == 0 ? -1 : 1);
 			angle = Random.Float( 360 );
 			lifespan = Random.Float( 1f, 3f );
+			break;
+		case WARPCLOUD:
+			hardlight(WarpPile.COLOR);
+			angularSpeed = Random.Float( 150, 350 ) * (Random.Int(2) == 0 ? -1 : 1);
+			angle = Random.Float( 360 );
+			lifespan = Random.Float( 1f, 2f );
 			break;
 			
 		case SMOKE:

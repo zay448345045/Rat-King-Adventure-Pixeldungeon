@@ -678,6 +678,9 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		for (ChampionEnemy buff : buffs(ChampionEnemy.class)){
 			buff.onAttackProc( enemy );
 		}
+		if (buff(WarpedEnemy.class) != null){
+			Buff.affect(enemy, Weakness.class, 15);
+		}
 
 		if(alignment == Alignment.ALLY && hero.hasTalent(Talent.WARLOCKS_TOUCH)) {
 			// warlock+allies can soul mark by simply attacking via warlock's touch.
@@ -791,6 +794,9 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 			if (alignment != Alignment.ALLY && this.buff(DeathMark.DeathMarkTracker.class) != null) {
 				dmg *= DeathMark.damageMultiplier();
 			}
+			if (this.buff(WarpedEnemy.class) != null){
+				dmg *= 0.67f;
+			}
 
 
 			Class<?> srcClass = src.getClass();
@@ -869,7 +875,13 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		if (HP < 0 && buff(NoDeath.class) == null) HP = 0;
 
 		if (!isAlive()) {
-			die( src );
+			if (buff(WarpedEnemy.class) != null && Random.Int(3) == 0){
+				ScrollOfTeleportation.teleportChar(this);
+				HT /= 2;
+				HP = HT;
+			} else {
+				die(src);
+			}
 		} else if (HP == 0 && buff(DeathMark.DeathMarkTracker.class) != null){
 			DeathMark.processFearTheReaper(this, initialHP != 0);
 		}
@@ -937,6 +949,9 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		}
 		if (buff( Speed.class ) != null) {
 			timeScale *= 2.0f;
+		}
+		if (buff(WarpedEnemy.class) != null){
+			timeScale *= 1.5f;
 		}
 		
 		super.spend( time / timeScale );
