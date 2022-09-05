@@ -34,10 +34,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
-import com.zrp200.rkpd2.effects.Beam;
-import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Pushing;
-import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -187,12 +184,14 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	}
 	// for dialogues when he shows a new power.
 	private boolean yellSpecialNotice, yellStrong, golemSpawned;
+	private static boolean warped;
 
 	@Override
 	protected boolean act() {
 		if (pos == CityBossLevel.throne){
 			throwItems();
 		}
+		warped = buff(WarpedEnemy.BossEffect.class) != null;
 
 		if(yellSpecialNotice && paralysed == 0) { // takes him a hot second to realize who he's fighting.
 			yell(Messages.get(this, "notice2"));
@@ -706,6 +705,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	public static class DKGhoul extends Ghoul implements Subject {
 		{
 			state = HUNTING;
+			if (warped)
+				Buff.affect(this, Speed.class, 200f);
 		}
 
 		@Override
@@ -718,12 +719,16 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	public static class DKMonk extends Monk implements Subject {
 		{
 			state = HUNTING;
+			if (warped)
+				Buff.affect(this, Speed.class, 200f);
 		}
 	}
 
 	public static class DKWarlock extends Warlock implements Subject {
 		{
 			state = HUNTING;
+			if (warped)
+				Buff.affect(this, Speed.class, 200f);
 		}
 
 		@Override
@@ -738,6 +743,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 	public static class DKGolem extends Golem implements Subject {
 		{
 			state = HUNTING;
+			if (warped)
+				Buff.affect(this, Speed.class, 200f);
 		}
 	}
 
@@ -914,6 +921,18 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				if (m instanceof DwarfKing){
 					int damage = m.HT / (Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 18 : 12);
 					m.damage(damage, this);
+					if (warped) {
+						MagicMissile.boltFromChar(
+								m.sprite.parent,
+								MagicMissile.SHADOW_CONE,
+								m.sprite,
+								Dungeon.hero.pos,
+								() -> {
+									Buff.affect(Dungeon.hero, Blindness.class, 4f);
+									Dungeon.observe();
+								});
+						Sample.INSTANCE.play(Assets.Sounds.ZAP);
+					}
 				}
 			}
 		}
