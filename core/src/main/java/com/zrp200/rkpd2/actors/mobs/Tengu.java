@@ -24,11 +24,7 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.*;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -46,6 +42,7 @@ import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.LloydsBeacon;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.PrisonBossLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -174,7 +171,7 @@ public class Tengu extends Mob {
 			BossHealthBar.bleed(true);
 			
 			//if tengu has lost a certain amount of hp, jump
-		} else if (beforeHitHP / hpBracket != HP / hpBracket) {
+		} else if ((beforeHitHP / hpBracket != HP / hpBracket) || (buff(WarpedEnemy.BossEffect.class) != null && Random.Int(2) == 0 ) ) {
 			jump();
 		}
 	}
@@ -220,6 +217,9 @@ public class Tengu extends Mob {
 		if (Dungeon.isChallenged(Challenges.EVIL_MODE)){
 			if (Random.Int(4) == 0) Buff.affect(enemy, Slow.class, 1.5f);
 		}
+		if (buff(WarpedEnemy.BossEffect.class) != null){
+			if (Random.Int(3) == 0) Buff.affect(enemy, Vulnerable.class, 2f);
+		}
 		return super.attackProc(enemy, damage);
 	}
 
@@ -233,6 +233,16 @@ public class Tengu extends Mob {
 		
 		if (enemy == null) enemy = chooseEnemy();
 		if (enemy == null) return;
+
+		if (buff(WarpedEnemy.BossEffect.class) != null){
+			if (Random.Int(2) == 0){
+				BlinkingMan minion = new BlinkingMan();
+				minion.pos = pos;
+				minion.HP = minion.HT = HT / 12;
+				GameScene.add(minion);
+				ScrollOfTeleportation.appear(minion, minion.pos);
+			}
+		}
 		
 		int newPos;
 		if (Dungeon.level instanceof PrisonBossLevel){
@@ -381,6 +391,8 @@ public class Tengu extends Mob {
 				if (canUseAbility()){
 					return useAbility();
 				}
+				if (buff(WarpedEnemy.BossEffect.class) != null && Random.Int(2) == 0 )
+					jump();
 				
 				return doAttack( enemy );
 				

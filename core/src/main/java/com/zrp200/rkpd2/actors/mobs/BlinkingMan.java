@@ -53,6 +53,8 @@ public class BlinkingMan extends AbyssalMob {
 
 		HP = HT = 80;
 		defenseSkill = 60;
+		if (Dungeon.scalingDepth() < 26)
+			defenseSkill = 20;
 		viewDistance = Light.DISTANCE;
 		baseSpeed = 0.75f;
 		flying = true;
@@ -68,6 +70,8 @@ public class BlinkingMan extends AbyssalMob {
 
 	@Override
 	public int damageRoll() {
+		if (Dungeon.scalingDepth() < 26)
+			return Random.NormalIntRange( 1, 7 );
 		return Random.NormalIntRange( 5 + abyssLevel()*2, 16 + abyssLevel()*7 );
 	}
 
@@ -158,11 +162,15 @@ public class BlinkingMan extends AbyssalMob {
 
 	@Override
 	public int attackSkill( Char target ) {
+		if (Dungeon.scalingDepth() < 26)
+			return 20;
 		return 45 + abyssLevel()*3;
 	}
 
 	@Override
 	public int drRoll() {
+		if (Dungeon.scalingDepth() < 26)
+			return Random.NormalIntRange(0, 4);
 		return Random.NormalIntRange(0 + abyssLevel()*4, 9 + abyssLevel()*6);
 	}
 
