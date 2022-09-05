@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.DwarfKing;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Imp;
@@ -306,6 +307,7 @@ public class CityBossLevel extends Level {
 		boss.state = boss.WANDERING;
 		boss.pos = pointToCell(arena.center());
 		GameScene.add( boss );
+		ChampionEnemy.rollWarp(boss);
 		boss.beckon(Dungeon.hero.pos);
 
 		if (heroFOV[boss.pos]) {

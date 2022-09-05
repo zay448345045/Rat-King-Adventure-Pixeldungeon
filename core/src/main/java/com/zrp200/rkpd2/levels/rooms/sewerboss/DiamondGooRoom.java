@@ -21,11 +21,12 @@
 
 package com.zrp200.rkpd2.levels.rooms.sewerboss;
 
+import com.watabou.utils.Point;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.Goo;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
 
 public class DiamondGooRoom extends GooBossRoom {
 	
@@ -63,6 +64,7 @@ public class DiamondGooRoom extends GooBossRoom {
 		
 		Goo boss = new Goo();
 		boss.pos = level.pointToCell(center());
+		ChampionEnemy.rollWarp(boss);
 		level.mobs.add( boss );
 	}
 	

@@ -37,4 +37,19 @@ public class WarpedEnemy extends Buff {
         immunities.add(Vertigo.class);
         immunities.add(Terror.class);
     }
+
+    //special variant, used for boss buffs
+    public static class BossEffect extends Buff {
+        @Override
+        public void fx(boolean on) {
+            if (on) target.sprite.add(CharSprite.State.WARPED);
+            else target.sprite.remove(CharSprite.State.WARPED);
+        }
+
+        {
+            immunities.add(Charm.class);
+            immunities.add(Vertigo.class);
+            immunities.add(Terror.class);
+        }
+    }
 }

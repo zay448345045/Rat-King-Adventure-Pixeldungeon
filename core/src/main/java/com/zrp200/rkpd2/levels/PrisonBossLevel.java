@@ -22,21 +22,20 @@
 package com.zrp200.rkpd2.levels;
 
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.*;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Bones;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Statistics;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Regrowth;
 import com.zrp200.rkpd2.actors.blobs.StormCloud;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Doom;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Tengu;
@@ -57,20 +56,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.BArray;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Tilemap;
-import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.tweeners.AlphaTweener;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 
@@ -430,6 +415,7 @@ public class PrisonBossLevel extends Level {
 				Mob.restoreAllies(this, Dungeon.hero.pos, doorPos);
 				
 				tengu.state = tengu.HUNTING;
+				ChampionEnemy.rollWarp(tengu);
 				tengu.pos = tenguPos;
 				GameScene.add( tengu );
 				tengu.notice();

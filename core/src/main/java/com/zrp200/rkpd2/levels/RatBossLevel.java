@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.RatKingBoss;
 import com.zrp200.rkpd2.actors.mobs.YogDzewa;
@@ -234,6 +235,7 @@ public class RatBossLevel extends Level {
 		Dungeon.observe();
 
 		RatKingBoss boss = new RatKingBoss();
+		ChampionEnemy.rollWarp(boss);
 		boss.pos = exit() + width*3;
 		GameScene.add( boss );
 	}

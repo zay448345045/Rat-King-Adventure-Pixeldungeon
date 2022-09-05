@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.YogDzewa;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -230,6 +231,7 @@ public class HallsBossLevel extends Level {
 		Dungeon.observe();
 
 		YogDzewa boss = new YogDzewa();
+		ChampionEnemy.rollWarp(boss);
 		boss.pos = exit() + width*3;
 		GameScene.add( boss );
 	}

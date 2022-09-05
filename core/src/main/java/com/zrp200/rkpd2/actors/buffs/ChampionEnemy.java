@@ -130,17 +130,24 @@ public abstract class ChampionEnemy extends Buff {
 
 		Dungeon.mobsToChampion--;
 		Class<? extends ChampionEnemy> title = getTitle();
-		int warpAmount = 0;
-		if (Dungeon.hero.buff(Warp.class) != null){
-			warpAmount = Math.round(10 + Math.max(40, Dungeon.hero.buff(Warp.class).getStacks() / 5));
-		}
-		boolean shouldBeWarped = Random.Int(100) < warpAmount;
 
 		if (Dungeon.mobsToChampion <= 0 && Dungeon.isChallenged(Challenges.CHAMPION_ENEMIES)){
 			makeChampion(m, title);
 			if (m instanceof ThreadRipper) makeChampion(m, title);
 			m.state = m.WANDERING;
 		}
+		rollWarp(m);
+	}
+
+	public static void rollWarp(Mob m){
+		int warpAmount = 0;
+		if (Dungeon.hero.buff(Warp.class) != null){
+			warpAmount = Math.round(10 + Math.max(35, Dungeon.hero.buff(Warp.class).getStacks() / 4));
+			if (m.properties().contains(Char.Property.BOSS)){
+				warpAmount = Math.round(15 + Math.max(45, Dungeon.hero.buff(Warp.class).getStacks() / 5));
+			}
+		}
+		boolean shouldBeWarped = Random.Int(100) < warpAmount;
 		if (shouldBeWarped){
 			Buff.affect(m, WarpedEnemy.class);
 		}

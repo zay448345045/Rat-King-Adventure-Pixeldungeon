@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.mobs.DM300;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Pylon;
@@ -279,6 +280,7 @@ public class CavesBossLevel extends Level {
 		Sample.INSTANCE.play( Assets.Sounds.ROCKS );
 
 		DM300 boss = new DM300();
+		ChampionEnemy.rollWarp(boss);
 		boss.state = boss.WANDERING;
 		do {
 			boss.pos = pointToCell(Random.element(mainArena.getPoints()));
