@@ -819,6 +819,8 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 				if (Actor.findChar(pos) == null) {
 					Mob m = Reflection.newInstance(summon);
 					m.pos = pos;
+					if (Dungeon.isChallenged(Challenges.EVIL_MODE))
+						ChampionEnemy.rollForChampionInstantly(m);
 					m.maxLvl = -2;
 					GameScene.add(m);
 					Dungeon.level.occupyCell(m);
