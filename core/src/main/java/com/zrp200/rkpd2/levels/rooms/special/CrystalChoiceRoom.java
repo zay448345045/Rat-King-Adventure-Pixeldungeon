@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.CrystalKey;
 import com.zrp200.rkpd2.items.keys.IronKey;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
@@ -124,6 +125,9 @@ public class CrystalChoiceRoom extends SpecialRoom {
 				Generator.Category.RING,
 				Generator.Category.ARTIFACT
 		));
+		if (Random.Int(4) == 0){
+			hidden = new NerfGun().random();
+		}
 		Heap chest = level.drop(hidden, level.pointToCell(room2.center()));
 		chest.type = Heap.Type.CHEST;
 		//opening the chest is optional, so it doesn't count for exploration bonus

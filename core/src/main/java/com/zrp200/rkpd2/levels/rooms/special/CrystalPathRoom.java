@@ -29,7 +29,7 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.CrystalKey;
 import com.zrp200.rkpd2.items.keys.IronKey;
-import com.zrp200.rkpd2.items.potions.PotionOfExperience;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -140,7 +140,7 @@ public class CrystalPathRoom extends SpecialRoom {
 					if (Random.Int(2) == 0){
 						item = Generator.random(Random.oneOf(Generator.Category.POTION, Generator.Category.SCROLL));
 					} else if (Random.Int(2) == 0) {
-						item = new PotionOfExperience();
+						item = new NerfGun().random();
 					} else {
 						item = new ScrollOfTransmutation();
 					}

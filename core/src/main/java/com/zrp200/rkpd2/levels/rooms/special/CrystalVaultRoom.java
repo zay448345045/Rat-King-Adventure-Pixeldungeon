@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.CrystalKey;
 import com.zrp200.rkpd2.items.keys.IronKey;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
@@ -88,10 +89,14 @@ public class CrystalVaultRoom extends SpecialRoom {
 		Generator.Category cat = prizeClasses.remove(0);
 		prizeClasses.add(cat);
 		Item prize;
-		do {
-			prize = Generator.random(cat);
-		} while (prize == null || Challenges.isItemBlocked(prize));
-		return prize;
+		if (Random.Int(4) == 0){
+			return new NerfGun().random();
+		} else {
+			do {
+				prize = Generator.random(cat);
+			} while (prize == null || Challenges.isItemBlocked(prize));
+			return prize;
+		}
 	}
 	
 	private ArrayList<Generator.Category> prizeClasses = new ArrayList<>(

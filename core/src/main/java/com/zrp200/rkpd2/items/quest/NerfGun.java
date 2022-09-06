@@ -15,6 +15,7 @@ import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Splash;
+import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
@@ -219,6 +220,16 @@ public class NerfGun extends Weapon {
             updateQuickslot();
             Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
         }
+    }
+
+    @Override
+    public Item random() {
+        exp += Random.IntRange(Dungeon.depth * 5, 10 + Dungeon.depth * 15);
+        while (exp >= maxExp()) {
+            exp -= maxExp();
+            level(level() + 1);
+        }
+        return this;
     }
 
     @Override
