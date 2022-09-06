@@ -75,7 +75,7 @@ public class NerfGun extends Weapon {
             case NORMAL: default:
                 return Math.round(1 + lvl*1.5f);
             case RAPID:
-                return lvl / 2;
+                return 1 + lvl / 2;
             case DISC:
                 return 3 + lvl*3;
         }
@@ -86,7 +86,7 @@ public class NerfGun extends Weapon {
             case NORMAL: default:
                 return 10 + lvl*3;
             case RAPID:
-                return Math.round(4 + lvl*0.75f);
+                return Math.round(6 + lvl*0.75f);
             case DISC:
                 return 16 + lvl*5;
         }
