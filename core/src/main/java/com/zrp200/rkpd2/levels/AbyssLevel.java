@@ -101,9 +101,9 @@ public class AbyssLevel extends RegularLevel {
     @Override
     protected float[] trapChances() {
         return new float[]{
-                2, 2,
+                2, 2, 2, 2,
                 2, 2, 2,
-                1, 1, 1, 1 };
+                1, 1, 1, 1, 1, 1 };
     }
 
     @Override
