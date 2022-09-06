@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
@@ -100,6 +101,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
 		ANGULAR_SPEEDS.put(RatKingBossSprite.ScorpioShot.class, 0);
+		ANGULAR_SPEEDS.put(NerfGun.NerfAmmo.class,          0);
 		
 		//720 is default
 		
@@ -155,6 +157,15 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		float speed = SPEED;
 		if (item instanceof RobotTransform.RunicMissile){
 			speed *= 4f;
+		}
+		if (item instanceof NerfGun.Disc){
+			speed *= 1.75f;
+		}
+		if (item instanceof NerfGun.Dart){
+			speed *= 2.25f;
+		}
+		if (item instanceof NerfGun.SmallDart){
+			speed *= 3.66f;
 		}
 		if (item instanceof Dart && Dungeon.hero.belongings.weapon() instanceof Crossbow){
 			speed *= 3f;

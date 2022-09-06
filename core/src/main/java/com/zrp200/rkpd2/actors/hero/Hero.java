@@ -1891,6 +1891,7 @@ public class Hero extends Char {
 		if (source != PotionOfExperience.class) {
 			for (Item i : belongings) {
 				i.onHeroGainExp(percent, this);
+				i.onHeroGainExp(exp, this);
 			}
 			if (buff(Talent.RejuvenatingStepsFurrow.class) != null){
 				buff(Talent.RejuvenatingStepsFurrow.class).countDown(percent*200f);
