@@ -21,10 +21,6 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
-import static com.zrp200.rkpd2.Dungeon.hero;
-
-import static java.lang.Math.max;
-
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
@@ -66,7 +62,6 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.HighGrass;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
@@ -530,12 +525,19 @@ public enum Talent {
 	// tiers 1/2/3/4 start at levels 2/7/13/21
 	public static int[] tierLevelThresholds = new int[]{0, 2, 7, 13, 21/*+4*/, 31};
 
+	public static int talentAmount(HeroClass hCl, int tier){
+		int amount = 5;
+		if (tier == 2) amount++;
+		if (hCl == HeroClass.RAT_KING) amount--;
+		return amount;
+	}
+
 	public static int getMaxPoints(int tier) {
 		if (tier >= 5) return 0;
 		int max = tierLevelThresholds[tier+1] - tierLevelThresholds[tier];
 		if(tier == 3) max += 4;
-		if (hero != null && hero.talents.get(tier - 1).size() > 4 + tier && tier < 3)
-			max += 2 * (hero.talents.get(tier - 1).size() - (4+tier));
+		if (hero != null && hero.talents.get(tier - 1).size() > talentAmount(hero.heroClass, tier) && tier < 3)
+			max += 2 * (hero.talents.get(tier - 1).size() - talentAmount(hero.heroClass, tier));
 		if (hero != null && hero.lvl > 30){
 			max += (hero.lvl - 30)/3;
 		}
