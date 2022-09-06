@@ -26,6 +26,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.rings.RingOfEnergy;
@@ -154,6 +155,9 @@ public class AlchemistsToolkit extends Artifact {
 	@Override
 	public void charge(Hero target, float amount) {
 		partialCharge += 0.25f*amount;
+		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {
+			partialCharge -= 0.15f*amount;
+		}
 		if (partialCharge >= 1){
 			partialCharge--;
 			charge++;
@@ -237,6 +241,9 @@ public class AlchemistsToolkit extends Artifact {
 			//This means that energy absorbed into the kit is recovered in 5 hero levels
 			float chargeGain = (2 + level()) * levelPortion;
 			chargeGain *= RingOfEnergy.artifactChargeMultiplier(target);
+			if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {
+				chargeGain /= 4;
+			}
 			partialCharge += chargeGain;
 
 			//charge is in increments of 1 energy.

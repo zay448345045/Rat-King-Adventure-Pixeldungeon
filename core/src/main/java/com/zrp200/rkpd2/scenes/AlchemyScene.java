@@ -241,20 +241,22 @@ public class AlchemyScene extends PixelScene {
 		align(energyIcon);
 		add(energyIcon);
 
-		energyAdd = new IconButton(Icons.get(Icons.PLUS)){
-			@Override
-			protected void onClick() {
-				WndEnergizeItem.openItemSelector();
-			}
-		};
-		energyAdd.setRect(energyLeft.right(), energyLeft.top() - (16 - energyLeft.height())/2, 16, 16);
-		align(energyAdd);
-		add(energyAdd);
+		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {
+			energyAdd = new IconButton(Icons.get(Icons.PLUS)) {
+				@Override
+				protected void onClick() {
+					WndEnergizeItem.openItemSelector();
+				}
+			};
+			energyAdd.setRect(energyLeft.right(), energyLeft.top() - (16 - energyLeft.height()) / 2, 16, 16);
+			align(energyAdd);
+			add(energyAdd);
 
-		sparkEmitter = new Emitter();
-		sparkEmitter.pos(energyLeft.left(), energyLeft.top(), energyLeft.width(), energyLeft.height());
-		sparkEmitter.autoKill = false;
-		add(sparkEmitter);
+			sparkEmitter = new Emitter();
+			sparkEmitter.pos(energyLeft.left(), energyLeft.top(), energyLeft.width(), energyLeft.height());
+			sparkEmitter.autoKill = false;
+			add(sparkEmitter);
+		}
 		
 		fadeIn();
 		
@@ -407,8 +409,10 @@ public class AlchemyScene extends PixelScene {
 			energyIcon.x = energyLeft.left() - energyIcon.width();
 			align(energyIcon);
 
-			energyAdd.setPos(energyLeft.right(), energyAdd.top());
-			align(energyAdd);
+			if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {
+				energyAdd.setPos(energyLeft.right(), energyAdd.top());
+				align(energyAdd);
+			}
 
 			result = recipe.brew(ingredients);
 		}

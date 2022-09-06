@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.spells;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.npcs.Shopkeeper;
@@ -83,7 +84,7 @@ public class Alchemize extends Spell {
 		@Override
 		public boolean itemSelectable(Item item) {
 			return !(item instanceof Alchemize)
-					&& (Shopkeeper.canSell(item) || item.energyVal() > 0);
+					&& (Shopkeeper.canSell(item) || (item.energyVal() > 0 && (!Dungeon.isChallenged(Challenges.NO_ALCHEMY))));
 		}
 
 		@Override
@@ -160,7 +161,7 @@ public class Alchemize extends Spell {
 				}
 			}
 
-			if (item.energyVal() > 0) {
+			if (item.energyVal() > 0 && (!Dungeon.isChallenged(Challenges.NO_ALCHEMY))) {
 				if (item.quantity() == 1) {
 
 					RedButton btnEnergize = new RedButton(Messages.get(this, "energize", item.energyVal())) {

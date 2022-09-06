@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.levels.rooms.special;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Alchemy;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -34,7 +35,6 @@ import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.Level;
-import com.zrp200.rkpd2.levels.RegularLevel;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 
@@ -71,7 +71,10 @@ public class LaboratoryRoom extends SpecialRoom {
 		} while (
 				level.map[pos] != Terrain.EMPTY_SP ||
 						level.heaps.get( pos ) != null);
-		level.drop( new EnergyCrystal().random(), pos );
+		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY))
+			level.drop( new EnergyCrystal().random(), pos );
+		else
+			level.drop( new EnergyCrystal().quantity(1 + chapter*7 + Random.NormalIntRange(0, 8)), pos);
 
 		int n = Random.NormalIntRange( 1, 2 );
 		for (int i=0; i < n; i++) {

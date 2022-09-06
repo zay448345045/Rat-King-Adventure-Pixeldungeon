@@ -25,7 +25,6 @@ import com.badlogic.gdx.utils.OrderedMap;
 import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.items.food.Blandfruit;
 import com.zrp200.rkpd2.items.rings.RingOfMight;
@@ -123,9 +122,6 @@ public class Challenges {
 			return true;
 		}
 		if (Dungeon.isChallenged(NO_VEGAN) && (item instanceof HornOfPlenty || item instanceof Blandfruit)){
-			return true;
-		}
-		if (Dungeon.isChallenged(NO_ALCHEMY) && (item instanceof AlchemistsToolkit)){
 			return true;
 		}
 		if (Dungeon.isChallenged(NO_STR) && (item instanceof RingOfMight)){
