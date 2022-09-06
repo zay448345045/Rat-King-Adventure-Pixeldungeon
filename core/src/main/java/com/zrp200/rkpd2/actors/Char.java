@@ -47,6 +47,7 @@ import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.potions.exotic.PotionOfCleansing;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -326,6 +327,9 @@ public abstract class Char extends Actor {
 				}
 				if (hero.belongings.weapon() instanceof Slingshot.Stone){
 					dr = Random.Int(0, dr);
+				}
+				if (hero.belongings.weapon() instanceof NerfGun.NerfAmmo){
+					dr = 0;
 				}
 			}
 			if (this instanceof RatKingBoss && ((RatKingBoss) this).phase == 4){
