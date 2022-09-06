@@ -42,7 +42,7 @@ import com.zrp200.rkpd2.actors.mobs.ThreadRipper;
 import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.bombs.ArcaneBomb;
 import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.messages.Messages;
@@ -445,11 +445,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public void detach() {
-			for (int i : PathFinder.NEIGHBOURS4){
-				if (!Dungeon.level.solid[target.pos+i] && Dungeon.level.insideMap(target.pos+i)){
-					new Bomb().explode(target.pos+i);
-				}
-			}
+			new ArcaneBomb().explode(target.pos);
 			super.detach();
 		}
 	}
