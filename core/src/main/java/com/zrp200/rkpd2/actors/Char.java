@@ -298,7 +298,7 @@ public abstract class Char extends Actor {
 			}
 
 			if (enemy.alignment == Alignment.ALLY && hero.buff(ChampionEnemy.Paladin.class) != null && hero.hasTalent(Talent.RK_PALADIN)){
-				if (Random.Int(30) < hero.pointsInTalent(Talent.RK_PALADIN)){
+				if (Random.Int(22) < hero.pointsInTalent(Talent.RK_PALADIN)){
 					Talent.onFoodEaten(hero, 300, new Food());
 				}
 			}
@@ -756,6 +756,9 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 				Buff.affect(this, Kinetic.ConservedDamage.class).setBonus((int) (0.25f*points*dmg));
 			}
 		}
+		if (buff(ChampionEnemy.Paladin.invulnerability.class) != null){
+			dmg /= 4;
+		}
 
 		if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage)) {
 			for (ChampionEnemy buff : buffs(ChampionEnemy.class)) {
@@ -1171,7 +1174,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 	//similar to isImmune, but only factors in damage.
 	//Is used in AI decision-making
 	public boolean isInvulnerable( Class effect ){
-		return buff(ChampionEnemy.Paladin.invulnerability.class) != null;
+		return false;
 	}
 
 	protected HashSet<Property> properties = new HashSet<>();
