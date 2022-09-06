@@ -14,21 +14,31 @@ import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Enchanting;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.bags.Bag;
+import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.quest.nerfEnchants.Infernal;
+import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.plants.Firebloom;
+import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.windows.WndBag;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class NerfGun extends Weapon {
 
@@ -36,6 +46,7 @@ public class NerfGun extends Weapon {
 
     public static final String AC_SHOOT	    = "SHOOT";
     public static final String AC_RESTOCK	= "RESTOCK";
+    public static final String AC_IMBUE	    = "IMBUE";
 
     public int curCharges = maxCharges();
 
@@ -48,6 +59,11 @@ public class NerfGun extends Weapon {
     @Override
     public int STRReq(int lvl) {
         return 0;
+    }
+
+    public static HashMap<Class<? extends Plant.Seed>, Class<? extends Enchantment>> possibleImbues = new HashMap<>();
+    static {
+        possibleImbues.put(Firebloom.Seed.class, Infernal.class);
     }
 
     public enum NerfMode {
@@ -155,6 +171,7 @@ public class NerfGun extends Weapon {
         actions.remove(AC_EQUIP);
         actions.add(AC_SHOOT);
         actions.add(AC_RESTOCK);
+        if (enchantment == null) actions.add(AC_IMBUE);
         return actions;
     }
 
@@ -185,6 +202,11 @@ public class NerfGun extends Weapon {
                 updateQuickslot();
                 Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
             });
+        } else if (action.equals(AC_IMBUE)){
+            curUser = hero;
+            curItem = this;
+            gun = this;
+            GameScene.selectItem(itemSelector);
         }
     }
 
@@ -295,6 +317,11 @@ public class NerfGun extends Weapon {
         }
 
         @Override
+        public int proc(Char attacker, Char defender, int damage) {
+            return gun.proc(attacker, defender, damage);
+        }
+
+        @Override
         public void onRangedAttack(Char enemy, int cell, boolean hit) {}
 
         @Override
@@ -330,6 +357,43 @@ public class NerfGun extends Weapon {
     public NerfAmmo sampleAmmo(){
         return Reflection.newInstance(mode.ammoType);
     }
+
+    protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
+
+        @Override
+        public String textPrompt() {
+            return Messages.get(NerfGun.class, "inv_title");
+        }
+
+        @Override
+        public Class<? extends Bag> preferredBag() {
+            return VelvetPouch.class;
+        }
+
+        @Override
+        public boolean itemSelectable(Item item) {
+            return possibleImbues.containsKey(item.getClass());
+        }
+
+        @Override
+        public void onSelect( Item item ) {
+
+            if (item != null) {
+
+                curUser.sprite.emitter().start( Speck.factory( Speck.LIGHT ), 0.1f, 5 );
+                gun.enchantment = Reflection.newInstance(possibleImbues.get(item.getClass()));
+                GLog.p(Messages.get(StoneOfEnchantment.class, "weapon"));
+                curUser.spend( 1f );
+                Enchanting.show( curUser, gun );
+                curUser.busy();
+                curUser.sprite.operate(curUser.pos);
+
+                Sample.INSTANCE.play( Assets.Sounds.READ );
+                Invisibility.dispel();
+
+            }
+        }
+    };
 
     protected static CellSelector.Listener zapper = new  CellSelector.Listener() {
 
@@ -399,6 +463,7 @@ public class NerfGun extends Weapon {
                         curUser.sprite.idle();
                         curWand.curCharges = curWand.maxCharges();
                         Warp.inflict(10, 1.5f);
+                        curWand.enchantment = null;
                         updateQuickslot();
                         Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
                     });
