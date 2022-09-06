@@ -60,6 +60,7 @@ public class RingOfElements extends Ring {
 		RESISTS.add( Paralysis.class );
 		RESISTS.add( Poison.class );
 		RESISTS.add( Corrosion.class );
+		RESISTS.add( FrostBurn.class);
 
 		RESISTS.add( ToxicGas.class );
 		RESISTS.add( Electricity.class );
