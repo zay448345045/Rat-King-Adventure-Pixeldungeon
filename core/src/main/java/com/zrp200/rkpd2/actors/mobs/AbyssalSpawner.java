@@ -19,7 +19,7 @@ public class AbyssalSpawner extends AbyssalMob {
     {
         spriteClass = AbyssalSpawnerSprite.class;
 
-        HP = HT = 320;
+        HP = HT = 420;
         defenseSkill = 0;
 
         EXP = 30;
@@ -93,11 +93,6 @@ public class AbyssalSpawner extends AbyssalMob {
 
     @Override
     public void damage(int dmg, Object src) {
-        if (dmg >= 40){
-            //takes 20/21/22/23/24/25/26/27/28/29/30 dmg
-            // at   20/22/25/29/34/40/47/55/64/74/85 incoming dmg
-            dmg = 40 + (int)(Math.sqrt(8*(dmg - 40) + 1) - 1)/2;
-        }
         spawnCooldown -= dmg;
         super.damage(dmg, src);
     }
