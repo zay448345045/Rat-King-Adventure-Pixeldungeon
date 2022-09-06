@@ -20,6 +20,7 @@ import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.quest.nerfEnchants.Galvanizing;
 import com.zrp200.rkpd2.items.quest.nerfEnchants.Infernal;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -29,6 +30,7 @@ import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Firebloom;
 import com.zrp200.rkpd2.plants.Plant;
+import com.zrp200.rkpd2.plants.Stormvine;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -64,6 +66,7 @@ public class NerfGun extends Weapon {
     public static HashMap<Class<? extends Plant.Seed>, Class<? extends Enchantment>> possibleImbues = new HashMap<>();
     static {
         possibleImbues.put(Firebloom.Seed.class, Infernal.class);
+        possibleImbues.put(Stormvine.Seed.class, Galvanizing.class);
     }
 
     public enum NerfMode {
