@@ -461,7 +461,7 @@ public abstract class Char extends Actor {
 			}
 
 			enemy.damage( effectiveDamage, this );
-			if (this instanceof Hero){
+			if (this instanceof Hero && buff(ChampionEnemy.Giant.class) != null){
 				if (Random.Int(15) < hero.pointsInTalent(Talent.RK_GIANT)){
 					Buff.affect(enemy, Paralysis.class, 5);
 				}

@@ -68,6 +68,7 @@ import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
+import com.zrp200.rkpd2.items.weapon.enchantments.Kinetic;
 import com.zrp200.rkpd2.items.weapon.melee.Flail;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
@@ -1412,6 +1413,15 @@ public class Hero extends Char {
 					new Flare( 7, 20 ).color( 0xFFFF00, true ).show( ch.sprite, 1f );
 				}
 			}
+		}
+		if (buff(ChampionEnemy.Giant.class) != null && hasTalent(Talent.RK_GIANT) ){
+			int conservedDamage = 0;
+			if (buff(Kinetic.ConservedDamage.class) != null) {
+				conservedDamage = buff(Kinetic.ConservedDamage.class).damageBonus();
+				buff(Kinetic.ConservedDamage.class).detach();
+			}
+
+			damage += conservedDamage;
 		}
 
         if (isSubclassed(HeroSubClass.SNIPER) || hasTalent(Talent.RK_SNIPER)) {
