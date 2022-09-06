@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.stones;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfEnchantment;
@@ -46,7 +47,7 @@ public class StoneOfAugmentation extends InventoryStone {
 
 	@Override
 	protected boolean usableOnItem(Item item) {
-		return ScrollOfEnchantment.enchantable(item) && !(item instanceof RingOfForce);
+		return item instanceof NerfGun || ScrollOfEnchantment.enchantable(item) && !(item instanceof RingOfForce);
 	}
 
 	@Override
