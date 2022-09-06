@@ -373,7 +373,10 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	@Override
 	public void spend(float time) {
-		super.spend(time/1.25f);
+		if (Dungeon.isChallenged(Challenges.EVIL_MODE))
+			super.spend(time/1.25f);
+		else
+			super.spend(time);
 	}
 
 	private HashSet<Mob> getSubjects(){
