@@ -73,7 +73,7 @@ public class HomingBoomerang extends MissileWeapon {
 					targetPos = m.pos;
 				}
 			}
-			if (targetPos == Integer.MAX_VALUE-1 || damageRoll(Dungeon.hero) < 4){
+			if (targetPos == Integer.MAX_VALUE-1 || hitCounter > 8){
 				targetPos = Dungeon.hero.pos;
 				hitCounter = 0;
 			}
@@ -86,8 +86,9 @@ public class HomingBoomerang extends MissileWeapon {
 		parent = null;
 		Mob[] mobs = Dungeon.level.mobs.toArray(new Mob[0]);
 		int targetPos = Integer.MAX_VALUE-1;
+		Char ch = Actor.findChar(cell);
 		for (Mob m : mobs){
-			if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos
+			if (new Ballistica(cell, m.pos, Ballistica.PROJECTILE).collisionPos == m.pos && m != ch
 					&& Dungeon.level.distance(cell, m.pos) < Dungeon.level.distance(cell, targetPos)
 					&& m.alignment == Char.Alignment.ENEMY && !m.isInvulnerable(getClass())){
 				targetPos = m.pos;
