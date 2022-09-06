@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.mobs;
 
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 
 import java.util.ArrayList;
@@ -59,12 +60,20 @@ public class Bestiary {
 						Gnoll.class, Gnoll.class, Gnoll.class,
 						Swarm.class,
 						Crab.class));
-			case 4: case 5:
+			case 4:
 				//1x gnoll, 1x swarm, 2x crab, 2x slime
 				return new ArrayList<>(Arrays.asList(Gnoll.class,
 						Swarm.class,
 						Crab.class, Crab.class,
 						Slime.class, Slime.class));
+			case 5:
+				if (Dungeon.isChallenged(Challenges.EVIL_MODE))
+					return new ArrayList<>(Arrays.asList(CausticSlime.class));
+				else
+					return new ArrayList<>(Arrays.asList(Gnoll.class,
+							Swarm.class,
+							Crab.class, Crab.class,
+							Slime.class, Slime.class));
 				
 			// Prison
 			case 6:
