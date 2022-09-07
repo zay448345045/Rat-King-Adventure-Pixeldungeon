@@ -20,17 +20,14 @@ import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
-import com.zrp200.rkpd2.items.quest.nerfEnchants.Galvanizing;
-import com.zrp200.rkpd2.items.quest.nerfEnchants.Infernal;
+import com.zrp200.rkpd2.items.quest.nerfEnchants.*;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.plants.Firebloom;
-import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.plants.Stormvine;
+import com.zrp200.rkpd2.plants.*;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -67,6 +64,15 @@ public class NerfGun extends Weapon {
     static {
         possibleImbues.put(Firebloom.Seed.class, Infernal.class);
         possibleImbues.put(Stormvine.Seed.class, Galvanizing.class);
+        possibleImbues.put(Sungrass.Seed.class, Rejuvenating.class);
+        possibleImbues.put(Swiftthistle.Seed.class, Timetwisting.class);
+        possibleImbues.put(Icecap.Seed.class, Cryogenic.class);
+        possibleImbues.put(Sorrowmoss.Seed.class, Venomous.class);
+        possibleImbues.put(Dreamfoil.Seed.class, Dreamful.class);
+        possibleImbues.put(Earthroot.Seed.class, Avalanche.class);
+        possibleImbues.put(Starflower.Seed.class, Necromancy.class);
+        possibleImbues.put(Fadeleaf.Seed.class, Forceful.class);
+        possibleImbues.put(Blindweed.Seed.class, Shining.class);
     }
 
     public enum NerfMode {
@@ -414,7 +420,8 @@ public class NerfGun extends Weapon {
                     return;
                 }
 
-                final Ballistica shot = new Ballistica( curUser.pos, target, Ballistica.PROJECTILE,
+                final Ballistica shot = new Ballistica( curUser.pos, target,
+                        curWand.enchantment instanceof Forceful ? Ballistica.STOP_TARGET : Ballistica.PROJECTILE,
                         curUser.buff(ChampionEnemy.Projecting.class) != null && curUser.pointsInTalent(Talent.RK_PROJECT) == 3);
                 int cell = shot.collisionPos;
                 gun = curWand;
