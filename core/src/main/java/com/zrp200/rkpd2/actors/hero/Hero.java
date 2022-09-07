@@ -57,7 +57,6 @@ import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfMight;
 import com.zrp200.rkpd2.items.potions.elixirs.KromerPotion;
 import com.zrp200.rkpd2.items.potions.exotic.PotionOfDivineInspiration;
-import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
@@ -1460,17 +1459,14 @@ public class Hero extends Char {
 				}
 				toHeal.HP = Math.min(toHeal.HT, toHeal.HP + dmg);
 				toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-				toDamage.damage(dmg, toHeal);
-				toDamage.sprite.emitter().start(ExoParticle.FACTORY, 0.05f, 10);
 
 				if (toDamage == Dungeon.hero) {
 					Sample.INSTANCE.play(Assets.Sounds.MIMIC, 1f, 2f);
-					if (!toDamage.isAlive()) {
-						Dungeon.fail(Kromer.class);
-						GLog.n(Messages.get(Kromer.class, "on_death"));
-					}
+					Warp.inflict(dmg, 0.5f);
 				} else {
 					Sample.INSTANCE.play(Assets.Sounds.DEGRADE, 1f, 2.5f);
+					toDamage.damage(dmg, toHeal);
+					toDamage.sprite.emitter().start(ExoParticle.FACTORY, 0.05f, 10);
 				}
 			}
 

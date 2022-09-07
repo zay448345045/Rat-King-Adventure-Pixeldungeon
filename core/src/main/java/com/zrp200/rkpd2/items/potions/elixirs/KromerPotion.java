@@ -20,8 +20,8 @@ public class KromerPotion extends Elixir{
 
     @Override
     public void apply(Hero hero) {
-        Warp.inflict(75, 3f);
-        hero.STR += 5;
+        Warp.inflict(50, 3f);
+        hero.STR += 7;
         Buff.affect(hero, Effect.class);
         hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "msg_1") );
         GLog.p( Messages.get(this, "msg_2") );
