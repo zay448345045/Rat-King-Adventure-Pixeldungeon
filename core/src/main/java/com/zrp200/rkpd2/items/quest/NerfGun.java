@@ -1,10 +1,7 @@
 package com.zrp200.rkpd2.items.quest;
 
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -23,6 +20,7 @@ import com.zrp200.rkpd2.items.bags.VelvetPouch;
 import com.zrp200.rkpd2.items.quest.nerfEnchants.*;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -53,6 +51,11 @@ public class NerfGun extends Weapon {
         image = ItemSpriteSheet.NERF_GUN;
         defaultAction = AC_SHOOT;
         usesTargeting = true;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
     }
 
     @Override
@@ -103,7 +106,7 @@ public class NerfGun extends Weapon {
             case RAPID:
                 return 1 + lvl / 2;
             case DISC:
-                return 3 + lvl*3;
+                return 3 + lvl*2;
         }
     }
 
@@ -114,18 +117,18 @@ public class NerfGun extends Weapon {
             case RAPID:
                 return Math.round(6 + lvl*0.75f);
             case DISC:
-                return 16 + lvl*5;
+                return 15 + lvl*4;
         }
     }
 
     public int maxCharges(){
         switch (mode){
             case NORMAL: default:
-                return 6 + level()/3;
+                return 7 + level()/3;
             case RAPID:
-                return 12 + level();
+                return 13 + level();
             case DISC:
-                return 3 + level()/5;
+                return 4 + level()/5;
         }
     }
 
@@ -238,7 +241,7 @@ public class NerfGun extends Weapon {
     int exp;
 
     public int maxExp(){
-        return 10 + (level())*20;
+        return 10 + (level())*15;
     }
 
     @Override
@@ -255,7 +258,7 @@ public class NerfGun extends Weapon {
 
     @Override
     public Item random() {
-        exp += Random.IntRange(Dungeon.depth * 5, 10 + Dungeon.depth * 15);
+        exp += Random.IntRange(5 + Dungeon.depth * 6, 15 + Dungeon.depth * 16);
         while (exp >= maxExp()) {
             exp -= maxExp();
             level(level() + 1);
@@ -360,6 +363,20 @@ public class NerfGun extends Weapon {
 
         {
             image = ItemSpriteSheet.NERF_AMMO_3;
+        }
+
+        @Override
+        public int proc(Char attacker, Char defender, int damage) {
+            WandOfBlastWave.BlastWave.blast(defender.pos, 0x225ab4);
+            ArrayList<Char> targets = new ArrayList<>();
+            for (int i : PathFinder.NEIGHBOURS8){
+                if (Actor.findChar(defender.pos + i) != null &&
+                        Actor.findChar(defender.pos + i) != Dungeon.hero) targets.add(Actor.findChar(defender.pos + i));
+            }
+            for (Char target : targets){
+                curUser.shoot(target, new Dart());
+            }
+            return super.proc(attacker, defender, damage);
         }
     }
 

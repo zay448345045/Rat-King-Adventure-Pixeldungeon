@@ -50,14 +50,6 @@ import com.zrp200.rkpd2.levels.traps.TenguDartTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 public class WandOfBlastWave extends DamageWand {
 
@@ -258,6 +250,14 @@ public class WandOfBlastWave extends DamageWand {
 			BlastWave b = (BlastWave) parent.recycle(BlastWave.class);
 			parent.bringToFront(b);
 			b.reset(pos);
+		}
+
+		public static void blast(int pos, int color) {
+			Group parent = Dungeon.hero.sprite.parent;
+			BlastWave b = (BlastWave) parent.recycle(BlastWave.class);
+			parent.bringToFront(b);
+			b.reset(pos);
+			b.color(color);
 		}
 
 	}
