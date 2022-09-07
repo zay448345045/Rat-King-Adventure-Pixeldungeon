@@ -48,6 +48,10 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
+
+import static com.zrp200.rkpd2.Assets.Environment.TILES_SEWERS;
+import static com.zrp200.rkpd2.Assets.Environment.WATER_SEWERS;
 
 public class HallsBossLevel extends Level {
 
@@ -83,11 +87,15 @@ public class HallsBossLevel extends Level {
 
 	@Override
 	public String tilesTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return TILES_SEWERS;
 		return Assets.Environment.TILES_HALLS;
 	}
 
 	@Override
 	public String waterTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return WATER_SEWERS;
 		return Assets.Environment.WATER_HALLS;
 	}
 

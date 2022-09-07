@@ -50,6 +50,10 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
+
+import static com.zrp200.rkpd2.Assets.Environment.TILES_HALLS;
+import static com.zrp200.rkpd2.Assets.Environment.WATER_HALLS;
 
 public class RatBossLevel extends Level {
 
@@ -70,11 +74,15 @@ public class RatBossLevel extends Level {
 
 	@Override
 	public String tilesTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return TILES_HALLS;
 		return Assets.Environment.TILES_SEWERS;
 	}
 
 	@Override
 	public String waterTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return WATER_HALLS;
 		return Assets.Environment.WATER_SEWERS;
 	}
 

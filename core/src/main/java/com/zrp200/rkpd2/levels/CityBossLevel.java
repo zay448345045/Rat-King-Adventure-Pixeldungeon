@@ -46,9 +46,13 @@ import com.zrp200.rkpd2.levels.rooms.standard.ImpShopRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import static com.zrp200.rkpd2.Assets.Environment.TILES_PRISON;
+import static com.zrp200.rkpd2.Assets.Environment.WATER_PRISON;
 
 public class CityBossLevel extends Level {
 
@@ -98,11 +102,15 @@ public class CityBossLevel extends Level {
 
 	@Override
 	public String tilesTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return TILES_PRISON;
 		return Assets.Environment.TILES_CITY;
 	}
 
 	@Override
 	public String waterTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return WATER_PRISON;
 		return Assets.Environment.WATER_CITY;
 	}
 

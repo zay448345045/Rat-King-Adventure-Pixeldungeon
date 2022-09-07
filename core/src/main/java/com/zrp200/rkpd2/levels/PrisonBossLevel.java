@@ -56,8 +56,12 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Assets.Environment.TILES_CITY;
+import static com.zrp200.rkpd2.Assets.Environment.WATER_CITY;
 
 public class PrisonBossLevel extends Level {
 	
@@ -100,11 +104,15 @@ public class PrisonBossLevel extends Level {
 	
 	@Override
 	public String tilesTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return TILES_CITY;
 		return Assets.Environment.TILES_PRISON;
 	}
 	
 	@Override
 	public String waterTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return WATER_CITY;
 		return Assets.Environment.WATER_PRISON;
 	}
 	

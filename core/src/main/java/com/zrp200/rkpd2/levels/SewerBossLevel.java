@@ -21,8 +21,15 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -41,14 +48,12 @@ import com.zrp200.rkpd2.levels.rooms.sewerboss.SewerBossEntranceRoom;
 import com.zrp200.rkpd2.levels.rooms.sewerboss.SewerBossExitRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.StandardRoom;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Assets.Environment.TILES_HALLS;
+import static com.zrp200.rkpd2.Assets.Environment.WATER_HALLS;
 
 public class SewerBossLevel extends SewerLevel {
 
@@ -81,6 +86,20 @@ public class SewerBossLevel extends SewerLevel {
 					false);
 		}
 
+	}
+
+	@Override
+	public String tilesTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return TILES_HALLS;
+		return Assets.Environment.TILES_SEWERS;
+	}
+
+	@Override
+	public String waterTex() {
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			return WATER_HALLS;
+		return Assets.Environment.WATER_SEWERS;
 	}
 
 	@Override

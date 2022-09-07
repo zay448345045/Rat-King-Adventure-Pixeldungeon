@@ -273,7 +273,10 @@ public class Dungeon {
 		case 2:
 		case 3:
 		case 4:
-			level = new SewerLevel();
+			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+				level = new HallsLevel();
+			else
+				level = new SewerLevel();
 			break;
 		case 5:
 			level = new SewerBossLevel();
@@ -282,7 +285,10 @@ public class Dungeon {
 		case 7:
 		case 8:
 		case 9:
-			level = new PrisonLevel();
+			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+				level = new CityLevel();
+			else
+				level = new PrisonLevel();
 			break;
 		case 10:
 			level = new PrisonBossLevel();
@@ -300,7 +306,10 @@ public class Dungeon {
 		case 17:
 		case 18:
 		case 19:
-			level = new CityLevel();
+			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+				level = new PrisonLevel();
+			else
+				level = new CityLevel();
 			break;
 		case 20:
 			level = new CityBossLevel();
@@ -309,7 +318,10 @@ public class Dungeon {
 		case 22:
 		case 23:
 		case 24:
-			level = new HallsLevel();
+			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+				level = new SewerLevel();
+			else
+				level = new HallsLevel();
 			break;
 		case 25:
 			level = new HallsBossLevel();

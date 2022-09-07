@@ -149,7 +149,8 @@ public class DungeonSeed {
 
 	public enum SpecialSeed {
 		RATS("RAT-RAT-RAT"),
-		ROGUE("ROG-UEB-UFF");
+		ROGUE("ROG-UEB-UFF"),
+		REVERSE("REV-ERS-EED");
 
 		public long seed;
 		public boolean random;
