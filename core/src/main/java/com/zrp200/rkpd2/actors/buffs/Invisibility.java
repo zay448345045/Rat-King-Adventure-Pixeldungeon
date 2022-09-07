@@ -32,7 +32,6 @@ import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.utils.SafeCast;
 
 public class Invisibility extends FlavourBuff {
@@ -155,7 +154,6 @@ public class Invisibility extends FlavourBuff {
 		public boolean act() {
 			actualDispel();
 			detach();
-			GLog.i("lol");
 			return true;
 		}
 
