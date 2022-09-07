@@ -66,7 +66,7 @@ import com.zrp200.rkpd2.windows.WndOptions;
 
 import java.util.ArrayList;
 
-public class SoulOfYendor extends Artifact {
+public class SoulOfYendor extends Artifact implements AlchemyScene.ToolkitLike {
 
     private static final String AC_USE = "USE";
     private static final String AC_USEAGAIN = "USEAGAIN";
@@ -239,9 +239,9 @@ public class SoulOfYendor extends Artifact {
                 if (!isEquipped(hero))              GLog.i( Messages.get(this, "need_to_equip") );
                 else if (cursed)                    GLog.w( Messages.get(this, "cursed") );
                 else {
+                    AlchemyScene.assignToolkit(this);
                     Game.switchScene(AlchemyScene.class);
                 }
-                break;
             case 2:
                 //Ethereal Chains
                 curUser = hero;
@@ -785,6 +785,21 @@ public class SoulOfYendor extends Artifact {
                 updateQuickslot();
             }
         }
+        //grants 5 turns of healing up-front
+        float healDelay = 10f - level()*0.9f;
+        healDelay /= amount;
+        //effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
+        target.HP = Math.min( target.HT, target.HP + (int)Math.ceil(5/healDelay));
+    }
+
+    public int availableEnergy(){
+        return charge;
+    }
+
+    public int consumeEnergy(int amount){
+        int result = amount - charge;
+        charge = Math.max(0, charge - amount);
+        return Math.max(0, result);
     }
 
     public class omniBuff extends ArtifactBuff

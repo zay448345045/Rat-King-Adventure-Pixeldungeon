@@ -40,7 +40,7 @@ import com.zrp200.rkpd2.windows.WndOptions;
 
 import java.util.ArrayList;
 
-public class AlchemistsToolkit extends Artifact {
+public class AlchemistsToolkit extends Artifact implements AlchemyScene.ToolkitLike {
 
 	{
 		image = ItemSpriteSheet.ARTIFACT_TOOLKIT;

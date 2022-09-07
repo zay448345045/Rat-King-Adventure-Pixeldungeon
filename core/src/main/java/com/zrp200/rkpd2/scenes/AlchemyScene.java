@@ -34,7 +34,6 @@ import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.LiquidMetal;
 import com.zrp200.rkpd2.items.Recipe;
-import com.zrp200.rkpd2.items.artifacts.AlchemistsToolkit;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.messages.Messages;
@@ -727,9 +726,14 @@ public class AlchemyScene extends PixelScene {
 		}
 	}
 
-	private static AlchemistsToolkit toolkit;
+	public interface ToolkitLike {
+		int availableEnergy();
+		int consumeEnergy(int amount);
+	}
 
-	public static void assignToolkit( AlchemistsToolkit toolkit ){
+	private static ToolkitLike toolkit;
+
+	public static void assignToolkit( ToolkitLike toolkit ){
 		AlchemyScene.toolkit = toolkit;
 	}
 
