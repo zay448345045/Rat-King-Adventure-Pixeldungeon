@@ -252,7 +252,7 @@ public class MasterThievesArmband extends Artifact {
 		public float stealChance(Item item);
 	}
 
-	public class Thievery extends ArtifactBuff {
+	public class Thievery extends ArtifactBuff implements ThieveryBuff{
 
 		@Override
 		public boolean act() {
