@@ -32,6 +32,7 @@ import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.food.Pasty;
 import com.zrp200.rkpd2.items.potions.*;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.rings.*;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.stones.*;
@@ -75,8 +76,11 @@ public class Generator {
 		
 		SCROLL	( 8, 8, Scroll.class ),
 		STONE   ( 1, 1, Runestone.class),
+
+		NERF	( 0, 0, NerfGun.class ),
 		
 		GOLD	( 10, 10,   Gold.class );
+
 		
 		public Class<?>[] classes;
 
@@ -281,6 +285,9 @@ public class Generator {
 			//see Generator.randomMissile
 			MISSILE.classes = new Class<?>[]{};
 			MISSILE.probs = new float[]{};
+
+			NERF.classes = new Class<?>[]{NerfGun.class};
+			NERF.probs = new float[]{1};
 			
 			MIS_T1.classes = new Class<?>[]{
 					ThrowingStone.class,

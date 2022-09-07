@@ -21,12 +21,14 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.mobs.npcs.RatKing;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
@@ -86,6 +88,9 @@ public class RatKingRoom extends SecretRoom {
 		}
 		
 		Item prize = new Gold().random();
+		if (Random.Int(10) == 0){
+			prize = new NerfGun().random();
+		}
 		
 		level.drop( prize, pos ).type = Heap.Type.CHEST;
 	}

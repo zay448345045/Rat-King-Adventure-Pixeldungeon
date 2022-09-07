@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.journal.DocumentPage;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.potions.Potion;
+import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -382,8 +383,10 @@ public class Heap implements Bundlable {
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "artifact") );
 				else if (peek() instanceof Wand)
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "wand") );
-				else
+				else if (peek() instanceof Ring)
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "ring") );
+				else
+					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "nerf") );
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
 			case SKELETON:
