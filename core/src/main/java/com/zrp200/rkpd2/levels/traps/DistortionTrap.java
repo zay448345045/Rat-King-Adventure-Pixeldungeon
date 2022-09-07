@@ -129,6 +129,7 @@ public class DistortionTrap extends Trap{
 			}
 
 			mob.maxLvl = 100000;
+			mob.EXP /= 2;
 			mob.state = mob.WANDERING;
 			mob.pos = point;
 			GameScene.add(mob, DELAY);
