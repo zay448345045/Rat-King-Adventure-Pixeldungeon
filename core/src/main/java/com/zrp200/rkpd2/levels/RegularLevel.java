@@ -107,7 +107,6 @@ public abstract class RegularLevel extends Level {
 		ArrayList<Room> initRooms = new ArrayList<>();
 		initRooms.add ( roomEntrance = new EntranceRoom());
 		initRooms.add( roomExit = new ExitRoom());
-		initRooms.add(new ShopRoom());
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		int standards = standardRooms(feeling == Feeling.LARGE);
