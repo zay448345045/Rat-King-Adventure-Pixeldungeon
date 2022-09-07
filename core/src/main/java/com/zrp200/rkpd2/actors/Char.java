@@ -683,7 +683,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 			buff.onAttackProc( enemy );
 		}
 		if (buff(WarpedEnemy.class) != null){
-			Buff.affect(enemy, Weakness.class, 15);
+			Buff.affect(enemy, Weakness.class, 3);
 		}
 
 		if(alignment == Alignment.ALLY && hero.hasTalent(Talent.WARLOCKS_TOUCH)) {
@@ -802,7 +802,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 				dmg *= DeathMark.damageMultiplier();
 			}
 			if (this.buff(WarpedEnemy.class) != null){
-				dmg *= 0.67f;
+				dmg *= 0.75f;
 			}
 
 
@@ -958,7 +958,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 			timeScale *= 2.0f;
 		}
 		if (buff(WarpedEnemy.class) != null){
-			timeScale *= 1.5f;
+			timeScale *= 1.25f;
 		}
 		
 		super.spend( time / timeScale );
