@@ -415,6 +415,7 @@ public class NerfGun extends Weapon {
                 curUser.sprite.operate(curUser.pos);
 
                 Sample.INSTANCE.play( Assets.Sounds.READ );
+                updateQuickslot();
                 Invisibility.dispel();
 
             }
