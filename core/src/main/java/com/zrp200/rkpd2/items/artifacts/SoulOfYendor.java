@@ -143,12 +143,12 @@ public class SoulOfYendor extends Artifact {
                                 case 1:
                                 default:
                                     return charge >= 1 && !cursed;
-                                case 2:
                                 case 3:
                                 case 4:
+                                    return charge >= 2 && !cursed;
                                 case 5:
                                 case 6:
-                                    return charge >= 5 && !cursed;
+                                    return charge >= 3 && !cursed;
                             }
                         }
 
@@ -317,10 +317,10 @@ public class SoulOfYendor extends Artifact {
                 //Unstable Spellbook
                 if (hero.buff( Blindness.class ) != null) GLog.w( Messages.get(UnstableSpellbook.class, "blinded") );
                 else if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-                else if (charge <= 10)                     GLog.i( Messages.get(UnstableSpellbook.class, "no_charge") );
+                else if (charge <= 3)                     GLog.i( Messages.get(UnstableSpellbook.class, "no_charge") );
                 else if (cursed)                          GLog.i( Messages.get(UnstableSpellbook.class, "cursed") );
                 else {
-                    charge -= 10;
+                    charge -= 3;
 
                     Scroll scroll;
                     do {
@@ -338,7 +338,7 @@ public class SoulOfYendor extends Artifact {
                     curUser = hero;
 
                     //if there are charges left and the scroll has been given to the book
-                    if (charge >= 10) {
+                    if (charge >= 3) {
                         final Scroll fScroll = scroll;
 
                         final UnstableSpellbook.ExploitHandler handler = Buff.affect(hero, UnstableSpellbook.ExploitHandler.class);
@@ -354,7 +354,7 @@ public class SoulOfYendor extends Artifact {
                                 handler.detach();
                                 if (index == 1){
                                     Scroll scroll = Reflection.newInstance(ExoticScroll.regToExo.get(fScroll.getClass()));
-                                    charge -= 10;
+                                    charge -= 3;
                                     scroll.doRead();
                                 } else {
                                     fScroll.doRead();
@@ -379,7 +379,7 @@ public class SoulOfYendor extends Artifact {
                     GLog.i( Messages.get(Artifact.class, "need_to_equip") );
                     usesTargeting = false;
 
-                } else if (charge < 1) {
+                } else if (charge < 3) {
                     GLog.i( Messages.get(this, "no_charge") );
                     usesTargeting = false;
 
@@ -460,8 +460,7 @@ public class SoulOfYendor extends Artifact {
                             Buff.prolong(ch, Blindness.class, debuffDuration);
                             Buff.prolong(ch, Cripple.class, debuffDuration);
 
-                            charge -= 5;
-                            exp += 3;
+                            charge -= 3;
                             Talent.onArtifactUsed(Dungeon.hero);
                             Item.updateQuickslot();
                             curUser.next();
@@ -552,7 +551,7 @@ public class SoulOfYendor extends Artifact {
             //use 1/1,000 to account for rounding errors
             while (turnsToCost < -0.001f){
                 turnsToCost += 2f;
-                charge -= 5;
+                charge -= 2;
             }
 
             updateQuickslot();
@@ -686,11 +685,11 @@ public class SoulOfYendor extends Artifact {
         final int pulledPos = bestPos;
 
         int chargeUse = Dungeon.level.distance(enemy.pos, pulledPos);
-        if (chargeUse*5 > charge) {
+        if (chargeUse > charge) {
             GLog.w( Messages.get(EtherealChains.class, "no_charge") );
             return;
         } else {
-            charge -= chargeUse*5;
+            charge -= chargeUse;
             updateQuickslot();
         }
 
@@ -741,11 +740,11 @@ public class SoulOfYendor extends Artifact {
         final int newHeroPos = chain.collisionPos;
 
         int chargeUse = Dungeon.level.distance(hero.pos, newHeroPos);
-        if (chargeUse*5 > charge){
+        if (chargeUse > charge){
             GLog.w( Messages.get(EtherealChains.class, "no_charge") );
             return;
         } else {
-            charge -= chargeUse*5;
+            charge -= chargeUse;
             updateQuickslot();
         }
 
@@ -849,7 +848,7 @@ public class SoulOfYendor extends Artifact {
 
         public float stealChance(Item item){
             int chargesUsed = chargesToUse(item);
-            float val = chargesUsed * (2 + level()/10f);
+            float val = chargesUsed * (3 + level()/8f);
             return Math.min(1f, val/item.value());
         }
 
@@ -858,7 +857,7 @@ public class SoulOfYendor extends Artifact {
             float valUsing = 0;
             int chargesUsed = 0;
             while (valUsing < value && chargesUsed < charge){
-                valUsing += 2 + level()/10f;
+                valUsing += 3 + level()/8f;
                 chargesUsed++;
             }
             return chargesUsed;
