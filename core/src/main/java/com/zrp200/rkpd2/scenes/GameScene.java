@@ -22,19 +22,18 @@
 package com.zrp200.rkpd2.scenes;
 
 import com.watabou.glwrap.Blending;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.*;
-import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Random;
+import com.watabou.utils.*;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.DemonSpawner;
@@ -61,22 +60,9 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.sprites.*;
 import com.zrp200.rkpd2.tiles.*;
-import com.zrp200.rkpd2.tiles.WallBlockingTilemap;
 import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.*;
-import com.watabou.glwrap.Blending;
-import com.watabou.input.PointerEvent;
-import com.watabou.noosa.*;
-import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.DeviceCompat;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Point;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
-import com.watabou.utils.RectF;
 import com.zrp200.scrollofdebug.ScrollOfDebug;
 
 import java.io.IOException;
@@ -484,7 +470,7 @@ public class GameScene extends PixelScene {
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
 				GLog.h(Messages.get(this, "descend"), Dungeon.depth);
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-				if (Dungeon.isChallenged(Challenges.BURN))
+				if (Dungeon.isChallenged(Challenges.BURN) && Dungeon.getDepth() >= Statistics.deepestFloor)
 					new AquaBlast().collect();
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
