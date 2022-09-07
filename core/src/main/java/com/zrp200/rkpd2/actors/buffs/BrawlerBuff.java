@@ -10,6 +10,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.rings.RingOfFuror;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -142,7 +143,14 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         hero.attack(enemy, dmgMulti, dmgBonus, Char.INFINITE_ACCURACY);
 
         Invisibility.dispel();
-        hero.spendAndNext(hero.attackDelay()*((BrawlerWeapon)(hero.belongings.weapon())).warriorDelay());
+        BrawlerWeapon weapon = (BrawlerWeapon) (hero.belongings.weapon());
+        float delay;
+        if (weapon != null)
+            delay = weapon.warriorDelay();
+        else
+            delay = 1.5f;
+        delay *= RingOfFuror.attackSpeedMultiplier(hero);
+        hero.spendAndNext(hero.attackDelay()*delay);
 
         if (!enemy.isAlive() || (!wasAlly && enemy.alignment == target.alignment)) {
             if (hero.hasTalent(Talent.HOLERIC_BURST)){
