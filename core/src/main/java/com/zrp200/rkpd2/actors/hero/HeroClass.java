@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.hero;
 
 import com.watabou.utils.DeviceCompat;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
@@ -42,10 +43,12 @@ import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
 import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
 import com.zrp200.rkpd2.items.BrokenSeal;
+import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.Waterskin;
 import com.zrp200.rkpd2.items.armor.ClothArmor;
 import com.zrp200.rkpd2.items.armor.ScoutArmor;
+import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.bags.PotionBandolier;
@@ -70,6 +73,7 @@ import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -260,14 +264,23 @@ public enum HeroClass {
 	private static void initRogue( Hero hero ) {
 		(hero.belongings.weapon = new Dagger()).identify();
 
-		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.artifact = cloak).identify();
-		hero.belongings.artifact.activate( hero );
+		if (Dungeon.specialSeed != DungeonSeed.SpecialSeed.ROGUE) {
+			CloakOfShadows cloak = new CloakOfShadows();
+			(hero.belongings.artifact = cloak).identify();
+			hero.belongings.artifact.activate(hero);
+			Dungeon.quickslot.setSlot(0, cloak);
+		} else {
+			Random.pushGenerator();
+			Artifact cloak = Generator.randomArtifact();
+			(hero.belongings.artifact = cloak).identify();
+			hero.belongings.artifact.activate(hero);
+			Random.popGenerator();
+			Dungeon.quickslot.setSlot(0, cloak);
+		}
 
 		ThrowingKnife knives = new ThrowingKnife();
 		knives.quantity(3).collect();
 
-		Dungeon.quickslot.setSlot(0, cloak);
 		Dungeon.quickslot.setSlot(1, knives);
 
 		new ScrollOfMagicMapping().identify();
