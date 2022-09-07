@@ -19,7 +19,7 @@ public class DoNotDieElixir extends Elixir{
     @Override
     public void apply(Hero hero) {
         Warp.inflict(50, 3f);
-        Buff.prolong(hero, NoDeath.class, 20f);
+        Buff.prolong(hero, NoDeath.class, 250f);
     }
 
     @Override
