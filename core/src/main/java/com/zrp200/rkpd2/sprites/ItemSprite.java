@@ -26,16 +26,14 @@ import com.watabou.gltextures.SmartTexture;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Matrix;
 import com.watabou.glwrap.Vertexbuffer;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.NoosaScript;
+import com.watabou.noosa.*;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Gold;
@@ -45,18 +43,7 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.gltextures.SmartTexture;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Matrix;
-import com.watabou.glwrap.Vertexbuffer;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.MovieClip;
-import com.watabou.noosa.NoosaScript;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.nio.Buffer;
 
@@ -252,6 +239,13 @@ public class ItemSprite extends MovieClip {
 	public ItemSprite view( int image, Glowing glowing ) {
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
+		try {
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.RANDOM_ITEMS) {
+				image = (int)(Random.element(ItemSpriteSheet.class.getFields()).get(null));
+			}
+		} catch (IllegalAccessException e) {
+			ShatteredPixelDungeon.reportException(e);
+		}
 		frame( image );
 		glow( glowing );
 		return this;
