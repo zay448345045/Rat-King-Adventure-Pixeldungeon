@@ -168,6 +168,7 @@ public class Dungeon {
 	public static boolean daily;
 	public static String customSeedText = "";
 	public static long seed;
+	public static DungeonSeed.SpecialSeed specialSeed;
 	
 	public static void init() {
 
@@ -180,12 +181,15 @@ public class Dungeon {
 			DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ROOT);
 			format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			customSeedText = format.format(new Date(seed));
+			specialSeed = null;
 		} else if (!SPDSettings.customSeed().isEmpty()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
+			specialSeed = DungeonSeed.SpecialSeed.interpret(customSeedText);
 		} else {
 			customSeedText = "";
 			seed = DungeonSeed.randomSeed();
+			specialSeed = null;
 		}
 
 		Actor.clear();
@@ -507,6 +511,7 @@ public class Dungeon {
 	private static final String CHAPTERS	= "chapters";
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
+	private static final String SPECIALSEED = "specialSeed";
 	
 	public static void saveGame( int save ) {
 		try {
@@ -570,6 +575,7 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
+			bundle.put( SPECIALSEED, specialSeed);
 			
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 			
@@ -618,6 +624,7 @@ public class Dungeon {
 		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
 		customSeedText = bundle.getString( CUSTOM_SEED );
 		daily = bundle.getBoolean( DAILY );
+		specialSeed = bundle.contains(SPECIALSEED) ? bundle.getEnum(SPECIALSEED, DungeonSeed.SpecialSeed.class) : null;
 
 		Actor.clear();
 		Actor.restoreNextID( bundle );

@@ -147,4 +147,27 @@ public class DungeonSeed {
 		}
 	}
 
+	public enum SpecialSeed {
+		;
+
+		long seed;
+
+		SpecialSeed(long seed) {
+			this.seed = seed;
+		}
+
+		SpecialSeed(String seed){
+			this.seed = convertFromText(seed);
+		}
+
+		public static SpecialSeed interpret(String seed){
+			long s = convertFromText(seed);
+			for (SpecialSeed specialSeed : SpecialSeed.values()){
+				if (s == specialSeed.seed)
+					return specialSeed;
+			}
+			return null;
+		}
+	}
+
 }
