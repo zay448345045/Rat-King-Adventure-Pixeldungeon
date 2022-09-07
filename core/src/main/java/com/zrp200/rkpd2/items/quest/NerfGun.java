@@ -418,6 +418,7 @@ public class NerfGun extends Weapon {
                 Sample.INSTANCE.play( Assets.Sounds.READ );
                 updateQuickslot();
                 Invisibility.dispel();
+                item.detach(curUser.belongings.backpack);
 
             }
         }
