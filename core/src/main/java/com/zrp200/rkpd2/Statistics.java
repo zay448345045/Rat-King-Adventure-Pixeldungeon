@@ -42,7 +42,7 @@ public class Statistics {
 	public static int treasureScore;
 	public static SparseArray<Boolean> floorsExplored = new SparseArray<>();
 	public static int exploreScore;
-	public static int[] bossScores = new int[5];
+	public static int[] bossScores = new int[6];
 	public static int totalBossScore;
 	public static int[] questScores = new int[5];
 	public static int totalQuestScore;
@@ -83,7 +83,7 @@ public class Statistics {
 		treasureScore   = 0;
 		floorsExplored  = new SparseArray<>();
 		exploreScore    = 0;
-		bossScores      = new int[5];
+		bossScores      = new int[6];
 		totalBossScore  = 0;
 		questScores     = new int[5];
 		totalQuestScore = 0;
@@ -209,7 +209,7 @@ public class Statistics {
 		}
 		exploreScore    = bundle.getInt( EXPL_SCORE );
 		if (bundle.contains( BOSS_SCORES )) bossScores = bundle.getIntArray( BOSS_SCORES );
-		else                                bossScores = new int[5];
+		else                                bossScores = new int[6];
 		totalBossScore  = bundle.getInt( TOT_BOSS );
 		if (bundle.contains( QUEST_SCORES ))questScores = bundle.getIntArray( QUEST_SCORES );
 		else                                questScores = new int[5];

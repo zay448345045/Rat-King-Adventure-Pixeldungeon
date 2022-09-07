@@ -4,10 +4,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.*;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.*;
@@ -369,6 +366,7 @@ public class RatKingBoss extends Mob {
         phase = -1;
         ((RatKingBossSprite)sprite).changeSprite(phase);
         Badges.validateRatKing();
+        Statistics.bossScores[5] += 10000;
 
         GameScene.bossSlain();
         Dungeon.level.unseal();
@@ -709,6 +707,8 @@ public class RatKingBoss extends Mob {
                                         case MAGIC_MISSILE:
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(15, 30), new WandOfMagicMissile());
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             break;
                                         case FIREBLAST:
@@ -723,6 +723,8 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage((int) (Random.NormalIntRange(10, 23) *
                                                         (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new WandOfFireblast());
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             break;
                                         case FROST:
@@ -737,12 +739,16 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(7, 19), new WandOfFrost());
                                                 Buff.affect(ch, FrostBurn.class).reignite(ch);
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             break;
                                         case POISON:
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(5, 21), new Poison());
                                                 Buff.affect(ch, Poison.class).set(20);
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 200, ToxicGas.class));
@@ -753,6 +759,8 @@ public class RatKingBoss extends Mob {
                                                 ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 5);
                                                 ch.damage(Random.NormalIntRange(24, 45), new WandOfLightning());
                                                 ch.sprite.parent.addToFront(new Lightning(ch.pos, ch.pos, null));
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 for (int k : PathFinder.NEIGHBOURS4) {
@@ -766,6 +774,8 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(8, 20), new WandOfCorrosion());
                                                 Buff.affect(ch, Corrosion.class).set(3, 6);
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 100, CorrosiveGas.class));
@@ -775,6 +785,8 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(10, 22), new WandOfPrismaticLight());
                                                 Buff.affect(ch, Blindness.class, 10f);
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                 GameScene.add(Blob.seed(finalDest, 100, SmokeScreen.class));
@@ -791,6 +803,8 @@ public class RatKingBoss extends Mob {
                                                     if (isChallenged(Challenges.STRONGER_BOSSES)) {
                                                         Buff.affect(c, Paralysis.class, 1f);
                                                     }
+                                                    if (c instanceof Hero)
+                                                        Statistics.bossScores[5] -= 300;
                                                 }
                                             }
                                             break;
@@ -806,6 +820,8 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage((int) (Random.NormalIntRange(15, 33) *
                                                         (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new GodfireParticle());
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             break;
                                         case RAT_KING:
@@ -813,6 +829,8 @@ public class RatKingBoss extends Mob {
                                             if (ch != null) {
                                                 ch.damage(Random.NormalIntRange(45, 80), new LegacyWrath());
                                                 Buff.affect(ch, PowerfulDegrade.class, 20f);
+                                                if (ch instanceof Hero)
+                                                    Statistics.bossScores[5] -= 300;
                                             }
                                             break;
                                     }
@@ -881,6 +899,8 @@ public class RatKingBoss extends Mob {
                                 if (isChallenged(Challenges.DARKNESS)) {
                                     Buff.affect(ch, Blindness.class, 10f);
                                 }
+                                if (ch instanceof Hero)
+                                    Statistics.bossScores[5] -= 500;
                             }
                             next();
                         }
@@ -976,6 +996,8 @@ public class RatKingBoss extends Mob {
                     if (isChallenged(Challenges.NO_SCROLLS) && ch instanceof Hero){
                         Buff.affect(ch, PowerfulDegrade.class, 12f);
                     }
+                    if (ch instanceof Hero)
+                        Statistics.bossScores[5] -= 400;
 
                     if (Dungeon.level.heroFOV[pos]) {
                         ch.sprite.flash();
