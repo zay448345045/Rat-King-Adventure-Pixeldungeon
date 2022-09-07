@@ -38,6 +38,7 @@ import com.zrp200.rkpd2.levels.rooms.special.DemonSpawnerRoom;
 import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 
@@ -63,7 +64,8 @@ public class HallsLevel extends RegularLevel {
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> rooms = super.initRooms();
 
-		rooms.add(new DemonSpawnerRoom());
+		if (Dungeon.specialSeed != DungeonSeed.SpecialSeed.REVERSE)
+			rooms.add(new DemonSpawnerRoom());
 
 		return rooms;
 	}
