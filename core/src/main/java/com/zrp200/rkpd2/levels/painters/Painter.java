@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.rooms.Room;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,9 @@ public abstract class Painter {
 	// Static methods
 
 	public static void set( Level level, int cell, int value ) {
+		if (value == Terrain.WALL && Dungeon.specialSeed == DungeonSeed.SpecialSeed.NO_WALLS){
+			value = Terrain.CHASM;
+		}
 		level.map[cell] = value;
 		if (Dungeon.isChallenged(Challenges.BURN) && (value == Terrain.GRASS || value == Terrain.HIGH_GRASS)){
 			Actor.add(Blob.seed(cell, 2, Fire.class, level));
@@ -61,6 +65,9 @@ public abstract class Painter {
 	}
 	
 	public static void fill( Level level, int x, int y, int w, int h, int value ) {
+		if (value == Terrain.WALL && Dungeon.specialSeed == DungeonSeed.SpecialSeed.NO_WALLS){
+			value = Terrain.CHASM;
+		}
 		
 		int width = level.width();
 		
@@ -120,6 +127,10 @@ public abstract class Painter {
 	}
 	
 	public static void fillEllipse(Level level, int x, int y, int w, int h, int value){
+
+		if (value == Terrain.WALL && Dungeon.specialSeed == DungeonSeed.SpecialSeed.NO_WALLS){
+			value = Terrain.CHASM;
+		}
 
 		//radii
 		double radH = h/2f;
