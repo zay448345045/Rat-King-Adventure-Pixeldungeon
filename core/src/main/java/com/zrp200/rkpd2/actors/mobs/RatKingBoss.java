@@ -83,9 +83,9 @@ public class RatKingBoss extends Mob {
     public int phantomSpearPositions = -1;
 
     {
-        HP = HT = 1500 + Challenges.activeChallenges()*165;
+        HP = HT = 2000 + Challenges.activeChallenges()*240;
         if (rkMode()){
-            HP = HT = 2550 + Challenges.activeChallenges()*290;
+            HP = HT = 3200 + Challenges.activeChallenges()*360;
         }
         spriteClass = RatKingBossSprite.class;
 
