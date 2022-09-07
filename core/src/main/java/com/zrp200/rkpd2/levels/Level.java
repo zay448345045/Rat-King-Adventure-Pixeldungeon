@@ -70,6 +70,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.*;
@@ -483,6 +484,9 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.RATS){
+			m = new Ratmogrify.SummonedRat();
+		}
 		return m;
 	}
 

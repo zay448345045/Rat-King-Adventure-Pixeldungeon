@@ -186,6 +186,8 @@ public class Dungeon {
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 			specialSeed = DungeonSeed.SpecialSeed.interpret(customSeedText);
+			if (specialSeed != null && specialSeed.random)
+				seed = DungeonSeed.randomSeed();
 		} else {
 			customSeedText = "";
 			seed = DungeonSeed.randomSeed();

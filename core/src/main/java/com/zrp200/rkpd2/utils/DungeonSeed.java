@@ -148,16 +148,29 @@ public class DungeonSeed {
 	}
 
 	public enum SpecialSeed {
-		;
+		RATS("RAT-RAT-RAT");
 
-		long seed;
+		public long seed;
+		public boolean random;
 
 		SpecialSeed(long seed) {
 			this.seed = seed;
+			this.random = true;
+		}
+
+		SpecialSeed(long seed, boolean random) {
+			this.seed = seed;
+			this.random = random;
 		}
 
 		SpecialSeed(String seed){
 			this.seed = convertFromText(seed);
+			this.random = true;
+		}
+
+		SpecialSeed(String seed, boolean random){
+			this.seed = convertFromText(seed);
+			this.random = random;
 		}
 
 		public static SpecialSeed interpret(String seed){
