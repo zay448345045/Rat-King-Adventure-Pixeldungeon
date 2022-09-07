@@ -696,7 +696,7 @@ public class Hero extends Char {
 		}
 		if (RobotBuff.isVehicle()){
 			((HeroSprite)sprite).sprint( 2f );
-			speed*=3;
+			speed*=2;
 		}
 
 		NaturesPower.naturesPowerTracker natStrength = buff(NaturesPower.naturesPowerTracker.class);
