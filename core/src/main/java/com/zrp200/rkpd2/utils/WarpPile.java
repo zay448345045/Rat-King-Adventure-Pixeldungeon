@@ -198,7 +198,8 @@ public class WarpPile {
     public static class HungerEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            Buff.affect(target, Hunger.class).affectHunger(-Hunger.STARVING*2);
+            Hunger hunger = Buff.affect(target, Hunger.class);
+            hunger.affectHunger( Hunger.STARVING - hunger.hunger());
         }
     }
 
