@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
@@ -28,12 +30,12 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfPurity;
+import com.zrp200.rkpd2.items.quest.FlexTape;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.utils.Point;
 
 import java.util.ArrayList;
 
@@ -97,7 +99,11 @@ public class ToxicGasRoom extends SpecialRoom {
 		level.drop(mainGold, furthestPos).type = Heap.Type.SKELETON;
 
 		for (int i = 0; i < 2; i++){
-			level.drop(new Gold().random(), goldPositions.remove(0)).type = Heap.Type.CHEST;
+			if (Random.Int(2) == 0){
+				level.drop(new FlexTape().random(), goldPositions.remove(0)).type = Heap.Type.CHEST;
+			} else {
+				level.drop(new Gold().random(), goldPositions.remove(0)).type = Heap.Type.CHEST;
+			}
 		}
 
 		level.addItemToSpawn(new PotionOfPurity());

@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.items.bags.*;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.SmallRation;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
+import com.zrp200.rkpd2.items.quest.FlexTape;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
@@ -187,6 +188,7 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
+		itemsToSpawn.add( new FlexTape().quantity(Random.IntRange(1, 3)));
 
 		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
 

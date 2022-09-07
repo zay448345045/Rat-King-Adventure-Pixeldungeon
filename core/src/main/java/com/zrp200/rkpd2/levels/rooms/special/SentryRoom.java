@@ -21,6 +21,13 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
@@ -37,6 +44,7 @@ import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHaste;
+import com.zrp200.rkpd2.items.quest.FlexTape;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
@@ -45,13 +53,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 public class SentryRoom extends SpecialRoom {
 
@@ -173,26 +174,31 @@ public class SentryRoom extends SpecialRoom {
 
 		Item prize;
 
-		//50% chance for prize item
-		if (Random.Int(2) == 0){
-			prize = level.findPrizeItem();
-			if (prize != null)
-				return prize;
-		}
-
-		//1 floor set higher in probability, never cursed
-		do {
-			if (Random.Int(2) == 0) {
-				prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
-			} else {
-				prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-			}
-		} while (prize.cursed || Challenges.isItemBlocked(prize));
-		prize.cursedKnown = true;
-
-		//33% chance for an extra update.
 		if (Random.Int(3) == 0){
-			prize.upgrade();
+			prize = new FlexTape().random();
+		} else {
+
+			//50% chance for prize item
+			if (Random.Int(2) == 0) {
+				prize = level.findPrizeItem();
+				if (prize != null)
+					return prize;
+			}
+
+			//1 floor set higher in probability, never cursed
+			do {
+				if (Random.Int(2) == 0) {
+					prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
+				} else {
+					prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
+				}
+			} while (prize.cursed || Challenges.isItemBlocked(prize));
+			prize.cursedKnown = true;
+
+			//33% chance for an extra update.
+			if (Random.Int(3) == 0) {
+				prize.upgrade();
+			}
 		}
 
 		return prize;
