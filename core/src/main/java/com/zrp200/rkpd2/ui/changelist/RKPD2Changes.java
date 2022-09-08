@@ -25,12 +25,15 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges.Badge;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.effects.BadgeBanner;
 import com.zrp200.rkpd2.items.armor.RatKingArmor;
 import com.zrp200.rkpd2.items.armor.WarriorArmor;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.quest.FlexTape;
 import com.zrp200.rkpd2.items.quest.Kromer;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
@@ -45,20 +48,19 @@ import com.zrp200.rkpd2.ui.Icons;
 import java.util.ArrayList;
 
 import static com.zrp200.rkpd2.Assets.Interfaces.TALENT_ICONS;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.HUNTRESS;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.MAGE;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.RAT_KING;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.ROGUE;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
 import static com.zrp200.rkpd2.actors.hero.HeroSubClass.*;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 import static com.zrp200.rkpd2.messages.Messages.get;
+import static com.zrp200.rkpd2.sprites.CharSprite.WARNING;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
 import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
-import static com.zrp200.rkpd2.ui.Icons.DEPTH;
-import static com.zrp200.rkpd2.ui.Icons.DISPLAY_LAND;
-import static com.zrp200.rkpd2.ui.Icons.INFO;
-import static com.zrp200.rkpd2.ui.Icons.PREFS;
-import static com.zrp200.rkpd2.ui.Icons.TALENT;
-import static com.zrp200.rkpd2.ui.Icons.TARGET;
-import static com.zrp200.rkpd2.ui.Icons.get;
+import static com.zrp200.rkpd2.ui.Icons.*;
 import static com.zrp200.rkpd2.ui.Window.SHPX_COLOR;
 import static com.zrp200.rkpd2.ui.Window.TITLE_COLOR;
 import static java.util.Arrays.asList;
@@ -76,7 +78,7 @@ public class RKPD2Changes {
         return new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), get(ChangesScene.class, "bugfixes"), message);
     }
     private static ChangeButton misc(String message) {
-        return new ChangeButton(get(PREFS), get(ChangesScene.class,"misc"), message);
+        return new ChangeButton(Icons.get(PREFS), get(ChangesScene.class,"misc"), message);
     }
 
     // section types
@@ -109,7 +111,7 @@ public class RKPD2Changes {
     }
 
     private static ChangeButton info(String message) {
-        return new ChangeButton(get(INFO), "Developer Commentary", message);
+        return new ChangeButton(Icons.get(INFO), "Developer Commentary", message);
     }
 
     // more utils
@@ -132,6 +134,95 @@ public class RKPD2Changes {
     // in this case I made it so you could add buttons in the ChangeInfo constructor; this is 'lustrous' style
 
     final ChangeInfo[][] changes = {
+        {
+                new ChangeInfo("RKA-1.5.0",true,TITLE_COLOR,
+                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary", "This is long-awaited update to Rat King Adventure.\n\n" +
+                                "Not everything was caught in playtesting and such and therefore here are plans for future patches:\n" +
+                                "_-_ Add more special seeds\n" +
+                                "_-_ Watch over balance of newer talents\n" +
+                                "_-_ Adjust the values of warp and warp effects\n" +
+                                "_-_ Add more kromer-related content\n" +
+                                "_-_ Fix feature regressions"),
+                        new ChangeButton(new Warp(), "This new status effect replaces buffs and debuffs inflicted by Kromer-created items and will be used for related items and content in the future.\n" +
+                                "#Warp# can be obtained by interacting with #otherworldy items# that do not belong in usual Pixel Dungeon setting. When inflicted, it will start decaying, while triggering various negative effects on the way.\n\n" +
+                                "Warp effects depend on how much warp you have collected, but the max you can carry is 150.\n\n" +
+                                "Don't accumulate too much warp or else you will have to face the consequences!"),
+                        new ChangeButton(new ItemSprite(SEED_SWIFTTHISTLE), "Special seeds", "When entering specific codes into custom seed input, you will get random seed playthrough but with some twist along the way.\n\n" +
+                                "Those seeds include (in current patch):\n" +
+                                "_-_ RAT-RAT-RAT\n" +
+                                "_-_ ROG-UEB-UFF\n" +
+                                "_-_ REV-ERS-EED\n" +
+                                "_-_ NOW-ALL-SHE\n" +
+                                "_-_ RNG-ITE-MSS\n" +
+                                "_-_ ITE-MCH-EST\n" +
+                                "_-_ EXP-ANS-IVE\n" +
+                                "_-_ BES-TFR-END\n" +
+                                "_-_ ECH-ECH-ECH"),
+                        new ChangeButton(Icons.get(TALENT), "Talent and Armor Ability Changes", list(
+                           "_Combo Meal_ buffed by giving 1 more combo.",
+                           "_Bravery_ buffed by giving 25% more rage at all points",
+                           "_Cockatrocious_ buffed by extending the duration of petrification",
+                           "_Big Time_ fixed working in more champion titles than it should",
+                           "_Adapt and Overcome_ fixed debug message for +3 effect",
+                            "_Archery Mark_ no longer targets invulnerable enemies"
+                        )),
+                        new ChangeButton(new ItemSprite(MASK), "Subclass Changes", list(
+                           "_Spirit Caller_ buffed by increasing the ability charge rate",
+                           "_Shadowflare_ nerfed by reducing vehicle's speed from 3x to 2x",
+                           "_Omnibattler_'s Paladin form now only provides 75% damage reduction, down from 100%",
+                                "_Omnibattler_ buffed by decreasing title change cooldown"
+                        )),
+                        new ChangeButton(new NerfGun(),
+                                "This new weapon can be found in crystal chests and is capable of shooting three different kinds of ammo.\n" +
+                                        "It requires reloading once ammunition is exhausted.\n\n" +
+                                        "Nerf Gun also can use seeds to get unique enchantments that persist until the gun is reloaded.\n" +
+                                        "And finally, this weapon grows with your progression in the dungeon, using experience."
+                                ),
+                        new ChangeButton(new FlexTape(),
+                                "This curious item can be bought in shops or be found in Shattered v1.2 new rooms and has various uses, including instantly killing enemies and healing allies.\n" +
+                                        "Unfortunately, it is quite cursed and will give warp on using."
+                        ),
+                        new ChangeButton(new ItemSprite(ALUMINUM_SWORD), "Weaponry Changes", list(
+                            "_Aluminum Sword_ reworked to use vanilla Gladiator perk, with reduced damage",
+                                "_Runic Blade MK2_ buffed to recharge its magic faster, deal more damage and inflict magic dispel with magical swords",
+                                "_Construction Wand_ buffed with increased durability of its summons",
+                                "_Luminious Cutlass_ nerfed with reduced damage and weaker lightning effect",
+                                "_Blooming Pick_ buffed with significant buff to its damage and mining delay",
+                                "_Elemental Dirk_ buffed with significant buff to its damage, its debuffs are also no longer depend on chance",
+                                "_Exo Knife_ reworked to deal increased damage in 5x5 instead of recursive hits",
+                                "_Homing Boomerang_ nerfed to lose damage after each bounce and no longer being able to hit highly evasive or invulnerable enemies",
+                                "_Phantom Spear_ fixed to remove durability-related issues",
+                                "_Terminus Blade_ nerfed with reduced damage, attack speed, but buffed ability's charge rate"
+                        )),
+                        new ChangeButton(new Kromer(), list(
+                                "All kromer items inflict various amount of warp",
+                                "Infinity Wealth adjusted to only give 50% EXP from spawned mobs, but is now able to upgrade thrown weapons and preserve enchantments",
+                                "Infinity Manpower buffed to grant more strength and no longer damage the player",
+                                "No Death Elixir buffed to last 250 turns",
+                                "Kromer Crown buffed to be usable with Kromer Mask"
+                        )),
+                        misc(list(
+                                "Exploding champions will explode into arcane bomb instead of using several bombs",
+                                "Paladin champions give 75% damage reduction to their allies instead of full invulnerability",
+                                "Increased effect cap on certain rings",
+                                "Chaotic curse now uses same visual effect as kromer items",
+                                "Reworked Chemical Barrier challenge to replicate older alchemy style",
+                                "Buffed some of Animosity Mode bosses",
+                                "Significantly buffed Soul of Yendor's charge efficiency and implemented new Armband for it",
+                                "Phantoms no longer inflict DoT debuffs with their attacks",
+                                "Increased Rat King boss HP by 50%"
+                        )),
+                        bugFixes(list(
+                                "Fixed the crash with using brawler with bare hands",
+                                "Fixed DK being faster outside of Animosity",
+                                "Fixed abyss trappers being able to override exit stairs",
+                                "Fixed possible crash with trap classes in Abyss",
+                                "Fixed Rat King not getting points from kromer talents",
+                                "Fixed the increased HP of voodoo champion's offspring",
+                                "Fixed the bug with Aqua Blasts being given on each level transition"
+                        ))
+                )
+        },
         { // v0.4
             new ChangeInfo("v1.0.0",true,TITLE_COLOR,
                     info(Messages.get(this, "100")),
@@ -355,7 +446,7 @@ public class RKPD2Changes {
                                         "_-_ This item combines properties of Horn of Plenty, Alchemical Toolkit, Ethereal Chains, Chalice of Blood, Sandals of Nature, Master Thieves\' Armband, Timekeeper\'s Hourglass and Unstable Spellbook.\n\n" +
                                         "_-_ To make it, use cursed wand in some way to combine all artifacts together.\n\n" +
                                         "_-_ Alternatively, use kromer, chaosstone, Amulet of Yendor and 101 energy."),
-                        new ChangeButton(get(Icons.CHALLENGE_ON), "New challenges",
+                        new ChangeButton(Icons.get(Icons.CHALLENGE_ON), "New challenges",
                                 list(2,
                                         "Added 21 new challenges that are accessible from beating challenges!",
                                         "Each new challenge is connected to one that unlocks it but has separate effects.",
@@ -473,7 +564,7 @@ public class RKPD2Changes {
                         + list("_Double Mark_ balance changed in response to SHPD changes; charge cost reduction down to 16/40/58/70/79% (which is still up from shpd's 30/50/65/70), from 33/55/70/80%/87.")
                         + list("_13th armor ability_ now only lasts for 6 turns, but also no longer prevents EXP or item drops.",
                         "_resistance talent_ damage reduction, in a compromise, reduced to 15/28/39/48%, which is still well above shattered levels.")),
-                    new ChangeButton(get(DEPTH), "SHPD Additions and Changes", "Implemented:"
+                    new ChangeButton(Icons.get(DEPTH), "SHPD Additions and Changes", "Implemented:"
                         + list("New music",
                             "Geyser and Gateway traps",
                             "Spectral Necromancers",
@@ -745,7 +836,7 @@ public class RKPD2Changes {
 
             {
                     new ChangeInfo("Abyssal", true, TITLE_COLOR, "",
-                            new ChangeButton(get(Icons.DEPTH),"New chapter!",
+                            new ChangeButton(Icons.get(Icons.DEPTH),"New chapter!",
                                     "Added endless abyss chapter from Summoning PD, excluding exclusive traps"),
                             new ChangeButton(avatar(RAT_KING,6), "Rat King Nerfs (rat king nerfs)",
                                     "Rat King's incomprehensible power bugged me during development of abyss too much.\n\n" +
@@ -776,7 +867,7 @@ public class RKPD2Changes {
             // v0.0.1
         {
             new ChangeInfo("v0.0.1", true, TITLE_COLOR, "") {{
-                addButton(new ChangeButton(get(Icons.INFO), "Developer Commentary", "This update is mostly just bugfixes and balance adjustments. More substantial changes should come when SHPD v0.9.3 is released.\n\nDo note that while things are intended to be broken, I'm aiming for a state where things are 'evenly' overpowered such that you can play any class or do any build and be like 'that's really damn good' for everything, rather than resetting (or just choosing talents!) for that same broken build every time."));
+                addButton(new ChangeButton(Icons.get(Icons.INFO), "Developer Commentary", "This update is mostly just bugfixes and balance adjustments. More substantial changes should come when SHPD v0.9.3 is released.\n\nDo note that while things are intended to be broken, I'm aiming for a state where things are 'evenly' overpowered such that you can play any class or do any build and be like 'that's really damn good' for everything, rather than resetting (or just choosing talents!) for that same broken build every time."));
                 addButton(new ChangeButton(WARRIOR, "This is intended to make Warrior (and Berserker) a little more balanced powerwise compared to other stuff in the game."
                     + "\n\nGeneral:" + list("Implemented buffed runic transference.",
                         "Nerfed Iron Stomach to be in line with SHPD.",
@@ -806,7 +897,7 @@ public class RKPD2Changes {
                         + list("NBA seed boost now +17/33/50% down from +33/66/100%",
                         "NBA dew boost now +8/17/25% down from +33/66/100%",
                         "Shielding Dew now also gives upfront shielding equal to 25%/50%/75% of the heal when not at full HP.")));
-                addButton(new ChangeButton(get(Icons.TALENT), "General Talents", ""
+                addButton(new ChangeButton(Icons.get(Icons.TALENT), "General Talents", ""
                         + list("Scholar's Intuition +2 now has a 50% chance to identify consumables when picking them up, down from 2/3",
                         "Scholar's Intuition +1 now identifies wand levels on the first zap.")
                         + list("Restored Nature now roots for 4/6 turns, up from 3/5")
@@ -881,7 +972,7 @@ public class RKPD2Changes {
                             + '\n' + list("Does 0-9 damage with +1/+6 scaling instead of its vanilla/early shattered 1-8 with exponential scaling.",
                                 "Is otherwise unchanged.")
                             + "\nThis should make it more consistently overpowered instead of requiring 10+ upgrades to reach actually astounding performance. I can probably call this my greatest mistake of all time. Oh well..."));
-                    addButton(new ChangeButton(get(Icons.DEPTH),"Level gen changes", list(2,
+                    addButton(new ChangeButton(Icons.get(Icons.DEPTH),"Level gen changes", list(2,
                             "Amount of standard rooms reduced by 30%-50% in honor of precedent set by Rat King Dungeon.",
                             "Gold yield from Rat King's room increased by ~10x, general gold yield increased by 50%",
                             "Hero takes 1/3 damage from Grim traps.",
@@ -898,7 +989,7 @@ public class RKPD2Changes {
                                         "Added a new spirit-bow exclusive enchantment.",
                                         "It, along with grim, will replace blocking and lucky when using a scroll of enchantment on the bow (or a scroll of upgrade in the case of huntress).")));
                     addButton(new ChangeButton(new ItemSprite(new WarriorArmor()),"Class Armor","Who liked limits anyway? You can trade current HP for a full charge."));
-                    addButton(new ChangeButton(get(Icons.LANGS),"Text Changes",
+                    addButton(new ChangeButton(Icons.get(Icons.LANGS),"Text Changes",
                             "I've changed some of the text in the game, including:"
                             + list("Class descriptions both ingame and in the select screen",
                                 "Some enemy descriptions",
