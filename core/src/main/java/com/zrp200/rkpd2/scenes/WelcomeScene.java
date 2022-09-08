@@ -21,26 +21,6 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Chrome;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.GamesInProgress;
-import com.zrp200.rkpd2.Rankings;
-import com.zrp200.rkpd2.SPDSettings;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.effects.BannerSprites;
-import com.zrp200.rkpd2.effects.Fireball;
-import com.zrp200.rkpd2.journal.Document;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.ui.Archs;
-import com.zrp200.rkpd2.ui.Icons;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.StyledButton;
-import com.zrp200.rkpd2.windows.WndError;
-import com.zrp200.rkpd2.windows.WndHardNotification;
-import com.zrp200.rkpd2.windows.WndMessage;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
@@ -56,12 +36,14 @@ import com.zrp200.rkpd2.ui.Archs;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.StyledButton;
-import java.util.Collection;
+import com.zrp200.rkpd2.windows.WndError;
+import com.zrp200.rkpd2.windows.WndHardNotification;
+
 import java.util.Collections;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.V1_0_0;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_5;
 	@Override
 	public void create() {
 		super.create();

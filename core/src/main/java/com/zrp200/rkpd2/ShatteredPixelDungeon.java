@@ -39,6 +39,7 @@ public class ShatteredPixelDungeon extends Game {
 			V1_0_0=653,
 			v0_3_0=616,
 			v0_2_0=597,
+			vDLC_1_5=777,
 			vDLC_1_4_10=623,
 			vDLC_1_4=600,
 			vDLC_1_3=575,
