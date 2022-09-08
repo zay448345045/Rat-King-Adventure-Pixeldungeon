@@ -25,6 +25,8 @@ import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.KromerCrown;
+import com.zrp200.rkpd2.items.TengusMask;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
@@ -88,13 +90,20 @@ public enum HeroSubClass {
 	KING(HeroIcon.KING),
 	RK_CHAMPION(HeroIcon.CHAMP);
 
-	public static void set(Hero hero, HeroSubClass subClass) {
-		if (hero.subClass != NONE){
+	public static void set(Hero hero, HeroSubClass subClass){
+		set(hero, subClass, new TengusMask());
+	}
+
+	public static void set(Hero hero, HeroSubClass subClass, TengusMask tome) {
+		if (hero.subClass != NONE) {
 			hero.subClass2 = subClass;
-			Talent.initSubclassTalents(subClass, hero.talents, 3);
-		}
-		else {
+		} else {
 			hero.subClass = subClass;
+		}
+
+		if (tome instanceof KromerCrown){
+			Talent.initSubclassTalents(subClass, hero.talents, 3);
+		} else {
 			Talent.initSubclassTalents(hero);
 		}
 	}

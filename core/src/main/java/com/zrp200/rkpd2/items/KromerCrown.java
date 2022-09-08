@@ -79,11 +79,6 @@ public class KromerCrown extends TengusMask {
 
 		if (action.equals( AC_CONNECT )) {
 
-			if (hero.subClass == NONE){
-				GLog.w(Messages.get(this, "no_subclass"));
-				return;
-			} else {
-
 				curUser = hero;
 				ExploitHandler handler = Buff.affect(curUser, ExploitHandler.class);
 				handler.crown = this;
@@ -114,8 +109,6 @@ public class KromerCrown extends TengusMask {
 
 				GameScene.show(new WndChooseSubclass(this, hero, subClasses));
 			}
-
-		}
 	}
 
 	private static final ItemSprite.Glowing CHAOTIC = new ItemSprite.Glowing( 0.15f  );
@@ -125,7 +118,7 @@ public class KromerCrown extends TengusMask {
 		return CHAOTIC;
 	}
 
-	public static void choose( Hero hero, HeroSubClass way) { HeroSubClass.set(hero, way); }
+	public static void choose( Hero hero, HeroSubClass way) { HeroSubClass.set(hero, way, new KromerCrown()); }
 	
 	public void choose( HeroSubClass way ) {
 		
