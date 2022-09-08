@@ -30,10 +30,8 @@ import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.utils.GLog;
 
 public class Fadeleaf extends Plant {
 	
@@ -45,19 +43,23 @@ public class Fadeleaf extends Plant {
 	@Override
 	public void affectHero(Char ch, boolean isWarden) {
 		if (isWarden){
-			if (Dungeon.bossLevel()) {
-				GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
-				return;
+			Hero hero = (Hero)ch;
+			hero.curAction = null;
 
-			}
+			if (Dungeon.interfloorTeleportAllowed()){
 
 			TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
 			if (timeFreeze != null) timeFreeze.detach();
 
-			InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-			InterlevelScene.returnDepth = Math.max(1, (Dungeon.getDepth() - 1));
-			InterlevelScene.returnBranch = 0;InterlevelScene.returnPos = -2;
-			Game.switchScene( InterlevelScene.class );
+				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+				InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
+				InterlevelScene.returnBranch = 0;
+				InterlevelScene.returnPos = -2;
+				Game.switchScene( InterlevelScene.class );
+
+			} else {
+				ScrollOfTeleportation.teleportChar((Hero) ch);
+			}
 		} else {
 			ScrollOfTeleportation.teleportChar((Hero) ch);
 		}
