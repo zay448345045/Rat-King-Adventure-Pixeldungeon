@@ -418,7 +418,7 @@ public abstract class Char extends Actor {
 			if (enemy instanceof Hero && (((Hero) enemy).hasTalent(Talent.BRAVERY))){
 				Berserk b = Buff.affect(enemy, Berserk.class);
 				b.damage(Math.round(
-							(0.5f+((Hero) enemy).pointsInTalent(Talent.BRAVERY)/2f) *effectiveDamage));
+							(0.75f+((Hero) enemy).pointsInTalent(Talent.BRAVERY)/2f) *effectiveDamage));
 			}
 
 
