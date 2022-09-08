@@ -76,7 +76,8 @@ public class AboutScene extends PixelScene {
 		CreditsBlock tb = new CreditsBlock(false, 0x3c9efa,
 				"Creator of RKA:",
 				Icons.TRASHBOXBOBYLEV.get(),
-				"Trashbox Bobylev",
+				"Trashbox Bobylev\n" +
+						"Spriting help: Taiki/Interexstellar",
 				"trashboxbobylev.itch.io",
 				"https://trashboxbobylev.itch.io");
 		tb.setRect((w - fullWidth)/2f, rkpd2.bottom()+(landscape() ? 5 : 10 + pa.height()), 120, 0);
