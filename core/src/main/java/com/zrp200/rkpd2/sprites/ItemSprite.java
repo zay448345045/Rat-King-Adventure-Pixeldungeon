@@ -241,7 +241,9 @@ public class ItemSprite extends MovieClip {
 		emitter = null;
 		try {
 			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.RANDOM_ITEMS) {
-				image = (int)(Random.element(ItemSpriteSheet.class.getFields()).get(null));
+				Object o = Random.element(ItemSpriteSheet.class.getFields()).get(null);
+				if (!(o instanceof TextureFilm))
+					image = (int) o;
 			}
 		} catch (IllegalAccessException e) {
 			ShatteredPixelDungeon.reportException(e);
