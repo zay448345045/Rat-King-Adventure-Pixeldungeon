@@ -446,6 +446,11 @@ public class NerfGun extends Weapon {
                 int cell = shot.collisionPos;
                 gun = curWand;
 
+                if (cell == curUser.pos || target == curUser.pos){
+                    GLog.i( Messages.get(Wand.class, "self_target") );
+                    return;
+                }
+
                 NerfAmmo shotItem = curWand.sampleAmmo();
                 shotItem.throwSound();
 
