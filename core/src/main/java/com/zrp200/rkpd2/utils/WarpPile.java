@@ -45,7 +45,7 @@ public class WarpPile {
 
     //the (1/X) chance for effect to come out every time the warp decays
     public static int effectTimer(float warpAmount){
-        return (int) (20 - warpAmount / 10f);
+        return (int) (30 - warpAmount / 10f);
     }
 
     public interface WarpEffect extends Callback {
