@@ -116,11 +116,17 @@ public abstract class RegularLevel extends Level {
 		}
 		// reduce by designated amount to reduce levelsize for rkpd2, much like rkpd does.
 		// reduce for rkpd2, inspired by rkpd
-		standards = (int)Math.floor(standards * Random.Float(SIZE_MODIFIER[0],SIZE_MODIFIER[1]));
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+			standards *= 4;
+		else
+			standards = (int)Math.floor(standards * Random.Float(SIZE_MODIFIER[0],SIZE_MODIFIER[1]));
 		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
 			standards *= 4;
 		}
 		for (int i = 0; i < standards; i++) {
+			int sizeCat = standards-i;
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+				sizeCat = 0;
 			StandardRoom s;
 			do {
 				s = StandardRoom.createRoom();
@@ -137,6 +143,8 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			specials++;
 		}
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+			specials += 2;
 		// reduce size of special rooms by same factor for net decrease. This will do much less in comparison to regular rooms but proportions are proportions.
 		//specials = Random.round( specials*SIZE_MODIFIER );
 		SpecialRoom.initForFloor();
@@ -221,6 +229,8 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS)){
 			mobsToSpawn *= 1000;
 		}
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+			mobsToSpawn *= 2;
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		boolean allowCorridors = Dungeon.isChallenged(Challenges.TOO_MANY_MOBS);
@@ -383,6 +393,8 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
 		}
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+			nItems *= 1.5f;
 		
 		for (int i=0; i < nItems; i++) {
 
