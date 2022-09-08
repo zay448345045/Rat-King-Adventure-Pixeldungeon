@@ -237,6 +237,18 @@ public class NerfGun extends Weapon {
         Invisibility.dispel();
         updateQuickslot();
         curUser.spendAndNext(baseDelay(curUser));
+        if (curCharges == 0) {
+            Sample.INSTANCE.play(Assets.Sounds.PLANT);
+            curUser.sprite.operate(curUser.pos, () -> {
+                curUser.spendAndNext(baseDelay(curUser));
+                curUser.sprite.idle();
+                curCharges = maxCharges();
+                Warp.inflict(10, 1.5f);
+                enchantment = null;
+                updateQuickslot();
+                Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
+            });
+        }
     }
 
     int exp;
@@ -490,18 +502,6 @@ public class NerfGun extends Weapon {
                                             }
                                         });
                     }
-
-                } else {
-                    Sample.INSTANCE.play(Assets.Sounds.PLANT);
-                    curUser.sprite.operate(target, () -> {
-                        curUser.spendAndNext(curWand.baseDelay(curUser)*2);
-                        curUser.sprite.idle();
-                        curWand.curCharges = curWand.maxCharges();
-                        Warp.inflict(10, 1.5f);
-                        curWand.enchantment = null;
-                        updateQuickslot();
-                        Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
-                    });
 
                 }
 
