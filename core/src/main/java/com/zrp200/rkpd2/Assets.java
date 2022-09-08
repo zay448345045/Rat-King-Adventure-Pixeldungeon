@@ -332,5 +332,6 @@ public class Assets {
         public static final String TRAPPET = "sprites/trappet.png";
         public static final String RATBOSS = "sprites/ratkingboss.png";
 		public static final String RED_SENTRY= "sprites/red_sentry.png";
+		public static final String ECH = "sprites/ech.png";
 	}
 }

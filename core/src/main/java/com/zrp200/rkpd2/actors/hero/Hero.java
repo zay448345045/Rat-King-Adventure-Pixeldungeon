@@ -96,6 +96,7 @@ import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.StatusPane;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.*;
 
@@ -500,6 +501,9 @@ public class Hero extends Char {
 		}
 		if (Dungeon.isChallenged(Challenges.BURN)){
 			Buff.affect(this, DomainOfHell.class);
+		}
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.ECH){
+			Buff.affect(this, Ech.EchDied.class).depth = -1;
 		}
 	}
 	

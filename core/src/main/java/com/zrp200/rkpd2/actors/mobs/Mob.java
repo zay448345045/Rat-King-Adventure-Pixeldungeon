@@ -1297,6 +1297,8 @@ public abstract class Mob extends Char {
 				if (ally.fieldOfView == null || ally.fieldOfView.length != level.length()){
 					ally.fieldOfView = new boolean[level.length()];
 				}
+				if (ally instanceof Ech)
+					((Ech) ally).update();
 				Dungeon.level.updateFieldOfView( ally, ally.fieldOfView );
 
 			}
