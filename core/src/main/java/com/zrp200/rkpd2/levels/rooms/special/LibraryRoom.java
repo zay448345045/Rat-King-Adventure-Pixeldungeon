@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.levels.rooms.special;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
@@ -32,6 +33,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class LibraryRoom extends SpecialRoom {
 
@@ -44,6 +46,10 @@ public class LibraryRoom extends SpecialRoom {
 		
 		Painter.fill( level, left + 1, top+1, width() - 2, 1 , Terrain.BOOKSHELF );
 		Painter.drawInside(level, this, entrance, 1, Terrain.EMPTY_SP );
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int n = Random.NormalIntRange( 1, 3 );
 		for (int i=0; i < n; i++) {
@@ -56,7 +62,7 @@ public class LibraryRoom extends SpecialRoom {
 				item = Random.Int(2) == 0 ? new ScrollOfIdentify() : new ScrollOfRemoveCurse();
 			else
 				item = prize( level );
-			level.drop( item, pos );
+			level.drop( item, pos ).type = type;
 		}
 		
 		entrance.set( Door.Type.LOCKED );

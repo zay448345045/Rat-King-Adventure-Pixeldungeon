@@ -29,10 +29,12 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Alchemy;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.items.EnergyCrystal;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.potions.*;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.HashMap;
 
@@ -65,17 +67,20 @@ public class SecretLaboratoryRoom extends SecretRoom {
 
 		Blob.seed( pot.x + level.width() * pot.y, 1, Alchemy.class, level );
 		int pos;
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 
 		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get(pos) != null);
-			level.drop(new EnergyCrystal().random(), pos);
+			level.drop(new EnergyCrystal().random(), pos).type = type;
 
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get(pos) != null);
-			level.drop(new EnergyCrystal().random(), pos);
+			level.drop(new EnergyCrystal().random(), pos).type = type;
 		}
 
 		int n = Random.IntRange( 2, 3 );
@@ -87,7 +92,7 @@ public class SecretLaboratoryRoom extends SecretRoom {
 			
 			Class<?extends Potion> potionCls = Random.chances(chances);
 			chances.put(potionCls, 0f);
-			level.drop( Reflection.newInstance(potionCls), pos );
+			level.drop( Reflection.newInstance(potionCls), pos ).type = type;
 		}
 		
 	}

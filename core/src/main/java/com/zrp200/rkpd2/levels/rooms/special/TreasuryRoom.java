@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class TreasuryRoom extends SpecialRoom {
 
@@ -41,6 +42,8 @@ public class TreasuryRoom extends SpecialRoom {
 		Painter.set( level, center(), Terrain.STATUE );
 		
 		Heap.Type heapType = Random.Int( 2 ) == 0 ? Heap.Type.CHEST : Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			heapType = Heap.Type.CHEST;
 		
 		int n = Random.IntRange( 2, 3 );
 		for (int i=0; i < n; i++) {

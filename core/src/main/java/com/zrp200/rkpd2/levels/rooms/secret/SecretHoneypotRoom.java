@@ -24,12 +24,14 @@ package com.zrp200.rkpd2.levels.rooms.secret;
 import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.Bee;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class SecretHoneypotRoom extends SecretRoom {
 	
@@ -66,7 +68,10 @@ public class SecretHoneypotRoom extends SecretRoom {
 		do {
 			itemPos = level.pointToCell(random());
 		} while (level.heaps.get(itemPos) != null);
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
-		level.drop(item, itemPos);
+		level.drop(item, itemPos).type = type;
 	}
 }

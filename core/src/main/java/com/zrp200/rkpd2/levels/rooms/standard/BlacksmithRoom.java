@@ -23,12 +23,15 @@ package com.zrp200.rkpd2.levels.rooms.standard;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.traps.BurningTrap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class BlacksmithRoom extends StandardRoom {
 	
@@ -47,6 +50,10 @@ public class BlacksmithRoom extends StandardRoom {
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1, Terrain.TRAP );
 		Painter.fill( level, this, 2, Terrain.EMPTY_SP );
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		for (int i=0; i < 2; i++) {
 			int pos;
@@ -58,7 +65,7 @@ public class BlacksmithRoom extends StandardRoom {
 					Generator.Category.ARMOR,
 					Generator.Category.WEAPON,
 					Generator.Category.MISSILE
-				) ), pos );
+				) ), pos ).type = type;
 		}
 		
 		for (Door door : connected.values()) {

@@ -21,11 +21,14 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class SecretArtilleryRoom extends SecretRoom {
 	
@@ -35,6 +38,9 @@ public class SecretArtilleryRoom extends SecretRoom {
 		Painter.fill(level, this, 1, Terrain.EMPTY_SP);
 		
 		Painter.set(level, center(), Terrain.STATUE_SP);
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		for (int i = 0; i < 3; i++){
 			int itemPos;
@@ -44,9 +50,9 @@ public class SecretArtilleryRoom extends SecretRoom {
 					|| level.heaps.get(itemPos) != null);
 			
 			if( i == 0 ){
-				level.drop(new Bomb.DoubleBomb(), itemPos);
+				level.drop(new Bomb.DoubleBomb(), itemPos).type = type;
 			} else {
-				level.drop(Generator.randomMissile(), itemPos);
+				level.drop(Generator.randomMissile(), itemPos).type = type;
 			}
 		}
 		

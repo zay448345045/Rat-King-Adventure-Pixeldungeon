@@ -25,12 +25,14 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class ArmoryRoom extends SpecialRoom {
 
@@ -56,12 +58,15 @@ public class ArmoryRoom extends SpecialRoom {
 		
 		int n = Random.IntRange( 2, 3 );
 		prizeCats = new float[]{1,1,1,1};
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		for (int i=0; i < n; i++) {
 			int pos;
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY || level.heaps.get( pos ) != null);
-			level.drop( prize( level ), pos );
+			level.drop( prize( level ), pos ).type = type;
 		}
 		
 		entrance.set( Door.Type.LOCKED );

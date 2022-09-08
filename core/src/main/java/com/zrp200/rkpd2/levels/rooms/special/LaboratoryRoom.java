@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.blobs.Alchemy;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.items.EnergyCrystal;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.journal.AlchemyPage;
 import com.zrp200.rkpd2.items.keys.IronKey;
@@ -37,6 +38,7 @@ import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +67,10 @@ public class LaboratoryRoom extends SpecialRoom {
 		int chapter = 1 + Dungeon.depth/5;
 		Blob.seed( pot.x + level.width() * pot.y, 1, Alchemy.class, level );
 
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
+
 		int pos;
 		do {
 			pos = level.pointToCell(random());
@@ -72,9 +78,9 @@ public class LaboratoryRoom extends SpecialRoom {
 				level.map[pos] != Terrain.EMPTY_SP ||
 						level.heaps.get( pos ) != null);
 		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY))
-			level.drop( new EnergyCrystal().random(), pos );
+			level.drop( new EnergyCrystal().random(), pos ).type = type;
 		else
-			level.drop( new EnergyCrystal().quantity(1 + chapter*7 + Random.NormalIntRange(0, 8)), pos);
+			level.drop( new EnergyCrystal().quantity(1 + chapter*7 + Random.NormalIntRange(0, 8)), pos).type = type;
 
 		int n = Random.NormalIntRange( 1, 2 );
 		for (int i=0; i < n; i++) {
@@ -83,7 +89,7 @@ public class LaboratoryRoom extends SpecialRoom {
 			} while (
 				level.map[pos] != Terrain.EMPTY_SP ||
 				level.heaps.get( pos ) != null);
-			level.drop( prize( level ), pos );
+			level.drop( prize( level ), pos ).type = type;
 		}
 		
 		//guide pages
@@ -116,7 +122,7 @@ public class LaboratoryRoom extends SpecialRoom {
 				} while (
 						level.map[pos] != Terrain.EMPTY_SP ||
 								level.heaps.get(pos) != null);
-				level.drop(p, pos);
+				level.drop(p, pos).type = type;
 			}
 		}
 

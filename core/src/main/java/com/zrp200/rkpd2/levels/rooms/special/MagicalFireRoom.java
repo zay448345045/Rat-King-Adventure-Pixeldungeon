@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.buffs.Burning;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfFrost;
@@ -47,6 +48,7 @@ import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class MagicalFireRoom extends SpecialRoom {
 
@@ -98,16 +100,20 @@ public class MagicalFireRoom extends SpecialRoom {
 
 		int n = Random.IntRange( 3, 4 );
 
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
+
 		for (int i=0; i < n; i++) {
 			int pos;
 			do {
 				pos = level.pointToCell(behindFire.random(0));
 			} while (level.heaps.get(pos) != null);
 			if (honeyPot){
-				level.drop( new Honeypot(), pos);
+				level.drop( new Honeypot(), pos).type = type;
 				honeyPot = false;
 			} else
-				level.drop( prize( level ), pos );
+				level.drop( prize( level ), pos ).type = type;
 		}
 
 		level.addItemToSpawn(new PotionOfFrost());

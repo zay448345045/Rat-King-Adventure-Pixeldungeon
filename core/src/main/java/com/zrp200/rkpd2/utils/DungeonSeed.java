@@ -152,7 +152,8 @@ public class DungeonSeed {
 		ROGUE("ROG-UEB-UFF"),
 		REVERSE("REV-ERS-EED"),
 		NO_WALLS("NOW-ALL-SHE"),
-		RANDOM_ITEMS("RNG-ITE-MSS");
+		RANDOM_ITEMS("RNG-ITE-MSS"),
+		CHESTS("ITE-MCH-EST");
 
 		public long seed;
 		public boolean random;

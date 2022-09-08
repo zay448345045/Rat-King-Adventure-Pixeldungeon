@@ -21,23 +21,15 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
-import com.zrp200.rkpd2.items.scrolls.Scroll;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfLullaby;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfMirrorImage;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRage;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTerror;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.HashMap;
 
@@ -82,6 +74,10 @@ public class SecretLibraryRoom extends SecretRoom {
 			Painter.drawInside(level, this, entrance, (height() - 3) / 2, Terrain.EMPTY_SP);
 		}
 		entrance.set( Door.Type.HIDDEN );
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int n = Random.IntRange( 2, 3 );
 		HashMap<Class<? extends Scroll>, Float> chances = new HashMap<>(scrollChances);
@@ -93,7 +89,7 @@ public class SecretLibraryRoom extends SecretRoom {
 			
 			Class<?extends Scroll> scrollCls = Random.chances(chances);
 			chances.put(scrollCls, 0f);
-			level.drop( Reflection.newInstance(scrollCls), pos );
+			level.drop( Reflection.newInstance(scrollCls), pos ).type = type;
 		}
 	}
 	

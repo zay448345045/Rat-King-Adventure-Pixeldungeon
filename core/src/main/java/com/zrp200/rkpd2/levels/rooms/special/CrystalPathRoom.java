@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Gold;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.CrystalKey;
 import com.zrp200.rkpd2.items.keys.IronKey;
@@ -36,6 +37,7 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class CrystalPathRoom extends SpecialRoom {
 
@@ -123,6 +125,10 @@ public class CrystalPathRoom extends SpecialRoom {
 			rooms[i].set(rooms[i].shrink(2));
 		}
 
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
+
 		for (int i = 0; i < 4; i++){
 			int pos = level.pointToCell(rooms[idx].center());
 			Item item;
@@ -146,7 +152,7 @@ public class CrystalPathRoom extends SpecialRoom {
 					}
 					break;
 			}
-			level.drop(item, pos);
+			level.drop(item, pos).type = type;
 			if (clockwise){
 				idx++;
 				if (idx > 3) idx = 0;

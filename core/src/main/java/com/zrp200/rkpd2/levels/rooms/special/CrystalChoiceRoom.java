@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class CrystalChoiceRoom extends SpecialRoom {
 
@@ -103,6 +104,9 @@ public class CrystalChoiceRoom extends SpecialRoom {
 		}
 
 		int n = Random.NormalIntRange(3, 4);
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		for (int i = 0; i < n; i++){
 			Item reward = Generator.random(Random.oneOf(
 					Generator.Category.POTION,
@@ -116,7 +120,7 @@ public class CrystalChoiceRoom extends SpecialRoom {
 					pos = level.pointToCell(room1.random(0));
 				}
 			} while (level.heaps.get(pos) != null);
-			level.drop(reward, pos);
+			level.drop(reward, pos).type = type;
 		}
 
 		Item hidden = Generator.random(Random.oneOf(
@@ -127,6 +131,9 @@ public class CrystalChoiceRoom extends SpecialRoom {
 		));
 		Heap chest = level.drop(hidden, level.pointToCell(room2.center()));
 		chest.type = Heap.Type.CHEST;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS) {
+			chest.type = Heap.Type.EBONY_CHEST;
+		}
 		//opening the chest is optional, so it doesn't count for exploration bonus
 		chest.autoExplored = true;
 

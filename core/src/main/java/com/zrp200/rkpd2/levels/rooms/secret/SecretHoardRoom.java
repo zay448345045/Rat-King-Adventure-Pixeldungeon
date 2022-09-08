@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Gold;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -34,6 +35,7 @@ import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
 import com.zrp200.rkpd2.levels.traps.RockfallTrap;
 import com.zrp200.rkpd2.levels.traps.Trap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class SecretHoardRoom extends SecretRoom {
 	
@@ -54,6 +56,9 @@ public class SecretHoardRoom extends SecretRoom {
 		int goldPos;
 		//half of the internal space of the room
 		int totalGold = ((width()-2)*(height()-2))/2;
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		//no matter how much gold it drops, roughly equals 8 gold stacks.
 		float goldRatio = 8 / (float)totalGold;
@@ -63,7 +68,7 @@ public class SecretHoardRoom extends SecretRoom {
 			} while (level.heaps.get(goldPos) != null);
 			Item gold = new Gold().random();
 			gold.quantity(Math.round(gold.quantity() * goldRatio));
-			level.drop(gold, goldPos);
+			level.drop(gold, goldPos).type = type;
 		}
 		
 		for (Point p : getPoints()){

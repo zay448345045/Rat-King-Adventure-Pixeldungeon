@@ -21,13 +21,16 @@
 
 package com.zrp200.rkpd2.levels.rooms.secret;
 
+import com.watabou.utils.Point;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class SecretRunestoneRoom extends SecretRoom {
 	
@@ -62,23 +65,27 @@ public class SecretRunestoneRoom extends SecretRoom {
 		}
 		
 		level.addItemToSpawn(new PotionOfLiquidFlame());
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int dropPos;
 		
 		do{
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY);
-		level.drop( Generator.random(Generator.Category.STONE), dropPos);
+		level.drop( Generator.random(Generator.Category.STONE), dropPos).type = type;
 		
 		do{
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY || level.heaps.get(dropPos) != null);
-		level.drop( Generator.random(Generator.Category.STONE), dropPos);
+		level.drop( Generator.random(Generator.Category.STONE), dropPos).type = type;
 		
 		do{
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY_SP);
-		level.drop( new StoneOfEnchantment(), dropPos);
+		level.drop( new StoneOfEnchantment(), dropPos).type = type;
 		
 		entrance.set(Door.Type.HIDDEN);
 	}

@@ -25,6 +25,7 @@ import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.food.ChargrilledMeat;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.food.MysteryMeat;
@@ -33,6 +34,7 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.plants.BlandfruitBush;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class SecretLarderRoom extends SecretRoom {
 	
@@ -57,6 +59,10 @@ public class SecretLarderRoom extends SecretRoom {
 		Painter.set(level, c, Terrain.GRASS);
 		if (!Dungeon.isChallenged(Challenges.NO_VEGAN))
 		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.getDepth() / 5);
 		
@@ -79,7 +85,7 @@ public class SecretLarderRoom extends SecretRoom {
 			do {
 				foodPos = level.pointToCell(random());
 			} while (level.map[foodPos] != Terrain.EMPTY_SP || level.heaps.get(foodPos) != null);
-			level.drop(food, foodPos);
+			level.drop(food, foodPos).type = type;
 		}
 		
 		entrance().set(Door.Type.HIDDEN);

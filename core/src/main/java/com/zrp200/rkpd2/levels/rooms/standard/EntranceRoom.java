@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.levels.rooms.standard;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.journal.Document;
@@ -32,6 +33,7 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class EntranceRoom extends StandardRoom {
 	
@@ -74,6 +76,10 @@ public class EntranceRoom extends StandardRoom {
 		//use a separate generator here so meta progression doesn't affect levelgen
 		Random.pushGenerator();
 
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
+
 		//places the first guidebook page on floor 1
 		if (Dungeon.getDepth() == 1 && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO)){
 			int pos;
@@ -82,7 +88,7 @@ public class EntranceRoom extends StandardRoom {
 				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
 						Random.IntRange( top + 1, bottom - 2 )));
 			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
-			level.drop( new Guidebook(), pos );
+			level.drop( new Guidebook(), pos ).type = type;
 		}
 
 		//places the third guidebook page on floor 2
@@ -95,7 +101,7 @@ public class EntranceRoom extends StandardRoom {
 			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
 			GuidePage p = new GuidePage();
 			p.page(Document.GUIDE_SEARCHING);
-			level.drop( p, pos );
+			level.drop( p, pos ).type = type;
 		}
 
 		Random.popGenerator();

@@ -24,12 +24,14 @@ package com.zrp200.rkpd2.levels.rooms.special;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.IronKey;
 import com.zrp200.rkpd2.items.stones.Runestone;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class RunestoneRoom extends SpecialRoom {
 	
@@ -49,6 +51,10 @@ public class RunestoneRoom extends SpecialRoom {
 		
 		Painter.drawInside( level, this, entrance(), 2, Terrain.EMPTY_SP);
 		Painter.fill( level, this, 2, Terrain.EMPTY );
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int n = Random.NormalIntRange(2, 3);
 		int dropPos;
@@ -56,7 +62,7 @@ public class RunestoneRoom extends SpecialRoom {
 			do {
 				dropPos = level.pointToCell(random());
 			} while (level.map[dropPos] != Terrain.EMPTY || level.heaps.get( dropPos ) != null);
-			level.drop(prize(level), dropPos);
+			level.drop(prize(level), dropPos).type = type;
 		}
 		
 		entrance().set( Door.Type.LOCKED );

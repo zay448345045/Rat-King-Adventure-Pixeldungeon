@@ -67,6 +67,7 @@ import com.zrp200.rkpd2.levels.rooms.standard.EntranceRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.ExitRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.StandardRoom;
 import com.zrp200.rkpd2.levels.traps.*;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -417,6 +418,9 @@ public abstract class RegularLevel extends Level {
 				break;
 			}
 
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+				type = Heap.Type.CHEST;
+
 			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 					(toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0)){
 
@@ -444,6 +448,9 @@ public abstract class RegularLevel extends Level {
 		}
 
 		for (Item item : itemsToSpawn) {
+			Heap.Type type = Heap.Type.HEAP;
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+				type = Heap.Type.CHEST;
 			int cell = randomDropCell();
 			if (Dungeon.isChallenged(Challenges.REDUCED_POWER)){
 				if (Dungeon.depth > 1 && findMob(cell) == null
@@ -451,7 +458,7 @@ public abstract class RegularLevel extends Level {
 						item instanceof Stylus || item instanceof Torch)){
 					mobs.add(Mimic.spawnAt(cell, item));
 				} else {
-					drop(item, cell).type = Heap.Type.HEAP;
+					drop(item, cell).type = type;
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;
@@ -459,7 +466,7 @@ public abstract class RegularLevel extends Level {
 				}
 			}
 			else {
-				drop(item, cell).type = Heap.Type.HEAP;
+				drop(item, cell).type = type;
 				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 					map[cell] = Terrain.GRASS;
 					losBlocking[cell] = false;
@@ -491,7 +498,10 @@ public abstract class RegularLevel extends Level {
 				if (rose.droppedPetals < 11) {
 					item = new DriedRose.Petal();
 					int cell = randomDropCell();
-					drop( item, cell ).type = Heap.Type.HEAP;
+					Heap.Type type = Heap.Type.HEAP;
+					if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+						type = Heap.Type.CHEST;
+					drop( item, cell ).type = type;
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;
@@ -554,11 +564,14 @@ public abstract class RegularLevel extends Level {
 			GuidePage p = new GuidePage();
 			p.page(missingPages.get(0));
 			int cell = randomDropCell();
+			Heap.Type type = Heap.Type.HEAP;
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+				type = Heap.Type.CHEST;
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
 			}
-			drop( p, cell );
+			drop( p, cell ).type = type;
 		}
 
 		Random.popGenerator();

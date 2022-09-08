@@ -21,14 +21,17 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class StorageRoom extends SpecialRoom {
 
@@ -38,6 +41,10 @@ public class StorageRoom extends SpecialRoom {
 		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
 
 		boolean honeyPot = Random.Int( 2 ) == 0;
+
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			type = Heap.Type.CHEST;
 		
 		int n = Random.IntRange( 3, 4 );
 		for (int i=0; i < n; i++) {
@@ -46,10 +53,10 @@ public class StorageRoom extends SpecialRoom {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get(pos) != null);
 			if (honeyPot){
-				level.drop( new Honeypot(), pos);
+				level.drop( new Honeypot(), pos).type = type;
 				honeyPot = false;
 			} else {
-				level.drop( prize(level), pos);
+				level.drop( prize(level), pos).type = type;
 			}
 		}
 		
