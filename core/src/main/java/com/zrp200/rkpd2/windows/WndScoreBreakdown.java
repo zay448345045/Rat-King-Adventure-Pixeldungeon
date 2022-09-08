@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.Group;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.Statistics;
@@ -29,7 +30,6 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Group;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -60,7 +60,7 @@ public class WndScoreBreakdown extends Window {
 					num.format(Statistics.exploreScore), pos, Statistics.exploreScore >= 20_000);
 			pos = addInfo(this, Messages.get(this, "explore_desc"), pos);
 			pos = statSlot(this, Messages.get(this, "bosses_title"),
-					num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 15_000);
+					num.format(Statistics.totalBossScore), pos, Statistics.totalBossScore >= 25_000);
 			pos = addInfo(this, Messages.get(this, "bosses_desc"), pos);
 			pos = statSlot(this, Messages.get(this, "quests_title"),
 					num.format(Statistics.totalQuestScore), pos, Statistics.totalQuestScore >= 10_000);
