@@ -27,6 +27,17 @@ public class FlexTape extends Item {
         image = ItemSpriteSheet.FLEX_TAPE;
         usesTargeting = true;
         defaultAction = AC_THROW;
+        stackable = true;
+    }
+
+    @Override
+    public boolean isIdentified() {
+        return true;
+    }
+
+    @Override
+    public boolean isUpgradable() {
+        return false;
     }
 
     public static final String AC_USE = "USE";
