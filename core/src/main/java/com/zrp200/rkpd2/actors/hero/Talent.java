@@ -717,7 +717,7 @@ public enum Talent {
 			hero.sprite.emitter().burst(Speck.factory(Speck.JET), 4*points);
 		}, ROYAL_MEAL);
 		if (hero.hasTalent(EFFICIENT_TRAINING)){
-			for (int i = 0; i < hero.pointsInTalent(EFFICIENT_TRAINING)-1; i++){
+			for (int i = 0; i < hero.pointsInTalent(EFFICIENT_TRAINING); i++){
 				Buff.affect(hero, Combo.class).incCombo();
 			}
 			if (hero.buff(Combo.class) != null)
