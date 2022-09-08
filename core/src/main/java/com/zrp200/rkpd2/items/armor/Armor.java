@@ -28,16 +28,14 @@ import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.MagicImmune;
-import com.zrp200.rkpd2.actors.buffs.Momentum;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.armor.curses.Corrosion;
 import com.zrp200.rkpd2.items.armor.curses.*;
 import com.zrp200.rkpd2.items.armor.glyphs.*;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
@@ -266,6 +264,12 @@ public class Armor extends EquipableItem {
 	@Override
 	public boolean isEquipped( Hero hero ) {
 		return hero.belongings.armor() == this;
+	}
+
+	@Override
+	public int buffedLvl() {
+		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
+		return super.buffedLvl();
 	}
 
 	public final int DRMax(){
