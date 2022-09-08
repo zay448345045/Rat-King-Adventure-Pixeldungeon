@@ -40,6 +40,7 @@ import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
 import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Potential;
@@ -53,6 +54,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfSirensSong;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.wands.*;
 import com.zrp200.rkpd2.items.weapon.Slingshot;
@@ -70,6 +72,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.Arrays;
@@ -882,7 +885,16 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		if (HP < 0 && buff(NoDeath.class) == null) HP = 0;
 
 		if (!isAlive()) {
-			if (buff(WarpedEnemy.class) != null && Random.Int(3) == 0){
+			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.ALLIES && Random.Int(2) == 0 && src instanceof Hero){
+				if (!isImmune(ScrollOfSirensSong.Enthralled.class)){
+					HP = HT;
+					AllyBuff.affectAndLoot((Mob) this, hero, ScrollOfSirensSong.Enthralled.class);
+				} else {
+					Buff.affect( this, Charm.class, Charm.DURATION ).object = hero.id();
+					die(src);
+				}
+				sprite.centerEmitter().burst( Speck.factory( Speck.HEART ), 10 );
+			} else if (buff(WarpedEnemy.class) != null && Random.Int(3) == 0){
 				ScrollOfTeleportation.teleportChar(this);
 				HT /= 2;
 				HP = HT;

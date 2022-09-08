@@ -154,7 +154,8 @@ public class DungeonSeed {
 		NO_WALLS("NOW-ALL-SHE"),
 		RANDOM_ITEMS("RNG-ITE-MSS"),
 		CHESTS("ITE-MCH-EST"),
-		BIGGER("EXP-ANS-IVE");
+		BIGGER("EXP-ANS-IVE"),
+		ALLIES("BES-TFR-END");
 
 		public long seed;
 		public boolean random;
