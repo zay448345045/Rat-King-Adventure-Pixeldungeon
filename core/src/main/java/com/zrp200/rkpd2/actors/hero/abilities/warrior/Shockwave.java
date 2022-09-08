@@ -123,7 +123,7 @@ public class Shockwave extends ArmorAbility {
 										Buff.affect(ch, Cripple.class, 5f);
 									}
 									if (hero.hasTalent(Talent.COCKATRIOCIOUS)){
-										Buff.affect(ch, Petrified.class, 2 + (hero.pointsInTalent(Talent.COCKATRIOCIOUS)-1)*1.5f);
+										Buff.affect(ch, Petrified.class, 3 + (hero.pointsInTalent(Talent.COCKATRIOCIOUS)-1)*2f);
 									}
 								}
 
