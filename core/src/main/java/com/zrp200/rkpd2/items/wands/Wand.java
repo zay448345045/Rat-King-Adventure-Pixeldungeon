@@ -670,9 +670,9 @@ public abstract class Wand extends Item {
 				
 				if (target == curUser.pos || cell == curUser.pos) {
 					if (target == curUser.pos){
-						float shield = curUser.HT * (0.04f*curWand.curCharges);
-						// shield battery gives 1.5x boost compared to standard, the minus one lets restoration at +2 give the 1.5x boost as well.
-						shield *= Math.pow(1.5f, curUser.shiftedPoints(Talent.SHIELD_BATTERY, Talent.RESTORATION)-1);
+						float shield = curUser.HT * (curWand.curCharges-curWand.getMinCharges()) *
+								curUser.byTalent(Talent.SHIELD_BATTERY, 0.0625f, Talent.RESTORATION, 0.05f);
+						shield *= Math.pow(1.5f, curUser.pointsInTalent(Talent.SHIELD_BATTERY, Talent.RESTORATION)-1);
 						Buff.affect(curUser, Barrier.class).setShield(Math.round(shield));
 						curWand.curCharges = curWand.getMinCharges();
 						curUser.sprite.operate(curUser.pos);
