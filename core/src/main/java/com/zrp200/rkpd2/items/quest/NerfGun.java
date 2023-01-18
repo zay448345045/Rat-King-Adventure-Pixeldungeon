@@ -244,7 +244,7 @@ public class NerfGun extends Weapon {
                 curUser.spendAndNext(baseDelay(curUser));
                 curUser.sprite.idle();
                 curCharges = maxCharges();
-                Warp.inflict(10, 1.5f);
+                Warp.inflict(15, 2f);
                 enchantment = null;
                 updateQuickslot();
                 Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
