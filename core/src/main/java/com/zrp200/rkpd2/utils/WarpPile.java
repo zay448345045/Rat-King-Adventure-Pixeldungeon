@@ -206,8 +206,9 @@ public class WarpPile {
     public static class SpawnEffect implements WarpEffect {
         @Override
         public void doEffect(Hero target, float warpAmount) {
-            for (int i = 0; i < 1 + warpAmount / 30; i++)
-                Dungeon.level.spawnMob(35);
+            if (Dungeon.level.mobLimit() > 0)
+                for (int i = 0; i < 1 + warpAmount / 30; i++)
+                    Dungeon.level.spawnMob(35);
         }
     }
 
