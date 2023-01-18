@@ -51,6 +51,7 @@ public class NerfGun extends Weapon {
         image = ItemSpriteSheet.NERF_GUN;
         defaultAction = AC_SHOOT;
         usesTargeting = true;
+        levelKnown = true;
     }
 
     @Override
