@@ -113,11 +113,11 @@ public class NerfGun extends Weapon {
     public int max(int lvl){
         switch (mode){
             case NORMAL: default:
-                return 10 + lvl*3;
+                return 8 + lvl*2;
             case RAPID:
-                return Math.round(6 + lvl*0.75f);
+                return Math.round(5 + lvl*0.5f);
             case DISC:
-                return 15 + lvl*4;
+                return Math.round(11 + lvl*2.5f);
         }
     }
 
