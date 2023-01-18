@@ -686,11 +686,11 @@ public abstract class Mob extends Char {
 		if (buff(WarpedEnemy.class) != null){
 			for (int i : PathFinder.NEIGHBOURS8){
 				int pos = this.pos + i;
-				CellEmitter.center(pos).burst(Speck.factory(Speck.WARPCLOUD), 10);
+				CellEmitter.center(pos).burst(Speck.factory(Speck.WARPCLOUD), 6);
 				Char ch = Actor.findChar(pos);
 				if (ch != null){
-					ch.damage(HT / 5, new Warp());
-					Buff.affect(ch, Degrade.class, 15);
+					ch.damage(damage / 3, new Warp());
+					Buff.affect(ch, Degrade.class, 8);
 				}
 			}
 		}
