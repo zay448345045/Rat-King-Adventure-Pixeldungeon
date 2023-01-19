@@ -17,7 +17,7 @@ import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
-    private final int MAXCHARGE = 40;
+    private final int MAXCHARGE = 45;
 
     {
         revivePersists = true;
@@ -25,7 +25,7 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
     @Override
     public boolean act() {
-        if (count() < MAXCHARGE){
+        if (count() < MAXCHARGE*2){
             countUp(1);
         }
         if (count() >= MAXCHARGE){
@@ -66,7 +66,7 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
     @Override
     public float iconFadePercent() {
-        return 1f - (count()/ MAXCHARGE);
+        return 1f - (count()/ (MAXCHARGE*2));
     }
 
     @Override
