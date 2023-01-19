@@ -140,6 +140,22 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				}
 			}
 
+			for (int i = 0; i < talents.size(); i++){
+				LinkedHashMap<Talent, Integer> heroTalents = Dungeon.hero.talents.get(i);
+				LinkedHashMap<Talent, Integer> lolTalents = talents.get(i);
+				for (Talent talent : heroTalents.keySet()){
+					if (!lolTalents.containsKey(talent)){
+						if ((i == 3 &&
+								!(talent == HEROIC_RATINESS || talent == HEROIC_ARCHERY ||
+										talent == HEROIC_ENDURANCE || talent == HEROIC_STAMINA || talent == HEROIC_WIZARDRY))){
+							continue;
+						}
+						if (i == 2) continue;
+						lolTalents.put(talent, Dungeon.hero.pointsInTalent(talent));
+					}
+				}
+			}
+
 			pane = new TalentsPane(TalentButton.Mode.METAMORPH_CHOOSE, talents);
 			add(pane);
 			pane.setPos(0, top);
