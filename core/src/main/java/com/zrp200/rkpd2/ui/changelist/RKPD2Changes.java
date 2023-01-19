@@ -39,10 +39,7 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
-import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.sprites.KingSprite;
-import com.zrp200.rkpd2.sprites.RatKingBossSprite;
+import com.zrp200.rkpd2.sprites.*;
 import com.zrp200.rkpd2.ui.Icons;
 
 import java.util.ArrayList;
@@ -135,6 +132,46 @@ public class RKPD2Changes {
 
     final ChangeInfo[][] changes = {
         {
+                new ChangeInfo("RKA-1.5.1",true,TITLE_COLOR,
+                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
+                                "The unexpected events (such as university and my PC being broken for 2 months) made this update arrive very-very late, sorry about that."),
+                        new ChangeButton(Icons.get(TALENT), "Talent and Armor Ability Changes", list(
+                                "_Greenfields_ buffed by empowering regeneration boost and removing satiety boost (that was working incorrectly anyways)",
+                                "_Archery's Mark_ fixed by tweaking the cause for softlock",
+                                "_Ectotoughness_ reworked into _Auxiliary Charge_ and rewards player with charge on using wands"
+                        )),
+                        new ChangeButton(new WraithSprite(), "Spirit Caller Changes", list(
+                                "Ectotoughness's part is now innate _+33%_ evasion boost",
+                                "Allied Wraiths now have 1.5x attack speed",
+                                "Tweaked the charge necessary for summoning from 40 to 45 but allowed to accumulate it to max of 90 charge"
+                        )),
+                        new ChangeButton(new NerfGun(),
+                                "Significantly nerfed nerf gun:\n" + list(
+                                        "Reduced minimal and maximal damage",
+                                        "Increased amount of warp from each reload and imbuing",
+                                        "Also tweaked the lack of level indicator"
+                                )
+                        ),
+                        new ChangeButton(new Warp(), "Reevaluated some aspects of warp effect: \n" + list(
+                            "Incoming sources of warp now average out decay rate with previous source of warp instead of overriding it, to prevent the common strategy of mitigating it",
+                            "Warped enemy's retaliation damage now depends on damage it have been taking instead of its maximum HP",
+                                "Increased the frequency of warp effects on higher levels of warp",
+                                "Spawning effect no longer softlocks the game when on empty boss floor"
+                        )),
+                        misc(list(
+                            "Added the tips on how to unlock new challenges",
+                                "Restored the ability to metamorph talents granted by kromer",
+                                "Abyss now plays the music of halls instead of what played before",
+                                "Ring of Force's description is a bit more clear on its custom effects",
+                                "Restored UCE-Handler functionality"
+                        )),
+                        bugFixes(list(
+                                "Fixed the lack of kromer-granted subclasses and classes in rankings",
+                                "Fixed the occasional consumption of Phantom Spear when thrown",
+                                "Fixed Crowd Diversity-unaffected monsters still getting buffs",
+                                "Fixed duping of aqua blasts in Domain of Hell runs"
+                        ))
+                ),
                 new ChangeInfo("RKA-1.5.0",true,TITLE_COLOR,
                         new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary", "This is long-awaited update to Rat King Adventure.\n\n" +
                                 "Not everything was caught in playtesting and such and therefore here are plans for future patches:\n" +
