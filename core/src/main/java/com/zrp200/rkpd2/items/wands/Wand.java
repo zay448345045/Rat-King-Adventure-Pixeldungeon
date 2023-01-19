@@ -475,6 +475,10 @@ public abstract class Wand extends Item {
 			ActionIndicator.clearAction(brawlerBuff);
 		}
 
+		if (Dungeon.hero.hasTalent(Talent.ECTOTOUGHNESS)){
+			hero.buff(SpiritBuff.class).countUp(Dungeon.hero.pointsInTalent(Talent.ECTOTOUGHNESS)+1);
+		}
+
 		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 0){
 			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeMissileTracker.class, 1f);
 		}
