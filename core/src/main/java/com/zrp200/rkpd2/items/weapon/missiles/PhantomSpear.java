@@ -60,7 +60,9 @@ public class PhantomSpear extends MissileWeapon {
 		for (int cell : path.path){
 			Char ch = Actor.findChar(cell);
 			if (ch != null){
-				if (ch == hero || existingTargets.contains(ch)){
+				if (cell == path.collisionPos){
+					return ch;
+				} else if (ch == hero || existingTargets.contains(ch)){
 					continue;
 				} else if (ch.alignment != Char.Alignment.ALLY && !(ch instanceof NPC)){
 					return ch;
