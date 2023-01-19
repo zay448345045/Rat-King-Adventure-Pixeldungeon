@@ -66,7 +66,7 @@ public class Regeneration extends Buff {
 				}
 			}
 			if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
-				delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.2f;
+				delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.35f;
 			}
 			spend( delay );
 			

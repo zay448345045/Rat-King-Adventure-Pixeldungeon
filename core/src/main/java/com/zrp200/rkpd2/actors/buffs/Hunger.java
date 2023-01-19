@@ -26,13 +26,11 @@ import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfChallenge;
 import com.zrp200.rkpd2.journal.Document;
-import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -128,14 +126,6 @@ public class Hunger extends Buff implements Hero.Doom {
 		}
 
 		return true;
-	}
-
-	@Override
-	public void spend(float time) {
-		if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
-			super.spend( time * (0.85f + Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.4f));
-		}
-		else super.spend(time);
 	}
 
 	public void satisfy(float energy ) {
