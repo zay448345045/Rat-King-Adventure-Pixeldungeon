@@ -109,6 +109,12 @@ public class Wraith extends Mob {
 				(buff(AllyBuff.class) != null ? 1.33f : 1f));
 	}
 
+	@Override
+	public float attackDelay() {
+		return (super.attackDelay()*
+				(buff(AllyBuff.class) != null ? 1.5f : 1f));
+	}
+
 	public void adjustStats(int level ) {
 		this.level = level;
 		defenseSkill = attackSkill( null ) * 5;
