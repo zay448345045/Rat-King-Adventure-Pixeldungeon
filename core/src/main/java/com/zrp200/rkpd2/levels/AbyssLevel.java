@@ -2,6 +2,7 @@ package com.zrp200.rkpd2.levels;
 
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
@@ -29,6 +30,14 @@ public class AbyssLevel extends RegularLevel {
         color1 = 0x232424;
         color2 = 0x3e4040;
         viewDistance = 2;
+    }
+
+    @Override
+    public void playLevelMusic() {
+        Music.INSTANCE.playTracks(
+                new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
+                new float[]{1, 1, 0.5f},
+                false);
     }
 
     @Override
