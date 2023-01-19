@@ -494,7 +494,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 							}
 						}
 						if (targetPos == Integer.MAX_VALUE - 1){
-							bounced = false;
+							Dungeon.hero.spendAndNext(0f);
 							return;
 						} else {
 							bounced = true;
@@ -508,7 +508,6 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 												public void call() {
 													curUser = Dungeon.hero;
 													curUser.shoot(finalDesiredMob, knockArrow());
-													bounced = false;
 //												if ((archeryCount >= (Dungeon.hero.pointsInTalent(Talent.ARCHERY_MARK) != 1 ? 2 : 1))){
 //													Dungeon.hero.spendAndNext(castDelay(Dungeon.hero, cell));
 //													archeryCount = 0;
@@ -608,6 +607,9 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		@Override
 		public void onSelect( Integer target ) {
 			if (target != null) {
+				if (Dungeon.hero.hasTalent(Talent.ARCHERY_MARK)){
+					bounced = false;
+				}
 				knockArrow().cast(curUser, target);
 			}
 		}
