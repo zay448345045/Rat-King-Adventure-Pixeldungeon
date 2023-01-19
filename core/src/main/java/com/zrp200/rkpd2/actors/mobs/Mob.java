@@ -637,7 +637,7 @@ public abstract class Mob extends Char {
 		if ( !surprisedBy(enemy)
 				&& paralysed == 0
 				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-			return (int) (this.defenseSkill/(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (0.8f * scaleFactor) : 1));
+			return (int) (this.defenseSkill/((Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor != 1) ? (0.8f * scaleFactor) : 1));
 		} else {
 			return 0;
 		}
@@ -700,7 +700,7 @@ public abstract class Mob extends Char {
 
 	@Override
 	public float speed() {
-		return super.speed() * AscensionChallenge.enemySpeedModifier(this)/(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (0.8f * scaleFactor) : 1);
+		return super.speed() * AscensionChallenge.enemySpeedModifier(this)/((Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor != 1) ? (0.8f * scaleFactor) : 1);
 	}
 
 	public final boolean surprisedBy( Char enemy ){
@@ -727,13 +727,13 @@ public abstract class Mob extends Char {
 	//2.5x speed to 0.71x speed
 	@Override
 	public float attackDelay() {
-		return super.attackDelay()*(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (0.8f * scaleFactor) : 1);
+		return super.attackDelay()*((Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor != 1) ? (0.8f * scaleFactor) : 1);
 	}
 
 	//70% damage to 245% damage
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		return super.attackProc(enemy, (int) (damage*(Dungeon.isChallenged(Challenges.RANDOM_HP) ? (1.4f * scaleFactor) : 1)));
+		return super.attackProc(enemy, (int) (damage*((Dungeon.isChallenged(Challenges.RANDOM_HP) && scaleFactor != 1) ? (1.4f * scaleFactor) : 1)));
 	}
 
 	@Override
