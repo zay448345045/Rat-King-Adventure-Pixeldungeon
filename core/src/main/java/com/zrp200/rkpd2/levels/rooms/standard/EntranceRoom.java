@@ -23,10 +23,12 @@ package com.zrp200.rkpd2.levels.rooms.standard;
 
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.journal.Guidebook;
+import com.zrp200.rkpd2.items.spells.AquaBlast;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -89,6 +91,16 @@ public class EntranceRoom extends StandardRoom {
 						Random.IntRange( top + 1, bottom - 2 )));
 			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
 			level.drop( new Guidebook(), pos ).type = type;
+		}
+
+		if (Dungeon.isChallenged(Challenges.BURN)){
+			int pos;
+			do {
+				//can't be on bottom row of tiles
+				pos = level.pointToCell(new Point( Random.IntRange( left + 1, right - 1 ),
+						Random.IntRange( top + 1, bottom - 2 )));
+			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
+			level.drop( new AquaBlast(), pos ).type = type;
 		}
 
 		//places the third guidebook page on floor 2

@@ -48,7 +48,6 @@ import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
-import com.zrp200.rkpd2.items.spells.AquaBlast;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.levels.Level;
@@ -470,8 +469,6 @@ public class GameScene extends PixelScene {
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
 				GLog.h(Messages.get(this, "descend"), Dungeon.depth);
 				Sample.INSTANCE.play(Assets.Sounds.DESCEND);
-				if (Dungeon.isChallenged(Challenges.BURN) && Dungeon.getDepth() >= Statistics.deepestFloor)
-					new AquaBlast().collect();
 				for (Char ch : Actor.chars()){
 					if (ch instanceof DriedRose.GhostHero){
 						((DriedRose.GhostHero) ch).sayAppeared();
