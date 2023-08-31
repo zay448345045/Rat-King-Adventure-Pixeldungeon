@@ -819,11 +819,8 @@ public enum Talent {
 		if (hero.hasTalent(RESTORATION)){
 			int charge = 2+2*hero.pointsInTalent(RESTORATION);
 			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
-			int pointDiff = hero.pointsInTalent(RESTORATION) - hero.pointsInTalent(ENERGIZING_UPGRADE);
+			int pointDiff = hero.pointsInTalent(RESTORATION);
 			boolean charged = false;
-			if(hero.hasTalent(ENERGIZING_UPGRADE)) {
-				hero.belongings.charge(charge, true);
-			}
 			if (staff != null && pointDiff > 0){
 				staff.gainCharge( charge + 2*pointDiff, true);
 				charged = true;
