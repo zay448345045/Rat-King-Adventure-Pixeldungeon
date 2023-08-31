@@ -29,7 +29,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -76,6 +75,9 @@ public class TalentsPane extends ScrollPane {
 				tiersAvailable = 2;
 			} else if (tiersAvailable > 3 && (Dungeon.hero.subClass2 == HeroSubClass.NONE && Dungeon.hero.armorAbility == null)){
 				tiersAvailable = 3;
+			}
+			if (tiersAvailable == 3 && Dungeon.hero.heroClass2 != null && Dungeon.hero.subClass != HeroSubClass.NONE){
+				tiersAvailable = 4;
 			}
 		}
 
