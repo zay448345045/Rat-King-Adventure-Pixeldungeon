@@ -125,9 +125,9 @@ public class NerfGun extends Weapon {
     public int maxCharges(){
         switch (mode){
             case NORMAL: default:
-                return 7 + level()/3;
+                return 6 + level()/3;
             case RAPID:
-                return 13 + level();
+                return 12 + level()/2;
             case DISC:
                 return 4 + level()/5;
         }
