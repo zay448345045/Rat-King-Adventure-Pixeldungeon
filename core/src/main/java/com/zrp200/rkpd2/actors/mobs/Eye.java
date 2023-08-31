@@ -92,7 +92,7 @@ public class Eye extends Mob {
 		if (beamCooldown == 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID);
 
-			if (enemy.invisible == 0 && !isCharmedBy(enemy) && fieldOfView[enemy.pos] && aim.subPath(1, aim.dist).contains(enemy.pos)){
+			if (enemy.invisible == 0 && !isCharmedBy(enemy) && (fieldOfView != null && fieldOfView[enemy.pos]) && aim.subPath(1, aim.dist).contains(enemy.pos)){
 				if(Actor.current() == this) {
 					beam = aim;
 					beamTarget = aim.collisionPos;
