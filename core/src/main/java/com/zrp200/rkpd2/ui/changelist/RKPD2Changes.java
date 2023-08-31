@@ -131,7 +131,25 @@ public class RKPD2Changes {
     // in this case I made it so you could add buttons in the ChangeInfo constructor; this is 'lustrous' style
 
     final ChangeInfo[][] changes = {
-        {
+                {new ChangeInfo("RKA-1.5.2",true,TITLE_COLOR,
+                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
+                                "I wanted to wait until RKPD2 actually updates, but it is been almost 1.5 years since that, and players really want some updates..."),
+                        misc(list(
+                                "Nerfed cryogenic imbue of nerf gun by making its freezing last shorter and making Rat King boss immune to frost",
+                                "Nerfed dreamful imbue of nerf gun by making bosses resist it like grim enchantment",
+                                "Nerfed slightly max charge of normal and fast modes for nerf gun",
+                                "Improved Spirit Caller's tracker's visuals",
+                                "Updated Android target version to API 33"
+                        )),
+                        bugFixes(list(
+                                "Fixed Energizing Upgrade not activating for various reasons",
+                                "Fixed Spirit Caller's tracker consuming all of charge when summoning a wraith",
+                                "Fixed a crash from Abyssal Nightmare trying to break walls close to edge of the level",
+                                "Fixed a crash with some allies trying to use hero's enchantments",
+                                "Fixed most of Kromer Crown's and Kromer Mask's broken interactions",
+                                "Fixed rare crash with Evil Eyes splitting"
+                        ))
+                ),
                 new ChangeInfo("RKA-1.5.1",true,TITLE_COLOR,
                         new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
                                 "The unexpected events (such as university and my PC being broken for 2 months) made this update arrive very-very late, sorry about that."),
