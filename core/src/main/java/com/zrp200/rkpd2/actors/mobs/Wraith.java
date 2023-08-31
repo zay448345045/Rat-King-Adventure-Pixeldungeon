@@ -151,7 +151,7 @@ public class Wraith extends Mob {
 			int wraiths = Random.IntRange(1, 3);
 			for (int i = 0; i < wraiths; i++){
 				int pos;
-				int tries = 20;
+				int tries = 40;
 				do{
 					pos = this.pos + PathFinder.NEIGHBOURS8[Random.Int(PathFinder.NEIGHBOURS8.length)];
 					tries --;

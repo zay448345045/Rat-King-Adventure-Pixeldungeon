@@ -65,8 +65,13 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
     }
 
     @Override
+    public void tintIcon(Image icon) {
+        if (count() >= MAXCHARGE) icon.hardlight(0xa9a9a9);
+    }
+
+    @Override
     public float iconFadePercent() {
-        return 1f - (count()/ (MAXCHARGE*2));
+        return 1f - (Math.min(count(), Math.max(0, count()-MAXCHARGE))/ (MAXCHARGE));
     }
 
     @Override
@@ -96,8 +101,9 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
 
             w.sprite.emitter().burst( ShadowParticle.CURSE, 5 );
             Buff.affect(w, DLCAllyBuff.class);
-            countDown(count());
-            ActionIndicator.clearAction(this);
+            countDown(MAXCHARGE);
+            if (count() < MAXCHARGE)
+                ActionIndicator.clearAction(this);
             BuffIndicator.refreshHero();
         }
     }
