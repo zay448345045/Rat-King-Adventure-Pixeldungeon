@@ -403,19 +403,23 @@ abstract public class Weapon extends KindOfWeapon {
 
 		public static float procChanceMultiplier( Char attacker ){
 			float multi = 1f;
+			boolean heroAttack = attacker instanceof Hero;
 			Berserk rage = attacker.buff(Berserk.class);
 			if (rage != null) {
-				multi += rage.rageAmount() * ((Hero) attacker).byTalent(
-						Talent.ENRAGED_CATALYST, 1/5f,
-						Talent.RK_BERSERKER, 0.15f);
+				float byTalent = 1f;
+				if (heroAttack)
+					byTalent = ((Hero) attacker).byTalent(
+							Talent.ENRAGED_CATALYST, 1 / 5f,
+							Talent.RK_BERSERKER, 0.15f);
+				multi += rage.rageAmount() * byTalent;
 			}
 			// note I'm specifically preventing it from lowering the chance. I already handled that in Weapon#attackProc.
 			multi += Math.max(0, Talent.SpiritBladesTracker.getProcModifier()-1);
-			if (attacker.buff(Talent.StrikingWaveTracker.class) != null
+			if (heroAttack && attacker.buff(Talent.StrikingWaveTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
 				multi += 0.2f;
 			}
-			if (attacker.buff(RingOfForce.Force.class) != null && attacker instanceof Hero && ((Hero) attacker).belongings.weapon() == null){
+			if (attacker.buff(RingOfForce.Force.class) != null && heroAttack && ((Hero) attacker).belongings.weapon() == null){
 				multi *= 1.5f;
 			}
 			return multi;
