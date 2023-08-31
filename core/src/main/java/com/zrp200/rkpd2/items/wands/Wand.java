@@ -511,13 +511,13 @@ public abstract class Wand extends Item {
 					}, Talent.BACKUP_BARRIER, Talent.NOBLE_CAUSE);
 					Buff.affect(Dungeon.hero, Barrier.class).setShield(total[0]);
 				}
-			} else {
-				if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && curCharges == getMinCharges() &&
-						(Dungeon.hero.buff(Talent.EnergizingUpgradeCooldown.class) == null &&
-								Dungeon.hero.buff(Talent.EnergizingUpgradeTracker.class) == null)) {
-					Buff.affect(Dungeon.hero, Talent.EnergizingUpgradeTracker.class, 4f);
-					charger.energizeTime = 5;
-				}
+			}
+			boolean notBackupBarrierWand = Dungeon.hero.belongings.contains(this);
+			if (Dungeon.hero.hasTalent(Talent.ENERGIZING_UPGRADE) && notBackupBarrierWand &&
+					curCharges <= getMinCharges() &&
+					(Dungeon.hero.buff(Talent.EnergizingUpgradeCooldown.class) == null && charger.energizeTime == 0)) {
+				charger.energizeTime = 5;
+				charger.fx(true);
 			}
 			if (Dungeon.hero.hasTalent(Talent.EMPOWERED_STRIKE,Talent.RK_BATTLEMAGE)) {
 				Buff.prolong(Dungeon.hero, Talent.EmpoweredStrikeTracker.class, 10f);
@@ -764,7 +764,9 @@ public abstract class Wand extends Item {
 					curCharges = maxCharges;
 					Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
 					ScrollOfRecharging.charge(curUser);
+					Talent.Cooldown.affectHero(Talent.EnergizingUpgradeCooldown.class);
 					updateQuickslot();
+					fx(false);
 				}
 			}
 
@@ -854,6 +856,13 @@ public abstract class Wand extends Item {
 
 		private void setScaleFactor(float value){
 			this.scalingFactor = value;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (energizeTime > 0 && on) {
+				target.sprite.add(CharSprite.State.SPIRIT);
+			} else target.sprite.remove(CharSprite.State.SPIRIT);
 		}
 	}
 }
