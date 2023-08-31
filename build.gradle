@@ -15,14 +15,14 @@ allprojects {
         appName = 'Rat King Adventures'
         appPackageName = 'com.zrp200.rkpd2abyssal'
 
-        appVersionCode = 778
-        appVersionName = '1.5.1'
+        appVersionCode = 780
+        appVersionName = '1.5.2'
 
         appJavaCompatibility = JavaVersion.VERSION_1_8
 
-        appAndroidCompileSDK = 30
+        appAndroidCompileSDK = 33
         appAndroidMinSDK = 15
-        appAndroidTargetSDK = 30
+        appAndroidTargetSDK = 33
 
         gdxVersion = '1.11.0'
         gdxControllersVersion = '2.2.2'
