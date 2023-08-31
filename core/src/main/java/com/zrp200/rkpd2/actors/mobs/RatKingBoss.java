@@ -101,6 +101,8 @@ public class RatKingBoss extends Mob {
 
         properties.add(Property.BOSS);
         properties.add(Property.MINIBOSS);
+
+        immunities.add(Frost.class);
     }
     private float summonCooldown;
     private static final int MIN_SUMMON_CD = 7;
