@@ -866,6 +866,8 @@ public abstract class Level implements Bundlable {
 				level.openSpace[i] = false;
 			} else {
 				for (int j = 1; j < PathFinder.CIRCLE8.length; j += 2){
+					if (j+PathFinder.CIRCLE8[j] > level.solid.length)
+						break;
 					if (level.solid[i+PathFinder.CIRCLE8[j]]) {
 						level.openSpace[i] = false;
 					} else if (!level.solid[i+PathFinder.CIRCLE8[(j+1)%8]]
