@@ -614,7 +614,8 @@ public abstract class Level implements Bundlable {
 			if (Dungeon.isChallenged(Challenges.KROMER)){
 				delay = 180f;
 			}
-			Actor.addDelayed(respawner, delay);
+			Actor.add(respawner);
+			respawner.delay = delay;
 		} else {
 			Actor.add(respawner);
 			if (respawner.cooldown() > respawnCooldown()){
@@ -629,8 +630,16 @@ public abstract class Level implements Bundlable {
 			actPriority = BUFF_PRIO; //as if it were a buff.
 		}
 
+		public float delay = 0;
+
 		@Override
 		protected boolean act() {
+
+			if (delay > 0){
+				delay--;
+				spend(TICK);
+				return true;
+			}
 
 			if (Dungeon.isChallenged(Challenges.HERO_PATHING)
 					|| Dungeon.isChallenged(Challenges.KROMER)
@@ -654,6 +663,18 @@ public abstract class Level implements Bundlable {
 		protected void resetCooldown(){
 			spend(-cooldown());
 			spend(Dungeon.level.respawnCooldown());
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put("delay", delay);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			delay = bundle.getFloat("delay");
 		}
 	}
 
