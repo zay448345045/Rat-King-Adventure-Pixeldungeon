@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -26,7 +27,7 @@ public class HPDebuff extends CounterBuff {
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
         left = bundle.getFloat( LEFT );
-        Dungeon.hero.updateHT(false);
+        if (target instanceof Hero) ((Hero) target).updateHT(false);
     }
 
     @Override
