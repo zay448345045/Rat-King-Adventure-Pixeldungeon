@@ -21,16 +21,20 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 
 public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
+
+	public boolean trollers = false;
 
 	@Override
 	public int min(int lvl) {
@@ -42,6 +46,20 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	public int max(int lvl) {
 		return  5*(tier+1) +    //base
 				lvl*(tier+1);   //level scaling
+	}
+
+	@Override
+	public int min() {
+		if (trollers)
+			return super.min()*2;
+		return super.min();
+	}
+
+	@Override
+	public int max() {
+		if (trollers)
+			return super.max()*2;
+		return super.max();
 	}
 
 	@Override
@@ -68,7 +86,15 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		
 		return damage;
 	}
-	
+
+	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+		if (trollers)
+			Warp.inflict(5f, 4f);
+
+		return super.proc(attacker, defender, damage);
+	}
+
 	@Override
 	public String info() {
 
@@ -116,6 +142,9 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		} else if (!isIdentified() && cursedKnown){
 			info += "\n\n" + Messages.get(Weapon.class, "not_cursed");
 		}
+
+		if (trollers)
+			info += "\n\n" + Messages.get(MeleeWeapon.class, "cursed_kromer");
 		
 		return info;
 	}
@@ -140,6 +169,20 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 			price = 1;
 		}
 		return price;
+	}
+
+	private static final String KROMER	        = "pipisfusion";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(KROMER, trollers);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		trollers = bundle.getBoolean(KROMER);
 	}
 
 	public float warriorMod(){

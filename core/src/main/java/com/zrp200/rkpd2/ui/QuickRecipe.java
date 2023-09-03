@@ -389,7 +389,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new CurseInfusion.Recipe()));
 				result.add(new QuickRecipe(new Recycle.Recipe()));
 				result.add(null);
-				result.add(null);
+				result.add(new QuickRecipe(new Pipisfusion.Recipe()));
 				result.add(new QuickRecipe(new KromerScroll.Recipe()));
 				result.add(null);
 				result.add(null);
