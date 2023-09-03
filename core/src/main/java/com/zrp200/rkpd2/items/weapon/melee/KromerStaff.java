@@ -36,6 +36,18 @@ public class KromerStaff extends MagesStaff {
     }
 
     @Override
+    public int min(int lvl) {
+        return  tier*2 +  //4, up from 2
+                lvl*(tier);    //+2, up from +1
+    }
+
+    @Override
+    public int max(int lvl) {
+        return  Math.round(3.5f*(tier+1)) +   //10.5 base damage, down from 15
+                lvl*(tier+2);               //+4, up from +3
+    }
+
+    @Override
     public int proc(Char attacker, Char defender, int damage) {
         kromerProc();
         return super.proc(attacker, defender, damage);

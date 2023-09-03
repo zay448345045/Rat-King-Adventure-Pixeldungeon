@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
+import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -134,6 +135,8 @@ public class MagesStaff extends MeleeWeapon {
 
 			if (cursed || hasCurseEnchant()) wand.cursed = true;
 			else                             wand.cursed = false;
+			if (this instanceof KromerStaff)
+				Warp.inflict(5, 1.5f);
 			wand.execute(hero, AC_ZAP);
 		}
 	}
