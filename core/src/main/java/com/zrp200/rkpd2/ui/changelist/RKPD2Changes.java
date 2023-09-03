@@ -134,6 +134,15 @@ public class RKPD2Changes {
                 {new ChangeInfo("RKA-1.5.2",true,TITLE_COLOR,
                         new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
                                 "I wanted to wait until RKPD2 actually updates, but it is been almost 1.5 years since that, and players really want some updates..."),
+                        new ChangeButton(new Warp(), list(
+                                "Massively buffed the rate at which warp effects appear",
+                                "Reduced the preparation delay for warp sources"
+                        )),
+                        new ChangeButton(new Kromer(), list(
+                                "_Kromer Staff_ buffed: now does slightly more melee damage, but inflicts warp from zapping wands",
+                                "Added Kromerized Bomb, which combines most of other Shattered bombs in one explosion",
+                                "Added Pipisfusion spell, which doubles the damage of selected melee weapon, but makes it inflict warp from each hit"
+                        )),
                         misc(list(
                                 "Nerfed cryogenic imbue of nerf gun by making its freezing last shorter and making Rat King boss immune to frost",
                                 "Nerfed dreamful imbue of nerf gun by making bosses resist it like grim enchantment",
