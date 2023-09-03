@@ -139,6 +139,7 @@ public class RKPD2Changes {
                                 "Nerfed dreamful imbue of nerf gun by making bosses resist it like grim enchantment",
                                 "Nerfed slightly max charge of normal and fast modes for nerf gun",
                                 "Improved Spirit Caller's tracker's visuals",
+                                "Made Chaotic curse be considered a curse instead of enchantment",
                                 "Updated Android target version to API 33"
                         )),
                         bugFixes(list(
@@ -147,7 +148,10 @@ public class RKPD2Changes {
                                 "Fixed a crash from Abyssal Nightmare trying to break walls close to edge of the level",
                                 "Fixed a crash with some allies trying to use hero's enchantments",
                                 "Fixed most of Kromer Crown's and Kromer Mask's broken interactions",
-                                "Fixed rare crash with Evil Eyes splitting"
+                                "Fixed rare crash with Evil Eyes splitting",
+                                "Fixed Kromer Mask's missing strings",
+                                "Fixed Degrading Health's tracker crashing the game on reloading",
+                                "Fixed Kromer Economy's 180 turns preparation delay disappearing on reloading the game"
                         ))
                 ),
                 new ChangeInfo("RKA-1.5.1",true,TITLE_COLOR,
