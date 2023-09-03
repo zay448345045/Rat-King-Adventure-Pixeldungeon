@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.items.quest.GooBlob;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.quest.MetalShard;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfMirrorImage;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRage;
@@ -353,6 +354,7 @@ public class Bomb extends Item {
 			
 			validIngredients.put(GooBlob.class,                 ArcaneBomb.class);
 			validIngredients.put(MetalShard.class,              ShrapnelBomb.class);
+			validIngredients.put(Kromer.class,                  KromerizedBomb.class);
 		}
 		
 		private static final HashMap<Class<?extends Bomb>, Integer> bombCosts = new HashMap<>();
@@ -371,6 +373,7 @@ public class Bomb extends Item {
 			
 			bombCosts.put(ArcaneBomb.class,     6);
 			bombCosts.put(ShrapnelBomb.class,   6);
+			bombCosts.put(KromerizedBomb.class, 22);
 		}
 		
 		@Override
@@ -408,6 +411,7 @@ public class Bomb extends Item {
 				i.quantity(i.quantity()-1);
 				if (validIngredients.containsKey(i.getClass())){
 					result = Reflection.newInstance(validIngredients.get(i.getClass()));
+					if (result instanceof KromerizedBomb) result.quantity(3);
 				}
 			}
 			
@@ -418,7 +422,9 @@ public class Bomb extends Item {
 		public Item sampleOutput(ArrayList<Item> ingredients) {
 			for (Item i : ingredients){
 				if (validIngredients.containsKey(i.getClass())){
-					return Reflection.newInstance(validIngredients.get(i.getClass()));
+					Bomb bomb = Reflection.newInstance(validIngredients.get(i.getClass()));
+					if (bomb instanceof KromerizedBomb) bomb.quantity(3);
+					return bomb;
 				}
 			}
 			return null;
