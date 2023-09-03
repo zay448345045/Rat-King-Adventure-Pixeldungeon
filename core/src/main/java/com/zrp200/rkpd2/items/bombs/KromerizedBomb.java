@@ -30,10 +30,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.FrostFire;
 import com.zrp200.rkpd2.actors.blobs.Regrowth;
-import com.zrp200.rkpd2.actors.buffs.Blindness;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Cripple;
-import com.zrp200.rkpd2.actors.buffs.Warp;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Splash;
@@ -131,6 +128,7 @@ public class KromerizedBomb extends Bomb {
 			ch.damage(Math.round(damage), this);
 			Buff.prolong(ch, Blindness.class, power);
 			Buff.prolong(ch, Cripple.class, power);
+			Buff.prolong(ch, Paralysis.class, power);
 			if (ch == Dungeon.hero && !ch.isAlive()){
 				Badges.validateDeathFromFriendlyMagic();
 				Dungeon.fail(Bomb.class);
