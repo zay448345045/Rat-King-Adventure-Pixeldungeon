@@ -24,7 +24,6 @@ package com.zrp200.rkpd2.items.weapon.missiles;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -58,7 +57,7 @@ public class ForceCube extends MissileWeapon {
 	@Override
 	public int buffedLvl() {
 		int lvl = super.buffedLvl();
-		if(cloakBoost && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class) == null) lvl++;
+		if(cloakBoost && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) == null) lvl++;
 		return lvl;
 	}
 
@@ -71,7 +70,7 @@ public class ForceCube extends MissileWeapon {
 
 		rangedHit( null, cell );
 		Dungeon.level.pressCell(cell);
-		if(Dungeon.hero.isClassed(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class) != null) cloakBoost = true; // need to manually set this to get a consistent result. this is a flaw in my implementation of the boost mechanic.
+		if(Dungeon.hero.isClassed(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) cloakBoost = true; // need to manually set this to get a consistent result. this is a flaw in my implementation of the boost mechanic.
 		ArrayList<Char> targets = new ArrayList<>();
 		if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
 		

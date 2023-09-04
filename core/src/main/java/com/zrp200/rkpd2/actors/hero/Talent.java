@@ -48,6 +48,7 @@ import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
+import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
@@ -838,7 +839,7 @@ public enum Talent {
 			boolean charge = false;
 			if(hero.hasTalent(MYSTICAL_UPGRADE)) {
 				for(Artifact.ArtifactBuff buff : hero.buffs(Artifact.ArtifactBuff.class)) {
-					if(buff.artifactClass() != CloakOfShadows.class) {
+					if(buff.artifactClass() != CloakOfShadows.class || buff.artifactClass() != KromerCloak.class) {
 						buff.charge(hero,4*(1+hero.pointsInTalent(MYSTICAL_UPGRADE))); // 8/12 turns sounds legit...
 						charge = true;
 					}
