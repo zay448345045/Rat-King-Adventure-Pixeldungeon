@@ -90,7 +90,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 		if (trollers)
-			Warp.inflict(5f, 4f);
+			Warp.inflict(10f, 4f);
 
 		return super.proc(attacker, defender, damage);
 	}
