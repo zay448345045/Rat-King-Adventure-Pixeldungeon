@@ -103,7 +103,7 @@ public class Warp extends Buff {
             effect.postpone(WarpPile.DECAY_DELAY);
         }
         if (effect.decay > 0)
-            effect.setDecay((effect.decay + decay)/2);
+            effect.setDecay((effect.decay*2 + decay)/3);
         else
             effect.setDecay(decay);
         effect.totalDuration = effect.getStacks() * effect.getDecay() + effect.cooldown();
