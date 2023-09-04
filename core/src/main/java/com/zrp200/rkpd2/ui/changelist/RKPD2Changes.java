@@ -136,19 +136,27 @@ public class RKPD2Changes {
                                 "I wanted to wait until RKPD2 actually updates, but it is been almost 1.5 years since that, and players really want some updates..."),
                         new ChangeButton(new Warp(), list(
                                 "Massively buffed the rate at which warp effects appear",
-                                "Reduced the preparation delay for warp sources"
+                                "Reduced the preparation delay for warp sources",
+                                "Reduced the effect of decay averaging out from multiple warp sources",
+                                "Doubled the warp decay rate of flex tape's both abilities"
                         )),
                         new ChangeButton(new Kromer(), list(
-                                "_Kromer Staff_ buffed: now does slightly more melee damage, but inflicts warp from zapping wands",
-                                "Added Kromerized Bomb, which combines most of other Shattered bombs in one explosion",
-                                "Added Pipisfusion spell, which doubles the damage of selected melee weapon, but makes it inflict warp from each hit"
+                                "Added _Kromerized Bomb_, which combines most of other Shattered bombs in one explosion",
+                                "Added _Pipisfusion_ spell, which doubles the damage of selected melee weapon, but makes it inflict warp from each hit",
+                                "Changed _Kromer-infused Staff_: now does slightly more melee damage, but inflicts warp from zapping wands",
+                                "Changed _Kromer-infused Cloak_: now is compatible with every Cloak of Shadows interaction, but inflicts more warp and its decay rate depends on how long each charge lasts",
+                                "Nerfed _Kromer-infused Bow_: now inflicts massively more warp with each shot",
+                                "Changed _Kromer-infused Slingshot_: now does 16% more damage, but inflicts much more warp with each shot",
+                                "Nerfed _Wand of Kromer_: now inflicts massively more warp with each zap"
                         )),
                         misc(list(
                                 "Nerfed cryogenic imbue of nerf gun by making its freezing last shorter and making Rat King boss immune to frost",
                                 "Nerfed dreamful imbue of nerf gun by making bosses resist it like grim enchantment",
                                 "Nerfed slightly max charge of normal and fast modes for nerf gun",
                                 "Improved Spirit Caller's tracker's visuals",
+                                "Buffed Like a Bullet talent: increased starting power from +39%/+46%/+55% to +45%/+58%/+71% and increased distance multiplier from +17%/+21%/+25% to +18%/+23%/+28%",
                                 "Made Chaotic curse be considered a curse instead of enchantment",
+                                "Made Paladin champion effect apply to more ranged zombies",
                                 "Updated Android target version to API 33"
                         )),
                         bugFixes(list(
