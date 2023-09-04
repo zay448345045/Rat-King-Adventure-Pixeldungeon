@@ -209,6 +209,10 @@ public class AbyssalNightmare extends AbyssalMob {
 			return true;
 		} else {
 
+			if (buff(ChampionEnemy.Paladin.class) != null){
+				return true;
+			}
+
 			if (target == pos || Dungeon.level.adjacent(pos, target)) {
 				return false;
 			}

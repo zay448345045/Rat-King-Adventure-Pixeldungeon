@@ -31,6 +31,7 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Charm;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.items.Generator;
@@ -99,12 +100,18 @@ public class BlinkingMan extends AbyssalMob {
 
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
 		return !Dungeon.level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
 	}
 
 	@Override
 	protected boolean getCloser( int target ) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return true;
+		}
 		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) <= 3 && blinkCooldown <= 0) {
 
 			blink( );

@@ -5,6 +5,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.levels.Level;
@@ -49,6 +50,9 @@ public class Trappet extends AbyssalMob implements Callback {
 
     @Override
     public boolean canAttack(Char enemy) {
+        if (buff(ChampionEnemy.Paladin.class) != null){
+            return false;
+        }
         return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
     }
 

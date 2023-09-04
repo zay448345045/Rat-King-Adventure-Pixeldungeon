@@ -30,10 +30,7 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Barrier;
-import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.Charm;
-import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Generator;
@@ -103,6 +100,9 @@ public class Succubus extends Mob {
 	
 	@Override
 	protected boolean getCloser( int target ) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return true;
+		}
 		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && blinkCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			
 			if (blink( target )) {

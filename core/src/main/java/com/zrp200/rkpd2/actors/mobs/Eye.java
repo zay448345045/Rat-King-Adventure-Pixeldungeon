@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -88,6 +89,9 @@ public class Eye extends Mob {
 
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 
 		if (beamCooldown == 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID);

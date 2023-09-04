@@ -107,6 +107,9 @@ public abstract class Elemental extends Mob {
 	
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		if (rangedCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
 		} else {

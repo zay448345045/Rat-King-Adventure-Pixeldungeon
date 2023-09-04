@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Fire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Poison;
 import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.items.Generator;
@@ -86,6 +87,9 @@ public class GnollTrickster extends Gnoll {
 
 	@Override
 	public boolean canAttack( Char enemy ) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
 		return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
 	}
@@ -115,6 +119,9 @@ public class GnollTrickster extends Gnoll {
 	@Override
 	protected boolean getCloser( int target ) {
 		combo = 0; //if he's moving, he isn't attacking, reset combo.
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return true;
+		}
 		if (state == HUNTING) {
 			return enemySeen && getFurther( target );
 		} else {

@@ -26,6 +26,7 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.items.Generator;
@@ -71,6 +72,9 @@ public class Scorpio extends Mob {
 	
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
 		return !Dungeon.level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
 	}

@@ -76,6 +76,9 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 
 	@Override
 	public boolean canAttack(Char enemy) {
+		if (buff(ChampionEnemy.Paladin.class) != null){
+			return false;
+		}
 		if (buff(Talent.AntiMagicBuff.class) != null){
 			return super.canAttack(enemy);
 		}
