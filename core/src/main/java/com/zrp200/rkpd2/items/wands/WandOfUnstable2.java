@@ -76,7 +76,7 @@ public class WandOfUnstable2 extends Wand {
                 wand.level(level()*3);
                 wand.fx(bolt, callback);
             }
-            Warp.inflict(10, 3);
+            Warp.inflict(20, 8);
         }
     }
 
