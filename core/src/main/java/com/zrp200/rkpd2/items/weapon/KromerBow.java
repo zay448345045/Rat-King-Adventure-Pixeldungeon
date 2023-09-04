@@ -60,7 +60,7 @@ public class KromerBow extends SpiritBow {
 
         @Override
         public int proc(Char attacker, Char defender, int damage) {
-            Warp.inflict(2, 5);
+            Warp.inflict(4, 8);
             return super.proc(attacker, defender, damage);
         }
     }
