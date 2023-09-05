@@ -211,9 +211,8 @@ public class Goo extends Mob {
 				Splash.at(pos+i, 0x000000, 5);
 				if (Actor.findChar(pos+i) != null)
 					Buff.affect(Actor.findChar(pos+i), Ooze.class).set( Ooze.DURATION );
-				if (Random.Int(2) == 0)
-					Dungeon.level.spawnMob(5);
 			}
+			Dungeon.level.spawnMob(5);
 		}
 		return super.defenseProc(enemy, damage);
 	}
