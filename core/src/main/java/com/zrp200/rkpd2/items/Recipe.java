@@ -304,7 +304,8 @@ public abstract class Recipe {
 		new WandOfUnstable2.Recipe(),
 		new TelekineticGrab.Recipe(),
 		new SummonElemental.Recipe(),
-		new StewedMeat.twoMeat()
+		new StewedMeat.twoMeat(),
+		new Pipisfusion.Recipe()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
