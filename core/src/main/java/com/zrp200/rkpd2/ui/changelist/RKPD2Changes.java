@@ -147,7 +147,8 @@ public class RKPD2Changes {
                                 "Changed _Kromer-infused Cloak_: now is compatible with every Cloak of Shadows interaction, but inflicts more warp and its decay rate depends on how long each charge lasts",
                                 "Nerfed _Kromer-infused Bow_: now inflicts massively more warp with each shot",
                                 "Changed _Kromer-infused Slingshot_: now does 16% more damage, but inflicts much more warp with each shot",
-                                "Nerfed _Wand of Kromer_: now inflicts massively more warp with each zap"
+                                "Nerfed _Wand of Kromer_: now inflicts massively more warp with each zap",
+                                "Buffed _Scam Spell_: now inflict Scam for longer, increased the yield per craft to 11, but increased energy cost to 22"
                         )),
                         misc(list(
                                 "Nerfed cryogenic imbue of nerf gun by making its freezing last shorter and making Rat King boss immune to frost",
@@ -157,6 +158,8 @@ public class RKPD2Changes {
                                 "Buffed Like a Bullet talent: increased starting power from +39%/+46%/+55% to +45%/+58%/+71% and increased distance multiplier from +17%/+21%/+25% to +18%/+23%/+28%",
                                 "Made Chaotic curse be considered a curse instead of enchantment",
                                 "Made Paladin champion effect apply to more ranged zombies",
+                                "Added action names to RKA's abilities that didn't have them",
+                                "Animosity Mode's Goo now spawns only one slime per hit, not 4-5 (also fixes the freeze connected to too many slimes spawning)",
                                 "Updated Android target version to API 33"
                         )),
                         bugFixes(list(
@@ -168,7 +171,9 @@ public class RKPD2Changes {
                                 "Fixed rare crash with Evil Eyes splitting",
                                 "Fixed Kromer Mask's missing strings",
                                 "Fixed Degrading Health's tracker crashing the game on reloading",
-                                "Fixed Kromer Economy's 180 turns preparation delay disappearing on reloading the game"
+                                "Fixed Kromer Economy's 180 turns preparation delay disappearing on reloading the game",
+                                "Fixed melee weapons being possible to quickslot outside of Brawler's subclass",
+                                "Fixed some cases of Unenchanted's no upgrades effect not applying to drops when it should"
                         ))
                 ),
                 new ChangeInfo("RKA-1.5.1",true,TITLE_COLOR,
