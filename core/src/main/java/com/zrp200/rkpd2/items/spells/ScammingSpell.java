@@ -23,7 +23,7 @@ public class ScammingSpell extends Spell{
     @Override
     protected void onCast(Hero hero) {
         Warp.inflict(50, 3f);
-        Buff.prolong(hero, Scam.class, 21f);
+        Buff.prolong(hero, Scam.class, 35f);
         hero.sprite.operate(hero.pos);
         Sample.INSTANCE.play(Assets.Sounds.CURSED, 1f, 0.3f);
         hero.sprite.emitter().burst( Speck.factory( Speck.STENCH ), 40);
@@ -52,10 +52,10 @@ public class ScammingSpell extends Spell{
             inputs =  new Class[]{Kromer.class, ArcaneCatalyst.class};
             inQuantity = new int[]{1, 1};
 
-            cost = 12;
+            cost = 22;
 
             output = ScammingSpell.class;
-            outQuantity = 1;
+            outQuantity = 11;
         }
 
     }
