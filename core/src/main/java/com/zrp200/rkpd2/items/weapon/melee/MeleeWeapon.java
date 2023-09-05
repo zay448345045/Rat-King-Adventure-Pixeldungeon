@@ -66,7 +66,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	public String getDefaultAction() {
 		if (Dungeon.hero.isSubclassed(HeroSubClass.BRAWLER) && Dungeon.hero.belongings.weapon != this)
 			return AC_EQUIP;
-		return defaultAction;
+		return super.getDefaultAction();
 	}
 
 	public int STRReq(int lvl){
