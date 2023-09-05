@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.rooms.special;
 
+import com.watabou.utils.Point;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.blobs.Blob;
@@ -32,7 +33,6 @@ import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.watabou.utils.Point;
 
 public class SacrificeRoom extends SpecialRoom {
 
@@ -74,7 +74,9 @@ public class SacrificeRoom extends SpecialRoom {
 
 		//if it isn't already cursed, give it a free upgrade
 		if (!prize.cursed){
-			prize.upgrade();
+			if (!Dungeon.isChallenged(Challenges.REDUCED_POWER)) {
+				prize.upgrade();
+			}
 			//curse the weapon, unless it has a glyph
 			if (!prize.hasGoodEnchant()){
 				prize.enchant(Weapon.Enchantment.randomCurse());

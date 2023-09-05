@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.effects.CellEmitter;
@@ -96,7 +97,9 @@ public class GoldenMimic extends Mimic {
 					((Armor) i).inscribe(null);
 				}
 				if (!(i instanceof MissileWeapon || i instanceof Artifact) && i.level() == 0 && Random.Int(2) == 0){
-					i.upgrade();
+					if (!Dungeon.isChallenged(Challenges.REDUCED_POWER)) {
+						i.upgrade();
+					}
 				}
 			}
 		}

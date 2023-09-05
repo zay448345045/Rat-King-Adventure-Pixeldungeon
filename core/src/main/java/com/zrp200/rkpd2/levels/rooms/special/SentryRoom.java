@@ -196,7 +196,7 @@ public class SentryRoom extends SpecialRoom {
 			prize.cursedKnown = true;
 
 			//33% chance for an extra update.
-			if (Random.Int(3) == 0) {
+			if (Random.Int(3) == 0 && (!Dungeon.isChallenged(Challenges.REDUCED_POWER))) {
 				prize.upgrade();
 			}
 		}
