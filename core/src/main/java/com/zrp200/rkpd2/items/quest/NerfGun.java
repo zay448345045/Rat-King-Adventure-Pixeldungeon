@@ -211,7 +211,7 @@ public class NerfGun extends Weapon {
             hero.sprite.operate(hero.pos, () -> {
                 hero.sprite.idle();
                 curCharges = maxCharges();
-                Warp.inflict(20, 3);
+                Warp.inflict(20, 1.5f);
                 updateQuickslot();
                 enchantment = null;
                 Sample.INSTANCE.play(Assets.Sounds.ATK_CROSSBOW);
