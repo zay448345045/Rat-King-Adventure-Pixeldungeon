@@ -26,6 +26,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Roots;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -41,6 +42,7 @@ import com.zrp200.rkpd2.plants.Earthroot;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 
@@ -111,7 +113,13 @@ public class SandalsOfNature extends Artifact {
 	@Override
 	public String name() {
 		if (level() == 0)   return super.name();
-		else                return Messages.get(this, "name_" + level());
+		else {
+			String name = Messages.get(this, "name_" + level());
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				return ShatteredPixelDungeon.turnIntoRrrr(name);
+			}
+			return name;
+		}
 	}
 
 	@Override

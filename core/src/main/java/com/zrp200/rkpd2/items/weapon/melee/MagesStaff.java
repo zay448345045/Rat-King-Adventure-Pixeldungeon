@@ -29,6 +29,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -51,6 +52,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndOptions;
@@ -352,6 +354,9 @@ public class MagesStaff extends MeleeWeapon {
 			return super.name();
 		} else {
 			String name = Messages.get(wand, "staff_name");
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				return ShatteredPixelDungeon.turnIntoRrrr(name);
+			}
 			return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.name( name ) : name;
 		}
 	}

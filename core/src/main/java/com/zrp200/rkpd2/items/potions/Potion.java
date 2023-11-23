@@ -21,8 +21,13 @@
 
 package com.zrp200.rkpd2.items.potions;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Fire;
@@ -37,39 +42,19 @@ import com.zrp200.rkpd2.items.ItemStatusHandler;
 import com.zrp200.rkpd2.items.Recipe;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.potions.elixirs.ElixirOfHoneyedHealing;
-import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfCleansing;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfCorrosiveGas;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfShroudingFog;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfSnapFreeze;
-import com.zrp200.rkpd2.items.potions.exotic.PotionOfStormClouds;
+import com.zrp200.rkpd2.items.potions.exotic.*;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.plants.Blindweed;
-import com.zrp200.rkpd2.plants.Dreamfoil;
-import com.zrp200.rkpd2.plants.Earthroot;
-import com.zrp200.rkpd2.plants.Fadeleaf;
-import com.zrp200.rkpd2.plants.Firebloom;
-import com.zrp200.rkpd2.plants.Icecap;
-import com.zrp200.rkpd2.plants.Plant;
-import com.zrp200.rkpd2.plants.Rotberry;
-import com.zrp200.rkpd2.plants.Sorrowmoss;
-import com.zrp200.rkpd2.plants.Starflower;
-import com.zrp200.rkpd2.plants.Stormvine;
-import com.zrp200.rkpd2.plants.Sungrass;
-import com.zrp200.rkpd2.plants.Swiftthistle;
+import com.zrp200.rkpd2.plants.*;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndBag;
 import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndUseItem;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
-import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -361,8 +346,15 @@ public class Potion extends Item {
 	
 	@Override
 	public String name() {
-		return isKnown() ? super.name() : Messages.get(this, color);
-	}
+        if (isKnown()) return super.name();
+        else {
+			String name = Messages.get(this, color);
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				return ShatteredPixelDungeon.turnIntoRrrr(name);
+			}
+			return name;
+		}
+    }
 	
 	@Override
 	public String info() {

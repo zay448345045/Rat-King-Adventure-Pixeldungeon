@@ -26,8 +26,10 @@ import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public abstract class Trap implements Bundlable {
 
@@ -105,7 +107,11 @@ public abstract class Trap implements Bundlable {
 	}
 
 	public String name(){
-		return Messages.get(this, "name");
+		String name = Messages.get(this, "name");
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			name = ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 
 	public String desc() {

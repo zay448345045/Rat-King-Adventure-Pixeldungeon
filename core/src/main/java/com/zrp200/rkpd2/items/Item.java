@@ -30,6 +30,7 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
@@ -49,6 +50,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -436,12 +438,20 @@ public class Item implements Bundlable {
 		if (quantity > 1)
 			name = Messages.format( TXT_TO_STRING_X, name, quantity );
 
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			name = ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+
 		return name;
 
 	}
 	
 	public String name() {
-		return trueName();
+		String name = trueName();
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			return ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 	
 	public final String trueName() {

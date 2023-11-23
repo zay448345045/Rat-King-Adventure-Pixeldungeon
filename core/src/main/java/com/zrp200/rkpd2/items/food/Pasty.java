@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.food;
 
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.buffs.Recharging;
@@ -29,6 +31,7 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.Calendar;
 
@@ -117,7 +120,11 @@ public class Pasty extends Food {
 	public String name() {
 		switch(holiday){
 			case NONE: default:
-				return Messages.get(this, "pasty");
+				String string = Messages.get(this, "pasty");
+				if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+					return ShatteredPixelDungeon.turnIntoRrrr(string);
+				}
+				return string;
 			case HWEEN:
 				return Messages.get(this, "pie");
 			case XMAS:

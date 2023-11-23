@@ -25,6 +25,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
@@ -45,6 +46,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -304,7 +306,11 @@ public class SpiritHawk extends ArmorAbility {
 		@Override
 		public String name() {
 			if (Dungeon.hero.heroClass == HeroClass.RAT_KING){
-				return Messages.get(this, "name_rat");
+				String nameRat = Messages.get(this, "name_rat");
+				if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+					nameRat = ShatteredPixelDungeon.turnIntoRrrr(nameRat);
+				}
+				return nameRat;
 			}
 			return super.name();
 		}

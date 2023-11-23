@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.scrolls;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -39,6 +40,7 @@ import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -207,7 +209,11 @@ public abstract class Scroll extends Item {
 	
 	@Override
 	public String name() {
-		return isKnown() ? super.name() : Messages.get(this, rune);
+		String name = isKnown() ? super.name() : Messages.get(this, rune);
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			return ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 	
 	@Override

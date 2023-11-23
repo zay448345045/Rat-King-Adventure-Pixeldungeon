@@ -26,6 +26,7 @@ import com.watabou.utils.*;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
@@ -44,6 +45,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -666,7 +668,11 @@ public class Armor extends EquipableItem {
 		}
 		
 		public String name( String armorName ) {
-			return Messages.get(this, "name", armorName);
+			String name = Messages.get(this, "name", armorName);
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				return ShatteredPixelDungeon.turnIntoRrrr(name);
+			}
+			return name;
 		}
 
 		public String desc() {

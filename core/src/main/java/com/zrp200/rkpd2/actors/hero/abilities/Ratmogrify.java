@@ -27,6 +27,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
@@ -45,6 +46,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.RatSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -299,7 +301,11 @@ public class Ratmogrify extends ArmorAbility {
 
 		@Override
 		public String name() {
-			return Messages.get(this, "name", original.name());
+			String name = Messages.get(this, "name", original.name());
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				name = ShatteredPixelDungeon.turnIntoRrrr(name);
+			}
+			return name;
 		}
 
 		{

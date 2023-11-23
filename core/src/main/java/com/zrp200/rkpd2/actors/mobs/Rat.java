@@ -24,12 +24,14 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.RatSprite;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class Rat extends Mob {
 
@@ -50,8 +52,14 @@ public class Rat extends Mob {
 		}
 		String name = super.name();
 		String prefixed = Messages.get(this, alignment1.toString().toLowerCase(), name);
-		return prefixed.isEmpty() ? name : prefixed;
-	}
+        if (prefixed.isEmpty()) return name;
+		else {
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+				prefixed = ShatteredPixelDungeon.turnIntoRrrr(prefixed);
+			}
+			return prefixed;
+		}
+    }
 
 	@Override
 	public String description() {

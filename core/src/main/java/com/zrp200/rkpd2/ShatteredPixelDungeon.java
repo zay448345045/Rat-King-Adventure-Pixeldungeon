@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2;
 
+import com.badlogic.gdx.utils.StringBuilder;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
@@ -208,5 +209,17 @@ public static final int v1_2_3  = v0_3_0/*628*/;
 
 	public static void updateSystemUI() {
 		platform.updateSystemUI();
+	}
+
+	public static String turnIntoRrrr(String name){
+		StringBuilder builder = new StringBuilder();
+		for (char lol : name.toCharArray()) {
+			if (Character.isLetter(lol))
+				builder.append('r');
+			else
+				builder.append(lol);
+		}
+		name = builder.toString();
+		return name;
 	}
 }

@@ -27,6 +27,7 @@ import com.watabou.utils.*;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barkskin;
@@ -44,6 +45,7 @@ import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 
@@ -128,7 +130,11 @@ public abstract class Plant implements Bundlable {
 	}
 
 	public String name(){
-		return Messages.get(this, "name");
+		String name = Messages.get(this, "name");
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			name = ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 
 

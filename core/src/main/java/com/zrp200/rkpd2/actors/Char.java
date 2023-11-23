@@ -23,10 +23,7 @@ package com.zrp200.rkpd2.actors;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.*;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Challenges;
-import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Electricity;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
@@ -147,7 +144,11 @@ public abstract class Char extends Actor {
 	}
 
 	public String name(){
-		return Messages.get(this, "name");
+		String name = Messages.get(this, "name");
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			name = ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 
 	public boolean canInteract(Char c){

@@ -175,6 +175,15 @@ public class DungeonSeed {
 				list.add(CHESTS);
 				list.add(BIGGER);
 			}
+		},
+		RLETTER("RRR-RRR-RRR"){
+			@Override
+			public void addSeeds(HashSet<SpecialSeed> list) {
+				super.addSeeds(list);
+				list.add(RATS);
+				list.add(REVERSE);
+				list.add(ROGUE);
+			}
 		};
 
 		public long seed;
