@@ -40,7 +40,7 @@ public class WellFed extends Buff {
 	@Override
 	public boolean act() {
 		left --;
-		final int regenSpeed = target instanceof Hero ? 18 : 4;
+		final int regenSpeed = target instanceof Hero ? 18 : 3;
 		if (left < 0){
 			detach();
 			return true;
