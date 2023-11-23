@@ -73,7 +73,7 @@ public class WandOfUnstable2 extends Wand {
                             }
                         });
             } else {
-                wand.level(level()*3);
+                wand.level(level()*4);
                 wand.fx(bolt, callback);
             }
             Warp.inflict(30, 3);
@@ -88,7 +88,7 @@ public class WandOfUnstable2 extends Wand {
                 CursedWand.cursedEffect(null, attacker, defender);
             }
             else {
-                wand.level(level() * 3);
+                wand.level(level() * 4);
                 wand.onHit(staff, attacker, defender, damage);
             }
         }
