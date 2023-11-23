@@ -57,7 +57,7 @@ public class SecretHoardRoom extends SecretRoom {
 		//half of the internal space of the room
 		int totalGold = ((width()-2)*(height()-2))/2;
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		//no matter how much gold it drops, roughly equals 8 gold stacks.

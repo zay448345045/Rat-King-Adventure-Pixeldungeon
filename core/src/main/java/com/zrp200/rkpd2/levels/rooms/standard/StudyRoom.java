@@ -84,7 +84,7 @@ public class StudyRoom extends StandardRoom {
 		Item prize = (Random.Int(2) == 0) ? level.findPrizeItem() : null;
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		if (prize != null) {

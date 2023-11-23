@@ -105,7 +105,7 @@ public class CrystalChoiceRoom extends SpecialRoom {
 
 		int n = Random.NormalIntRange(3, 4);
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		for (int i = 0; i < n; i++){
 			Item reward = Generator.random(Random.oneOf(
@@ -131,7 +131,7 @@ public class CrystalChoiceRoom extends SpecialRoom {
 		));
 		Heap chest = level.drop(hidden, level.pointToCell(room2.center()));
 		chest.type = Heap.Type.CHEST;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS) {
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS)) {
 			chest.type = Heap.Type.EBONY_CHEST;
 		}
 		//opening the chest is optional, so it doesn't count for exploration bonus

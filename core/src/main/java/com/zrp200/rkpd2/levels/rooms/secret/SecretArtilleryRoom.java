@@ -39,7 +39,7 @@ public class SecretArtilleryRoom extends SecretRoom {
 		
 		Painter.set(level, center(), Terrain.STATUE_SP);
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		for (int i = 0; i < 3; i++){

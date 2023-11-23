@@ -43,7 +43,7 @@ public class StorageRoom extends SpecialRoom {
 		boolean honeyPot = Random.Int( 2 ) == 0;
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int n = Random.IntRange( 3, 4 );

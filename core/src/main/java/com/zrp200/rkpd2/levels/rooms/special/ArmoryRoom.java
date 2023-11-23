@@ -59,7 +59,7 @@ public class ArmoryRoom extends SpecialRoom {
 		int n = Random.IntRange( 2, 3 );
 		prizeCats = new float[]{1,1,1,1};
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		for (int i=0; i < n; i++) {
 			int pos;

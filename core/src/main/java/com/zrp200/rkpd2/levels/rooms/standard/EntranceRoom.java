@@ -79,7 +79,7 @@ public class EntranceRoom extends StandardRoom {
 		Random.pushGenerator();
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 
 		//places the first guidebook page on floor 1

@@ -484,7 +484,7 @@ public abstract class Level implements Bundlable {
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.RATS){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RATS)){
 			m = new Ratmogrify.SummonedRat();
 		}
 		return m;
@@ -862,7 +862,7 @@ public abstract class Level implements Bundlable {
 	}
 	
 	public static void set( int cell, int terrain, Level level ) {
-		if (terrain == Terrain.WALL && Dungeon.specialSeed == DungeonSeed.SpecialSeed.NO_WALLS){
+		if (terrain == Terrain.WALL && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
 			terrain = Terrain.CHASM;
 		}
 		Painter.set( level, cell, terrain );

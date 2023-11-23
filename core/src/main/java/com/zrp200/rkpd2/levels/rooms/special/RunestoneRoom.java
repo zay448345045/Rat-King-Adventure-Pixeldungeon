@@ -53,7 +53,7 @@ public class RunestoneRoom extends SpecialRoom {
 		Painter.fill( level, this, 2, Terrain.EMPTY );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int n = Random.NormalIntRange(2, 3);

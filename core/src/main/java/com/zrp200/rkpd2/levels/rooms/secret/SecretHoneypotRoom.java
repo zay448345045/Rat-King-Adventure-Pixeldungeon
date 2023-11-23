@@ -69,7 +69,7 @@ public class SecretHoneypotRoom extends SecretRoom {
 			itemPos = level.pointToCell(random());
 		} while (level.heaps.get(itemPos) != null);
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		level.drop(item, itemPos).type = type;

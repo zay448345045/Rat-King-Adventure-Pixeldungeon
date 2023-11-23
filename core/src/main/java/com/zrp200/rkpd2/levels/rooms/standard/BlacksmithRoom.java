@@ -52,7 +52,7 @@ public class BlacksmithRoom extends StandardRoom {
 		Painter.fill( level, this, 2, Terrain.EMPTY_SP );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		for (int i=0; i < 2; i++) {

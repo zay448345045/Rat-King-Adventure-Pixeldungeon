@@ -101,7 +101,7 @@ public class MagicalFireRoom extends SpecialRoom {
 		int n = Random.IntRange( 3, 4 );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 
 		for (int i=0; i < n; i++) {

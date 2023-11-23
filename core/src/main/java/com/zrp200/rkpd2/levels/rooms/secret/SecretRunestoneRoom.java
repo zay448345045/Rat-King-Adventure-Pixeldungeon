@@ -67,7 +67,7 @@ public class SecretRunestoneRoom extends SecretRoom {
 		level.addItemToSpawn(new PotionOfLiquidFlame());
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int dropPos;

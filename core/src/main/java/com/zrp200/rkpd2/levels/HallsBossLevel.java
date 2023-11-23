@@ -87,14 +87,14 @@ public class HallsBossLevel extends Level {
 
 	@Override
 	public String tilesTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return TILES_SEWERS;
 		return Assets.Environment.TILES_HALLS;
 	}
 
 	@Override
 	public String waterTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return WATER_SEWERS;
 		return Assets.Environment.WATER_HALLS;
 	}

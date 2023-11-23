@@ -126,7 +126,7 @@ public class CrystalPathRoom extends SpecialRoom {
 		}
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 
 		for (int i = 0; i < 4; i++){

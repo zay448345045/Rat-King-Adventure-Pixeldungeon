@@ -21,8 +21,11 @@
 
 package com.zrp200.rkpd2.utils;
 
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.HashSet;
 import java.util.Locale;
 
 //This class defines the parameters for seeds in ShatteredPD and contains a few convenience methods
@@ -147,7 +150,7 @@ public class DungeonSeed {
 		}
 	}
 
-	public enum SpecialSeed {
+	public enum SpecialSeed implements Bundlable {
 		RATS("RAT-RAT-RAT"),
 		ROGUE("ROG-UEB-UFF"),
 		REVERSE("REV-ERS-EED"),
@@ -181,13 +184,32 @@ public class DungeonSeed {
 			this.random = random;
 		}
 
-		public static SpecialSeed interpret(String seed){
+		public void addSeeds(HashSet<SpecialSeed> list){
+			list.add(this);
+		}
+
+		public static void interpret(HashSet<SpecialSeed> list, String seed){
 			long s = convertFromText(seed);
 			for (SpecialSeed specialSeed : SpecialSeed.values()){
-				if (s == specialSeed.seed)
-					return specialSeed;
+				if (s == specialSeed.seed) {
+					specialSeed.addSeeds(list);
+				}
 			}
-			return null;
+        }
+
+		private static final String SEED    = "seed";
+		private static final String RANDOM  = "random";
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			seed = bundle.getInt(SEED);
+			random = bundle.getBoolean(RANDOM);
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			bundle.put(SEED, seed);
+			bundle.put(RANDOM, random);
 		}
 	}
 

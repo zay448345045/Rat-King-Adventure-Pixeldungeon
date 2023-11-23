@@ -68,7 +68,7 @@ public class SecretLaboratoryRoom extends SecretRoom {
 		Blob.seed( pot.x + level.width() * pot.y, 1, Alchemy.class, level );
 		int pos;
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 
 		if (!Dungeon.isChallenged(Challenges.NO_ALCHEMY)) {

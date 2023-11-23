@@ -48,7 +48,7 @@ public class LibraryRoom extends SpecialRoom {
 		Painter.drawInside(level, this, entrance, 1, Terrain.EMPTY_SP );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int n = Random.NormalIntRange( 1, 3 );

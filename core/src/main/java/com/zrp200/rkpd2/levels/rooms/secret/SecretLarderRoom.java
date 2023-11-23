@@ -61,7 +61,7 @@ public class SecretLarderRoom extends SecretRoom {
 		level.plant(new BlandfruitBush.Seed(), level.pointToCell(c));
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.getDepth() / 5);

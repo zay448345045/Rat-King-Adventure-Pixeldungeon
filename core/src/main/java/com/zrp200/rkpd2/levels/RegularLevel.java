@@ -116,7 +116,7 @@ public abstract class RegularLevel extends Level {
 		}
 		// reduce by designated amount to reduce levelsize for rkpd2, much like rkpd does.
 		// reduce for rkpd2, inspired by rkpd
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
 			standards *= 4;
 		else
 			standards = (int)Math.floor(standards * Random.Float(SIZE_MODIFIER[0],SIZE_MODIFIER[1]));
@@ -125,7 +125,7 @@ public abstract class RegularLevel extends Level {
 		}
 		for (int i = 0; i < standards; i++) {
 			int sizeCat = standards-i;
-			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
 				sizeCat = 0;
 			StandardRoom s;
 			do {
@@ -143,7 +143,7 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			specials++;
 		}
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
 			specials += 2;
 		// reduce size of special rooms by same factor for net decrease. This will do much less in comparison to regular rooms but proportions are proportions.
 		//specials = Random.round( specials*SIZE_MODIFIER );
@@ -229,7 +229,7 @@ public abstract class RegularLevel extends Level {
 		if (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS)){
 			mobsToSpawn *= 1000;
 		}
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
 			mobsToSpawn *= 2;
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
@@ -393,7 +393,7 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			nItems += 2;
 		}
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.BIGGER)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
 			nItems *= 1.5f;
 		
 		for (int i=0; i < nItems; i++) {
@@ -430,7 +430,7 @@ public abstract class RegularLevel extends Level {
 				break;
 			}
 
-			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 				type = Heap.Type.CHEST;
 
 			if ((toDrop instanceof Artifact && Random.Int(2) == 0) ||
@@ -461,7 +461,7 @@ public abstract class RegularLevel extends Level {
 
 		for (Item item : itemsToSpawn) {
 			Heap.Type type = Heap.Type.HEAP;
-			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 				type = Heap.Type.CHEST;
 			int cell = randomDropCell();
 			if (Dungeon.isChallenged(Challenges.REDUCED_POWER)){
@@ -511,7 +511,7 @@ public abstract class RegularLevel extends Level {
 					item = new DriedRose.Petal();
 					int cell = randomDropCell();
 					Heap.Type type = Heap.Type.HEAP;
-					if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+					if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 						type = Heap.Type.CHEST;
 					drop( item, cell ).type = type;
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
@@ -577,7 +577,7 @@ public abstract class RegularLevel extends Level {
 			p.page(missingPages.get(0));
 			int cell = randomDropCell();
 			Heap.Type type = Heap.Type.HEAP;
-			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 				type = Heap.Type.CHEST;
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;

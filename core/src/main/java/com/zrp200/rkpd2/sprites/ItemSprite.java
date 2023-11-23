@@ -240,7 +240,7 @@ public class ItemSprite extends MovieClip {
 		if (this.emitter != null) this.emitter.killAndErase();
 		emitter = null;
 		try {
-			if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.RANDOM_ITEMS) {
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RANDOM_ITEMS)) {
 				Object o = Random.element(ItemSpriteSheet.class.getFields()).get(null);
 				if (!(o instanceof TextureFilm))
 					image = (int) o;

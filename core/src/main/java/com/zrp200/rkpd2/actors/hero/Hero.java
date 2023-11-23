@@ -502,7 +502,7 @@ public class Hero extends Char {
 		if (Dungeon.isChallenged(Challenges.BURN)){
 			Buff.affect(this, DomainOfHell.class);
 		}
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.ECH){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.ECH)){
 			Buff.affect(this, Ech.EchDied.class).depth = -1;
 		}
 	}

@@ -168,30 +168,37 @@ public class Dungeon {
 	public static boolean daily;
 	public static String customSeedText = "";
 	public static long seed;
-	public static DungeonSeed.SpecialSeed specialSeed;
+	public static HashSet<DungeonSeed.SpecialSeed> specialSeeds;
+
+	public static boolean isSpecialSeedEnabled(DungeonSeed.SpecialSeed seed){
+		if (specialSeeds != null && !specialSeeds.isEmpty())
+			return Dungeon.specialSeeds.contains(seed);
+		return false;
+	}
 	
 	public static void init() {
 
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 		mobsToChampion = -1;
+		specialSeeds = new HashSet<>();
 
 		if (daily) {
 			seed = SPDSettings.lastDaily();
 			DateFormat format = DateFormat.getDateInstance(DateFormat.SHORT, Locale.ROOT);
 			format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			customSeedText = format.format(new Date(seed));
-			specialSeed = null;
 		} else if (!SPDSettings.customSeed().isEmpty()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
-			specialSeed = DungeonSeed.SpecialSeed.interpret(customSeedText);
-			if (specialSeed != null && specialSeed.random)
+			DungeonSeed.SpecialSeed.interpret(specialSeeds, customSeedText);
+			if (!specialSeeds.isEmpty()) {
+
 				seed = DungeonSeed.randomSeed();
+			}
 		} else {
 			customSeedText = "";
 			seed = DungeonSeed.randomSeed();
-			specialSeed = null;
 		}
 
 		Actor.clear();
@@ -273,7 +280,7 @@ public class Dungeon {
 		case 2:
 		case 3:
 		case 4:
-			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			if (isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 				level = new HallsLevel();
 			else
 				level = new SewerLevel();
@@ -285,7 +292,7 @@ public class Dungeon {
 		case 7:
 		case 8:
 		case 9:
-			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			if (isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 				level = new CityLevel();
 			else
 				level = new PrisonLevel();
@@ -306,7 +313,7 @@ public class Dungeon {
 		case 17:
 		case 18:
 		case 19:
-			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			if (isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 				level = new PrisonLevel();
 			else
 				level = new CityLevel();
@@ -318,7 +325,7 @@ public class Dungeon {
 		case 22:
 		case 23:
 		case 24:
-			if (specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+			if (isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 				level = new SewerLevel();
 			else
 				level = new HallsLevel();
@@ -526,6 +533,7 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 	private static final String SPECIALSEED = "specialSeed";
+	private static final String SEED_ARRAY  = "specialSeedList";
 	
 	public static void saveGame( int save ) {
 		try {
@@ -589,7 +597,7 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
-			bundle.put( SPECIALSEED, specialSeed);
+			bundle.put( SEED_ARRAY, specialSeeds);
 			
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 			
@@ -638,7 +646,14 @@ public class Dungeon {
 		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
 		customSeedText = bundle.getString( CUSTOM_SEED );
 		daily = bundle.getBoolean( DAILY );
-		specialSeed = bundle.contains(SPECIALSEED) ? bundle.getEnum(SPECIALSEED, DungeonSeed.SpecialSeed.class) : null;
+		if (bundle.contains(SPECIALSEED)){
+			DungeonSeed.SpecialSeed specialSeed = bundle.getEnum(SPECIALSEED, DungeonSeed.SpecialSeed.class);
+			specialSeeds.add(specialSeed);
+		} else {
+			for (Bundlable lol: bundle.getCollection(SEED_ARRAY)) {
+				specialSeeds.add((DungeonSeed.SpecialSeed)lol);
+			}
+		}
 
 		Actor.clear();
 		Actor.restoreNextID( bundle );

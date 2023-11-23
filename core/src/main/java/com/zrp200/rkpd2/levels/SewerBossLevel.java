@@ -90,14 +90,14 @@ public class SewerBossLevel extends SewerLevel {
 
 	@Override
 	public String tilesTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return TILES_HALLS;
 		return Assets.Environment.TILES_SEWERS;
 	}
 
 	@Override
 	public String waterTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return WATER_HALLS;
 		return Assets.Environment.WATER_SEWERS;
 	}

@@ -68,7 +68,7 @@ public class LaboratoryRoom extends SpecialRoom {
 		Blob.seed( pot.x + level.width() * pot.y, 1, Alchemy.class, level );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 
 		int pos;

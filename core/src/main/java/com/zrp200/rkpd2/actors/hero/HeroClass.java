@@ -264,7 +264,7 @@ public enum HeroClass {
 	private static void initRogue( Hero hero ) {
 		(hero.belongings.weapon = new Dagger()).identify();
 
-		if (Dungeon.specialSeed != DungeonSeed.SpecialSeed.ROGUE) {
+		if (!Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.ROGUE)) {
 			CloakOfShadows cloak = new CloakOfShadows();
 			(hero.belongings.artifact = cloak).identify();
 			hero.belongings.artifact.activate(hero);

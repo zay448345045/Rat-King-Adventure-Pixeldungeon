@@ -64,7 +64,7 @@ public class HallsLevel extends RegularLevel {
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> rooms = super.initRooms();
 
-		if (Dungeon.specialSeed != DungeonSeed.SpecialSeed.REVERSE)
+		if (!Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			rooms.add(new DemonSpawnerRoom());
 
 		return rooms;

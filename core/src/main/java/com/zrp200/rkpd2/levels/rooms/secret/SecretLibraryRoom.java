@@ -76,7 +76,7 @@ public class SecretLibraryRoom extends SecretRoom {
 		entrance.set( Door.Type.HIDDEN );
 
 		Heap.Type type = Heap.Type.HEAP;
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.CHESTS)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
 		int n = Random.IntRange( 2, 3 );

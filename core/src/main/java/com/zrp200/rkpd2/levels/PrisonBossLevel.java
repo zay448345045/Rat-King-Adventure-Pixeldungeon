@@ -104,14 +104,14 @@ public class PrisonBossLevel extends Level {
 	
 	@Override
 	public String tilesTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return TILES_CITY;
 		return Assets.Environment.TILES_PRISON;
 	}
 	
 	@Override
 	public String waterTex() {
-		if (Dungeon.specialSeed == DungeonSeed.SpecialSeed.REVERSE)
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
 			return WATER_CITY;
 		return Assets.Environment.WATER_PRISON;
 	}
