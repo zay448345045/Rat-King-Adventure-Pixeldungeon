@@ -167,7 +167,15 @@ public class DungeonSeed {
 				list.addAll(Arrays.asList(SpecialSeed.values()));
 			}
 		},
-		NO_WARP("ROT-INM-IND");
+		NO_WARP("ROT-INM-IND"),
+		DUNGEONEER("WHO-LEP-ACK"){
+			@Override
+			public void addSeeds(HashSet<SpecialSeed> list) {
+				super.addSeeds(list);
+				list.add(CHESTS);
+				list.add(BIGGER);
+			}
+		};
 
 		public long seed;
 		public boolean random;

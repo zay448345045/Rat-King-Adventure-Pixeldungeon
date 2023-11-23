@@ -21,11 +21,12 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.watabou.utils.Bundle;
 
 public class WellFed extends Buff {
 
@@ -39,10 +40,11 @@ public class WellFed extends Buff {
 	@Override
 	public boolean act() {
 		left --;
+		final int regenSpeed = target instanceof Hero ? 18 : 4;
 		if (left < 0){
 			detach();
 			return true;
-		} else if (left % 18 == 0){
+		} else if (left % regenSpeed == 0){
 			target.HP = Math.min(target.HT, target.HP + 1);
 		}
 		
@@ -57,6 +59,9 @@ public class WellFed extends Buff {
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			//150 turns if on diet is enabled
 			left /= 3;
+		}
+		if (!(target instanceof Hero)){
+			left = 999999;
 		}
 	}
 	

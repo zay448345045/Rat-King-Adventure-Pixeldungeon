@@ -33,6 +33,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.SacrificialFire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.WellFed;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
@@ -321,7 +322,8 @@ public abstract class RegularLevel extends Level {
 				map[m.pos] = Terrain.GRASS;
 				losBlocking[m.pos] = false;
 			}
-
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER))
+				Buff.affect(m, WellFed.class).reset();
 		}
 
 	}
@@ -451,6 +453,8 @@ public abstract class RegularLevel extends Level {
 				if (toDrop instanceof Weapon && ((Weapon) toDrop).tier == 6){
 					type = Heap.Type.EBONY_CHEST;
 				}
+				if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(4) == 0)
+					dropped.items.add(Generator.random());
 				dropped.type = type;
 				if (type == Heap.Type.SKELETON){
 					dropped.setHauntedIfCursed();
@@ -470,7 +474,10 @@ public abstract class RegularLevel extends Level {
 						item instanceof Stylus || item instanceof Torch)){
 					mobs.add(Mimic.spawnAt(cell, item));
 				} else {
-					drop(item, cell).type = type;
+					Heap drop = drop(item, cell);
+					drop.type = type;
+					if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(4) == 0)
+						drop.items.add(Generator.random());
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;
@@ -478,7 +485,10 @@ public abstract class RegularLevel extends Level {
 				}
 			}
 			else {
-				drop(item, cell).type = type;
+				Heap drop = drop(item, cell);
+				drop.type = type;
+				if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(4) == 0)
+					drop.items.add(Generator.random());
 				if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 					map[cell] = Terrain.GRASS;
 					losBlocking[cell] = false;
@@ -513,7 +523,10 @@ public abstract class RegularLevel extends Level {
 					Heap.Type type = Heap.Type.HEAP;
 					if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 						type = Heap.Type.CHEST;
-					drop( item, cell ).type = type;
+					Heap drop = drop(item, cell);
+					drop.type = type;
+					if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(4) == 0)
+						drop.items.add(Generator.random());
 					if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 						map[cell] = Terrain.GRASS;
 						losBlocking[cell] = false;
@@ -549,12 +562,18 @@ public abstract class RegularLevel extends Level {
 						losBlocking[cell] = false;
 					}
 					// rogue gets regular food.
+					Heap drop;
 					if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
-					drop( new MysteryMeat(), cell).type = Heap.Type.CHEST;
+						drop = drop(new MysteryMeat(), cell);
+					}
+					else {
+						drop = drop(dropped.count() < large ? new Food() : new SmallRation(), cell);
+					}
+					drop.type = Heap.Type.CHEST;
+					if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(4) == 0)
+						drop.items.add(Generator.random());
+					dropped.countUp(1);
 				}
-				else
-					drop( dropped.count() < large ? new Food() : new SmallRation(), cell).type = Heap.Type.CHEST;
-				dropped.countUp(1);}
 			}
 		}
 
@@ -583,7 +602,10 @@ public abstract class RegularLevel extends Level {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
 			}
-			drop( p, cell ).type = type;
+			Heap drop = drop(item, cell);
+			drop.type = type;
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(3) == 0)
+				drop.items.add(Generator.random());
 		}
 
 		Random.popGenerator();
