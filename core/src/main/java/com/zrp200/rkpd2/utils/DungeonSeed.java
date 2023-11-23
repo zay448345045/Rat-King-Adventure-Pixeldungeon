@@ -25,6 +25,7 @@ import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -159,7 +160,13 @@ public class DungeonSeed {
 		CHESTS("ITE-MCH-EST"),
 		BIGGER("EXP-ANS-IVE"),
 		ALLIES("BES-TFR-END"),
-		ECH("ECH-ECH-ECH");
+		ECH("ECH-ECH-ECH"),
+		EVERYTHING("BOB-PAL-KIA"){
+			@Override
+			public void addSeeds(HashSet<SpecialSeed> list) {
+				list.addAll(Arrays.asList(SpecialSeed.values()));
+			}
+		};
 
 		public long seed;
 		public boolean random;
