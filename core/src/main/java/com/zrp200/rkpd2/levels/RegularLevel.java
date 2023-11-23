@@ -118,7 +118,7 @@ public abstract class RegularLevel extends Level {
 		// reduce by designated amount to reduce levelsize for rkpd2, much like rkpd does.
 		// reduce for rkpd2, inspired by rkpd
 		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BIGGER))
-			standards *= 4;
+			standards *= 2;
 		else
 			standards = (int)Math.floor(standards * Random.Float(SIZE_MODIFIER[0],SIZE_MODIFIER[1]));
 		if (Dungeon.isChallenged(Challenges.MANY_MOBS)){
