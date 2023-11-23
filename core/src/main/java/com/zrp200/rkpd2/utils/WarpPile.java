@@ -45,7 +45,7 @@ public class WarpPile {
 
     //the (1/X) chance for effect to come out every time the warp decays
     public static int effectTimer(float warpAmount){
-        return (int) (20 - warpAmount / 8f);
+        return (int) Math.max(3, 25 - warpAmount / 8f);
     }
 
     public static float getMaxWarp() {
