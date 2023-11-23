@@ -166,7 +166,8 @@ public class DungeonSeed {
 			public void addSeeds(HashSet<SpecialSeed> list) {
 				list.addAll(Arrays.asList(SpecialSeed.values()));
 			}
-		};
+		},
+		NO_WARP("ROT-INM-IND");
 
 		public long seed;
 		public boolean random;
