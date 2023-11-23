@@ -21,11 +21,10 @@
 
 package com.zrp200.rkpd2.utils;
 
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -151,7 +150,7 @@ public class DungeonSeed {
 		}
 	}
 
-	public enum SpecialSeed implements Bundlable {
+	public enum SpecialSeed {
 		RATS("RAT-RAT-RAT"),
 		ROGUE("ROG-UEB-UFF"),
 		REVERSE("REV-ERS-EED"),
@@ -222,19 +221,12 @@ public class DungeonSeed {
 			}
         }
 
-		private static final String SEED    = "seed";
-		private static final String RANDOM  = "random";
+		static final HashMap<String, String> conversions = new HashMap<>();
 
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			seed = bundle.getInt(SEED);
-			random = bundle.getBoolean(RANDOM);
-		}
-
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			bundle.put(SEED, seed);
-			bundle.put(RANDOM, random);
+		public static String convert(String legacyName){
+			if (conversions.containsKey(legacyName))
+				return conversions.get(legacyName);
+			return legacyName;
 		}
 	}
 

@@ -597,7 +597,14 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
-			bundle.put( SEED_ARRAY, specialSeeds);
+			if (specialSeeds != null && !specialSeeds.isEmpty()){
+				ArrayList<String> nameArray = new ArrayList<>();
+				for (DungeonSeed.SpecialSeed specialSeed: specialSeeds){
+					nameArray.add(specialSeed.name());
+				}
+				String[] ech = nameArray.toArray(new String[0]);
+				bundle.put(SEED_ARRAY, ech);
+			}
 			
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 			
@@ -649,9 +656,16 @@ public class Dungeon {
 		if (bundle.contains(SPECIALSEED)){
 			DungeonSeed.SpecialSeed specialSeed = bundle.getEnum(SPECIALSEED, DungeonSeed.SpecialSeed.class);
 			specialSeeds.add(specialSeed);
-		} else {
-			for (Bundlable lol: bundle.getCollection(SEED_ARRAY)) {
-				specialSeeds.add((DungeonSeed.SpecialSeed)lol);
+		} else if (bundle.contains(SEED_ARRAY)) {
+			String[] bundly = bundle.getStringArray(SEED_ARRAY);
+			for (String key: bundly){
+				try {
+					DungeonSeed.SpecialSeed specialSeed =
+							Enum.valueOf(DungeonSeed.SpecialSeed.class, DungeonSeed.SpecialSeed.convert(key));
+					specialSeeds.add(specialSeed);
+				} catch (IllegalArgumentException ignored){
+
+				}
 			}
 		}
 
