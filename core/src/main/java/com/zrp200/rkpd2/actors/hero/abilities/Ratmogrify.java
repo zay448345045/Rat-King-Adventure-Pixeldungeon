@@ -344,6 +344,9 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*3;
+
+			EXP = Math.round(EXP * getModifier());
+			maxLvl = 4 + Dungeon.scalingDepth();
 		}
 
 		@Override
@@ -366,6 +369,9 @@ public class Ratmogrify extends ArmorAbility {
 			armorRange[1] *= getModifier();
 
 			defenseSkill *= getModifier()*6;
+
+			EXP = Math.round(EXP * getModifier());
+			maxLvl = 4 + Dungeon.scalingDepth();
 		}
 
 		@Override
