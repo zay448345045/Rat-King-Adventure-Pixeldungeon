@@ -886,7 +886,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		if (HP < 0 && buff(NoDeath.class) == null) HP = 0;
 
 		if (!isAlive()) {
-			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.ALLIES) && Random.Int(2) == 0 && src instanceof Hero){
+			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.ALLIES) && Random.Int(3) == 0 && src instanceof Hero){
 				if (!isImmune(ScrollOfSirensSong.Enthralled.class)){
 					HP = HT;
 					AllyBuff.affectAndLoot((Mob) this, hero, ScrollOfSirensSong.Enthralled.class);
