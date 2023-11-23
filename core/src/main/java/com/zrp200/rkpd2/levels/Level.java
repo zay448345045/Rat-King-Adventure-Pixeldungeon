@@ -863,6 +863,9 @@ public abstract class Level implements Bundlable {
 	
 	public static void set( int cell, int terrain, Level level ) {
 		if (terrain == Terrain.WALL && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
+			terrain = Terrain.EMBERS;
+		}
+		if ((terrain == Terrain.BOOKSHELF || terrain == Terrain.DOOR) && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
 			terrain = Terrain.CHASM;
 		}
 		Painter.set( level, cell, terrain );

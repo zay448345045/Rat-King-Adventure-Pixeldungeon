@@ -48,6 +48,9 @@ public abstract class Painter {
 
 	public static void set( Level level, int cell, int value ) {
 		if (value == Terrain.WALL && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
+			value = Terrain.EMBERS;
+		}
+		if ((value == Terrain.BOOKSHELF || value == Terrain.DOOR) && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
 			value = Terrain.CHASM;
 		}
 		level.map[cell] = value;
@@ -66,6 +69,9 @@ public abstract class Painter {
 	
 	public static void fill( Level level, int x, int y, int w, int h, int value ) {
 		if (value == Terrain.WALL && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
+			value = Terrain.EMBERS;
+		}
+		if ((value == Terrain.BOOKSHELF || value == Terrain.DOOR) && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
 			value = Terrain.CHASM;
 		}
 		
@@ -129,6 +135,9 @@ public abstract class Painter {
 	public static void fillEllipse(Level level, int x, int y, int w, int h, int value){
 
 		if (value == Terrain.WALL && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
+			value = Terrain.EMBERS;
+		}
+		if ((value == Terrain.BOOKSHELF || value == Terrain.DOOR) && Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.NO_WALLS)){
 			value = Terrain.CHASM;
 		}
 
