@@ -123,6 +123,11 @@ public class KromerCrown extends TengusMask {
 	public void choose( HeroSubClass way ) {
 		
 		detach( curUser.belongings.backpack );
+		for (Item item: curUser.belongings.backpack){
+			if (item instanceof KromerCrown){
+				item.detach(curUser.belongings.backpack);
+			}
+		}
 		
 		curUser.spend( Actor.TICK );
 		curUser.busy();
