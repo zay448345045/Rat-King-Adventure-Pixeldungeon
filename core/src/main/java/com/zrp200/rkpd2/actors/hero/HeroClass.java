@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.actors.hero;
 
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
@@ -254,7 +255,13 @@ public enum HeroClass {
 	private static void initMage( Hero hero ) {
 		MagesStaff staff;
 
-		staff = new MagesStaff(new WandOfMagicMissile());
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.MAGE)){
+			do {
+				staff = new MagesStaff((Wand) Reflection.newInstance(Random.element(Generator.Category.WAND.classes)));
+			} while (staff.wandClass() == WandOfMagicMissile.class);
+		} else {
+			staff = new MagesStaff(new WandOfMagicMissile());
+		}
 
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);

@@ -183,7 +183,9 @@ public class DungeonSeed {
 				list.add(REVERSE);
 				list.add(ROGUE);
 			}
-		};
+		},
+
+		MAGE("AMA-GEN-ERF");
 
 		public long seed;
 		public boolean random;
