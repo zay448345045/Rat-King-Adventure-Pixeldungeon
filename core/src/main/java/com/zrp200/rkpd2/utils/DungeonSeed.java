@@ -184,8 +184,8 @@ public class DungeonSeed {
 				list.add(ROGUE);
 			}
 		},
-
-		MAGE("AMA-GEN-ERF");
+		MAGE("AMA-GEN-ERF"),
+		WARRIOR("COL-LOS-EUM");
 
 		public long seed;
 		public boolean random;

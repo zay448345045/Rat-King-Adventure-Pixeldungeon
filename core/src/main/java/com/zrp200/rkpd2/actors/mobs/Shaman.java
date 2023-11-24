@@ -29,6 +29,8 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -116,7 +118,7 @@ public abstract class Shaman extends Mob {
 		
 		if (hit( this, enemy, true )) {
 			
-			if (Random.Int( 2 ) == 0) {
+			if (Random.Int( 2 ) == 0 && enemy.buff(WarriorParry.BlockTrock.class) == null) {
 				debuff( enemy );
 				if (enemy == Dungeon.hero) Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
@@ -125,13 +127,20 @@ public abstract class Shaman extends Mob {
 			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 			ChampionEnemy.AntiMagic.effect(enemy, this);
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-			enemy.damage( dmg, new EarthenBolt() );
+			if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+				SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+				Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
+				Buff.detach(enemy, WarriorParry.BlockTrock.class);
+			} else {
+				enemy.damage(dmg, new EarthenBolt());
 
 
-			if (!enemy.isAlive() && enemy == Dungeon.hero) {
-				Badges.validateDeathFromEnemyMagic();
-				Dungeon.fail( getClass() );
-				GLog.n( Messages.get(this, "bolt_kill") );
+				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+					Badges.validateDeathFromEnemyMagic();
+					Dungeon.fail(getClass());
+					GLog.n(Messages.get(this, "bolt_kill"));
+				}
 			}
 		} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

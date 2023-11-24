@@ -483,7 +483,8 @@ public class Hero extends Char {
 
 	@Override
 	public boolean blockSound(float pitch) {
-		if ( belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4 ){
+		if ( (belongings.weapon() != null && belongings.weapon().defenseFactor(this) >= 4) ||
+			buff(WarriorParry.BlockTrock.class) != null){
 			Sample.INSTANCE.play( Assets.Sounds.HIT_PARRY, 1, pitch);
 			return true;
 		}
@@ -1492,6 +1493,14 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			damage = belongings.armor().proc( enemy, this, damage );
+		}
+
+		if (buff(WarriorParry.BlockTrock.class) != null){
+			sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+			SpellSprite.show(this, SpellSprite.MAP, 2f, 2f, 2f);
+			Buff.affect(this, Barrier.class).setShield(Math.round(damage*1.25f));
+			damage = 0;
+			return damage;
 		}
 		
 		Earthroot.Armor armor = buff( Earthroot.Armor.class );

@@ -27,11 +27,10 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.Shrink;
-import com.zrp200.rkpd2.actors.buffs.TimedShrink;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.mechanics.Ballistica;
@@ -105,21 +104,28 @@ public class DM100 extends Mob implements Callback {
 				if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 				ChampionEnemy.AntiMagic.effect(enemy, this);
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-				enemy.damage( dmg, new LightningBolt() );
+				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
+					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				} else {
+					enemy.damage(dmg, new LightningBolt());
 
-				if (enemy.sprite.visible) {
-					enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
-					enemy.sprite.flash();
-				}
-				
-				if (enemy == Dungeon.hero) {
-					
-					Camera.main.shake( 2, 0.3f );
-					
-					if (!enemy.isAlive()) {
-						Badges.validateDeathFromEnemyMagic();
-						Dungeon.fail( getClass() );
-						GLog.n( Messages.get(this, "zap_kill") );
+					if (enemy.sprite.visible) {
+						enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
+						enemy.sprite.flash();
+					}
+
+					if (enemy == Dungeon.hero) {
+
+						Camera.main.shake(2, 0.3f);
+
+						if (!enemy.isAlive()) {
+							Badges.validateDeathFromEnemyMagic();
+							Dungeon.fail(getClass());
+							GLog.n(Messages.get(this, "zap_kill"));
+						}
 					}
 				}
 			} else {

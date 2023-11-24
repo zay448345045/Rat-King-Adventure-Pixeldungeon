@@ -25,6 +25,8 @@ import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.WarriorParry;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
@@ -247,6 +249,9 @@ public enum HeroClass {
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
 
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.WARRIOR)){
+			Buff.affect(hero, WarriorParry.class);
+		}
 
 		new PotionOfHealing().identify();
 		new ScrollOfRage().identify();

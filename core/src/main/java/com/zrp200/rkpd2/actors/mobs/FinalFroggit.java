@@ -31,6 +31,8 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.wands.WandOfPrismaticLight;
 import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
@@ -116,14 +118,21 @@ public class FinalFroggit extends AbyssalMob implements Callback {
 
 			int dmg = Math.round(damage * multiplier);
 
+			if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+				SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+				Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
+				Buff.detach(enemy, WarriorParry.BlockTrock.class);
+			} else {
 
-			Buff.prolong( enemy, Eradication.class, Eradication.DURATION ).combo++;
+				Buff.prolong(enemy, Eradication.class, Eradication.DURATION).combo++;
 
-			enemy.damage( dmg, new Bolt() );
+				enemy.damage(dmg, new Bolt());
 
-			if (!enemy.isAlive() && enemy == Dungeon.hero) {
-				Dungeon.fail( getClass() );
-				GLog.n( Messages.get(this, "bolt_kill") );
+				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+					Dungeon.fail(getClass());
+					GLog.n(Messages.get(this, "bolt_kill"));
+				}
 			}
 		} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

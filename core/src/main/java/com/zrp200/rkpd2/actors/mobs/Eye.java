@@ -28,11 +28,11 @@ import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
-import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
 import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Generator;
@@ -187,17 +187,24 @@ public class Eye extends Mob {
 			if (hit( this, ch, true )) {
 				int dmg = Random.NormalIntRange( 30, 50 );
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-				ch.damage( dmg, new DeathGaze() );
+				if (ch.buff(WarriorParry.BlockTrock.class) != null){
+					ch.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+					SpellSprite.show(ch, SpellSprite.MAP, 2f, 2f, 2f);
+					Buff.affect(ch, Barrier.class).setShield(Math.round(dmg*1.25f));
+					Buff.detach(ch, WarriorParry.BlockTrock.class);
+				} else {
+					ch.damage(dmg, new DeathGaze());
 
-				if (Dungeon.level.heroFOV[pos]) {
-					ch.sprite.flash();
-					CellEmitter.center( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );
-				}
+					if (Dungeon.level.heroFOV[pos]) {
+						ch.sprite.flash();
+						CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
+					}
 
-				if (!ch.isAlive() && ch == Dungeon.hero) {
-					Badges.validateDeathFromEnemyMagic();
-					Dungeon.fail( getClass() );
-					GLog.n( Messages.get(this, "deathgaze_kill") );
+					if (!ch.isAlive() && ch == Dungeon.hero) {
+						Badges.validateDeathFromEnemyMagic();
+						Dungeon.fail(getClass());
+						GLog.n(Messages.get(this, "deathgaze_kill"));
+					}
 				}
 			} else {
 				ch.sprite.showStatus( CharSprite.NEUTRAL,  ch.defenseVerb() );

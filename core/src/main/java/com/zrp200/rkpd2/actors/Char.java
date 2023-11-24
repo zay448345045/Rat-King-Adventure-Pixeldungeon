@@ -437,6 +437,9 @@ public abstract class Char extends Actor {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
 				}
+				if (effectiveDamage <= 0){
+					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				}
 			}
 			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
 				if (hero.pointsInTalent(Talent.PRIDE_OF_STEEL) > 2) {

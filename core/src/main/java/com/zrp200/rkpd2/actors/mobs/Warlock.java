@@ -30,6 +30,8 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
@@ -107,7 +109,7 @@ public class Warlock extends Mob implements Callback {
 		
 		if (hit( this, enemy, true )) {
 			//TODO would be nice for this to work on ghost/statues too
-			if (enemy == Dungeon.hero && Random.Int( 2 ) == 0) {
+			if (enemy == Dungeon.hero && enemy.buff(WarriorParry.BlockTrock.class) == null && Random.Int( 2 ) == 0) {
 				Buff.prolong( enemy, Degrade.class, Degrade.DURATION );
 				Sample.INSTANCE.play( Assets.Sounds.DEBUFF );
 			}
@@ -116,12 +118,19 @@ public class Warlock extends Mob implements Callback {
 			if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
 			ChampionEnemy.AntiMagic.effect(enemy, this);
 			dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
-			enemy.damage( dmg, new DarkBolt() );
-			
-			if (enemy == Dungeon.hero && !enemy.isAlive()) {
-				Badges.validateDeathFromEnemyMagic();
-				Dungeon.fail( getClass() );
-				GLog.n( Messages.get(this, "bolt_kill") );
+			if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+				SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+				Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
+				Buff.detach(enemy, WarriorParry.BlockTrock.class);
+			} else {
+				enemy.damage(dmg, new DarkBolt());
+
+				if (enemy == Dungeon.hero && !enemy.isAlive()) {
+					Badges.validateDeathFromEnemyMagic();
+					Dungeon.fail(getClass());
+					GLog.n(Messages.get(this, "bolt_kill"));
+				}
 			}
 		} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

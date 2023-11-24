@@ -36,6 +36,7 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -320,8 +321,13 @@ public abstract class YogFist extends Mob {
 			spend( 1f );
 
 			if (hit( this, enemy, true )) {
-
-				Buff.affect( enemy, Roots.class, 3f );
+				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				} else {
+					Buff.affect(enemy, Roots.class, 3f);
+				}
 
 			} else {
 
@@ -480,13 +486,20 @@ public abstract class YogFist extends Mob {
 
 			if (hit( this, enemy, true )) {
 				ChampionEnemy.AntiMagic.effect(enemy, this);
-				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam() );
-				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
+				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).setShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
+					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				} else {
+					enemy.damage(Random.NormalIntRange(10, 20), new LightBeam());
+					Buff.prolong(enemy, Blindness.class, Blindness.DURATION / 2f);
 
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
-					Badges.validateDeathFromEnemyMagic();
-					Dungeon.fail( getClass() );
-					GLog.n( Messages.get(Char.class, "kill", name()) );
+					if (!enemy.isAlive() && enemy == Dungeon.hero) {
+						Badges.validateDeathFromEnemyMagic();
+						Dungeon.fail(getClass());
+						GLog.n(Messages.get(Char.class, "kill", name()));
+					}
 				}
 
 			} else {
@@ -544,19 +557,25 @@ public abstract class YogFist extends Mob {
 
 			if (hit( this, enemy, true )) {
 				ChampionEnemy.AntiMagic.effect(enemy, this);
-				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt() );
+				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).setShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
+					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				} else {
+					enemy.damage(Random.NormalIntRange(10, 20), new DarkBolt());
 
-				Light l = enemy.buff(Light.class);
-				if (l != null){
-					l.weaken(50);
+					Light l = enemy.buff(Light.class);
+					if (l != null) {
+						l.weaken(50);
+					}
+
+					if (!enemy.isAlive() && enemy == Dungeon.hero) {
+						Badges.validateDeathFromEnemyMagic();
+						Dungeon.fail(getClass());
+						GLog.n(Messages.get(Char.class, "kill", name()));
+					}
 				}
-
-				if (!enemy.isAlive() && enemy == Dungeon.hero) {
-					Badges.validateDeathFromEnemyMagic();
-					Dungeon.fail( getClass() );
-					GLog.n( Messages.get(Char.class, "kill", name()) );
-				}
-
 			} else {
 
 				enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

@@ -32,6 +32,8 @@ import com.zrp200.rkpd2.actors.blobs.Freezing;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Lightning;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.potions.PotionOfFrost;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
@@ -147,8 +149,14 @@ public abstract class Elemental extends Mob {
 		spend( 1f );
 		
 		if (hit( this, enemy, true )) {
-			ChampionEnemy.AntiMagic.effect(enemy, this);
-			rangedProc( enemy );
+			if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+				SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+				Buff.detach(enemy, WarriorParry.BlockTrock.class);
+			} else {
+				ChampionEnemy.AntiMagic.effect(enemy, this);
+				rangedProc(enemy);
+			}
 			
 		} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

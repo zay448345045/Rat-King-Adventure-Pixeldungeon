@@ -36,6 +36,8 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
@@ -247,6 +249,7 @@ public class Dragon extends AbyssalMob {
             }
 
             enemy.damage(effectiveDamage, this);
+            Buff.detach(enemy, WarriorParry.BlockTrock.class);
 
             enemy.sprite.bloodBurstA(sprite.center(), effectiveDamage);
             enemy.sprite.flash();
@@ -272,37 +275,43 @@ public class Dragon extends AbyssalMob {
     }
 
     protected void rangedProc( Char enemy ) {
-        if (!enemy.isWet()) {
-            Buff.affect( enemy, FrostBurn.class ).reignite( enemy, 8f );
-        }
-
-        Splash.at( enemy.sprite.center(), sprite.blood(), 5);
-
-        ArrayList<Integer> candidates = new ArrayList<>();
-        boolean[] solid = Dungeon.level.solid;
-
-        int[] neighbours = {enemy.pos + 1, enemy.pos - 1, enemy.pos + Dungeon.level.width(), enemy.pos - Dungeon.level.width()};
-        for (int n : neighbours) {
-            if (!solid[n] && Actor.findChar( n ) == null) {
-                candidates.add( n );
+        if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+            enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+            SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+            Buff.detach(enemy, WarriorParry.BlockTrock.class);
+        } else {
+            if (!enemy.isWet()) {
+                Buff.affect(enemy, FrostBurn.class).reignite(enemy, 8f);
             }
-        }
-        ChampionEnemy.AntiMagic.effect(enemy, this);
 
-        if (candidates.size() > 0) {
+            Splash.at(enemy.sprite.center(), sprite.blood(), 5);
 
-            SmallDragon clone = spawn();
-            clone.pos = Random.element( candidates );
-            clone.state = clone.HUNTING;
+            ArrayList<Integer> candidates = new ArrayList<>();
+            boolean[] solid = Dungeon.level.solid;
 
-            Dungeon.level.occupyCell(clone);
-
-            GameScene.add( clone);
-            clone.sprite.jump(pos, clone.pos, new Callback() {
-                @Override
-                public void call() {
+            int[] neighbours = {enemy.pos + 1, enemy.pos - 1, enemy.pos + Dungeon.level.width(), enemy.pos - Dungeon.level.width()};
+            for (int n : neighbours) {
+                if (!solid[n] && Actor.findChar(n) == null) {
+                    candidates.add(n);
                 }
-            });
+            }
+            ChampionEnemy.AntiMagic.effect(enemy, this);
+
+            if (candidates.size() > 0) {
+
+                SmallDragon clone = spawn();
+                clone.pos = Random.element(candidates);
+                clone.state = clone.HUNTING;
+
+                Dungeon.level.occupyCell(clone);
+
+                GameScene.add(clone);
+                clone.sprite.jump(pos, clone.pos, new Callback() {
+                    @Override
+                    public void call() {
+                    }
+                });
+            }
         }
     }
 

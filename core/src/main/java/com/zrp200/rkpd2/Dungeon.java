@@ -653,6 +653,7 @@ public class Dungeon {
 		seed = bundle.contains( SEED ) ? bundle.getLong( SEED ) : DungeonSeed.randomSeed();
 		customSeedText = bundle.getString( CUSTOM_SEED );
 		daily = bundle.getBoolean( DAILY );
+		specialSeeds = new HashSet<>();
 		if (bundle.contains(SPECIALSEED)){
 			DungeonSeed.SpecialSeed specialSeed = bundle.getEnum(SPECIALSEED, DungeonSeed.SpecialSeed.class);
 			specialSeeds.add(specialSeed);

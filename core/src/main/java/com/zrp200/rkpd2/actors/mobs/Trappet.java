@@ -5,8 +5,12 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.buffs.WarriorParry;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -76,21 +80,27 @@ public class Trappet extends AbyssalMob implements Callback {
         spend( TIME_TO_ZAP );
 
         if (hit( this, enemy, true )) {
-            ArrayList<Integer> points = Level.getSpawningPoints(enemy.pos);
-            if (!points.isEmpty()){
-                Trap t = ((Trap) Reflection.newInstance(Random.element(traps)));
-                Dungeon.level.setTrap(t, Random.element(points));
-                Dungeon.level.map[t.pos] = t.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
-                t.reveal();
+            if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+                enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+                SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+                Buff.detach(enemy, WarriorParry.BlockTrock.class);
             } else {
-                Trap t = ((Trap)Reflection.newInstance(Random.element(traps)));
-                Dungeon.level.setTrap(t, enemy.pos);
-                t.activate();
-            }
+                ArrayList<Integer> points = Level.getSpawningPoints(enemy.pos);
+                if (!points.isEmpty()) {
+                    Trap t = ((Trap) Reflection.newInstance(Random.element(traps)));
+                    Dungeon.level.setTrap(t, Random.element(points));
+                    Dungeon.level.map[t.pos] = t.visible ? Terrain.TRAP : Terrain.SECRET_TRAP;
+                    t.reveal();
+                } else {
+                    Trap t = ((Trap) Reflection.newInstance(Random.element(traps)));
+                    Dungeon.level.setTrap(t, enemy.pos);
+                    t.activate();
+                }
 
-            if (enemy == Dungeon.hero && !enemy.isAlive()) {
-                Dungeon.fail( getClass() );
-                GLog.n( Messages.get(this, "bolt_kill") );
+                if (enemy == Dungeon.hero && !enemy.isAlive()) {
+                    Dungeon.fail(getClass());
+                    GLog.n(Messages.get(this, "bolt_kill"));
+                }
             }
         } else {
             enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );

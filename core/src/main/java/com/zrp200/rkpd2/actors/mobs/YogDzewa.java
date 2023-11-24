@@ -29,10 +29,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
-import com.zrp200.rkpd2.effects.Beam;
-import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Pushing;
-import com.zrp200.rkpd2.effects.TargetedCell;
+import com.zrp200.rkpd2.effects.*;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
@@ -208,22 +205,32 @@ public class YogDzewa extends Mob {
 				for (Char ch : affected) {
 
 					if (hit( this, ch, true )) {
-						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
-							ch.damage(Random.NormalIntRange(30, 50), new Eye.DeathGaze());
-						} else {
-							ch.damage(Random.NormalIntRange(20, 30), new Eye.DeathGaze());
-						}
 						if (ch == Dungeon.hero) {
 							Statistics.bossScores[4] -= 500;
 						}
-						if (Dungeon.level.heroFOV[pos]) {
-							ch.sprite.flash();
-							CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
+						int dmg;
+						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)) {
+							dmg = Random.NormalIntRange(30, 50);
+						} else {
+							dmg = Random.NormalIntRange(20, 30);
 						}
-						if (!ch.isAlive() && ch == Dungeon.hero) {
-							Badges.validateDeathFromEnemyMagic();
-							Dungeon.fail(getClass());
-							GLog.n(Messages.get(Char.class, "kill", name()));
+						if (enemy.buff(WarriorParry.BlockTrock.class) != null){
+							enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+							SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
+							Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
+							Buff.detach(enemy, WarriorParry.BlockTrock.class);
+						} else {
+							ch.damage(dmg, new Eye.DeathGaze());
+
+							if (Dungeon.level.heroFOV[pos]) {
+								ch.sprite.flash();
+								CellEmitter.center(pos).burst(PurpleParticle.BURST, Random.IntRange(1, 2));
+							}
+							if (!ch.isAlive() && ch == Dungeon.hero) {
+								Badges.validateDeathFromEnemyMagic();
+								Dungeon.fail(getClass());
+								GLog.n(Messages.get(Char.class, "kill", name()));
+							}
 						}
 					} else {
 						ch.sprite.showStatus( CharSprite.NEUTRAL,  ch.defenseVerb() );

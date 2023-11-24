@@ -206,12 +206,18 @@ public class BrokenSeal extends Item {
 		private float partialShield;
 
 		private static final float RECHARGE_RATE = 30;
+
+		public float getRechargeRate() {
+			return 1f/(RECHARGE_RATE * (1 - ((Hero) target).shiftedPoints(Talent.IRON_WILL) / (float) maxShield()))
+					* (1f + 0.6f * ((Hero) target).pointsInTalent(Talent.RESTORED_WILLPOWER) * (Math.max(1f,
+					1f - (target.HP * 1f / target.HT) + 0.1f)));
+		}
+
 		@Override
 		public synchronized boolean act() {
 			if (shielding() < maxShield()) {
-				partialShield += 1/(RECHARGE_RATE * (1 - ((Hero)target).shiftedPoints(Talent.IRON_WILL)/(float)maxShield()))
-					* (1f + 0.6f*((Hero) target).pointsInTalent(Talent.RESTORED_WILLPOWER)*(Math.max(1f,
-						1f - (target.HP * 1f / target.HT) + 0.1f))); // this adjusts the seal recharge rate.
+				float rechargeRate = getRechargeRate();
+				partialShield += rechargeRate; // this adjusts the seal recharge rate.
 			}
 			
 			while (partialShield >= 1){
