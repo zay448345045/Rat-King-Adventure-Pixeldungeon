@@ -94,35 +94,39 @@ public class BloomingPick extends MeleeWeapon {
 
 		if (action.equals(AC_MINE)) {
 
-			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+			if (Dungeon.bossLevel()){
+				GLog.w(Messages.get(this, "no_boss"));
+			} else {
+				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
 
-				final int pos = hero.pos + PathFinder.NEIGHBOURS8[i];
-				if (Dungeon.level.insideMap(pos) && (Dungeon.level.map[pos] == Terrain.WALL || Dungeon.level.map[pos] == Terrain.DOOR)) {
+					final int pos = hero.pos + PathFinder.NEIGHBOURS8[i];
+					if (Dungeon.level.insideMap(pos) && (Dungeon.level.map[pos] == Terrain.WALL || Dungeon.level.map[pos] == Terrain.DOOR)) {
 
-					hero.spend( TIME_TO_MINE );
-					hero.busy();
+						hero.spend(TIME_TO_MINE);
+						hero.busy();
 
-					hero.sprite.attack( pos, new Callback() {
+						hero.sprite.attack(pos, new Callback() {
 
-						@Override
-						public void call() {
+							@Override
+							public void call() {
 
-							CellEmitter.center( pos ).burst( Speck.factory( Speck.STAR ), 7 );
-							Sample.INSTANCE.play( Assets.Sounds.EVOKE );
-							Sample.INSTANCE.play( Assets.Sounds.ROCKS);
+								CellEmitter.center(pos).burst(Speck.factory(Speck.STAR), 7);
+								Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+								Sample.INSTANCE.play(Assets.Sounds.ROCKS);
 
-							Level.set( pos, Terrain.EMBERS );
-							GameScene.updateMap( pos );
+								Level.set(pos, Terrain.EMBERS);
+								GameScene.updateMap(pos);
 
-							hero.onOperateComplete();
-						}
-					} );
+								hero.onOperateComplete();
+							}
+						});
 
-					return;
+						return;
+					}
 				}
-			}
 
-			GLog.w( Messages.get(this, "no_vein") );
+				GLog.w(Messages.get(this, "no_vein"));
+			}
 
 		}
 	}
