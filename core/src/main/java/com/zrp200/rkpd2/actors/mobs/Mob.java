@@ -51,6 +51,7 @@ import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.spells.CurseInfusion;
+import com.zrp200.rkpd2.items.spells.SummonElemental;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Lucky;
@@ -1248,7 +1249,7 @@ public abstract class Mob extends Char {
 				
 			//preserve intelligent allies if they are near the hero
 			} else if (mob.alignment == Alignment.ALLY
-					&& mob.intelligentAlly
+					&& (mob.intelligentAlly || mob.buff(SummonElemental.InvisAlly.class) != null)
 					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);
