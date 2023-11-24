@@ -115,6 +115,11 @@ public class KromerMask extends Item {
 	public void choose( HeroClass way ) {
 		
 		detach( curUser.belongings.backpack );
+		for (Item item: curUser.belongings.backpack){
+			if (item instanceof KromerCrown){
+				item.detach(curUser.belongings.backpack);
+			}
+		}
 		
 		curUser.spend( Actor.TICK );
 		curUser.busy();
