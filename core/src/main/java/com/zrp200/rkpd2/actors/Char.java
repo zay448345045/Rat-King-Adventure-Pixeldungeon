@@ -314,6 +314,7 @@ public abstract class Char extends Actor {
 		} else if (hit( this, enemy, accMulti )) {
 			
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
+			if (enemy.buff(ScrollOfSirensSong.Enthralled.class) != null) dr *= 0.25f;
 			if (enemy instanceof Mob) dr *= ((Mob) enemy).scaleFactor;
 
 			Barkskin bark = enemy.buff(Barkskin.class);
@@ -615,6 +616,7 @@ public abstract class Char extends Actor {
 		if (attacker.buff(Bless.class) != null) acuRoll *= 1.25f;
 		if (attacker.buff(  Hex.class) != null) acuRoll *= 0.8f;
 		if (attacker.buff(Shrink.class)!= null || attacker.buff(TimedShrink.class)!= null) acuRoll *= 0.6f;
+		if (attacker.buff(ScrollOfSirensSong.Enthralled.class) != null) acuRoll *= 1.25f;
 		for (ChampionEnemy buff : attacker.buffs(ChampionEnemy.class)){
 			acuRoll *= buff.evasionAndAccuracyFactor();
 		}
@@ -630,6 +632,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
 		if (defender.buff(Shrink.class)!= null || defender.buff(TimedShrink.class)!= null) defRoll *= 0.8f;
+		if (defender.buff(ScrollOfSirensSong.Enthralled.class) != null) defRoll *= 1.25f;
 		for (ChampionEnemy buff : defender.buffs(ChampionEnemy.class)){
 			defRoll *= buff.evasionAndAccuracyFactor();
 		}
