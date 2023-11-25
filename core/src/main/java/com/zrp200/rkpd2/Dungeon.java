@@ -28,6 +28,7 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
@@ -247,6 +248,10 @@ public class Dungeon {
 		hero.live();
 		
 		Badges.reset();
+
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
+			GamesInProgress.selectedClass = HeroClass.RAT_KING;
+		}
 		
 		GamesInProgress.selectedClass.initHero( hero );
 	}

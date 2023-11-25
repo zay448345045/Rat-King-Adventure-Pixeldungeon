@@ -322,14 +322,36 @@ public enum HeroClass {
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
 		}
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.WARRIOR)){
+			Buff.affect(hero, WarriorParry.class);
+		}
 		// mage
-		MagesStaff staff = new MagesStaff(new WandOfMagicMissile());
+		MagesStaff staff;
+
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.MAGE)){
+			do {
+				staff = new MagesStaff((Wand) Reflection.newInstance(Random.element(Generator.Category.WAND.classes)));
+			} while (staff.wandClass() == WandOfMagicMissile.class);
+		} else {
+			staff = new MagesStaff(new WandOfMagicMissile());
+		}
 		(hero.belongings.weapon = staff).identify();
 		hero.belongings.weapon.activate(hero);
 		// rogue
-		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.artifact = cloak).identify();
-		hero.belongings.artifact.activate( hero );
+		Artifact cloak;
+		if (!Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.ROGUE)) {
+			cloak = new CloakOfShadows();
+			(hero.belongings.artifact = cloak).identify();
+			hero.belongings.artifact.activate(hero);
+			Dungeon.quickslot.setSlot(0, cloak);
+		} else {
+			Random.pushGenerator();
+			cloak = Generator.randomArtifact();
+			(hero.belongings.artifact = cloak).identify();
+			hero.belongings.artifact.activate(hero);
+			Random.popGenerator();
+			Dungeon.quickslot.setSlot(0, cloak);
+		}
 		// huntress
 		SpiritBow bow = new SpiritBow();
 		bow.identify().collect();

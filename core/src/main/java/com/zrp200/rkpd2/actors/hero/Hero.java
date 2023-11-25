@@ -128,18 +128,26 @@ public class Hero extends Char {
 	public HeroSubClass subClass2 = HeroSubClass.NONE;
 
 	public boolean isSubclassed(HeroSubClass sub){
-		if (subClass2 == HeroSubClass.NONE){
-			return subClass == sub;
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & subClass != HeroSubClass.NONE){
+			return true;
 		} else {
-			return subClass == sub || subClass2 == sub;
+			if (subClass2 == HeroSubClass.NONE) {
+				return subClass == sub;
+			} else {
+				return subClass == sub || subClass2 == sub;
+			}
 		}
 	}
 
 	public boolean isClassed(HeroClass sub){
-		if (heroClass2 == null){
-			return heroClass == sub;
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
+			return true;
 		} else {
-			return heroClass == sub || heroClass2 == sub;
+			if (heroClass2 == null) {
+				return heroClass == sub;
+			} else {
+				return heroClass == sub || heroClass2 == sub;
+			}
 		}
 	}
 
@@ -190,6 +198,9 @@ public class Hero extends Char {
 		if (Dungeon.isChallenged(Challenges.JUST_KILL_ME)){
 			HP = HT = 10;
 		}
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
+			HP = HT = 5;
+		}
 		STR = STARTING_STR;
 		
 		belongings = new Belongings( this );
@@ -203,6 +214,9 @@ public class Hero extends Char {
 		HT = 20 + 5*(lvl-1) + HTBoost;
 		if (Dungeon.isChallenged(Challenges.JUST_KILL_ME)){
 			HT = Math.round(10 + 2.5f*(lvl-1) + HTBoost/2f);
+		}
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
+			HT = 5 + 3*(lvl-1) + HTBoost;
 		}
 		float multiplier = RingOfMight.HTMultiplier(this);
 		HT = Math.round(multiplier * HT);

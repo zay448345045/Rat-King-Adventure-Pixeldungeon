@@ -186,7 +186,17 @@ public class DungeonSeed {
 		},
 		MAGE("AMA-GEN-ERF"),
 		WARRIOR("COL-LOS-EUM"),
-		HUNTRESS("BUF-HUN-TRS");
+		HUNTRESS("BUF-HUN-TRS"),
+		BALANCE("VBA-LAN-CED"){
+			@Override
+			public void addSeeds(HashSet<SpecialSeed> list) {
+				super.addSeeds(list);
+				list.add(WARRIOR);
+				list.add(MAGE);
+				list.add(ROGUE);
+				list.add(HUNTRESS);
+			}
+		};
 
 		public long seed;
 		public boolean random;
