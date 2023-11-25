@@ -813,6 +813,9 @@ public abstract class Wand extends Item {
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
 					- ((Dungeon.hero.hasTalent(Talent.ARCANE_BOOST) && Dungeon.hero.belongings.contains(Wand.this)) ? 4 + Dungeon.hero.pointsInTalent(Talent.ARCANE_BOOST)*5 : 0)
 					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
+			if (Wand.this instanceof WandOfUnstable || Wand.this instanceof WandOfUnstable2){
+				turnsToCharge *= 0.67f;
+			}
 
 			LockedFloor lock = target.buff(LockedFloor.class);
 			if (lock == null || lock.regenOn())

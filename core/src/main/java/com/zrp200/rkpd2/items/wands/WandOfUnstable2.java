@@ -55,11 +55,6 @@ public class WandOfUnstable2 extends Wand {
     }
 
     @Override
-    protected int initialCharges() {
-        return 4;
-    }
-
-    @Override
     public void fx(Ballistica bolt, Callback callback) {
         if (wand != null) {
             if (Random.Int(3) == 0){
