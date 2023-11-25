@@ -131,6 +131,50 @@ public class RKPD2Changes {
     // in this case I made it so you could add buttons in the ChangeInfo constructor; this is 'lustrous' style
 
     final ChangeInfo[][] changes = {
+                {new ChangeInfo("RKA-1.5.3",true,TITLE_COLOR,
+                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
+                                "When this RKPD2 update is going to release..."),
+                        new ChangeButton(new Warp(), list(
+                                "Warp frequency timer is now set at 25 turns as base and is capped to 3 turns",
+                                "Increased Scroll of Infinity Wealth's warp decay speed from 20 to 15",
+                                "Increased nerf gun mode swap's warp decay speed from 3 to 1.5",
+                                "Decreased nerf gun reload's warp amount from 15 to 10 and decreased decay speed from 2 to 3",
+                                "Increased scamming spell's warp decay speed from 3 to 2.5",
+                                "Increased wand of kromer's warp decay speed from 8 to 3 and usage warp amount from 20 to 30"
+                        )),
+                        new ChangeButton(new Kromer(), list(
+                                "Buffed wand of kromer's level boost from 3x to 4x",
+                                "Kromer Crown and Kromer Mask can no longer be used infinitely via using exploit handler functionality"
+                        )),
+                        new ChangeButton(new ItemSprite(SEED_SWIFTTHISTLE), "Special seeds", list(
+                                "Refactored how special seed info is stored in-game to allow for multiple seed effects to be active at the same time",
+                                "Added some new seeds:\n" +
+                                        "_--_ AMA-GEN-ERF\n" +
+                                        "_--_ BOB-PAL-KIA\n" +
+                                        "_--_ BUF-HUN-TRS\n" +
+                                        "_--_ COL-LOS-EUM\n" +
+                                        "_--_ ROT-INM-IND\n" +
+                                        "_--_ RRR-RRR-RRR\n" +
+                                        "_--_ VBA-LAN-CED\n" +
+                                        "_--_ WHO-LEP-ACK",
+                                "_BES-TFR-END:_ mobs are now enthralled with 33% chance instead of 50%",
+                                "_EXP-ANS-IVE:_ decreased room count modifier from 4x to 2x",
+                                "_NOW-ALL-SHE:_ walls now turn into embers, bookshelves turn into chasms and doors turn into chasms after being closed",
+                                "_RAT-RAT-RAT:_ rat enemies now scale their EXP values and max level with game's progression"
+                        )),
+                        misc(list(
+                                "Summon Elemental's spell elementals now follow player between floors",
+                                "Blooming Pick no longer can mine blocks on boss floors",
+                                "Increased Rat King boss's battlemage mode damage by 25%",
+                                "Increased the chance of tier 6 weapons in city from 2% to 3% and in halls from 6% to 7%",
+                                "Removed bonus initial charges from wand of His Ratiness and wand of Kromer, but they now charge 33% faster",
+                                "Enthralled enemies now have 25% increased accuracy, evasion and armor"
+                        )),
+                        bugFixes(list(
+                                "Fixed nerf gun's necromantic imbue triggering on bosses and minibosses"
+                        ))
+                    )
+                },
                 {new ChangeInfo("RKA-1.5.2",true,TITLE_COLOR,
                         new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
                                 "I wanted to wait until RKPD2 actually updates, but it is been almost 1.5 years since that, and players really want some updates..."),
