@@ -708,7 +708,7 @@ public class RatKingBoss extends Mob {
                                     switch (attack) {
                                         case MAGIC_MISSILE:
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(15, 30), new WandOfMagicMissile());
+                                                ch.damage(Random.NormalIntRange(19, 38), new WandOfMagicMissile());
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
                                             }
@@ -723,7 +723,7 @@ public class RatKingBoss extends Mob {
                                                 GameScene.add(Blob.seed(finalDest, 40, Inferno.class));
                                             }
                                             if (ch != null) {
-                                                ch.damage((int) (Random.NormalIntRange(10, 23) *
+                                                ch.damage((int) (Random.NormalIntRange(13, 29) *
                                                         (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new WandOfFireblast());
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -739,7 +739,7 @@ public class RatKingBoss extends Mob {
                                                 GameScene.add(Blob.seed(finalDest, 40, Blizzard.class));
                                             }
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(7, 19), new WandOfFrost());
+                                                ch.damage(Random.NormalIntRange(9, 24), new WandOfFrost());
                                                 Buff.affect(ch, FrostBurn.class).reignite(ch);
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -747,7 +747,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case POISON:
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(5, 21), new Poison());
+                                                ch.damage(Random.NormalIntRange(6, 26), new Poison());
                                                 Buff.affect(ch, Poison.class).set(20);
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -759,7 +759,7 @@ public class RatKingBoss extends Mob {
                                         case LIGHTNING:
                                             if (ch != null) {
                                                 ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 5);
-                                                ch.damage(Random.NormalIntRange(24, 45), new WandOfLightning());
+                                                ch.damage(Random.NormalIntRange(30, 56), new WandOfLightning());
                                                 ch.sprite.parent.addToFront(new Lightning(ch.pos, ch.pos, null));
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -774,7 +774,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case CORROSION:
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(8, 20), new WandOfCorrosion());
+                                                ch.damage(Random.NormalIntRange(10, 25), new WandOfCorrosion());
                                                 Buff.affect(ch, Corrosion.class).set(3, 6);
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -785,7 +785,7 @@ public class RatKingBoss extends Mob {
                                             break;
                                         case PRISMATIC:
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(10, 22), new WandOfPrismaticLight());
+                                                ch.damage(Random.NormalIntRange(12, 27), new WandOfPrismaticLight());
                                                 Buff.affect(ch, Blindness.class, 10f);
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -820,7 +820,7 @@ public class RatKingBoss extends Mob {
                                                 GameScene.add(Blob.seed(finalDest, 400, Inferno.class));
                                             }
                                             if (ch != null) {
-                                                ch.damage((int) (Random.NormalIntRange(15, 33) *
+                                                ch.damage((int) (Random.NormalIntRange(19, 41) *
                                                         (1 + 0.125f * Dungeon.hero.pointsInTalent(Talent.PYROMANIAC))), new GodfireParticle());
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
@@ -829,7 +829,7 @@ public class RatKingBoss extends Mob {
                                         case RAT_KING:
                                             sprite.parent.add(new Beam.RatRay(sprite.center(), DungeonTilemap.raisedTileCenterToWorld(finalDest)));
                                             if (ch != null) {
-                                                ch.damage(Random.NormalIntRange(45, 80), new LegacyWrath());
+                                                ch.damage(Random.NormalIntRange(56, 100), new LegacyWrath());
                                                 Buff.affect(ch, PowerfulDegrade.class, 20f);
                                                 if (ch instanceof Hero)
                                                     Statistics.bossScores[5] -= 300;
