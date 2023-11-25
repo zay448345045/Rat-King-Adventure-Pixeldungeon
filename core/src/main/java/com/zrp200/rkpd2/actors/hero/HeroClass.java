@@ -95,7 +95,7 @@ public enum HeroClass {
 	},
 	HUNTRESS(HeroSubClass.SNIPER, HeroSubClass.WARDEN) {
 		@Override public int getBonus(Item item) {
-			return item instanceof MissileWeapon ? 1 : 0;
+			return item instanceof MissileWeapon && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS) ? 1 : 0;
 		}
 	},
 	RAT_KING (HeroSubClass.KING);

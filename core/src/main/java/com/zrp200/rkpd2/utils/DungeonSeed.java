@@ -185,7 +185,8 @@ public class DungeonSeed {
 			}
 		},
 		MAGE("AMA-GEN-ERF"),
-		WARRIOR("COL-LOS-EUM");
+		WARRIOR("COL-LOS-EUM"),
+		HUNTRESS("BUF-HUN-TRS");
 
 		public long seed;
 		public boolean random;

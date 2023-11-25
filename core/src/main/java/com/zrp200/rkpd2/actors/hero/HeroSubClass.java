@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.HeroIcon;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public enum HeroSubClass {
 
@@ -73,7 +74,7 @@ public enum HeroSubClass {
 		@Override
 		public int getBonus(Item item) {
 			// +1 to wands* (+freerun bonus), +2 to missiles, +1 to anything with reach. total boosts = 4 before other modifiers. note that freerunner has easy access to gamebreaking mechanics.
-			return item instanceof MissileWeapon ? 2
+			return item instanceof MissileWeapon && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS) ? 2
 					: item instanceof Wand ? 1
 					: Dungeon.hero != null && item instanceof Weapon && ((Weapon) item).reachFactor(Dungeon.hero) > 1 ? 1
 					: 0;

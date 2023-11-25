@@ -48,6 +48,7 @@ import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -351,7 +352,7 @@ abstract public class MissileWeapon extends Weapon {
 		usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
 		
 		//at 100 uses, items just last forever.
-		if (usages >= 100f) return 0;
+		if (usages >= 100f && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS)) return 0;
 
 		usages = Math.round(usages);
 
