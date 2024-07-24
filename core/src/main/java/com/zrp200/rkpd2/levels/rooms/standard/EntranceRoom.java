@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.spells.AquaBlast;
@@ -54,7 +55,16 @@ public class EntranceRoom extends StandardRoom {
 		return false;
 	}
 
-	public void paint( Level level ) {
+	@Override
+	public boolean canPlaceTrap(Point p) {
+		if (Dungeon.depth == 1) {
+			return false;
+		} else {
+			return super.canPlaceTrap(p);
+		}
+	}
+
+	public void paint(Level level ) {
 		
 		Painter.fill( level, this, Terrain.WALL );
 		Painter.fill( level, this, 1, Terrain.EMPTY );
@@ -83,7 +93,8 @@ public class EntranceRoom extends StandardRoom {
 			type = Heap.Type.CHEST;
 
 		//places the first guidebook page on floor 1
-		if (Dungeon.getDepth() == 1 && !Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO)){
+		if (Dungeon.getDepth() == 1 &&
+				(!Document.ADVENTURERS_GUIDE.isPageRead(Document.GUIDE_INTRO) || SPDSettings.intro() )){
 			int pos;
 			do {
 				//can't be on bottom row of tiles
@@ -101,6 +112,7 @@ public class EntranceRoom extends StandardRoom {
 						Random.IntRange( top + 1, bottom - 2 )));
 			} while (pos == level.entrance() || level.findMob(level.entrance()) != null);
 			level.drop( new AquaBlast(), pos ).type = type;
+			Document.ADVENTURERS_GUIDE.deletePage(Document.GUIDE_INTRO);
 		}
 
 		//places the third guidebook page on floor 2

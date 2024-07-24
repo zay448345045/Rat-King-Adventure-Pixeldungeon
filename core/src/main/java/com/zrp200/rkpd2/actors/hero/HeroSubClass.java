@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,9 @@ public enum HeroSubClass {
 	BRAWLER(HeroIcon.BRAWLER),
 	DECEPTICON(HeroIcon.DECEPTICON),
 
+    CHAMPION(HeroIcon.CHAMPION),
+    MONK(HeroIcon.MONK),
+
 	KING(HeroIcon.KING),
 	RK_CHAMPION(HeroIcon.CHAMP);
 
@@ -109,6 +112,11 @@ public enum HeroSubClass {
 		}
 	}
 
+	/** useful for sharing attributes with KING subclass **/
+	public boolean is(HeroSubClass sub) {
+		return this == sub || this == KING && sub != CHAMPION && sub != MONK;
+	}
+
 	public final int icon;
 
 	HeroSubClass(int icon){
@@ -127,7 +135,20 @@ public enum HeroSubClass {
 	}
 
 	public String desc() {
+		//Include the staff effect description in the battlemage's desc if possible
+		if (this == BATTLEMAGE){
+			String desc = Messages.get(this, name() + "_desc");
+			if (Game.scene() instanceof GameScene){
+				MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
+				if (staff != null && staff.wandClass() != null){
+					desc += "\n\n" + Messages.get(staff.wandClass(), "bmage_desc");
+					desc = desc.replaceAll("_", "");
+				}
+			}
+			return desc;
+		} else {
 		return Messages.get(this, name() + "_desc");
+		}
 	}
 
 	public int icon(){

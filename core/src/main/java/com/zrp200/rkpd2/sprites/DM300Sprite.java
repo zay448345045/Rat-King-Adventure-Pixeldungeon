@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,11 @@ import com.zrp200.rkpd2.actors.mobs.DM300;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.BlastParticle;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 
 public class DM300Sprite extends MobSprite {
 
@@ -85,8 +90,7 @@ public class DM300Sprite extends MobSprite {
 
 	public void zap( int cell ) {
 
-		turnTo( ch.pos , cell );
-		play( zap );
+		super.zap( cell );
 
 		int type = ch.buff(WarpedEnemy.BossEffect.class) != null ? MagicMissile.CORROSION_CONE : MagicMissile.TOXIC_VENT;
 
@@ -111,7 +115,7 @@ public class DM300Sprite extends MobSprite {
 		turnTo( ch.pos , cell );
 		play( slam );
 		Sample.INSTANCE.play( Assets.Sounds.ROCKS );
-		Camera.main.shake( 3, 0.7f );
+		PixelScene.shake( 3, 0.7f );
 	}
 
 	private boolean exploded = false;

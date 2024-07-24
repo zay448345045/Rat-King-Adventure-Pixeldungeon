@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ import com.zrp200.rkpd2.items.bags.MagicalHolster;
 import com.zrp200.rkpd2.items.bags.PotionBandolier;
 import com.zrp200.rkpd2.items.bags.ScrollHolder;
 import com.zrp200.rkpd2.items.bags.VelvetPouch;
+import com.zrp200.rkpd2.items.remains.RemainsItem;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -46,6 +48,7 @@ public class Badges {
 		MASTERY_MAGE,
 		MASTERY_ROGUE,
 		MASTERY_HUNTRESS,
+		MASTERY_DUELIST,
 		MASTERY_RAT_KING,
 		FOUND_RATMOGRIFY,
 		WON_BRAWLER,
@@ -58,55 +61,59 @@ public class Badges {
 		UNLOCK_MAGE                 ( 1 ),
 		UNLOCK_ROGUE                ( 2 ),
 		UNLOCK_HUNTRESS             ( 3 ),
-		UNLOCK_RAT_KING				( 27),
-		MONSTERS_SLAIN_1            ( 4 ),
-		MONSTERS_SLAIN_2            ( 5 ),
-		GOLD_COLLECTED_1            ( 6 ),
-		GOLD_COLLECTED_2            ( 7 ),
-		ITEM_LEVEL_1                ( 8 ),
-		LEVEL_REACHED_1             ( 9 ),
-		STRENGTH_ATTAINED_1         ( 10 ),
-		FOOD_EATEN_1                ( 11 ),
-		ITEMS_CRAFTED_1             ( 12 ),
-		BOSS_SLAIN_1                ( 13 ),
-		DEATH_FROM_FIRE             ( 14 ),
-		DEATH_FROM_POISON           ( 15 ),
-		DEATH_FROM_GAS              ( 16 ),
-		DEATH_FROM_HUNGER           ( 17 ),
-		DEATH_FROM_FALLING          ( 18 ),
-		GAMES_PLAYED_1              ( 19, true ),
-		HIGH_SCORE_1                ( 20 ),
+		UNLOCK_DUELIST              ( 4 ),
+		//UNLOCK_CLERIC             ( 5 ),
+		UNLOCK_RAT_KING ( 27 ),
+		MONSTERS_SLAIN_1            ( 6 ),
+		MONSTERS_SLAIN_2            ( 7 ),
+		GOLD_COLLECTED_1            ( 8 ),
+		GOLD_COLLECTED_2            ( 9 ),
+		ITEM_LEVEL_1                ( 10 ),
+		LEVEL_REACHED_1             ( 11 ),
+		STRENGTH_ATTAINED_1         ( 12 ),
+		FOOD_EATEN_1                ( 13 ),
+		ITEMS_CRAFTED_1             ( 14 ),
+		BOSS_SLAIN_1                ( 15 ),
+		DEATH_FROM_FIRE             ( 16 ),
+		DEATH_FROM_POISON           ( 17 ),
+		DEATH_FROM_GAS              ( 18 ),
+		DEATH_FROM_HUNGER           ( 19 ),
+		DEATH_FROM_FALLING          ( 20 ),
+		GAMES_PLAYED_1              ( 21, true ),
+		HIGH_SCORE_1                ( 22 ),
 
 		//silver
 		NO_MONSTERS_SLAIN           ( 32 ),
-		MONSTERS_SLAIN_3            ( 33 ),
-		MONSTERS_SLAIN_4            ( 34 ),
-		GOLD_COLLECTED_3            ( 35 ),
-		GOLD_COLLECTED_4            ( 36 ),
-		ITEM_LEVEL_2                ( 37 ),
-		ITEM_LEVEL_3                ( 38 ),
-		LEVEL_REACHED_2             ( 39 ),
-		LEVEL_REACHED_3             ( 40 ),
-		STRENGTH_ATTAINED_2         ( 41 ),
-		STRENGTH_ATTAINED_3         ( 42 ),
-		FOOD_EATEN_2                ( 43 ),
-		FOOD_EATEN_3                ( 44 ),
-		ITEMS_CRAFTED_2             ( 45 ),
-		ITEMS_CRAFTED_3             ( 46 ),
-		BOSS_SLAIN_2                ( 47 ),
-		BOSS_SLAIN_3                ( 48 ),
-		ALL_POTIONS_IDENTIFIED      ( 49 ),
-		ALL_SCROLLS_IDENTIFIED      ( 50 ),
-		DEATH_FROM_ENEMY_MAGIC      ( 51 ),
-		DEATH_FROM_FRIENDLY_MAGIC   ( 52 ),
-		DEATH_FROM_SACRIFICE        ( 53 ),
+		BOSS_SLAIN_REMAINS          ( 33 ),
+		MONSTERS_SLAIN_3            ( 34 ),
+		MONSTERS_SLAIN_4            ( 35 ),
+		GOLD_COLLECTED_3            ( 36 ),
+		GOLD_COLLECTED_4            ( 37 ),
+		ITEM_LEVEL_2                ( 38 ),
+		ITEM_LEVEL_3                ( 39 ),
+		LEVEL_REACHED_2             ( 40 ),
+		LEVEL_REACHED_3             ( 41 ),
+		STRENGTH_ATTAINED_2         ( 42 ),
+		STRENGTH_ATTAINED_3         ( 43 ),
+		FOOD_EATEN_2                ( 44 ),
+		FOOD_EATEN_3                ( 45 ),
+		ITEMS_CRAFTED_2             ( 46 ),
+		ITEMS_CRAFTED_3             ( 47 ),
+		BOSS_SLAIN_2                ( 48 ),
+		BOSS_SLAIN_3                ( 49 ),
+		ALL_POTIONS_IDENTIFIED      ( 50 ),
+		ALL_SCROLLS_IDENTIFIED      ( 51 ),
+		DEATH_FROM_ENEMY_MAGIC      ( 52 ),
+		DEATH_FROM_FRIENDLY_MAGIC   ( 53 ),
+		DEATH_FROM_SACRIFICE        ( 54 ),
 		BOSS_SLAIN_1_WARRIOR,
 		BOSS_SLAIN_1_MAGE,
 		BOSS_SLAIN_1_ROGUE,
 		BOSS_SLAIN_1_HUNTRESS,
-		BOSS_SLAIN_1_ALL_CLASSES    ( 54, true ),
-		GAMES_PLAYED_2              ( 55, true ),
-		HIGH_SCORE_2                ( 56 ),
+		BOSS_SLAIN_1_DUELIST,
+		BOSS_SLAIN_1_ALL_CLASSES    ( 55, true ),
+		GAMES_PLAYED_2              ( 56, true ),
+		HIGH_SCORE_2                ( 57 ),
 
 		//gold
 		PIRANHAS                    ( 64 ),
@@ -130,7 +137,7 @@ public class Badges {
 		BOSS_SLAIN_4                ( 78 ),
 		ALL_RINGS_IDENTIFIED        ( 79 ),
 		ALL_ARTIFACTS_IDENTIFIED    ( 80 ),
-		DEATH_FROM_GRIM_TRAP        ( 81 ),
+		DEATH_FROM_GRIM_TRAP        ( 81 ), //also disintegration traps
 		VICTORY                     ( 82 ),
 		BOSS_CHALLENGE_1            ( 83 ),
 		BOSS_CHALLENGE_2            ( 84 ),
@@ -141,16 +148,18 @@ public class Badges {
 		ITEM_LEVEL_5                ( 96 ),
 		LEVEL_REACHED_5             ( 97 ),
 		HAPPY_END                   ( 98 ),
-		ALL_WEAPONS_IDENTIFIED      ( 99 ),
-		ALL_ARMOR_IDENTIFIED        ( 100 ),
-		ALL_WANDS_IDENTIFIED        ( 101 ),
-		ALL_ITEMS_IDENTIFIED        ( 102, true ),
+		HAPPY_END_REMAINS           ( 99 ),
+		ALL_WEAPONS_IDENTIFIED      ( 100 ),
+		ALL_ARMOR_IDENTIFIED        ( 101 ),
+		ALL_WANDS_IDENTIFIED        ( 102 ),
+		ALL_ITEMS_IDENTIFIED        ( 103, true ),
 		VICTORY_WARRIOR,
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
 		VICTORY_HUNTRESS,
-		VICTORY_ALL_CLASSES         ( 103, true ),
-		DEATH_FROM_ALL              ( 104, true ),
+		VICTORY_DUELIST,
+		VICTORY_ALL_CLASSES         ( 104, true ),
+		DEATH_FROM_ALL              ( 105, true ),
 		BOSS_SLAIN_3_GLADIATOR,
 		BOSS_SLAIN_3_BERSERKER,
 		BOSS_SLAIN_3_WARLOCK,
@@ -159,12 +168,14 @@ public class Badges {
 		BOSS_SLAIN_3_ASSASSIN,
 		BOSS_SLAIN_3_SNIPER,
 		BOSS_SLAIN_3_WARDEN,
-		BOSS_SLAIN_3_ALL_SUBCLASSES ( 105, true ),
-		BOSS_CHALLENGE_3            ( 106 ),
-		BOSS_CHALLENGE_4            ( 107 ),
-		GAMES_PLAYED_4              ( 108, true ),
-		HIGH_SCORE_4                ( 109 ),
-		CHAMPION_1                  ( 110 ),
+		BOSS_SLAIN_3_CHAMPION,
+		BOSS_SLAIN_3_MONK,
+		BOSS_SLAIN_3_ALL_SUBCLASSES ( 106, true ),
+		BOSS_CHALLENGE_3            ( 107 ),
+		BOSS_CHALLENGE_4            ( 108 ),
+		GAMES_PLAYED_4              ( 109, true ),
+		HIGH_SCORE_4                ( 110 ),
+		CHAMPION_1                  ( 111 ),
 		CHAMPED_NO_FOOD,
 		CHAMPED_NO_ARMOR,
 		CHAMPED_NO_HEALING,
@@ -250,14 +261,7 @@ public class Badges {
 
 	private static final HashMap<String, String> renamedBadges = new HashMap<>();
 	static{
-		//v1.1.0 (some names were from before 1.1.0, but conversion was added then)
-		renamedBadges.put("BAG_BOUGHT_SEED_POUCH",      "BAG_BOUGHT_VELVET_POUCH");
-		renamedBadges.put("BAG_BOUGHT_WAND_HOLSTER",    "BAG_BOUGHT_MAGICAL_HOLSTER");
-
-		renamedBadges.put("POTIONS_COOKED_1", "ITEMS_CRAFTED_1");
-		renamedBadges.put("POTIONS_COOKED_2", "ITEMS_CRAFTED_2");
-		renamedBadges.put("POTIONS_COOKED_3", "ITEMS_CRAFTED_3");
-		renamedBadges.put("POTIONS_COOKED_4", "ITEMS_CRAFTED_4");
+		//no renamed badges currently
 	}
 
 	public static HashSet<Badge> restore( Bundle bundle ) {
@@ -265,6 +269,8 @@ public class Badges {
 		if (bundle == null) return badges;
 		
 		String[] names = bundle.getStringArray( BADGES );
+		if (names == null) return badges;
+
 		for (int i=0; i < names.length; i++) {
 			try {
 				if (renamedBadges.containsKey(names[i])){
@@ -291,7 +297,7 @@ public class Badges {
 		
 		for (Badge badge:badges) {
 			if(badge == null) continue;
-			names[count++] = badge.toString();
+			names[count++] = badge.name();
 		}
 		bundle.put( BADGES, names );
 	}
@@ -316,8 +322,12 @@ public class Badges {
 		}
 	}
 
-	public static void saveGlobal() {
-		if (saveNeeded) {
+	public static void saveGlobal(){
+		saveGlobal(false);
+	}
+
+	public static void saveGlobal(boolean force) {
+		if (saveNeeded || force) {
 			
 			Bundle bundle = new Bundle();
 			store( bundle, global );
@@ -544,7 +554,11 @@ public class Badges {
 		if (!item.levelKnown || item instanceof Artifact) {
 			return;
 		}
-		
+
+		if (item instanceof MeleeWeapon){
+			validateDuelistUnlock();
+		}
+
 		Badge badge = null;
 		if (!local.contains( Badge.ITEM_LEVEL_1 ) && item.level() >= 3) {
 			badge = Badge.ITEM_LEVEL_1;
@@ -694,7 +708,7 @@ public class Badges {
 		validateDeathFromAll();
 	}
 
-	public static void validateDeathFromGrimTrap() {
+	public static void validateDeathFromGrimOrDisintTrap() {
 		Badge badge = Badge.DEATH_FROM_GRIM_TRAP;
 		local.add( badge );
 		displayBadge( badge );
@@ -726,6 +740,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.MAGE, Badge.BOSS_SLAIN_1_MAGE);
 		firstBossClassBadges.put(HeroClass.ROGUE, Badge.BOSS_SLAIN_1_ROGUE);
 		firstBossClassBadges.put(HeroClass.HUNTRESS, Badge.BOSS_SLAIN_1_HUNTRESS);
+		firstBossClassBadges.put(HeroClass.DUELIST, Badge.BOSS_SLAIN_1_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -734,6 +749,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.MAGE, Badge.VICTORY_MAGE);
 		victoryClassBadges.put(HeroClass.ROGUE, Badge.VICTORY_ROGUE);
 		victoryClassBadges.put(HeroClass.HUNTRESS, Badge.VICTORY_HUNTRESS);
+		victoryClassBadges.put(HeroClass.DUELIST, Badge.VICTORY_DUELIST);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -746,6 +762,8 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.FREERUNNER, Badge.BOSS_SLAIN_3_FREERUNNER);
 		thirdBossSubclassBadges.put(HeroSubClass.SNIPER, Badge.BOSS_SLAIN_3_SNIPER);
 		thirdBossSubclassBadges.put(HeroSubClass.WARDEN, Badge.BOSS_SLAIN_3_WARDEN);
+		thirdBossSubclassBadges.put(HeroSubClass.CHAMPION, Badge.BOSS_SLAIN_3_CHAMPION);
+		thirdBossSubclassBadges.put(HeroSubClass.MONK, Badge.BOSS_SLAIN_3_MONK);
 	}
 
 	public static void validateBossSlain() {
@@ -810,6 +828,14 @@ public class Badges {
 					}
 				}
 			}
+
+			if (Statistics.qualifiedForBossRemainsBadge && Dungeon.hero.belongings.getItem(RemainsItem.class) != null){
+				badge = Badge.BOSS_SLAIN_REMAINS;
+				if (!isUnlocked( badge )) {
+					displayBadge( badge );
+				}
+			}
+
 		}
 	}
 
@@ -881,6 +907,23 @@ public class Badges {
 		if(!global.contains(Badge.UNLOCK_RAT_KING)) displayBadge(Badge.UNLOCK_RAT_KING);
 	}
 
+	public static void validateDuelistUnlock(){
+		if (!isUnlocked(Badge.UNLOCK_DUELIST) && Dungeon.hero != null
+				&& Dungeon.hero.belongings.weapon instanceof MeleeWeapon
+				&& ((MeleeWeapon) Dungeon.hero.belongings.weapon).tier >= 2
+				&& ((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq() <= Dungeon.hero.STR()){
+
+			if (Dungeon.hero.belongings.weapon.isIdentified() &&
+					((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq() <= Dungeon.hero.STR()) {
+				displayBadge(Badge.UNLOCK_DUELIST);
+
+			} else if (!Dungeon.hero.belongings.weapon.isIdentified() &&
+					((MeleeWeapon) Dungeon.hero.belongings.weapon).STRReq(0) <= Dungeon.hero.STR()){
+				displayBadge(Badge.UNLOCK_DUELIST);
+			}
+		}
+	}
+
 	public static void validateMasteryCombo( int n ) {
 		if (!local.contains( Badge.MASTERY_COMBO ) && n == 10) {
 			Badge badge = Badge.MASTERY_COMBO;
@@ -943,15 +986,19 @@ public class Badges {
 			badge = Badge.GAMES_PLAYED_1;
 		}
 		if (Rankings.INSTANCE.totalNumber >= 25 || Rankings.INSTANCE.wonNumber >= 3) {
+			unlock(badge);
 			badge = Badge.GAMES_PLAYED_2;
 		}
 		if (Rankings.INSTANCE.totalNumber >= 50 || Rankings.INSTANCE.wonNumber >= 5) {
+			unlock(badge);
 			badge = Badge.GAMES_PLAYED_3;
 		}
 		if (Rankings.INSTANCE.totalNumber >= 200 || Rankings.INSTANCE.wonNumber >= 10) {
+			unlock(badge);
 			badge = Badge.GAMES_PLAYED_4;
 		}
 		if (Rankings.INSTANCE.totalNumber >= 1000 || Rankings.INSTANCE.wonNumber >= 25) {
+			unlock(badge);
 			badge = Badge.GAMES_PLAYED_5;
 		}
 
@@ -993,10 +1040,17 @@ public class Badges {
 		if (!local.contains( Badge.HAPPY_END )){
 			local.add( Badge.HAPPY_END );
 		}
+
+		if(!local.contains( Badge.HAPPY_END_REMAINS ) && Dungeon.hero.belongings.getItem(RemainsItem.class) != null){
+			local.add( Badge.HAPPY_END_REMAINS );
+		}
 	}
 	
 	public static void validateHappyEnd() {
 		displayBadge( Badge.HAPPY_END );
+		if (local.contains(Badge.HAPPY_END_REMAINS)) {
+			displayBadge(Badge.HAPPY_END_REMAINS);
+		}
 	}
 
 	public static void validateChampion( int challenges, int mask ) {

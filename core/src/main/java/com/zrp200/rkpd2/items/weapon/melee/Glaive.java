@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class Glaive extends MeleeWeapon {
+public class Glaive extends Spear {
 
 	{
 		image = ItemSpriteSheet.GLAIVE;
@@ -35,15 +35,10 @@ public class Glaive extends MeleeWeapon {
 		hitSoundPitch = 0.8f;
 
 		tier = 5;
-		DLY = 1.5f; //0.67x speed
-		RCH = 2;    //extra reach
 	}
 
-	@Override
-	public int max(int lvl) {
-		return  Math.round(6.67f*(tier+1)) +    //40 base, up from 30
-				lvl*Math.round(1.33f*(tier+1)); //+8 per level, up from +6
-	}
+	//40 base, up from 30
+	//+8 per level, up from +6
 
 	@Override
 	public int warriorAttack(int damage, Char enemy) {

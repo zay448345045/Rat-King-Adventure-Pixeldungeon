@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,16 +143,29 @@ public class WandOfFrost extends DamageWand {
 	@Override
 	public void onHit(Weapon staff, Char attacker, Char defender, int damage) {
 		Chill chill = defender.buff(Chill.class);
-		if (chill != null && /*Random.IntRange(2, (int)Chill.DURATION) <= chill.cooldown()*/
-				Weapon.Enchantment.proc(attacker, -1, chill.cooldown(), Chill.DURATION)){
-			//need to delay this through an actor so that the freezing isn't broken by taking damage from the staff hit.
-			new FlavourBuff(){
-				{actPriority = VFX_PRIO;}
-				public boolean act() {
-					Buff.affect(target, Frost.class, Frost.DURATION);
-					return super.act();
-				}
-			}.attachTo(defender);
+
+		if (chill != null) {
+
+			//1/9 at 2 turns of chill, scaling to 9/9 at 10 turns
+			float procChance = ((int)Math.floor(chill.cooldown()) - 1)/9f;
+			procChance *= procChanceMultiplier(attacker);
+
+			if (Random.Float() < procChance) {
+
+				float powerMulti = Math.max(1f, procChance);
+
+				//need to delay this through an actor so that the freezing isn't broken by taking damage from the staff hit.
+				new FlavourBuff() {
+					{
+						actPriority = VFX_PRIO;
+					}
+
+					public boolean act() {
+						Buff.affect(target, Frost.class, Math.round(Frost.DURATION * powerMulti));
+						return super.act();
+					}
+				}.attachTo(defender);
+			}
 		}
 	}
 

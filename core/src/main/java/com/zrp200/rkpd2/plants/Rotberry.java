@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,14 @@ package com.zrp200.rkpd2.plants;
 
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.AdrenalineSurge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Rotberry extends Plant {
@@ -38,8 +41,12 @@ public class Rotberry extends Plant {
 	}
 
 	@Override
-	public void activateMisc( Char ch ) {
-		Dungeon.level.drop( new Seed(), pos ).sprite.drop();
+	public void activate( Char ch ) {
+		if (isWarden( ch )){
+			Buff.affect(ch, AdrenalineSurge.class).reset(1, AdrenalineSurge.DURATION);
+		} else {
+			GameScene.add( Blob.seed( pos, 100, ToxicGas.class ) );
+		}
 	}
 
 	@Override
@@ -56,8 +63,9 @@ public class Rotberry extends Plant {
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( LeafParticle.GENERAL, 6 );
 		}
-		
-		//no warden benefit
+
+		//seed always drops, no lotus benefit
+		Dungeon.level.drop( new Seed(), pos ).sprite.drop();
 	}
 
 	@Override

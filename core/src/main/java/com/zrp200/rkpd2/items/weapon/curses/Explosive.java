@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@ import com.zrp200.rkpd2.effects.particles.SmokeParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.weapon.Weapon;
-import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.utils.GLog;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 public class Explosive extends Weapon.Enchantment {
@@ -57,26 +57,26 @@ public class Explosive extends Weapon.Enchantment {
 			attacker.sprite.emitter().burst(SmokeParticle.FACTORY, 4);
 			Item.updateQuickslot();
 		} else if (currentDurability > 10 && durability <= 10){
-			attacker.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "hot"));
+			attacker.sprite.showStatus(CharSprite.WARNING, Messages.get(this, "hot"));
 			GLog.n(Messages.get(this, "desc_hot"));
 			attacker.sprite.emitter().burst(BlastParticle.FACTORY, 5);
 			Item.updateQuickslot();
 		} else if (durability <= 0) {
-			//explosion position is either the attacker's position (when attacker and defender are adjacent)
-			//or the closest cell to the defender on a straight path to them otherwise
+			//explosion position is the closest adjacent cell to the defender
+			// this will be the attacker's position if they are adjacent
 			int explosionPos = -1;
-			if (Dungeon.level.adjacent(attacker.pos, defender.pos)){
-				explosionPos = attacker.pos;
-			} else {
-				Ballistica path = new Ballistica(attacker.pos, defender.pos, Ballistica.PROJECTILE);
-				if (path.dist == 0){
-					explosionPos = attacker.pos;
-				} else {
-					explosionPos = path.path.get(path.dist-1);
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (!Dungeon.level.solid[defender.pos+i] &&
+						(explosionPos == -1 ||
+						Dungeon.level.trueDistance(attacker.pos, defender.pos+i) < Dungeon.level.trueDistance(attacker.pos, explosionPos))){
+					explosionPos = defender.pos+i;
 				}
 			}
+			if (explosionPos == -1) {
+				explosionPos = defender.pos;
+			}
 
-			new Bomb().explode(explosionPos);
+			new Bomb.ConjuredBomb().explode(explosionPos);
 
 			durability = 100;
 			Item.updateQuickslot();

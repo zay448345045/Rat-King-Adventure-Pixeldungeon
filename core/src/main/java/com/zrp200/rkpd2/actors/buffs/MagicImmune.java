@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class MagicImmune extends FlavourBuff {
@@ -39,8 +39,6 @@ public class MagicImmune extends FlavourBuff {
 	{
 		immunities.addAll(AntiMagic.RESISTS);
 	}
-	
-	//FIXME still a lot of cases not handled here, e.g. rings/artifacts and various damage sources
 
 	@Override
 	public boolean attachTo(Char target) {
@@ -53,9 +51,20 @@ public class MagicImmune extends FlavourBuff {
 					}
 				}
 			}
+			if (target instanceof Hero){
+				((Hero) target).updateHT(false);
+			}
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	@Override
+	public void detach() {
+		super.detach();
+		if (target instanceof Hero){
+			((Hero) target).updateHT(false);
 		}
 	}
 
@@ -73,15 +82,4 @@ public class MagicImmune extends FlavourBuff {
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
-	}
-	
 }

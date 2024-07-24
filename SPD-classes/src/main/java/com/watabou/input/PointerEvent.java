@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,10 @@ package com.watabou.input;
 import com.badlogic.gdx.Input;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ui.Cursor;
-import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.HashMap;
 
 public class PointerEvent {
@@ -121,12 +119,8 @@ public class PointerEvent {
 		return lastHoverPos.clone();
 	}
 
-	public static synchronized void emulateMouseButton( int button, boolean down ){
-		if (down){
-			addPointerEvent(new PointerEvent((int)lastHoverPos.x, (int)lastHoverPos.y, 1000+button, Type.DOWN, button));
-		} else {
-			addPointerEvent(new PointerEvent((int)lastHoverPos.x, (int)lastHoverPos.y, 1000+button, Type.UP, button));
-		}
+	public static void setHoverPos(PointF pos){
+		lastHoverPos.set(pos);
 	}
 	
 	public static synchronized void addPointerEvent( PointerEvent event ){
@@ -138,6 +132,8 @@ public class PointerEvent {
 			pointerEvents.add(event);
 		}
 	}
+
+	public static boolean clearKeyboardThisPress = true;
 	
 	public static synchronized void processPointerEvents(){
 		//handle any hover events separately first as we may need to add drag events
@@ -150,20 +146,11 @@ public class PointerEvent {
 			}
 		}
 
-		//add drag events for any emulated presses
-		if (hovered){
-			for (int i = 1000+LEFT; i <= 1000+FORWARD; i++){
-				if (activePointers.containsKey(i)){
-					//add to front in case pointer is also being released this frame
-					pointerEvents.add(0, new PointerEvent((int)lastHoverPos.x, (int)lastHoverPos.y, i, Type.DOWN, i));
-				}
-			}
-		}
-
 		for (PointerEvent p : pointerEvents){
 			if (p.type == Type.HOVER){
 				continue;
 			}
+			clearKeyboardThisPress = true;
 			if (activePointers.containsKey(p.id)){
 				PointerEvent existing = activePointers.get(p.id);
 				existing.current = p.current;
@@ -181,8 +168,17 @@ public class PointerEvent {
 				}
 				pointerSignal.dispatch(p);
 			}
+			if (clearKeyboardThisPress){
+				//most press events should clear the keyboard
+				Game.platform.setOnscreenKeyboardVisible(false);
+			}
 		}
 		pointerEvents.clear();
+
+		//add drag events for any emulated presses
+		if (hovered && activePointers.containsKey(ControllerHandler.CONTROLLER_POINTER_ID)){
+			Game.inputHandler.emulateDrag(ControllerHandler.CONTROLLER_POINTER_ID);
+		}
 	}
 
 	public static synchronized void clearPointerEvents(){

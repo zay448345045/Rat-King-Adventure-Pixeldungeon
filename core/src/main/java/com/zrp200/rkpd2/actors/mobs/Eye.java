@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -38,6 +39,7 @@ import com.zrp200.rkpd2.items.Dewdrop;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
+import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -79,7 +81,7 @@ public class Eye extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return super.drRoll() + Random.NormalIntRange(0, 10);
 	}
 	
 	private Ballistica beam;
@@ -96,17 +98,20 @@ public class Eye extends Mob {
 		if (beamCooldown == 0 && buff(Talent.AntiMagicBuff.class) == null) {
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_SOLID);
 
-			if (enemy.invisible == 0 && !isCharmedBy(enemy) && (fieldOfView != null && fieldOfView[enemy.pos]) && aim.subPath(1, aim.dist).contains(enemy.pos)){
+			if (enemy.invisible == 0 && !isCharmedBy(enemy) && fieldOfView != null && fieldOfView[enemy.pos]
+					&& (super.canAttack(enemy) || aim.subPath(1, aim.dist).contains(enemy.pos))){
 				if(Actor.current() == this) {
 					beam = aim;
-					beamTarget = aim.collisionPos;
+					beamTarget = enemy.pos;
 				}
 				return true;
-			} else
+			} else {
 				//if the beam is charged, it has to attack, will aim at previous location of target.
 				return beamCharged;
-		} else
+			}
+		} else {
 			return super.canAttack(enemy);
+		}
 	}
 
 	@Override
@@ -127,7 +132,8 @@ public class Eye extends Mob {
 	@Override
 	protected boolean doAttack( Char enemy ) {
 
-		if (beamCooldown > 0 || buff(Talent.AntiMagicBuff.class) != null) {
+		beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
+		if (beamCooldown > 0 || (!beamCharged && !beam.subPath(1, beam.dist).contains(enemy.pos))) {
 			return super.doAttack(enemy);
 		} else if (!beamCharged){
 			((EyeSprite)sprite).charge( enemy.pos );
@@ -137,8 +143,7 @@ public class Eye extends Mob {
 		} else {
 
 			spend( attackDelay() );
-			
-			beam = new Ballistica(pos, beamTarget, Ballistica.STOP_SOLID);
+
 			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos] ) {
 				sprite.zap( beam.collisionPos );
 				return false;
@@ -169,6 +174,7 @@ public class Eye extends Mob {
 
 		boolean terrainAffected = false;
 
+		Invisibility.dispel(this);
 		for (int pos : beam.subPath(1, beam.dist)) {
 
 			if (Dungeon.level.flamable[pos]) {
@@ -202,7 +208,7 @@ public class Eye extends Mob {
 
 					if (!ch.isAlive() && ch == Dungeon.hero) {
 						Badges.validateDeathFromEnemyMagic();
-						Dungeon.fail(getClass());
+						Dungeon.fail(this);
 						GLog.n(Messages.get(this, "deathgaze_kill"));
 					}
 				}
@@ -269,10 +275,8 @@ public class Eye extends Mob {
 
 	{
 		resistances.add( WandOfDisintegration.class );
-	}
-	
-	{
-		//immunities.add( Terror.class );
+		resistances.add( DeathGaze.class );
+		resistances.add( DisintegrationTrap.class );
 	}
 
 	private class Hunting extends Mob.Hunting{

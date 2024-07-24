@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,13 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPassage;
+import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
@@ -40,6 +43,13 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class BeaconOfReturning extends Spell {
 	
@@ -109,28 +119,37 @@ public class BeaconOfReturning extends Spell {
 		
 		if (returnDepth == Dungeon.depth && returnBranch == Dungeon.branch) {
 
-			Char moving = Actor.findChar(returnPos);
-			if (moving != null){
-				moving.pos = returnPos+1;
+			Char existing = Actor.findChar(returnPos);
+			if (existing != null && existing != hero){
+				Char toPush = !Char.hasProp(existing, Char.Property.IMMOVABLE) ? hero : existing;
+
+				ArrayList<Integer> candidates = new ArrayList<>();
+				for (int n : PathFinder.NEIGHBOURS8) {
+					int cell = returnPos + n;
+					if (!Dungeon.level.solid[cell] && Actor.findChar( cell ) == null
+							&& (!Char.hasProp(toPush, Char.Property.LARGE) || Dungeon.level.openSpace[cell])) {
+						candidates.add( cell );
+					}
+				}
+				Random.shuffle(candidates);
+
+				if (!candidates.isEmpty()){
+					if (toPush == hero){
+						returnPos = candidates.get(0);
+					} else {
+						Actor.add( new Pushing( toPush, toPush.pos, candidates.get(0) ) );
+						toPush.pos = candidates.get(0);
+						Dungeon.level.occupyCell(toPush);
+					}
+				} else {
+					GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+					return;
+				}
 			}
 
 			if (ScrollOfTeleportation.teleportToLocation(hero, returnPos)){
-				if (moving != null){
-					moving.pos = returnPos;
-					for(int i : PathFinder.NEIGHBOURS8){
-						if (Actor.findChar(moving.pos+i) == null
-								&& Dungeon.level.passable[moving.pos + i]
-								&& (!Char.hasProp(moving, Char.Property.LARGE) || Dungeon.level.openSpace[moving.pos + i])){
-							moving.pos += i;
-							moving.sprite.point(moving.sprite.worldToCamera(moving.pos));
-							break;
-						}
-					}
-				}
+				hero.spendAndNext( 1f );
 			} else {
-				if (moving != null) {
-					moving.pos = returnPos;
-				}
 				return;
 			}
 
@@ -141,15 +160,20 @@ public class BeaconOfReturning extends Spell {
 				return;
 			}
 
-			TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
-			if (timeFreeze != null) timeFreeze.detach();
+			//cannot return to mining level
+			if (returnDepth >= 11 && returnDepth <= 14 && returnBranch == 1){
+				GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
+				return;
+			}
+
+			Level.beforeTransition();
+			Invisibility.dispel();
 			InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 			InterlevelScene.returnDepth = returnDepth;
 			InterlevelScene.returnBranch = returnBranch;
 			InterlevelScene.returnPos = returnPos;
 			Game.switchScene( InterlevelScene.class );
 		}
-		hero.spendAndNext( 1f );
 		detach(hero.belongings.backpack);
 	}
 	
@@ -170,12 +194,14 @@ public class BeaconOfReturning extends Spell {
 	}
 	
 	private static final String DEPTH	= "depth";
+	private static final String BRANCH	= "branch";
 	private static final String POS		= "pos";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
 		bundle.put( DEPTH, returnDepth );
+		bundle.put( BRANCH, returnBranch );
 		if (returnDepth != -1) {
 			bundle.put( POS, returnPos );
 		}
@@ -185,13 +211,14 @@ public class BeaconOfReturning extends Spell {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
 		returnDepth	= bundle.getInt( DEPTH );
+		returnBranch = bundle.getInt( BRANCH );
 		returnPos	= bundle.getInt( POS );
 	}
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 40) / 5f));
+		//prices of ingredients, divided by output quantity, rounds down
+		return (int)((50 + 40) * (quantity/5f));
 	}
 	
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {

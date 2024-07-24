@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
 import com.zrp200.rkpd2.actors.mobs.npcs.NPC;
 import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Effects;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.BloodParticle;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
@@ -40,11 +39,16 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.ui.HeroIcon;
+import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -144,25 +148,38 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	}
 	
 	public int turnsInvis = 0;
-	
+
+	@Override
+	public boolean usable() {
+		return bundleRestoring ||
+				AttackLevel.getLvl(turnsInvis).blinkDistance() > 0 && target == Dungeon.hero;
+	}
 	@Override
 	public boolean act() {
 		if (target.invisible > 0){
 			turnsInvis++;
-			if (AttackLevel.getLvl(turnsInvis).blinkDistance() > 0 && target == Dungeon.hero){
-				ActionIndicator.setAction(this);
-			}
+			ActionIndicator.setAction(this);
 			spend(TICK);
 		} else {
 			detach();
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void detach() {
 		super.detach();
 		ActionIndicator.clearAction(this);
+	}
+
+	/** if the current state of preparation is not tied to invisibility **/
+	private boolean manuallySetLevel() {
+		return target.invisible == 0;
+	}
+
+	/** sets the preparation level to the specified level **/
+	public void setAttackLevel(int level) {
+		turnsInvis = AttackLevel.values()[level - 1].turnsReq;
 	}
 
 	public int attackLevel(){
@@ -202,7 +219,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 		return assassinated;
 	}
-	
+
 	@Override
 	public int icon() {
 		return BuffIndicator.PREPARATION;
@@ -227,29 +244,10 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	}
 
 	@Override
-	public float iconFadePercent() {
-		AttackLevel level = AttackLevel.getLvl(turnsInvis);
-		if (level == AttackLevel.LVL_4){
-			return 0;
-		} else {
-			float turnsForCur = level.turnsReq;
-			float turnsForNext = AttackLevel.values()[level.ordinal()+1].turnsReq;
-			turnsForNext -= turnsForCur;
-			float turnsToNext = turnsInvis - turnsForCur;
-			return Math.min(1, (turnsForNext - turnsToNext)/(turnsForNext));
-		}
-	}
-
-	@Override
 	public String iconTextDisplay() {
-		return Integer.toString(turnsInvis);
+		return Integer.toString(manuallySetLevel() ? attackLevel() : turnsInvis);
 	}
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
 	@Override
 	public String desc() {
 		String cls = ((Hero)target).subClass.title();
@@ -269,12 +267,14 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		if (lvl.blinkDistance() > 0){
 			desc += "\n\n" + Messages.get(this, "desc_blink", lvl.blinkDistance());
 		}
-		
-		desc += "\n\n" + Messages.get(this, "desc_invis_time", turnsInvis);
-		
-		if (lvl.ordinal() != AttackLevel.values().length-1){
-			AttackLevel next = AttackLevel.values()[lvl.ordinal()+1];
-			desc += "\n" + Messages.get(this, "desc_invis_next", next.turnsReq);
+
+		if(!manuallySetLevel()) {
+			desc += "\n\n" + Messages.get(this, "desc_invis_time", turnsInvis);
+
+			if (lvl.ordinal() != AttackLevel.values().length-1){
+				AttackLevel next = AttackLevel.values()[lvl.ordinal()+1];
+				desc += "\n" + Messages.get(this, "desc_invis_next", next.turnsReq);
+			}
 		}
 		
 		return desc;
@@ -306,14 +306,18 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			}
 		}
 	}
-	
+
 	private static final String TURNS = "turnsInvis";
-	
+
+	private boolean bundleRestoring = false; // allows skipping of certain checks that require the game to be fully instantiated.
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		turnsInvis = bundle.getInt(TURNS);
+		// this lets us ignore checks that are impossible to make.
+		bundleRestoring = true;
 		ActionIndicator.setAction(this);
+		bundleRestoring = false;
 	}
 	
 	@Override
@@ -323,17 +327,32 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	}
 
 	@Override
-	public String actionName() {
-		return Messages.get(this, "action_name");
+	public int actionIcon() {
+		return HeroIcon.PREPARATION;
 	}
 
 	@Override
-	public Image actionIcon() {
-		Image actionIco = Effects.get(Effects.Type.WOUND);
+	public Visual primaryVisual() {
+		Image actionIco = new HeroIcon(this);
 		tintIcon(actionIco);
 		return actionIco;
 	}
-	
+
+	@Override
+	public Visual secondaryVisual() {
+		if (manuallySetLevel()) return null;
+		BitmapText txt = new BitmapText(PixelScene.pixelFont);
+		txt.text(Integer.toString(Math.min(9, turnsInvis)));
+		txt.hardlight(CharSprite.POSITIVE);
+		txt.measure();
+		return txt;
+	}
+
+	@Override
+	public int indicatorColor() {
+		return 0x444444;
+	}
+
 	@Override
 	public void doAction() {
 		GameScene.selectCell(new Attack());
@@ -349,7 +368,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 
 		@Override protected void findTargets() {
 			AttackLevel lvl = AttackLevel.getLvl(turnsInvis);
-			PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.not(Dungeon.level.solid, null), lvl.blinkDistance());
+			PathFinder.buildDistanceMap(Dungeon.hero.pos,BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null), lvl.blinkDistance());
 			super.findTargets();
 		} @Override protected boolean isValidTarget(Char enemy) {
 			if ( !canAttack(enemy) ){
@@ -365,7 +384,9 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				int cell = enemy.pos+i;
 				//cannot blink into a cell that's occupied or impassable, only over them
 				if (Actor.findChar(cell) != null)     continue;
-				if (!Dungeon.level.passable[cell])    continue;
+				if (!Dungeon.level.passable[cell] && !(target.flying && Dungeon.level.avoid[cell+i])) {
+						continue;
+					}
 
 				if (dest == -1 || PathFinder.distance[dest] > PathFinder.distance[cell]){
 					dest = cell;
@@ -378,7 +399,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			}
 			if (dest == -1 || PathFinder.distance[dest] == Integer.MAX_VALUE || Dungeon.hero.rooted){
 				//GLog.w(Messages.get(Preparation.class, "out_of_reach"));
-				return false;
+				if (Dungeon.hero.rooted) PixelScene.shake( 1, 1f );return false;
 			}
 			blinkPos.put(enemy.pos, dest);
 			return true;

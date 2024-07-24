@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
@@ -43,7 +42,7 @@ public class LifeLink extends FlavourBuff {
 	public void detach() {
 		super.detach();
 		Char ch = (Char)Actor.findById(object);
-		if (!target.isAlive() && ch != null){
+		if (!target.isActive() && ch != null){
 			for (LifeLink l : ch.buffs(LifeLink.class)){
 				if (l.object == target.id()){
 					l.detach();
@@ -72,16 +71,6 @@ public class LifeLink extends FlavourBuff {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(1, 0, 1);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
 	}
 
 }

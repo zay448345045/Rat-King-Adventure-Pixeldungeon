@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,17 @@ import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.DM100Sprite;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class DM100 extends Mob implements Callback {
 
@@ -71,9 +75,9 @@ public class DM100 extends Mob implements Callback {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 4);
+		return super.drRoll() + Random.NormalIntRange(0, 4);
 	}
-	
+
 	@Override
 	public boolean canAttack(Char enemy) {
 		if (buff(ChampionEnemy.Paladin.class) != null){
@@ -82,7 +86,8 @@ public class DM100 extends Mob implements Callback {
 		if (buff(Talent.AntiMagicBuff.class) != null){
 			return super.canAttack(enemy);
 		}
-		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+		return super.canAttack(enemy)
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 	
 	//used so resistances can differentiate between melee and magical attacks
@@ -91,14 +96,16 @@ public class DM100 extends Mob implements Callback {
 	@Override
 	protected boolean doAttack( Char enemy ) {
 
-		if (Dungeon.level.distance( pos, enemy.pos ) <= 1) {
+		if (Dungeon.level.adjacent( pos, enemy.pos )
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos != enemy.pos) {
 			
 			return super.doAttack( enemy );
 			
 		} else {
 			
 			spend( TIME_TO_ZAP );
-			
+
+			Invisibility.dispel(this);
 			if (hit( this, enemy, true )) {
 				int dmg = Random.NormalIntRange(3, 10);
 				if (buff(Shrink.class) != null|| enemy.buff(TimedShrink.class) != null) dmg *= 0.6f;
@@ -119,11 +126,11 @@ public class DM100 extends Mob implements Callback {
 
 					if (enemy == Dungeon.hero) {
 
-						Camera.main.shake(2, 0.3f);
+						PixelScene.shake(2, 0.3f);
 
 						if (!enemy.isAlive()) {
 							Badges.validateDeathFromEnemyMagic();
-							Dungeon.fail(getClass());
+							Dungeon.fail(this);
 							GLog.n(Messages.get(this, "zap_kill"));
 						}
 					}

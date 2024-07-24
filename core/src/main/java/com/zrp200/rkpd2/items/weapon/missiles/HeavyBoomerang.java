@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,10 +50,17 @@ public class HeavyBoomerang extends MissileWeapon {
 				(tier) * lvl;               //scaling unchanged
 	}
 
-	private boolean circling;
+	private boolean circleBackHit;
+
+	@Override
+	protected float adjacentAccFactor(Char owner, Char target) {
+		return circleBackHit ? rangedAccFactor(owner) :
+				super.adjacentAccFactor(owner, target);
+	}
+
 	@Override
 	protected void rangedHit(Char enemy, int cell) {
-		if(circling) {
+		if(circleBackHit) {
 			super.rangedHit(enemy, cell);
 			return;
 		}
@@ -65,7 +72,7 @@ public class HeavyBoomerang extends MissileWeapon {
 
 	@Override
 	protected void rangedMiss(int cell) {
-		if(circling) {
+		if(circleBackHit) {
 			super.rangedMiss(cell);
 			return;
 		}
@@ -114,31 +121,28 @@ public class HeavyBoomerang extends MissileWeapon {
 				if (left <= 0){
 					final Char returnTarget = Actor.findChar(returnPos);
 					final Char target = this.target;
-					MissileSprite visual = ((MissileSprite) Dungeon.hero.sprite.parent.recycle(MissileSprite.class));
+					MissileSprite visual = Dungeon.hero.sprite.parent.recycle(MissileSprite.class);
 					visual.reset( thrownPos,
 									returnPos,
 									boomerang,
-									new Callback() {
-										@Override
-										public void call() {
-											if (returnTarget == target){
-												if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
-													//grabbing the boomerang takes no time
-													((Hero) target).spend(-TIME_TO_PICK_UP);
-												} else {
-													Dungeon.level.drop(boomerang, returnPos).sprite.drop();
-												}
-												
-											} else if (returnTarget != null){
-												boomerang.circling = true;
-												((Hero)target).shoot( returnTarget, boomerang );
-												boomerang.circling = false;
-											} else {
-												Dungeon.level.drop(boomerang, returnPos).sprite.drop();
-											}
-											CircleBack.this.next();
-										}
-									});
+							() -> {
+								if (returnTarget == target){
+									if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
+										//grabbing the boomerang takes no time
+										((Hero) target).spend(-TIME_TO_PICK_UP);
+									} else {
+										Dungeon.level.drop(boomerang, returnPos).sprite.drop();
+									}
+
+								} else if (returnTarget != null){
+									boomerang.circleBackHit = true;
+									((Hero)target).shoot( returnTarget, boomerang );
+									boomerang.circleBackHit = false;
+								} else {
+									Dungeon.level.drop(boomerang, returnPos).sprite.drop();
+								}
+								CircleBack.this.next();
+							});
 					visual.alpha(0f);
 					float duration = Dungeon.level.trueDistance(thrownPos, returnPos) / 20f;
 					target.sprite.parent.add(new AlphaTweener(visual, 1f, duration));

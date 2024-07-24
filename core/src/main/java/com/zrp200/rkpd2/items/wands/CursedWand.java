@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,12 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.GoldenMimic;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.npcs.Sheep;
-import com.zrp200.rkpd2.effects.*;
+import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Flare;
+import com.zrp200.rkpd2.effects.FloatingText;
+import com.zrp200.rkpd2.effects.MagicMissile;
+import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Heap;
@@ -44,6 +49,7 @@ import com.zrp200.rkpd2.items.artifacts.*;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.traps.CursingTrap;
 import com.zrp200.rkpd2.levels.traps.ShockingTrap;
@@ -54,6 +60,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Plant;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.TargetHealthIndicator;
 import com.zrp200.rkpd2.utils.GLog;
@@ -127,6 +134,7 @@ public class CursedWand {
 			//anti-entropy
 			case 0: default:
 				Char target = Actor.findChar(targetPos);
+				if (user == null) return cursedEffect(origin, null, targetPos);
 				if (Random.Int(2) == 0) {
 					if (target != null) Buff.affect(target, Burning.class).reignite(target,
 							Burning.DURATION + eldritchLevel > 1 ? 5 : 0);
@@ -212,7 +220,7 @@ public class CursedWand {
 			//Health transfer
 			case 1:
 				final Char target = Actor.findChar( targetPos );
-				if (target != null) {
+				if (user != null && target != null) {
 					int damage = Dungeon.scalingDepth() * 2;
 					Char toHeal, toDamage;
 
@@ -225,19 +233,21 @@ public class CursedWand {
 					}
 					toHeal.HP = Math.min(toHeal.HT, toHeal.HP + damage);
 					toHeal.sprite.emitter().burst(Speck.factory(Speck.HEALING), 3);
-					toDamage.damage(damage, origin == null ? toHeal : origin);
+					toHeal.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(damage), FloatingText.HEALING );
+
+					toDamage.damage(damage, new CursedWand());
 					toDamage.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
 
 					if (toDamage == Dungeon.hero){
 						Sample.INSTANCE.play(Assets.Sounds.CURSED);
 						if (!toDamage.isAlive()) {
-							if (origin != null) {
+							if (user == Dungeon.hero && origin != null) {
 								Badges.validateDeathFromFriendlyMagic();
-								Dungeon.fail( origin.getClass() );
+								Dungeon.fail( origin );
 								GLog.n( Messages.get( CursedWand.class, "ondeath", origin.name() ) );
 							} else {
-								Badges.validateDeathFromFriendlyMagic();
-								Dungeon.fail( toHeal.getClass() );
+								Badges.validateDeathFromEnemyMagic();
+								Dungeon.fail( toHeal );
 							}
 						}
 					} else {
@@ -251,15 +261,13 @@ public class CursedWand {
 
 			//Bomb explosion
 			case 2:
-				new Bomb().explode(targetPos);
-				if (user == Dungeon.hero && !user.isAlive()){
-					Badges.validateDeathFromFriendlyMagic();
-				}
+				new Bomb.ConjuredBomb().explode(targetPos);
 				tryForWandProc(Actor.findChar(targetPos), origin);
 				return true;
 
 			//shock and recharge
 			case 3:
+				if (user == null) return cursedEffect(origin, null, targetPos);
 				new ShockingTrap().set( user.pos ).activate();
 				Buff.prolong(user, Recharging.class, Recharging.DURATION + eldritchLevel > 1 ? 10 : 0);
 				ScrollOfRecharging.charge(user);
@@ -306,6 +314,7 @@ public class CursedWand {
 
 			//inter-level teleportation
 			case 2:
+				if (user == null) return cursedEffect(origin, null, targetPos);
 				if (Dungeon.getDepth() > 1 && Dungeon.interfloorTeleportAllowed() && user == Dungeon.hero) {
 
 					//each depth has 1 more weight than the previous depth.
@@ -313,9 +322,7 @@ public class CursedWand {
 					for (int i = 1; i < Dungeon.getDepth(); i++) depths[i-1] = i;
 					int depth = 1+Random.chances(depths);
 
-					TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
-					if (timeFreeze != null) timeFreeze.detach();
-
+					Level.beforeTransition();
 					InterlevelScene.mode = InterlevelScene.Mode.RETURN;
 					InterlevelScene.returnDepth = depth;
 					InterlevelScene.returnBranch = 0;
@@ -335,11 +342,14 @@ public class CursedWand {
 		}
 	}
 
+	public static boolean disableCursedWandError = false;
+
 	private static boolean veryRareEffect(final Item origin, final Char user, final int targetPos){
 		switch(Random.Int(4)){
 
 			//great forest fire!
 			case 0: default:
+				if (user == null) return cursedEffect(origin, null, targetPos);
 				for (int i = 0; i < Dungeon.level.length(); i++){
 					int amount = 15;
 					if (eldritchLevel > 0) amount /= 3;
@@ -376,12 +386,12 @@ public class CursedWand {
 					}
 				}
 
-				Mimic mimic = Mimic.spawnAt(spawnCell, new ArrayList<Item>(), GoldenMimic.class);
+				Mimic mimic = Mimic.spawnAt(spawnCell, GoldenMimic.class, false);
 				mimic.stopHiding();
 				mimic.alignment = Char.Alignment.ENEMY;
 				Item reward;
 				do {
-					reward = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
+					reward = Generator.randomUsingDefaults(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
 							Generator.Category.RING, Generator.Category.WAND));
 					if (!Dungeon.isChallenged(Challenges.REDUCED_POWER)) break;
 				} while (reward.level() < 1 );
@@ -398,26 +408,33 @@ public class CursedWand {
 				
 				try {
 					Dungeon.saveAll();
-					if(Messages.lang() != Languages.ENGLISH){
+					if(disableCursedWandError || Messages.lang() != Languages.ENGLISH){
 						//Don't bother doing this joke to none-english speakers, I doubt it would translate.
 						return cursedEffect(origin, user, targetPos);
 					} else {
-						GameScene.show(
-								new WndOptions(Icons.get(Icons.WARNING),
-										"CURSED WAND ERROR",
-										"this application will now self-destruct",
-										"abort",
-										"retry",
-										"fail") {
-									
+						ShatteredPixelDungeon.runOnRenderThread(
+								new Callback() {
 									@Override
-									protected void onSelect(int index) {
-										Game.instance.finish();
-									}
-									
-									@Override
-									public void onBackPressed() {
-										//do nothing
+									public void call() {
+										GameScene.show(
+												new WndOptions(Icons.get(Icons.WARNING),
+														"CURSED WAND ERROR",
+														"this application will now self-destruct",
+														"abort",
+														"retry",
+														"fail") {
+
+													@Override
+													protected void onSelect(int index) {
+														Game.instance.finish();
+													}
+
+													@Override
+													public void onBackPressed() {
+														//do nothing
+													}
+												}
+										);
 									}
 								}
 						);
@@ -432,13 +449,13 @@ public class CursedWand {
 			//random transmogrification
 			case 3:
 				//skips this effect if there is no item to transmogrify
-				if (origin == null || origin.unique || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin) || eldritchLevel > 1){
+				if (origin == null || origin.unique || user != Dungeon.hero || !Dungeon.hero.belongings.contains(origin) || origin.isEquipped(Dungeon.hero)){
 					return cursedEffect(origin, user, targetPos);
 				}
 				origin.detach(Dungeon.hero.belongings.backpack);
 				Item result;
 				do {
-					result = Generator.random(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
+					result = Generator.randomUsingDefaults(Random.oneOf(Generator.Category.WEAPON, Generator.Category.ARMOR,
 							Generator.Category.RING, Generator.Category.ARTIFACT));
 				} while (result.cursed);
 				if (result.isUpgradable() && !Dungeon.isChallenged(Challenges.REDUCED_POWER)) result.upgrade();

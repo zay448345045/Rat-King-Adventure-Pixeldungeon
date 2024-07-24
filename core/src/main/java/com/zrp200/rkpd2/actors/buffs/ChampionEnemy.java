@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.zrp200.rkpd2.utils.BArray;
+import com.watabou.utils.BArray;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -226,7 +226,7 @@ public abstract class ChampionEnemy extends Buff {
 			//don't trigger when killed by being knocked into a pit
 			if (target.flying || !Dungeon.level.pit[target.pos]) {
 				for (int i : PathFinder.NEIGHBOURS9) {
-					if (!Dungeon.level.solid[target.pos + i]) {
+					if (!Dungeon.level.solid[target.pos + i] && !Dungeon.level.water[target.pos + i]) {
 						GameScene.add(Blob.seed(target.pos + i, 2, Fire.class));
 					}
 				}
@@ -311,8 +311,20 @@ public abstract class ChampionEnemy extends Buff {
 		}
 
 		@Override
-		public boolean canAttackWithExtraReach( Char enemy ) {
-			return target.fieldOfView[enemy.pos]; //if it can see it, it can attack it.
+		public boolean canAttackWithExtraReach(Char enemy) {
+			if (Dungeon.level.distance( target.pos, enemy.pos ) > 4){
+				return false;
+			} else {
+				boolean[] passable = BArray.not(Dungeon.level.solid, null);
+				for (Char ch : Actor.chars()) {
+					//our own tile is always passable
+					passable[ch.pos] = ch == target;
+				}
+
+				PathFinder.buildDistanceMap(enemy.pos, passable, 4);
+
+				return PathFinder.distance[target.pos] <= 4;
+			}
 		}
 	}
 
@@ -383,7 +395,7 @@ public abstract class ChampionEnemy extends Buff {
 			if (target instanceof Hero){
 				return 1.0f;
 			}
-			return 0.75f;
+			return 0.5f;
 		}
 
 		@Override
@@ -527,7 +539,7 @@ public abstract class ChampionEnemy extends Buff {
 			if (target instanceof Hero){
 				return 0.5f;
 			}
-			return 0.25f;
+			return 0.2f;
 		}
 
 		@Override
@@ -537,7 +549,8 @@ public abstract class ChampionEnemy extends Buff {
 			} else {
 				boolean[] passable = BArray.not(Dungeon.level.solid, null);
 				for (Char ch : Actor.chars()) {
-					if (ch != target) passable[ch.pos] = false;
+					//our own tile is always passable
+					passable[ch.pos] = ch == target;
 				}
 
 				PathFinder.buildDistanceMap(enemy.pos, passable, 2);
@@ -568,7 +581,7 @@ public abstract class ChampionEnemy extends Buff {
 
 		@Override
 		public float evasionAndAccuracyFactor() {
-			return 3f;
+			return 4f;
 		}
 	}
 
@@ -583,7 +596,7 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public boolean act() {
 			multiplier += 0.01f;
-			spend(3*TICK);
+			spend(4*TICK);
 			return true;
 		}
 

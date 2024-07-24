@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Generator;
@@ -65,9 +66,9 @@ public abstract class Shaman extends Mob {
 	
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 6);
+		return super.drRoll() + Random.NormalIntRange(0, 6);
 	}
-	
+
 	@Override
 	public boolean canAttack( Char enemy ) {
 		if (buff(ChampionEnemy.Paladin.class) != null){
@@ -76,7 +77,8 @@ public abstract class Shaman extends Mob {
 		if (buff(Talent.AntiMagicBuff.class) != null){
 			return super.canAttack(enemy);
 		}
-		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+		return super.canAttack(enemy)
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
 	@Override
@@ -93,8 +95,9 @@ public abstract class Shaman extends Mob {
 	}
 
 	protected boolean doAttack(Char enemy ) {
-		
-		if (Dungeon.level.adjacent( pos, enemy.pos )) {
+
+		if (Dungeon.level.adjacent( pos, enemy.pos )
+				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos != enemy.pos) {
 			
 			return super.doAttack( enemy );
 			
@@ -115,7 +118,9 @@ public abstract class Shaman extends Mob {
 	
 	private void zap() {
 		spend( 1f );
-		
+
+		Invisibility.dispel(this);
+		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 			
 			if (Random.Int( 2 ) == 0 && enemy.buff(WarriorParry.BlockTrock.class) == null) {
@@ -138,7 +143,7 @@ public abstract class Shaman extends Mob {
 
 				if (!enemy.isAlive() && enemy == Dungeon.hero) {
 					Badges.validateDeathFromEnemyMagic();
-					Dungeon.fail(getClass());
+					Dungeon.fail(this);
 					GLog.n(Messages.get(this, "bolt_kill"));
 				}
 			}

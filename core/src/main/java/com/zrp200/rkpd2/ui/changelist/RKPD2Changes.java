@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2020 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,10 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.enchantments.Explosive;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
+import com.zrp200.rkpd2.sprites.BlacksmithSprite;
 import com.zrp200.rkpd2.sprites.*;
+import com.zrp200.rkpd2.sprites.ShopkeeperSprite;
+import com.zrp200.rkpd2.sprites.TormentedSpiritSprite;
 import com.zrp200.rkpd2.ui.Icons;
 
 import java.util.ArrayList;
@@ -63,294 +66,260 @@ import static com.zrp200.rkpd2.ui.Window.TITLE_COLOR;
 import static java.util.Arrays.asList;
 
 // TODO should I have a separate section for shattered changes?
-public class RKPD2Changes {
-
-    private RKPD2Changes() {} // singleton
-    public static void addAllChanges( ArrayList<ChangeInfo> changeInfos ){
-        for(ChangeInfo[] section : new RKPD2Changes().changes) changeInfos.addAll(asList(section));
-    }
-
-    // utility
-    private static ChangeButton bugFixes(String message) {
-        return new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), get(ChangesScene.class, "bugfixes"), message);
-    }
-    private static ChangeButton misc(String message) {
-        return new ChangeButton(Icons.get(PREFS), get(ChangesScene.class,"misc"), message);
-    }
-
-    // section types
-    private static ChangeInfo NewContent(ChangeButton... buttons) {
-        return new ChangeInfo(
-                Messages.get(ChangesScene.class, "new"),
-                false, TITLE_COLOR,
-                "",
-                buttons);
-    }
-    private static ChangeInfo Buffs(ChangeButton... buttons) {
-        return new ChangeInfo(
-                Messages.get(ChangesScene.class, "buffs"),
-                false, POSITIVE,
-                "",
-                buttons);
-    }
-    private static ChangeInfo Changes(ChangeButton... buttons) {
-        return new ChangeInfo(
-                Messages.get(ChangesScene.class, "changes"),
-                false, WARNING, "",
-                buttons);
-    }
-    private static ChangeInfo Nerfs(ChangeButton... buttons) {
-        return new ChangeInfo(
-                Messages.get(ChangesScene.class, "nerfs"),
-                false, NEGATIVE,
-                "",
-                buttons);
-    }
-
-    private static ChangeButton info(String message) {
-        return new ChangeButton(Icons.get(INFO), "Developer Commentary", message);
-    }
-
-    // more utils
-
-    /** makes a list in the standard PD style.
-     * [lineSpace] determines the number of spaces between each list item.
-     * If you want to append extra spaces, you should do it at the end of the previous item, rather than at the start of that item.*/
-    private static String list(String... items) { return list(1, items); }
-    private static String list(int lineSpace, String... items) {
-        StringBuilder builder = new StringBuilder();
-        for (int j=0; j < lineSpace; j++) builder.append('\n');
-        for (String item : items) {
-            builder.append("_-_ ").append( item );
-            for (int j = 0; j < lineSpace; j++) builder.append('\n');
-        }
-        return builder.toString();
-    }
-
+interface ChangeLog {
     // yet another attempt at formatting changes. not sure if this is any better than the last one, but one thing is certain: I HATE the way it's done in Shattered.
     // in this case I made it so you could add buttons in the ChangeInfo constructor; this is 'lustrous' style
 
-    final ChangeInfo[][] changes = {
-                {new ChangeInfo("RKA-1.5.3",true,TITLE_COLOR,
-                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
-                                "When this RKPD2 update is going to release..."),
-                        new ChangeButton(new Warp(), list(
-                                "Warp frequency timer is now set at 25 turns as base and is capped to 3 turns",
-                                "Increased Scroll of Infinity Wealth's warp decay speed from 20 to 15",
-                                "Increased nerf gun mode swap's warp decay speed from 3 to 1.5",
-                                "Decreased nerf gun reload's warp amount from 15 to 10 and decreased decay speed from 2 to 3",
-                                "Increased scamming spell's warp decay speed from 3 to 2.5",
-                                "Increased wand of kromer's warp decay speed from 8 to 3 and usage warp amount from 20 to 30"
-                        )),
-                        new ChangeButton(new Kromer(), list(
-                                "Buffed wand of kromer's level boost from 3x to 4x",
-                                "Kromer Crown and Kromer Mask can no longer be used infinitely via using exploit handler functionality"
-                        )),
-                        new ChangeButton(new ItemSprite(SEED_SWIFTTHISTLE), "Special seeds", list(
-                                "Refactored how special seed info is stored in-game to allow for multiple seed effects to be active at the same time",
-                                "Added some new seeds:\n" +
-                                        "_--_ AMA-GEN-ERF\n" +
-                                        "_--_ BOB-PAL-KIA\n" +
-                                        "_--_ BUF-HUN-TRS\n" +
-                                        "_--_ COL-LOS-EUM\n" +
-                                        "_--_ ROT-INM-IND\n" +
-                                        "_--_ RRR-RRR-RRR\n" +
-                                        "_--_ VBA-LAN-CED\n" +
-                                        "_--_ WHO-LEP-ACK",
-                                "_BES-TFR-END:_ mobs are now enthralled with 33% chance instead of 50%",
-                                "_EXP-ANS-IVE:_ decreased room count modifier from 4x to 2x",
-                                "_NOW-ALL-SHE:_ walls now turn into embers, bookshelves turn into chasms and doors turn into chasms after being closed",
-                                "_RAT-RAT-RAT:_ rat enemies now scale their EXP values and max level with game's progression"
-                        )),
-                        misc(list(
-                                "Summon Elemental's spell elementals now follow player between floors",
-                                "Blooming Pick no longer can mine blocks on boss floors",
-                                "Increased Rat King boss's battlemage mode damage by 25%",
-                                "Increased the chance of tier 6 weapons in city from 2% to 3% and in halls from 6% to 7%",
-                                "Removed bonus initial charges from wand of His Ratiness and wand of Kromer, but they now charge 33% faster",
-                                "Enthralled enemies now have 25% increased accuracy, evasion and armor"
-                        )),
-                        bugFixes(list(
-                                "Fixed nerf gun's necromantic imbue triggering on bosses and minibosses"
-                        ))
-                    )
-                },
-                {new ChangeInfo("RKA-1.5.2",true,TITLE_COLOR,
-                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
-                                "I wanted to wait until RKPD2 actually updates, but it is been almost 1.5 years since that, and players really want some updates..."),
-                        new ChangeButton(new Warp(), list(
-                                "Massively buffed the rate at which warp effects appear",
-                                "Reduced the preparation delay for warp sources",
-                                "Reduced the effect of decay averaging out from multiple warp sources",
-                                "Doubled the warp decay rate of flex tape's both abilities"
-                        )),
-                        new ChangeButton(new Kromer(), list(
-                                "Added _Kromerized Bomb_, which combines most of other Shattered bombs in one explosion",
-                                "Added _Pipisfusion_ spell, which doubles the damage of selected melee weapon, but makes it inflict warp from each hit",
-                                "Changed _Kromer-infused Staff_: now does slightly more melee damage, but inflicts warp from zapping wands",
-                                "Changed _Kromer-infused Cloak_: now is compatible with every Cloak of Shadows interaction, but inflicts more warp and its decay rate depends on how long each charge lasts",
-                                "Nerfed _Kromer-infused Bow_: now inflicts massively more warp with each shot",
-                                "Changed _Kromer-infused Slingshot_: now does 16% more damage, but inflicts much more warp with each shot",
-                                "Nerfed _Wand of Kromer_: now inflicts massively more warp with each zap",
-                                "Buffed _Scam Spell_: now inflict Scam for longer, increased the yield per craft to 11, but increased energy cost to 22"
-                        )),
-                        misc(list(
-                                "Nerfed cryogenic imbue of nerf gun by making its freezing last shorter and making Rat King boss immune to frost",
-                                "Nerfed dreamful imbue of nerf gun by making bosses resist it like grim enchantment",
-                                "Nerfed slightly max charge of normal and fast modes for nerf gun",
-                                "Improved Spirit Caller's tracker's visuals",
-                                "Buffed Like a Bullet talent: increased starting power from +39%/+46%/+55% to +45%/+58%/+71% and increased distance multiplier from +17%/+21%/+25% to +18%/+23%/+28%",
-                                "Made Chaotic curse be considered a curse instead of enchantment",
-                                "Made Paladin champion effect apply to more ranged zombies",
-                                "Added action names to RKA's abilities that didn't have them",
-                                "Animosity Mode's Goo now spawns only one slime per hit, not 4-5 (also fixes the freeze connected to too many slimes spawning)",
-                                "Updated Android target version to API 33"
-                        )),
-                        bugFixes(list(
-                                "Fixed Energizing Upgrade not activating for various reasons",
-                                "Fixed Spirit Caller's tracker consuming all of charge when summoning a wraith",
-                                "Fixed a crash from Abyssal Nightmare trying to break walls close to edge of the level",
-                                "Fixed a crash with some allies trying to use hero's enchantments",
-                                "Fixed most of Kromer Crown's and Kromer Mask's broken interactions",
-                                "Fixed rare crash with Evil Eyes splitting",
-                                "Fixed Kromer Mask's missing strings",
-                                "Fixed Degrading Health's tracker crashing the game on reloading",
-                                "Fixed Kromer Economy's 180 turns preparation delay disappearing on reloading the game",
-                                "Fixed melee weapons being possible to quickslot outside of Brawler's subclass",
-                                "Fixed some cases of Unenchanted's no upgrades effect not applying to drops when it should"
-                        ))
-                ),
-                new ChangeInfo("RKA-1.5.1",true,TITLE_COLOR,
-                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary",
-                                "The unexpected events (such as university and my PC being broken for 2 months) made this update arrive very-very late, sorry about that."),
-                        new ChangeButton(Icons.get(TALENT), "Talent and Armor Ability Changes", list(
-                                "_Greenfields_ buffed by empowering regeneration boost and removing satiety boost (that was working incorrectly anyways)",
-                                "_Archery's Mark_ fixed by tweaking the cause for softlock",
-                                "_Ectotoughness_ reworked into _Auxiliary Charge_ and rewards player with charge on using wands"
-                        )),
-                        new ChangeButton(new WraithSprite(), "Spirit Caller Changes", list(
-                                "Ectotoughness's part is now innate _+33%_ evasion boost",
-                                "Allied Wraiths now have 1.5x attack speed",
-                                "Tweaked the charge necessary for summoning from 40 to 45 but allowed to accumulate it to max of 90 charge"
-                        )),
-                        new ChangeButton(new NerfGun(),
-                                "Significantly nerfed nerf gun:\n" + list(
-                                        "Reduced minimal and maximal damage",
-                                        "Increased amount of warp from each reload and imbuing",
-                                        "Also tweaked the lack of level indicator"
-                                )
-                        ),
-                        new ChangeButton(new Warp(), "Reevaluated some aspects of warp effect: \n" + list(
-                            "Incoming sources of warp now average out decay rate with previous source of warp instead of overriding it, to prevent the common strategy of mitigating it",
-                            "Warped enemy's retaliation damage now depends on damage it have been taking instead of its maximum HP",
-                                "Increased the frequency of warp effects on higher levels of warp",
-                                "Spawning effect no longer softlocks the game when on empty boss floor"
-                        )),
-                        misc(list(
-                            "Added the tips on how to unlock new challenges",
-                                "Restored the ability to metamorph talents granted by kromer",
-                                "Abyss now plays the music of halls instead of what played before",
-                                "Ring of Force's description is a bit more clear on its custom effects",
-                                "Restored UCE-Handler functionality"
-                        )),
-                        bugFixes(list(
-                                "Fixed the lack of kromer-granted subclasses and classes in rankings",
-                                "Fixed the occasional consumption of Phantom Spear when thrown",
-                                "Fixed Crowd Diversity-unaffected monsters still getting buffs",
-                                "Fixed duping of aqua blasts in Domain of Hell runs"
-                        ))
-                ),
-                new ChangeInfo("RKA-1.5.0",true,TITLE_COLOR,
-                        new ChangeButton(Icons.get(TRASHBOXBOBYLEV), "Developer Commentary", "This is long-awaited update to Rat King Adventure.\n\n" +
-                                "Not everything was caught in playtesting and such and therefore here are plans for future patches:\n" +
-                                "_-_ Add more special seeds\n" +
-                                "_-_ Watch over balance of newer talents\n" +
-                                "_-_ Adjust the values of warp and warp effects\n" +
-                                "_-_ Add more kromer-related content\n" +
-                                "_-_ Fix feature regressions"),
-                        new ChangeButton(new Warp(), "This new status effect replaces buffs and debuffs inflicted by Kromer-created items and will be used for related items and content in the future.\n" +
-                                "#Warp# can be obtained by interacting with #otherworldy items# that do not belong in usual Pixel Dungeon setting. When inflicted, it will start decaying, while triggering various negative effects on the way.\n\n" +
-                                "Warp effects depend on how much warp you have collected, but the max you can carry is 150.\n\n" +
-                                "Don't accumulate too much warp or else you will have to face the consequences!"),
-                        new ChangeButton(new ItemSprite(SEED_SWIFTTHISTLE), "Special seeds", "When entering specific codes into custom seed input, you will get random seed playthrough but with some twist along the way.\n\n" +
-                                "Those seeds include (in current patch):\n" +
-                                "_-_ RAT-RAT-RAT\n" +
-                                "_-_ ROG-UEB-UFF\n" +
-                                "_-_ REV-ERS-EED\n" +
-                                "_-_ NOW-ALL-SHE\n" +
-                                "_-_ RNG-ITE-MSS\n" +
-                                "_-_ ITE-MCH-EST\n" +
-                                "_-_ EXP-ANS-IVE\n" +
-                                "_-_ BES-TFR-END\n" +
-                                "_-_ ECH-ECH-ECH"),
-                        new ChangeButton(Icons.get(TALENT), "Talent and Armor Ability Changes", list(
-                           "_Combo Meal_ buffed by giving 1 more combo.",
-                           "_Bravery_ buffed by giving 25% more rage at all points",
-                           "_Cockatrocious_ buffed by extending the duration of petrification",
-                           "_Big Time_ fixed working in more champion titles than it should",
-                           "_Adapt and Overcome_ fixed debug message for +3 effect",
-                            "_Archery Mark_ no longer targets invulnerable enemies"
-                        )),
-                        new ChangeButton(new ItemSprite(MASK), "Subclass Changes", list(
-                           "_Spirit Caller_ buffed by increasing the ability charge rate",
-                           "_Shadowflare_ nerfed by reducing vehicle's speed from 3x to 2x",
-                           "_Omnibattler_'s Paladin form now only provides 75% damage reduction, down from 100%",
-                                "_Omnibattler_ buffed by decreasing title change cooldown"
-                        )),
-                        new ChangeButton(new NerfGun(),
-                                "This new weapon can be found in crystal chests and is capable of shooting three different kinds of ammo.\n" +
-                                        "It requires reloading once ammunition is exhausted.\n\n" +
-                                        "Nerf Gun also can use seeds to get unique enchantments that persist until the gun is reloaded.\n" +
-                                        "And finally, this weapon grows with your progression in the dungeon, using experience."
-                                ),
-                        new ChangeButton(new FlexTape(),
-                                "This curious item can be bought in shops or be found in Shattered v1.2 new rooms and has various uses, including instantly killing enemies and healing allies.\n" +
-                                        "Unfortunately, it is quite cursed and will give warp on using."
-                        ),
-                        new ChangeButton(new ItemSprite(ALUMINUM_SWORD), "Weaponry Changes", list(
-                            "_Aluminum Sword_ reworked to use vanilla Gladiator perk, with reduced damage",
-                                "_Runic Blade MK2_ buffed to recharge its magic faster, deal more damage and inflict magic dispel with magical swords",
-                                "_Construction Wand_ buffed with increased durability of its summons",
-                                "_Luminious Cutlass_ nerfed with reduced damage and weaker lightning effect",
-                                "_Blooming Pick_ buffed with significant buff to its damage and mining delay",
-                                "_Elemental Dirk_ buffed with significant buff to its damage, its debuffs are also no longer depend on chance",
-                                "_Exo Knife_ reworked to deal increased damage in 5x5 instead of recursive hits",
-                                "_Homing Boomerang_ nerfed to lose damage after each bounce and no longer being able to hit highly evasive or invulnerable enemies",
-                                "_Phantom Spear_ fixed to remove durability-related issues",
-                                "_Terminus Blade_ nerfed with reduced damage, attack speed, but buffed ability's charge rate"
-                        )),
-                        new ChangeButton(new Kromer(), list(
-                                "All kromer items inflict various amount of warp",
-                                "Infinity Wealth adjusted to only give 50% EXP from spawned mobs, but is now able to upgrade thrown weapons and preserve enchantments",
-                                "Infinity Manpower buffed to grant more strength and no longer damage the player",
-                                "No Death Elixir buffed to last 250 turns",
-                                "Kromer Crown buffed to be usable with Kromer Mask"
-                        )),
-                        misc(list(
-                                "Exploding champions will explode into arcane bomb instead of using several bombs",
-                                "Paladin champions give 75% damage reduction to their allies instead of full invulnerability",
-                                "Increased effect cap on certain rings",
-                                "Chaotic curse now uses same visual effect as kromer items",
-                                "Reworked Chemical Barrier challenge to replicate older alchemy style",
-                                "Buffed some of Animosity Mode bosses",
-                                "Significantly buffed Soul of Yendor's charge efficiency and implemented new Armband for it",
-                                "Phantoms no longer inflict DoT debuffs with their attacks",
-                                "Increased Rat King boss HP by 50%"
-                        )),
-                        bugFixes(list(
-                                "Fixed the crash with using brawler with bare hands",
-                                "Fixed DK being faster outside of Animosity",
-                                "Fixed abyss trappers being able to override exit stairs",
-                                "Fixed possible crash with trap classes in Abyss",
-                                "Fixed Rat King not getting points from kromer talents",
-                                "Fixed the increased HP of voodoo champion's offspring",
-                                "Fixed the bug with Aqua Blasts being given on each level transition"
-                        ))
-                )
+    ChangeInfo[][] getChanges();
+}
+
+public enum RKPD2Changes {
+    v1(() -> new ChangeInfo[][]{
+        {
+            new ChangeInfo("Coming Soon", true, TITLE_COLOR,
+                    new ChangeButton(Icons.get(Icons.SHPX), "Future Shattered Updates",
+                            "I plan on implementing future Shattered updates, to prevent this mod from becoming outdated."),
+                    new ChangeButton(DUELIST, "The monk is currently missing an extra t4 talent, and Rat King does not have her implemented at all."),
+                    bugFixes("Critical bug fixes are planned. For what, you ask? *chuckle*")
+            )
         },
-        { // v0.4
+        {
+            new ChangeInfo("v2.0.0", true, TITLE_COLOR,
+                    info(Messages.get(RKPD2Changes.class, "200")),
+                    new ChangeButton(DUELIST, "Added duelist!"
+                            +"\n\nNotable changes from SHPD:" + list(2,
+                            "Maximum ability charges increased by 50%",
+                            "Some weapon abilities have been buffed" + list(
+                                    "Lunge now works at a distance of 2, letting it be used for spacing."
+                            ),
+                            "Most T1-3 talents buffed heavily. T4 talents are unchanged.",
+                            "Added an additional talent to Champion that allows equipping of thrown weapons, which can be used to extend most abilities' effective range, or a third weapon. _Monk ability is WIP._"
+                    ) + "\n\n_Rat King currently does not have access to Duelist's mechanics_"),
+                    new ChangeButton(BERSERKER,
+                            // TODO fix this
+                            "Reworked Berserker in response to 1.4.0:" +
+                                    list(2,
+                                            "Berserk is now manually activated, but it has a much lower cooldown.",
+                                            "Endless Rage and Inevitability now grant a bonus to berserk duration and cooldown when above 100% rage.") + list(
+                                            "Berserking Stamina replaced with Deathless Fury, which lets berserking automatically trigger just like before, but require exp like before" + list("The cooldown now matches Shattered's growth instead of being greatly increased", "Rage weighting is now moved to this talent instead of being spread across several different ones.", "Berserking Stamina's perk of allowing rage gain while recovering is transfered to Deathless Fury.")
+                                    )
+                    ),
+                    new ChangeButton(Icons.get(TALENT), "Talents",
+                            "_Armsmaster's Intuition_:" + list(
+                                    "Renamed to Veteran's Intuition to match Shattered v2.0.0",
+                                    "+0 effect identifies weapons 1.75x faster, down from 2x, but identifies armors 2.5x faster, up from 2x.",
+                                    "Weapons are no longer identified on equip at +1, instead identified 2.5x faster. They are still identified on equip at +2.",
+                                    "+1 can now identify armors on pickup with a 30% chance, and the +2 chance to do so is increased to 60% from 50%.",
+                                    "Chance to identify weapons on pickup reduced to 0/30% from 0/50% at +1/+2"
+                            ) + "Note that Duelist's _Adventurer's Intuition_ is the exact reverse of this talent.",
+                            "_Assassin's Lethal Momentum_ has been reworked to be even more distinct from the standard Lethal Momentum:" + list(
+                                    "Now preserves a slightly random proportion of Preparation on kill in addition to nullifying the attack delay of the killing blow.",
+                                    "I'd also say that it no longer works on successive kills without preparation, but the mechanic was bugged to not work anyway.")
+                                    + "That said:\n_Warrior's Lethal Momentum_ now correctly works on follow-up attacks as well!"
+                            + '\n' + list("Rogue's Foresight buffed to 66%/99% detection, and grants additional chances to notice hidden stuff.")
+                    ),
+                    new ChangeButton(new ItemSprite(CROWN),
+                            "Talent and Armor Ability Changes",
+                            list("_Smoke Bomb_ range down to 10 from 12", "Smoke Bomb Shadow Step reduction now 20%/36%/50%/60% down from 24%/42%/56%/67")
+                                    + list("_Wrath_ range reduced to 6 from 10", "_Smoke and Mirrors_ charge cost reduction down to 16/30/41/50%, from 20/36/50/60%")
+                                    + list("_Heroic Energy_ unchanged at 16/30/40/50 instead of being nerfed")
+                                    + list("_Shrug it Off_ now just directly boosts the damage resistance from endure to 60/68/74/80%, instead of reducing max damage taken")
+                                    + list("_Wild Magic_ now spends 0.5 wand charges at base. Conserved magic can reduce this to 0.1")
+                                    + list("_Double Jump_ charge reduction nerfed to 16%/30%/41%/50% from 20%/36%/50%/60%/68%")
+                    ),
+                    bugFixes(list(
+                            "Fixed an exploit allowing Rogue to gain infinite healing from talents",
+                            "Rat King sometimes healing beyond his max hp when eating."
+                    ))
+            ),
+            new ChangeInfo("v2.0.4-v2.0.6",false,TITLE_COLOR,
+                misc("_2.0.6_" + list("Added an Elemental Strike effect for Chaotic curse. It's rather...chaotic, if you ask me.")),
+                bugFixes(
+                    "_2.0.6_:" + list(
+                            "Barkskin talent giving more barkskin than intended",
+                            "Omniability getting stuck on duelist abilities",
+                            "Rat King always gaining combo when attacking")
+                    + "_2.0.5_:" + list(
+                        "Crash when interacting with the pickaxe under certain scenarios",
+                        "Glaive's spike not doing damage",
+                        "Backup barrier always visually activating",
+                        "Crash handler not activating :("
+                    ),
+                    "_2.0.4_:" + list(
+                        "detaching the seal degrading armor",
+                        "elite dexterity not working as intended/described",
+                        "elite dexterity switch prompt not always showing the correct weapons",
+                        "backup barrier not giving correct amount of shielding",
+                        "Blacksmith quest not correctly indicating quest completion"
+                    )
+            )),
+            new ChangeInfo("v2.0.1-3", false, TITLE_COLOR,
+                    new ChangeButton(INSCRIBED_POWER, "Inscribed Power, Desperate Power, and their equivalents",
+                            "It turns out that these talents didn't actually work! Well, now they do, with some changes:" +
+                                    "\n\n_Desperate Power_:"
+                                    + list("Now boosts levels by what its description says, instead of the +1/+2/+3 that was accidentally implemented.",
+                                        "Rat King's Desperate Power now actually works, and does +1/+2/+3")
+                                    + "\n_Inscribed Power_:" + list(
+                                        "Removed outdated description; it now just has its old +2 effect at +1, and its old +3 effect at +2",
+                                        "Amount of wand zaps given increased by 1",
+                                        "This probably makes it silly, but this mod is silly anyway."
+                                    )
+                                    + "\n_Inscribed Stealth_:"
+                                    + list("Buffed to be 6/9 turns of stealth, instead of having no buff at all.", "Removed outdated description, and added a comment")
+                    ),
+                    new ChangeButton(ELITE_DEXTERITY, "Talent Icons", "Changed the talent icons for Elite Dexterity, Assassin's Lethal Momentum, and Lethal Rush to better match similar talents"),
+                    bugFixes("Caused by v2.0.0:" + list(
+                            "Lethal Rush always proccing",
+                            "Outdated description for Iron Stomach",
+                            "Bad highlighting for Law of Consumption",
+                            "Elite Dexterity only recharging when upgraded to +3",
+                            "Crash whenever Bright Fist attacks",
+                            "Eating full healing uncondiditionally",
+                            "On id talents sometimes not working",
+                            "Minor text errors",
+                            "Bugged rat king portrait",
+                            "Weird lunge behavior"
+                    ) + "Existed Prior:" + list("Staff not always showing level"))
+            ),
+            new ChangeInfo("From SHPD v2.2-3", false, SHPX_COLOR,
+                    new ChangeButton(new BlacksmithSprite(), "Quests rework", "Implemented the blacksmith quest with changes:" + list(
+                            "The mining area is a bit smaller, and only requires 30 gold",
+                            "You get 2000 favor for free!",
+                            "Updated blacksmith quotes to be more appropriate to speaking with royalty."
+                    ) + "\n\n"
+                            + "_Implemented Wandmaker quest changes:_"
+                            + "\n\n_Corpse Dust Quest:_ The mass grave room now always spawns at least a bit away from the entrance, and wraith spawning is more consistent."
+                            + "\n\n_Elemental Embers Quest:_"
+                            + list(
+                            "HP up to 60 from 30, attacking power reduced, no longer ignites on-hit",
+                            "Now shoots an avoidable fireball in a 3x3 area",
+                            "The summon elemental spell is unchanged")
+                            + "\n_Rotberry Quest:_" + list(
+                            "Rot lashers are now much stronger, but take 1 turn to notice an adjacent enemy before attacking",
+                            "Room layout is now much more chaotic, with more grass and crumbling walls",
+                            "There is now a guaranteed safe path to the rot heart")),
+                    new ChangeButton(Icons.get(Icons.AUDIO), "Audio", "Added additional audio tracks."),
+                    new ChangeButton(new ItemSprite(ItemSpriteSheet.REMAINS), "Heroes Remains Items", "Implemented heroes remains items, and added an additional one, for....reasons."),
+                    new ChangeButton(new ItemSprite(CHOC_AMULET), "Added holiday items", "You can enjoy holiday items in RKPD2 as well now! Enjoy your free amulet!"),
+                    new ChangeButton(Icons.get(Icons.BUFFS), "Floating Text Icons", "Implemented floating text icons, replacing text in a lot of cases."),
+                    misc(list(
+                            "Updated to the latest version of Shattered's game library (libGDX), which has a few benefits:\n" + list("Improved vibration on modern iOS devices", "Improved changing audio device behavior", "Misc. stability & compatibility improvements"),
+                            "Magical fire is now cleared by frost next to it, in addition to on top of it",
+                            "Tengu's fire wall attack now ignites items\n",
+                            "Improved music transitions in main menu when game was just won\n",
+                            "Added support for controller vibration",
+                            "Added a vibration toggle in the settings\n",
+                            "Updated translators and translator credits\n",
+                            "Improved the sprites for Armored Brutes and DM-201s", "Random scroll and potion drops are now more consistent throughout a run", "DM-300's rockfall attack now uses positional danger indicators", "Improved visual clarity of sparks in the DM-300 fight", "Removed unnecessary game log entries when DM-300 uses abilities\n", "Added a warning when trying to steal from shops with less than 100% success chance", "Curse infusion now preserves an existing curse on items that don't have the curse infusion bonus yet", "long pressing on the ghost equip window now shows the stats of equipped items", "Ghosts and Rogue's shadow clone are now considered inorganic (immune to bleed, toxic, poison)", "Corrupted allies no longer attack passive enemies", "Spirit hawk now interrupts the hero when it expires\n", "Surface scene now shows night later in the evening as well as after midnight", "Did a consistency pass on heal over time effects interrupting the hero resting", "Long-press to assign quickslot now works in the full UI inventory pane, just like the mobile inventory window", "Added support for themed icons on Android 13+", "Removed support for saves prior to v1.4.3 --- this means prior to rkpd2 1.0.0 :(")),
+                    // lmao
+                    bugFixes(list("Enemies continuing to fight each other after amok expires in many cases", "Rounding errors causing tipped darts to last longer than intended in some cases", "Corpse dust quest tracking all wraiths instead of just the ones it spawned", "Final boss fight not properly interacting with the into darkness challenge", "Tengu behaving slightly incorrectly when taking massive damage", "Mimics not dropping their loot if corrupted while hiding", "Rare errors in DM-201 target selection", "Rotberry seed being deleted in rare cases", "Rare cases where the game would freeze after reviving via unblessed ankh", "Some bombs and explosion-spawning effects incorrectly dealing magic damage", "Foresight effects not triggering after level transition", "Projecting missile weapons not working on enemies inside solid terrain", "Cursed wand of warding having different targeting properties than other wands", "Thrown potions not clearing fire/ooze if they shattered out of view", "Retribution and psionic blast not applying to all visible characters in very rare cases", "Degrade debuff not applying to thrown weapons", "Cloak of shadows not losing charge if it is dispelled as it is activated", "Items being assignable to non-visible quickslots in specific cases", "Rare quickslot errors when bags which already contain items are collected", "Damage from Body Slam talent ignoring armor", "Cases where prismatic images could keep appearing and then disappearing", "Hero not being able to self-trample plants when standing on stairs", "Berserker being able to rage without his seal equipped in some cases", "Allies rarely spawning on hazards after ankh revive", "Ally warp working on corrupted DM-201s", "Various rare crash and freeze bugs", "Various minor visual and textual errors", "Tutorial becoming stuck in rare cases", "Beta updates setting not working as intended", "Music fading not working in rare cases", "Scrolling pane in journal window freezing in rare cases", "Some items being incorrectly consumed when the game is closed while they are being used", "Mage's Staff not being affected by the degrade debuff", "Further characters sometimes rendering on top of closer large characters", "Dwarf King's Crown rarely triggering the effect of the runic transference talent", "Exploit where multiplicity curse could be used to skip some of Dwarf King's second phase", "Various errors with class armor conversion and Warrior's broken seal", "Ring of Force incorrectly displaying +99.99% when at +7, instead of +100%", "Living Earth and Transfusion wands granting their self-buffs when shooting NPCs", "Several obscure issues with noisemakers", "Trap effects from reclaim trap spell not scaling with ascension challenge", "Horn of Plenty occasionally having the wrong visuals for its charge state", "Damage caused to Yog's fists not correctly adding time to boss regen limit", "Ambitious Imp sometimes calling out to the hero when not visible", "Phantom Piranhas rapidly teleporting when corrupted", "DM-300 fight sometimes not having a safe route to a power pylon", "Mimics not dropping loot when they are killed via chasm while hiding", "Tengu very rarely throwing bombs ontop of each other", "Piranhas throwing themselves off chasms in very rare cases", "The Rogue's body replacement talent not triggering effects like chasms and traps", "Various rare crash issues", "Various minor visual and textual errors", "Various rare cases where levelgen could differ between two runs on the same seed", "Into Darkness and Barren Land challenges affecting levelgen", "Items in Imp's shop not being affected by dungeon seed", "Gold ore appearing on the back face of walls in regular caves levels", "Starflower plant VFX triggering even when out of the hero's FOV", "Storm Clouds not correctly clearing fire or harming fiery enemies", "Cases where pushing effects could cause pitfalls to trigger early", "Combining diagonal direction keys on desktop causing rare errors", "Cases where default keybindings could override custom ones", "Crashes caused by text input windows for controller users", "System gestures in iOS sometimes registering as taps within the game", "Endure ability not working properly when used twice quickly", "Melee damage of Mage's Staff benefiting from talents that boost wand levels", "Various blink effects allowing movement over magical fire", "Some game actions being possible while meditating", "Various minor visual and textual errors"))),
+            new ChangeInfo("From SHPD v2.0-1", false, SHPX_COLOR,
+                new ChangeButton(new ItemSprite(ItemSpriteSheet.WAR_SCYTHE), "New Weapons!",
+                        "Three new weapons have been added to the game!\n" +
+                                "\n" +
+                                "_The Katana_ is a tier-4 defensive weapon that was designed to respond to the common feedback point of players wanting a higher tier weapon with the rapier's ability. Just like with her rapier, the Duelist can _lunge_ at enemies with a katana, dealing bonus damage.\n" +
+                                "\n" +
+                                "_The Sickle_ and _War Scythe_ are T2 and T5 weapons that trade in some accuracy for increased base damage. The Duelist can use the _harvest_ ability with these weapons, which deals a large amount of bleeding instead of direct damage, but costs 2 charges."),
+                new ChangeButton(new Image(new TormentedSpiritSprite()), "New Exotic Enemies",
+                        "An exotic variant has been added for wraiths and piranhas!\n" +
+                                "\n" +
+                                "_Tormented Spirits_ replace 1 in every 100 wraiths, and have higher stats along with a unique interaction. Using a scroll of remove curse on these spirits will save them from their curse, peacefully defeating them and giving you an uncursed equipment reward!\n" +
+                                "\n" +
+                                "_Phantom Piranhas_ replace 1 in every 50 piranhas, and can teleport either to attack or retreat whenever they take damage. They're harder to kill, but give valuable phantom meat as a drop, instead of regular mystery meat. They're also a reference to the phantom fish quest from the original Pixel Dungeon!"),
+                new ChangeButton(new Image(new ShopkeeperSprite()), "Shop Interface Improvements",
+                        "_A new UI has been added when interacting with shopkeepers._ This UI lets you talk with them and buyback the 3 most recently sold items!"),
+                new ChangeButton(Icons.get(Icons.STAIRS), "Ascension",
+                        "_-_ Enemies to kill per floor reduced to 2 from 2.5. Thresholds for all amulet debuff effects adjusted to compensate\n"
+                        + "\n"
+                        + "_- Ripper demon_ spawn rate increased if player is ascending\n"
+                        + "\n"
+                        + "_- Monk & Warlock_ stat boost up to 1.5x from 1.33x\n"
+                        + "_- Elemental & Ghoul_ stat boost up to 1.67x from 1.5x\n"
+                        + "\n" +
+                        "_- Crab & Slime_ stat boost up to 8x from 6x\n"
+                        + "_- Swarm_ stat boost up to 8.5x from 6.5x\n"
+                        + "_- Gnoll & Snake_ stat boost up to 9x from 7x\n"
+                        + "_- Rat_ stat boost up to 10x from 8x"),
+                    new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_TOPAZ),"Item Changes",
+                        "_Buffs_:\n"
+                                + list("_Pickaxe_ can now benefit from upgrades enchantments and augmentation, if you feel like using it for fun.")
+                                + list("_Ring of Energy_ now also applies a recharging boost to hero armor abilities. All the boosts it gives are now standardized to +15%.", "_Ring of Arcana_ enchantment boost up to +17.5% per level, from +15%")
+                                + list("_Glyph of Repulsion_ now only knocks back enemies who are adjacent to the hero. This should make it slightly better versus ranged enemies.", "_Glyph of Flow_ now grants +50% movespeed in water per level, up from +25%")
+                                + list("_Horn of Plenty_ now gains 2 levels from being fed a pasty, up from 1.5", "_Horn of Plenty_ now gains 4 levels from being fed a meat pie, up from 3"),
+                            "_Major Nerfs_:"
+                                    + "\n"
+                                    + list("_Round Shield_ blocking per level reduced to 0-1 from 0-2, base damage increased to 3-12 from 3-10", "_Greatshield_ blocking per level reduced to 0-2 from 0-3, base damage increased to 5-18 from 5-15")
+                                    + "\n"
+                                    + "_Wand of Corruption:_" + list("Corrupted enemies now die over 100 turns, down from 200", "Doomed bosses now take +67% damage, down from +100%",  "Battlemage corruption on-hit base proc rate reduced to 1/6 from 1/4")
+                                    + "\n"
+                                    + "_Wand of Regrowth:_" + list("Base charge limit increased to 20 from 8","Charge limit scaling substantially reduced at wand levels 4 to 9.")
+                                    + "\n"
+                                    + "_Chalice of Blood:_" + list("Prick damage increased by 5 at all levels","Now grants 1.15x-5x healing, down from 0x-10x")
+                                    + list("_Ethereal chains_ charge from gaining exp reduced by 40%"),
+                            "_Minor Nerfs_:"
+                                    + "\n"
+                                    + list(
+                                    "_Ring of Furor_ attack speed boost per level down to 9.05% from 10.5%", "_Ring of Evasion_ dodge boost per level down to 12.5% from 15%", "_Blocking_ enchantment now grants 2+item level shielding, down from max HP/10", "_Timekeeper's Hourglass_ sand bag cost up to 30 from 20", "_Alchemist's Toolkit_ now requires 6 energy per level, up from 5", "_Wand of Fireblast_ base damage reduced to 1-2 from 1-6 when spending 1 charge, and 2-8 from 2-12 when spending 2 charges. This is to offset the relatively high amount of DOT the wand deals at low levels.")),
+                    misc(
+                            "_Highlights:_" + list("The game now remembers if the player removes the waterskin from their quickslot right after starting a run", "The damage warning vfx now always interrupts the hero, regardless of any other factors", "The deadly misstep badge can now also be unlocked with disintegration traps", "Added metamorphosis effects to the two remaining talents that previously couldn't be gained by metamorphosis", "Desktop users can now toggle fullscreen with right-alt + enter", "Added a setting to enable/disable playing music in background on desktop", "Added a 5th games in progress slot for the Duelist","The changes screen now supports more text for a single entry. On mobile UI the changes window can now have multiple tabs, on full UI the changes pane on the right is now scrollable."),
+                            "_Effects:_" + list("Backup barrier now triggers before wand zaps fully resolve", "The chasm warning screen now also appears when levitation is about to end.", "Levitation now prevents damage from floor electricity during the DM-300 fight"),
+                            "_Hero, Allies, & Enemies:_" + list("The hero can now also self-trample plants, in addition to grass", "Ripper demons will now try to leap even if their destination is blocked by terrain", "Red Sentry attacks can now be dodged or blocked, but are very accurate.", "Knockback effects now round up after being halved vs. bosses"),
+                            "_Levelgen:_" + list("Adjusted the layout of sacrifice rooms to provide some cover from ranged enemies", "Secret rooms now never affect the generation of items in other rooms", "Items and Enemies can no longer spawn on the Wandmaker quest ritual marker."),
+                            "_Items:_" + list("Several artifacts now cancel invisibility when used", "Items no longer spawn on pitfall traps", "Ritual candles now light if they are placed correctly", "Item selectors now always open the main backpack if their preferred bag isn't present", "Quickslot contents are now automatically swapped if a newly equipped item that is not quickslotted replaces an item that was quickslotted. This should make weapon swapping gameplay smoother."),
+                            "_Misc:_" + list("Updated the icons for several talents", "Healing no longer interrupts resting when HP is already full", "Updated various code libraries", "Attacking an enemy now properly sets them as the auto-targeting target in all cases")),
+                    bugFixes(
+                            "_Highlights:_" + list("Various rare crash and freeze errors", "Softlocks caused by the warden using fadeleaf just as they start a boss fight", "Particle effects failing to appear in a bunch of rare cases", "AOE from gladiator's crush move invalidating Dwarf King's 'no weapons' badge", "Magic resistance being extremely effective against Grim traps at low HP", "Allies spawned by some armor abilities getting boosted stats during ascension", "One upgrade being lost when transferring class armor with a warrior's seal attached", "Transmuting a dried rose deleting any items held by the ghost", "Rare cases of hero stacking onto enemies when trying to swap positions with an ally", "Directable allies being easily distracted after being told to move", "Several on-kill effects incorrectly triggering when ghouls get downed"),
+                            "_Effects:_" + list("Lethal momentum not triggering on kills made via enchantment",
+                                    "Teleportation effects not being blocked by magic immunity",
+                                    "Barkskin not reducing damage from things like bombs or the chalice of blood",
+                                    "Some armor abilities not checking if targets are out of vision",
+                                    "Magical fire not clearing regular fire if they are on the same tile",
+                                    "Gladiator being able to riposte enemies who charmed him",
+                                    "Iron Stomach talent cancelling fall damage in rare cases",
+                                    "Time freeze causing various odd behaviour when triggering plants and traps",
+                                    "Rare cases of earthroot armor and hold fast working after movement",
+                                    "Volley ability not triggering lethal momentum"),
+                            "_Items:_" + list("Darts being lost in rare cases when tipped darts have bonus durability",  "Alchemist's Toolkit not triggering the enhanced rings talent", "Wand of fireblast rarely shooting great distances", "Wand of lightning rarely taking credit for hero deaths not caused by it", "Horn of plenty benefiting from artifact recharging much more than intended", "Shurikens still getting an instant attack after waiting", "Transmutation not turning artifacts into rings if all artifacts have been spawned", "Magic immunity not blocking use of shield battery, cursed artifact effects, or wand recharging", "Cursed items still blocking equipment slots when lost via ankh revive", "Antimagic not reducing damage from enchantments", "Rare cases where cloak of shadows wouldn't spend a charge on activation", "Disarming traps rarely teleporting weapons into chests or graves", "Blacksmith failing to take his pickaxe back in rare cases", "Various rare errors with blacksmith reforging and resin boosted wands"),
+                            "_Allies & Enemies:_" + list("DM-300 not using abilities in its first phase in specific situations", "DM-201s rarely lobbing grenades when they shouldn't", "DM-300's rockfall attack very rarely having no delay", "Tengu rarely throwing bombs into walls", "Soiled fist being able to see through shrouding fog", "Rare cases where the Imp's shop could appear without completing his quest", "Gladiator not gaining combo from attacking hiding mimics", "Demon spawners rapidly spawning ripper demons in very specific cases", "Fly swarms often not splitting during ascension challenge", "Rare cases where enemies couldn't be surprise attacked when in combat with allies", "Various rare errors with shock elemental electricity damage", "Evil eyes only resisting some disintegration effects", "Several rare issues with spinner web shooting", "Very rare cases where surprise attacks on mimics would fail", "Very rare pathfinding bugs with flying enemies"),
+                            "_UI/VFX:_" + list("Various minor audiovisual errors", "Various minor textual errors", "Items rarely disappearing when hotkeys are used to close the inventory", "Number display errors when device language is set to Arabic", "'i' being incorrectly uppercased to 'I' in Turkish", "Auras from champion enemies being visible in the fog of war for one frame", "Very rare cases where Goo attack particles behaved incorrectly", "VFX rarely not appearing on characters as they are spawned by multiplicity", "Damage warn vfx not accounting for hunger ignoring shielding", "Cases where very fast heroes would cause landmarks to not be recorded", "No error message being given when the mage uses elemental blast without a staff"),
+                            "_v2.0.1:_" + list("Various UI bugs caused by pressing multiple buttons simultaneously", "Noisemakers being visually defusable after trigger but not exploding", "Noisemakers being collectable in some cases after triggering","Damage/Stun from blastwave knockback applying to downed ghouls","Even more cases of particle effects sometimes failing to appear", "Projecting champions with ranged attacks refusing to melee from a distance in some cases","Life Link sometimes persisting for longer than intended during Dwarf King fight", "Various rare UI bugs")
+                    )
+            ),
+            new ChangeInfo("From SHPD v1.4", false, SHPX_COLOR,
+                    new ChangeButton(new ItemSprite(ARTIFACT_SANDALS), "Equipment",
+                        "_Footwear of Nature_:"+list("Footwear of Nature has been redesigned to to use the effect of the most recently fed seed", "Amount of extra seeds and dew reduced", "One additional seed is required per level")
+                        +"\n_Enchantments and Curses_:" + list(
+                                "Blocking has been redesigned to grant a large amount of shield with a small proc chance, as opposed to always giving a small amount of shield",
+                                "Annoying curse buffed, now has additional lines")
+                        +"\n_Ring of Wealth_:" + list("Now gives a rare drop every 0-20 kills, up from 0-25", "Now gives an equipment drop every 5-10 rare drops, down from every 4-8", "Equipment drops are now guaranteed to be at least level 1/2/3/4/5/6 at ring level 1/3/5/7/9/11, up from 1/3/6/10/15/21", "Level for equipment drops is now based on the most upgraded equipped wealth ring, and a second one can only boost the level by another +1 at most.")
+                        + "\n_Misc_:"+list("Wand of Transfusion damage vs undead scaling doubled (1-2, up from 0.5-1)","Telekinetic grab now grabs all items stuck at a location or stuck to an enemy, rather than just the first one","Scroll of Antimagic now suppresses the positive effects of rings and artifacts while it is applied to the hero")
+                    ),
+                    misc(
+                            "_Highlights_:" + list( "Desktop and mobile landscape users will now see a new hero select screen that makes better use of screen real-estate","Daily runs can now be replayed", "Buff bar now condenses itself if many buffs are visible at once. This raises the limit of on-screen buffs to 15."),
+                            "_Hero Actions_:" + list("Waiting always takes exactly 1 turn regardless of hero speed", "Grass the hero is standing on can now be trampled by selecting the hero's position", "Hero now pauses before using stairs if enemies are nearby"),
+                            "_Items_:" + list("Wand of Disintegration no longer harms undiscovered neutral characters", "Blooming enchant now attempts to avoid placing grass on the hero", "The scroll holder now can hold arcane resin", "Rotberry plant now gives a small puff of toxic gas when trampled", "Plants now trigger after time freeze ends, just like traps"),
+                            "_Allies and Enemies_:" + list("Improved behavior of ally AI when told to hold a position", "Goo's pump up attack now always gives the hero at least one action to react", "DM-300 now knocks back during rockfall even if hero is 1 tile away", "Slightly adjusted enemy stats on ascension to smooth out difficulty"),
+                            "_UI/VFX_:" + list("Throwing weapons now show their quantity in orange when one is about to break", "Item boosts from potion of mastery or curse infusion now change the color of text in that item's item slot", "Various minor UI improvements to hero select and rankings", "Added sacrificial fire and demon spawners to the landmarks page", "Added some ascension dialogue for the ghost hero", "Slightly improved the marsupial rat attacking animation", "Improved chains VFX, especially for prison guards", "Added lullaby vfx to sthe stone of deep sleep"),
+                            "_Rankings_:" + list("Clarified description for boss score in rankings", "Yog's laser now deducts score even if the hero dodges it", "Goo no longer deducts score by healing in water"),
+                            "_Levelgen_:" + list("Items and enemies can no longer spawn in aquarium room water", "Improved room merging logic in a few specific situations"),
+                            "_Controls_:" + list("Added a copy and paste button to text input windows", "Adjusted default controller bindings slightly", "The 'switch enemy' keybind also switches tabs on tabbed windows","On desktop, the game now attempts to keep mouse and controller pointer actions in sync", "Added a setting to adjust camera follow intensity", "The controller pointer can now pan the game camera"/*, "Heroes can now be renamed individually"*/)
+                    ),
+                    // fixme for whatever reason this doesn't work with the tabbed form. The breaking part is the items section. I've instead used the old scrolling style here but it could pop up elsewhere.
+                    bugFixes(
+                            "_Highlights:_" + list("Victory and Champion badges not being awarded in some cases", "Various rare crash and hang bugs", "Various minor visual/textual errors")
+                                    +"\n"+
+                                    "_Allies & Enemies:_" + list("Characters rarely managing to enter eternal fire", "Summons from guardian traps counting as regular statues in some cases", "Rare cases where ranged allies would refuse to target nearby enemies", "Various rare cases where characters might stack on each other", "Albino Rats causing bleed when hitting for 0 damage", "Necromancers being able to summon through crystal doors", "Giant necromancers summoning skeletons into doorways", "Goo immediately using pump up attack if previous pump up attack was interrupted by sleep")
+                                    + "\n" +
+                            "_Items:_" + list("Honeypots not reacting correctly to being teleported", "Rare cases where lost inventory and items on stairs could softlock the game", "Hero armor transferring rarely deleting the warrior's broken seal", "Scrolls of Mirror Image not identifying in rare cases", "Various incorrect interactions between kinetic/viscosity and damage mitigating effects", "Wand of Fireblast sometimes not igniting adjacent items or barricades", "Ring of Furor not affecting Sniper specials", "Cursed rings of force still heavily buffing melee attacks", "Armband not breaking invisibility", "Various quirks with charge spending on timekeeper's hourglass", "Stones of Aggression working more effectively than intended", "Chalice of Blood benefiting from recharging when the hero is starving", "Cases where explosive curse would create explosions at the wrong location", "Cases where spellbook could generate scrolls of lullaby", "Heavy boomerangs getting an accuracy penalty when returning", "Rare consistency errors in potion of might buff description", "Death to aqua blast counting as death to geyser trap", "Reading spellbook not spending a turn if the scroll was cancelled", "Screen orientation changes cancelling scroll of enchantment", "Magical infusion incorrectly clearing curses on wands and rings", "Multiplicity glyph rarely duplicating NPCs", "Rare cases where potion of healing-related talents wouldn't trigger", "Cursed horn of plenty affecting non-food items", "Being able to self-target with cursed wands in rare cases", "Some thrown weapons triggering traps as Tengu jumps", "Magic resistance not applying to some cursed wand effects")
+                                    +"\n"+
+                            "_Effects:_" + list("Invisibility effects not working when applied to enemies", "Rare cases where giant enemies couldn't attack", "Ratmogrify incorrectly clearing enemy champion buffs", "Exploits where gladiator could build combo on ally characters", "Cases where piranhas could live for a turn on land", "Errors with wild magic and flurry with regard to knockback effects", "Magical sight not making the hero immune to blindness", "Knockback effects paralyzing dead characters", "Caves boss area not displacing all items on the tile that caves in", "Recharging effects sometimes getting an extra action on game load", "Exploits during ascension challenge that let players still use shops", "Elastic and battlemage blast wave on-hit conflicting with each other")
+                                    +"\n"+
+                            "_Misc:_" + list("Dailies using seeds that are also user-enterable", "Confusing text when a weapon or armor is partly uncursed", "'No Weapons in His Presence' badge not stating that the ring of force counts as a weapon", "Various cases where the friendly fire badge was not being awarded", "Controller axis mapping issues on Android", "Various rare fog of war errors when the hero is knocked a high distance", "Rare cases where items would not correctly appear in the rankings scene", "Prizes from sacrifice rooms not always being the same with the same dungeon seed", "Rare crashes with the radial inventory selector", "Boss health bar not appearing in rare cases", "Buff icons sometimes going outside of character info windows", "Death by necromancer summoning damage not producing a record in rankings", "Some users seeing rankings dates in local formats, instead of international")
+                    ))
+        },
+        { // v1.0.0
             new ChangeInfo("v1.0.0",true,TITLE_COLOR,
-                    info(Messages.get(this, "100")),
+                    info(Messages.get(RKPD2Changes.class, "100")),
                     new ChangeButton(new ItemSprite(ItemSpriteSheet.SHORTSWORD, new ItemSprite.Glowing(0x000000)), "New Curse!", "In addition to the new curses added in Shattered v1.3, I've added an RKPD2-exclusive curse:\n\n_Chaotic_ weapons will usually roll a random weapon curse on hit, but every once in a while it'll roll a wand curse!"),
                     new ChangeButton(new ItemSprite(CLEANSING_DART), "Vetoed Sleep Dart Removal",
                             "In Shattered v1.2, Evan came up with the brilliant idea of nerfing _sleep darts_ into the ground. To avoid suspicion, he also made _dreamfoil_ unable to inflict magical sleep, so as to appear to be fair."
@@ -449,56 +418,12 @@ public class RKPD2Changes {
                 )
             )
         },
-            {
-                    new ChangeInfo("1.4.14", true, TITLE_COLOR, "Renamed from DLC into Rat King Adventure (RKA)",
-                            bugFixes(list(
-                                    "Fixed Homing Boomerang hitting invulnerable targets.",
-                                    "Fixed the depth 25 duplication and item duplication glitches connected it.",
-                                    "Fixed Domain of Hell bugs, added Aqua Blasts for each depth.",
-                                    "Fixed Rat King's Battlemage form crashes.",
-                                    "Fixed glitches connected to RK boss badge.",
-                                    "Fixed Scout's Barrier having old Nature's Aid effect.",
-                                    "Fixed targeted cell VFX."))
-                    ),
-                    new ChangeInfo("DLC-1.4.1X", true, TITLE_COLOR, "",
-                            new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "RKPD Changes",
-                                    list(2,
-                                            "Successfully ported RKPD2 0.3.0. Have fun with metamorph!")),
-                            new ChangeButton(new ItemSprite(KROMER_CROWN), "Second subclass",
-                                    "_-_ You can sacrifice DK's crown to get a second subclass instead of armor ability.\n\n" +
-                                            "_-_ Some subclasses are blacklisted and 3 are randomly chosen."),
-                            new ChangeButton(new ItemSprite(KROMER_MASK), "Second class",
-                                    "_-_ You can use Tengu's mask with kromer to get a second class instead of subclass.\n\n" +
-                                            "_-_ 2 are randomly chosen."),
-                            misc(list(
-                                    "Arcane Resin has no limit for level.",
-                                    "Nerfed Protein Infusion by 33%.",
-                                    "Nerfed Trapper's Mastery: no longer reclaims traps, decreased cooldown to compensate.",
-                                    "Kromer follows the same rules as Scroll of Metamorphosis.",
-                                    "Doubled Big Rush's bonus damage, but made it roll from 0 to value.",
-                                    "t4 hero-specific talents are listed ahead of armor ability talents and can be metamorphed.",
-                                    "Buffed Durable Projectiles by a 25%.",
-                                    "Added brawler special to Spirit and Kromer bows.",
-                                    "Shadowflare has unique sprites for each class.",
-                                    "Added anticheese to Kromer Crown.")),
-                            bugFixes(list( "Fixed Abyssal Nightmare crashes.",
-                                    "Fixed Domain of Hell crashes.",
-                                    "Fixed certain special action crashes.",
-                                    "Fixed Shadow Clone crashes.",
-                                    "Fixed crash related to In My Memories",
-                                    "Fixed crash with Shadowflare",
-                                    "Fixed crash with Terminus Blade's transmutation.",
-                                    "Fixed crash with Studded Gloves's brawler special.",
-                                    "Fixed missing items on Unenchanted.",
-                                    "Fixed 0 HP enemies on Crowd Diversity.",
-                                    "Fixed Archery Mark crashes.",
-                                    "Fixed old toolkit limitation on enemy presence for Soul of Yendor."))
-                    ),
-            },
+    }),
+    v0(() -> new ChangeInfo[][]{
         { // v0.3
             new ChangeInfo("v0.3",true, TITLE_COLOR),
             NewContent(
-                info(Messages.get(this, "030")), // trying something different with this.
+                info(Messages.get(RKPD2Changes.class, "030")), // trying something different with this.
                 new ChangeButton(new ItemSprite(ARMOR_RAT_KING), "New Rat King Armor Ability!", "_Omni-Ability_ is an armor ability generator. Every time you use it, it will generate a new armor ability for you to use out of the existing ones. It's currently a tad unwieldy (especially with abilities that summon things) and more than a little bit confusing, but it should finally give Rat King what many have been waiting for: access to every armor ability without exception in one slot!")
             ),
             new ChangeInfo("From SHPD v1.1", false, SHPX_COLOR, "",
@@ -1123,5 +1048,78 @@ public class RKPD2Changes {
                             + "\nHowever, since I only know English and do not have an active translation project, I've set the language to English. Sorry!"));
                 }}
         },
-    };
+    });
+
+    private final ChangeLog changes;
+    RKPD2Changes(ChangeLog changes) { this.changes = changes; }
+
+    public void addAllChanges(ArrayList<ChangeInfo> changeInfos) {
+        for (ChangeInfo[] section : changes.getChanges()) changeInfos.addAll(asList(section));
+    }
+
+    // utility
+    private static ChangeButton bugFixes(String... messages) {
+        return new ChangeButton(new Image(Assets.Sprites.SPINNER, 144, 0, 16, 16), get(ChangesScene.class, "bugfixes"), messages);
+    }
+
+    private static ChangeButton misc(String... messages) {
+        return new ChangeButton(get(PREFS), get(ChangesScene.class, "misc"), messages);
+    }
+
+    // section types
+    private static ChangeInfo NewContent(ChangeButton... buttons) {
+        return new ChangeInfo(
+                Messages.get(ChangesScene.class, "new"),
+                false, TITLE_COLOR,
+                "",
+                buttons);
+    }
+
+    private static ChangeInfo Buffs(ChangeButton... buttons) {
+        return new ChangeInfo(
+                Messages.get(ChangesScene.class, "buffs"),
+                false, POSITIVE,
+                "",
+                buttons);
+    }
+
+    private static ChangeInfo Changes(ChangeButton... buttons) {
+        return new ChangeInfo(
+                Messages.get(ChangesScene.class, "changes"),
+                false, WARNING, "",
+                buttons);
+    }
+
+    private static ChangeInfo Nerfs(ChangeButton... buttons) {
+        return new ChangeInfo(
+                Messages.get(ChangesScene.class, "nerfs"),
+                false, NEGATIVE,
+                "",
+                buttons);
+    }
+
+    private static ChangeButton info(String message) {
+        return new ChangeButton(get(INFO), "Developer Commentary", message);
+    }
+
+    // more utils
+
+    /**
+     * makes a list in the standard PD style.
+     * [lineSpace] determines the number of spaces between each list item.
+     * If you want to append extra spaces, you should do it at the end of the previous item, rather than at the start of that item.
+     */
+    private static String list(String... items) {
+        return list(1, items);
+    }
+
+    private static String list(int lineSpace, String... items) {
+        StringBuilder builder = new StringBuilder();
+        for (int j = 0; j < lineSpace; j++) builder.append('\n');
+        for (String item : items) {
+            builder.append("_-_ ").append(item);
+            for (int j = 0; j < lineSpace; j++) builder.append('\n');
+        }
+        return builder.toString();
+    }
 }

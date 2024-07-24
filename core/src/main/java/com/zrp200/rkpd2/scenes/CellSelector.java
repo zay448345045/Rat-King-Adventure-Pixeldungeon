@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ScrollArea;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Signal;
 import com.zrp200.rkpd2.Dungeon;
@@ -177,7 +178,7 @@ public class CellSelector extends ScrollArea {
 	
 	@Override
 	protected void onPointerDown( PointerEvent event ) {
-
+		camera.edgeScroll.set(-1);
 		if (event != curEvent && another == null) {
 					
 			if (curEvent.type == PointerEvent.Type.UP) {
@@ -200,6 +201,7 @@ public class CellSelector extends ScrollArea {
 	
 	@Override
 	protected void onPointerUp( PointerEvent event ) {
+		camera.edgeScroll.set(1);
 		if (pinching && (event == curEvent || event == another)) {
 			
 			pinching = false;
@@ -325,7 +327,7 @@ public class CellSelector extends ScrollArea {
 					heldDelay = initialDelay();
 				}
 
-			} else if (directionFromAction(action) != 0) {
+			} else if (!directionFromAction(action).isZero()) {
 
 				Dungeon.hero.resting = false;
 				lastCellMoved = -1;
@@ -340,7 +342,7 @@ public class CellSelector extends ScrollArea {
 				}
 
 				return true;
-			} else if (Dungeon.hero.resting){
+			} else if (Dungeon.hero != null && Dungeon.hero.resting){
 				Dungeon.hero.resting = false;
 				return true;
 			}
@@ -392,10 +394,18 @@ public class CellSelector extends ScrollArea {
 			return false;
 		}
 
-		int cell = Dungeon.hero.pos;
-		for (GameAction action : actions) {
-			cell += directionFromAction(action);
+		if (GameScene.cancelCellSelector()){
+			return false;
 		}
+
+		Point direction = new Point();
+		for (GameAction action : actions) {
+			direction.offset(directionFromAction(action));
+		}
+		int cell = Dungeon.hero.pos;
+		//clamp to adjacent values (-1 to +1)
+		cell += GameMath.gate(-1, direction.x, +1);
+		cell += GameMath.gate(-1, direction.y, +1) * Dungeon.level.width();
 
 		if (cell != Dungeon.hero.pos && cell != lastCellMoved){
 			lastCellMoved = cell;
@@ -410,16 +420,16 @@ public class CellSelector extends ScrollArea {
 
 	}
 
-	private int directionFromAction(GameAction action){
-		if (action == SPDAction.N)  return -Dungeon.level.width();
-		if (action == SPDAction.NE) return +1-Dungeon.level.width();
-		if (action == SPDAction.E)  return +1;
-		if (action == SPDAction.SE) return +1+Dungeon.level.width();
-		if (action == SPDAction.S)  return +Dungeon.level.width();
-		if (action == SPDAction.SW) return -1+Dungeon.level.width();
-		if (action == SPDAction.W)  return -1;
-		if (action == SPDAction.NW) return -1-Dungeon.level.width();
-		else                        return 0;
+	private Point directionFromAction(GameAction action){
+		if (action == SPDAction.N)  return new Point( 0, -1);
+		if (action == SPDAction.NE) return new Point(+1, -1);
+		if (action == SPDAction.E)  return new Point(+1,  0);
+		if (action == SPDAction.SE) return new Point(+1, +1);
+		if (action == SPDAction.S)  return new Point( 0, +1);
+		if (action == SPDAction.SW) return new Point(-1, +1);;
+		if (action == SPDAction.W)  return new Point(-1,  0);
+		if (action == SPDAction.NW) return new Point(-1, -1);
+		else                        return new Point();
 	}
 
 	//~80% deadzone
@@ -450,13 +460,13 @@ public class CellSelector extends ScrollArea {
 
 	public void processKeyHold() {
 		//prioritize moving by controller stick over moving via keys
-		if (directionFromAction(leftStickAction) != 0 && heldDelay < 0) {
+		if (!directionFromAction(leftStickAction).isZero() && heldDelay < 0) {
 			enabled = Dungeon.hero.ready = true;
 			Dungeon.observe();
 			if (moveFromActions(leftStickAction)) {
 				Dungeon.hero.ready = false;
 			}
-		} else if (directionFromAction(heldAction1) + directionFromAction(heldAction2) != 0
+		} else if (!(directionFromAction(heldAction1).offset(directionFromAction(heldAction2)).isZero())
 				&& heldDelay <= 0){
 			enabled = Dungeon.hero.ready = true;
 			Dungeon.observe();

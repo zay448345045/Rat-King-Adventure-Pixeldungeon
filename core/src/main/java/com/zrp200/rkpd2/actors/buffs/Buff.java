@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,10 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
-import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class Buff extends Actor {
@@ -75,7 +76,7 @@ public class Buff extends Actor {
 
 	// used during restoring, when true, is not attached afterwards.
 	public boolean attachAfterRestore = true;
-	
+
 	public boolean attachTo( Char target ) {
 
 		if (target.isImmune( getClass() )) {
@@ -83,9 +84,8 @@ public class Buff extends Actor {
 		}
 		
 		this.target = target;
-		target.add( this );
 
-		if (target.buffs().contains(this)){
+		if (target.add( this )){
 			if (target.sprite != null) fx( true );
 			return true;
 		} else {
@@ -95,8 +95,7 @@ public class Buff extends Actor {
 	}
 	
 	public void detach() {
-		if (target.sprite != null) fx( false );
-		target.remove( this );
+		if (target.remove( this ) && target.sprite != null) fx( false );
 	}
 	
 	@Override
@@ -134,11 +133,20 @@ public class Buff extends Actor {
 	}
 
 	public String heroMessage(){
-		return null;
+		String msg = Messages.get(this, "heromsg");
+		if (msg.isEmpty()) {
+			return null;
+		} else {
+			return msg;
+		}
+	}
+
+	public String name() {
+		return Messages.get(this, "name");
 	}
 
 	@Override public String toString() {
-		String name = Messages.get(this, "name");
+		String name = name();
 		//noinspection StringEquality
         if (name != Messages.NO_TEXT_FOUND) {
 			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
@@ -157,7 +165,7 @@ public class Buff extends Actor {
 
 	//to handle the common case of showing how many turns are remaining in a buff description.
 	protected String dispTurns(float input){
-		return new DecimalFormat("#.##").format(input);
+		return Messages.decimalFormat("#.##", input);
 	}
 
 	//buffs act after the hero, so it is often useful to use cooldown+1 when display buff time remaining

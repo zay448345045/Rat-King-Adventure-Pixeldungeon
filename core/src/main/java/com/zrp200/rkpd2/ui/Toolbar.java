@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,11 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Point;
 import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.HoldFast;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.hero.Belongings;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.messages.Messages;
@@ -105,7 +108,7 @@ public class Toolbar extends Component {
 					return;
 				}
 
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 
 					String[] slotNames = new String[6];
 					Image[] slotIcons = new Image[6];
@@ -113,7 +116,7 @@ public class Toolbar extends Component {
 						Item item = Dungeon.quickslot.getItem(i);
 
 						if (item != null && !Dungeon.quickslot.isPlaceholder(i) &&
-								(Dungeon.hero.buff(LostInventory.class) == null || item.keptThoughLostInvent)){
+								(Dungeon.hero.buff(LostInventory.class) == null || item.keptThroughLostInventory())){
 							slotNames[i] = Messages.titleCase(item.name());
 							slotIcons[i] = new ItemSprite(item);
 						} else {
@@ -133,13 +136,13 @@ public class Toolbar extends Component {
 						info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.BACK, false)) + ": " + Messages.get(Toolbar.class, "quickslot_cancel");
 					}
 
-					GameScene.show(new RadialMenu(Messages.get(Toolbar.class, "quickslot_prompt"), info, slotNames, slotIcons) {
+					Game.scene().addToFront(new RadialMenu(Messages.get(Toolbar.class, "quickslot_prompt"), info, slotNames, slotIcons) {
 						@Override
 						public void onSelect(int idx, boolean alt) {
 							Item item = Dungeon.quickslot.getItem(idx);
 
 							if (item == null || Dungeon.quickslot.isPlaceholder(idx)
-									|| (Dungeon.hero.buff(LostInventory.class) != null && !item.keptThoughLostInvent)
+									|| (Dungeon.hero.buff(LostInventory.class) != null && !item.keptThroughLostInventory())
 									|| alt){
 								//TODO would be nice to use a radial menu for this too
 								// Also a bunch of code could be moved out of here into subclasses of RadialMenu
@@ -151,14 +154,13 @@ public class Toolbar extends Component {
 
 									@Override
 									public boolean itemSelectable(Item item) {
-										return item.defaultAction != null;
+										return item.defaultAction() != null;
 									}
 
 									@Override
 									public void onSelect(Item item) {
 										if (item != null) {
-											Dungeon.quickslot.setSlot( idx , item );
-											QuickSlotButton.refresh();
+											QuickSlotButton.set(idx, item);
 										}
 									}
 								});
@@ -185,7 +187,7 @@ public class Toolbar extends Component {
 		add(btnWait = new Tool(24, 0, 20, 26) {
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null &&  Dungeon.hero.ready && !GameScene.cancel()) {
 					examining = false;
 					Dungeon.hero.rest(false);
 				}
@@ -207,19 +209,20 @@ public class Toolbar extends Component {
 			}
 
 			protected boolean onLongClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 					examining = false;
 					Dungeon.hero.rest(true);
 				}
 				return true;
 			}
 		});
+		btnWait.icon( 176, 0, 16, 16 );
 
 		//hidden button for rest keybind
 		add(new Button(){
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 					examining = false;
 					Dungeon.hero.rest(true);
 				}
@@ -236,9 +239,17 @@ public class Toolbar extends Component {
 		add(new Button(){
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
-					if (Dungeon.level.heaps.get(Dungeon.hero.pos) != null
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
+					Dungeon.hero.waitOrPickup = true;
+					if ((Dungeon.level.heaps.get(Dungeon.hero.pos) != null || Dungeon.hero.canSelfTrample())
 						&& Dungeon.hero.handle(Dungeon.hero.pos)){
+						//trigger hold fast and patient strike here, even if the hero didn't specifically wait
+						if (Dungeon.hero.hasTalent(Talent.HOLD_FAST)){
+							Buff.affect(Dungeon.hero, HoldFast.class).pos = Dungeon.hero.pos;
+						}
+						if (Dungeon.hero.hasTalent(Talent.PATIENT_STRIKE)){
+							Buff.affect(Dungeon.hero, Talent.PatientStrikeTracker.class).pos = Dungeon.hero.pos;
+						}
 						Dungeon.hero.next();
 					} else {
 						examining = false;
@@ -248,7 +259,7 @@ public class Toolbar extends Component {
 			}
 
 			protected boolean onLongClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 					examining = false;
 					Dungeon.hero.rest(true);
 				}
@@ -265,7 +276,7 @@ public class Toolbar extends Component {
 		add(btnSearch = new Tool(44, 0, 20, 26) {
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready) {
+				if (Dungeon.hero != null && Dungeon.hero.ready) {
 					if (!examining && !GameScene.cancel()) {
 						GameScene.selectCell(informer);
 						examining = true;
@@ -292,7 +303,8 @@ public class Toolbar extends Component {
 				return true;
 			}
 		});
-		
+		btnSearch.icon( 192, 0, 16, 16 );
+
 		add(btnInventory = new Tool(0, 0, 24, 26) {
 			private CurrencyIndicator ind;
 
@@ -300,7 +312,7 @@ public class Toolbar extends Component {
 
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready || !Dungeon.hero.isAlive()) {
+				if (Dungeon.hero != null && (Dungeon.hero.ready || !Dungeon.hero.isAlive())) {
 					if (SPDSettings.interfaceSize() == 2) {
 						GameScene.toggleInvPane();
 					} else {
@@ -349,18 +361,28 @@ public class Toolbar extends Component {
 			protected void layout() {
 				super.layout();
 				ind.fill(this);
+				bringToFront(ind);
 
 				arrow.x = left() + (width - arrow.width())/2;
 				arrow.y = bottom()-arrow.height-1;
 				arrow.angle = bottom() == camera().height ? 0 : 180;
 			}
+
+			@Override
+			public void enable(boolean value) {
+				if (value != active){
+					arrow.alpha( value ? 1f : 0.4f );
+				}
+				super.enable(value);
+			}
 		});
+		btnInventory.icon( 160, 0, 16, 16 );
 
 		//hidden button for inventory selector keybind
 		add(new Button(){
 			@Override
 			protected void onClick() {
-				if (Dungeon.hero.ready && !GameScene.cancel()) {
+				if (Dungeon.hero != null && Dungeon.hero.ready && !GameScene.cancel()) {
 					ArrayList<Bag> bags = Dungeon.hero.belongings.getBags();
 					String[] names = new String[bags.size()];
 					Image[] images = new Image[bags.size()];
@@ -377,7 +399,7 @@ public class Toolbar extends Component {
 						info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.BACK, false)) + ": " + Messages.get(Toolbar.class, "container_cancel");
 					}
 
-					GameScene.show(new RadialMenu(Messages.get(Toolbar.class, "container_prompt"), info, names, images){
+					Game.scene().addToFront(new RadialMenu(Messages.get(Toolbar.class, "container_prompt"), info, names, images){
 						@Override
 						public void onSelect(int idx, boolean alt) {
 							super.onSelect(idx, alt);
@@ -386,7 +408,7 @@ public class Toolbar extends Component {
 
 							for(Item i : bag.items){
 								if (i instanceof Bag) items.remove(i);
-								if (Dungeon.hero.buff(LostInventory.class) != null && !i.keptThoughLostInvent) items.remove(i);
+								if (Dungeon.hero.buff(LostInventory.class) != null && !i.keptThroughLostInventory()) items.remove(i);
 							}
 
 							if (idx == 0){
@@ -414,24 +436,22 @@ public class Toolbar extends Component {
 							if (ControllerHandler.controllerActive){
 								info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.LEFT_CLICK, true)) + ": " + Messages.get(Toolbar.class, "item_select") + "\n";
 								info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.RIGHT_CLICK, true)) + ": " + Messages.get(Toolbar.class, "item_use") + "\n";
-								info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.BACK, false)) + ": " + Messages.get(Toolbar.class, "item_cancel");
+								info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.BACK, true)) + ": " + Messages.get(Toolbar.class, "item_cancel");
 							} else {
 								info += Messages.get(WndKeyBindings.class, SPDAction.LEFT_CLICK.name()) + ": " + Messages.get(Toolbar.class, "item_select") + "\n";
 								info += Messages.get(WndKeyBindings.class, SPDAction.RIGHT_CLICK.name()) + ": " + Messages.get(Toolbar.class, "item_use") + "\n";
 								info += KeyBindings.getKeyName(KeyBindings.getFirstKeyForAction(GameAction.BACK, false)) + ": " + Messages.get(Toolbar.class, "item_cancel");
 							}
 
-							GameScene.show(new RadialMenu(Messages.get(Toolbar.class, "item_prompt"), info, itemNames, itemIcons){
+							Game.scene().addToFront(new RadialMenu(Messages.get(Toolbar.class, "item_prompt"), info, itemNames, itemIcons){
 								@Override
 								public void onSelect(int idx, boolean alt) {
 									super.onSelect(idx, alt);
 									Item item = items.get(idx);
-									if (alt && item.defaultAction != null) {
+									if (alt && item.defaultAction() != null) {
 										item.execute(Dungeon.hero);
-										if (item.usesTargeting) {
-											QuickSlotButton.useTargeting(idx);
-										}
 									} else {
+										InventoryPane.clearTargetingSlot();
 										Game.scene().addToFront(new WndUseItem(null, item));
 									}
 								}
@@ -466,10 +486,12 @@ public class Toolbar extends Component {
 			startingSlot = swappedQuickslots ? 3 : 0;
 			btnSwap.visible = true;
 			btnSwap.active = lastEnabled;
+			QuickSlotButton.lastVisible = 6;
 		} else {
 			startingSlot = 0;
 			btnSwap.visible = btnSwap.active = false;
 			btnSwap.setPos(0, PixelScene.uiCamera.height);
+			QuickSlotButton.lastVisible = quickslotsToShow;
 		}
 		int endingSlot = startingSlot+quickslotsToShow-1;
 
@@ -625,7 +647,17 @@ public class Toolbar extends Component {
 			btnInventory.enable(true);
 		}
 	}
-	
+
+	public void alpha( float value ){
+		btnWait.alpha( value );
+		btnSearch.alpha( value );
+		btnInventory.alpha( value );
+		for (QuickslotTool tool : btnQuick){
+			tool.alpha(value);
+		}
+		btnSwap.alpha( value );
+	}
+
 	public void pickup( Item item, int cell ) {
 		pickedUp.reset( item,
 			cell,
@@ -652,7 +684,8 @@ public class Toolbar extends Component {
 		private static final int BGCOLOR = 0x7B8073;
 		
 		private Image base;
-		
+		private Image icon;
+
 		public Tool( int x, int y, int width, int height ) {
 			super();
 
@@ -666,7 +699,14 @@ public class Toolbar extends Component {
 			this.width = width;
 			this.height = height;
 		}
-		
+
+		public void icon( int x, int y, int width, int height){
+			if (icon == null) icon = new Image( Assets.Interfaces.TOOLBAR );
+			add(icon);
+
+			icon.frame( x, y, width, height);
+		}
+
 		@Override
 		protected void createChildren() {
 			super.createChildren();
@@ -681,8 +721,18 @@ public class Toolbar extends Component {
 			
 			base.x = x;
 			base.y = y;
+
+			if (icon != null){
+				icon.x = x + (width()- icon.width())/2f;
+				icon.y = y + (height()- icon.height())/2f;
+			}
 		}
-		
+
+		public void alpha( float value ){
+			base.alpha(value);
+			if (icon != null) icon.alpha(value);
+		}
+
 		@Override
 		protected void onPointerDown() {
 			base.brightness( 1.4f );
@@ -699,11 +749,7 @@ public class Toolbar extends Component {
 		
 		public void enable( boolean value ) {
 			if (value != active) {
-				if (value) {
-					base.resetColor();
-				} else {
-					base.tint( BGCOLOR, 0.7f );
-				}
+				if (icon != null) icon.alpha( value ? 1f : 0.4f);
 				active = value;
 			}
 		}
@@ -734,7 +780,11 @@ public class Toolbar extends Component {
 			slot.setRect( x, y, width, height );
 			slot.slotMargins(borderLeft, 2, borderRight, 2);
 		}
-
+@Override
+		public void alpha(float value) {
+			super.alpha(value);
+			slot.alpha(value);
+		}
 		@Override
 		public void enable( boolean value ) {
 			super.enable( value && visible );
@@ -834,6 +884,14 @@ public class Toolbar extends Component {
 		protected void layout() {
 			super.layout();
 			updateVisuals();
+		}
+
+		@Override
+		public void alpha(float value) {
+			super.alpha(value);
+			for (Image im : icons){
+				if (im != null) im.alpha(value);
+			}
 		}
 
 		@Override

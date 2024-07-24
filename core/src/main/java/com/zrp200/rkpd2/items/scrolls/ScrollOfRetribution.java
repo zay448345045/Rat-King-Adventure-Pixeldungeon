@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,13 @@ import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Weakness;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+
+import java.util.ArrayList;
 
 public class ScrollOfRetribution extends Scroll {
 
@@ -39,7 +43,8 @@ public class ScrollOfRetribution extends Scroll {
 	
 	@Override
 	public void doRead() {
-		
+
+		detach(curUser.belongings.backpack);
 		GameScene.flash( 0x80FFFFFF );
 		
 		//scales from 0x to 1x power, maxing at ~10% HP
@@ -47,14 +52,22 @@ public class ScrollOfRetribution extends Scroll {
 		float power = Math.min( 4f, 4.45f*hpPercent);
 		
 		Sample.INSTANCE.play( Assets.Sounds.BLAST );
-		
+		GLog.i(Messages.get(this, "blast"));
+
+		ArrayList<Mob> targets = new ArrayList<>();
+
+		//calculate targets first, in case damaging/blinding a target affects hero vision
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (Dungeon.level.heroFOV[mob.pos]) {
-				//deals 10%HT, plus 0-90%HP based on scaling
-				mob.damage(Math.round(mob.HT/10f + (mob.HP * power * 0.225f)), this);
-				if (mob.isAlive()) {
-					Buff.prolong(mob, Blindness.class, Blindness.DURATION);
-				}
+				targets.add(mob);
+			}
+		}
+
+		for (Mob mob : targets){
+			//deals 10%HT, plus 0-90%HP based on scaling
+			mob.damage(Math.round(mob.HT/10f + (mob.HP * power * 0.225f)), this);
+			if (mob.isAlive()) {
+				Buff.prolong(mob, Blindness.class, Blindness.DURATION);
 			}
 		}
 		

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.windows;
 
 import com.watabou.utils.Callback;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.Icons;
@@ -37,7 +38,10 @@ public class WndInfoTalent extends WndTitledMessage {
 		    new TalentIcon( talent ),
 		    Messages.titleCase(talent.title() + (points > 0 ? " +" + points: "")),
 		    talent.desc((buttonCallback != null && buttonCallback.metamorphDesc()) ||
-		        (hero != null && hero.metamorphedTalents.containsValue(talent))),
+					hero != null && (hero.metamorphedTalents.containsValue(talent)
+							|| hero.heroClass == HeroClass.RAT_KING
+								// Rat King currently doesn't have duelist implemented
+								&& !talent.isClassTalent(HeroClass.DUELIST))),
             WIDTH_MIN );
 
 		if (buttonCallback != null) {

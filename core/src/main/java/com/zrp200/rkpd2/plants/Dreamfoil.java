@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,8 +49,17 @@ public class Dreamfoil extends Plant {
 			Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
 		}
 
-		GLog.i( Messages.get(this, "refreshed") );
-		PotionOfHealing.cure(ch);
+		if (ch != null) {
+			if (ch instanceof Mob) {
+				Buff.affect(ch, MagicalSleep.class);
+			} else if (ch instanceof Hero) {
+				GLog.i( Messages.get(this, "refreshed") );
+
+				if (((Hero)ch).subClass.is(HeroSubClass.WARDEN)){
+					Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
+				}
+			}
+		}
 	}
 
 	public static class Seed extends Plant.Seed {

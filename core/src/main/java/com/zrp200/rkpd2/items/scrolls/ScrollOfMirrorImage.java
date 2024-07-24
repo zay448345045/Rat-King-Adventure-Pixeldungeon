@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,16 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -48,11 +51,13 @@ public class ScrollOfMirrorImage extends Scroll {
 	
 	@Override
 	public void doRead() {
-		int spawnedImages = spawnImages(curUser, NIMAGES);
-		
-		if (spawnedImages > 0) {
-			identify();
+		detach(curUser.belongings.backpack);
+		if ( spawnImages(curUser, NIMAGES) > 0){
+			GLog.i(Messages.get(this, "copies"));
+		} else {
+			GLog.i(Messages.get(this, "no_copies"));
 		}
+		identify();
 		
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		
@@ -87,70 +92,6 @@ public class ScrollOfMirrorImage extends Scroll {
 		}
 		
 		return spawned;
-	}
-	
-	public static class DelayedImageSpawner extends Buff{
-		
-		public DelayedImageSpawner(){
-			this(NIMAGES, NIMAGES, 1);
-		}
-		
-		public DelayedImageSpawner( int total, int perRound, float delay){
-			super();
-			totImages = total;
-			imPerRound = perRound;
-			this.delay = delay;
-		}
-		
-		private int totImages;
-		private int imPerRound;
-		private float delay;
-		
-		@Override
-		public boolean attachTo(Char target) {
-			if (super.attachTo(target)){
-				spend(delay);
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		@Override
-		public boolean act() {
-			
-			int spawned = spawnImages((Hero)target,  Math.min(totImages, imPerRound));
-			
-			totImages -= spawned;
-			
-			if (totImages <0){
-				detach();
-			} else {
-				spend( delay );
-			}
-			
-			return true;
-		}
-		
-		private static final String TOTAL = "images";
-		private static final String PER_ROUND = "per_round";
-		private static final String DELAY = "delay";
-		
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put( TOTAL, totImages );
-			bundle.put( PER_ROUND, imPerRound );
-			bundle.put( DELAY, delay );
-		}
-		
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			totImages = bundle.getInt( TOTAL );
-			imPerRound = bundle.getInt( PER_ROUND );
-			delay = bundle.getFloat( DELAY );
-		}
 	}
 
 	@Override

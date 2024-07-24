@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities;
 
+import com.zrp200.rkpd2.actors.Char;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -28,6 +29,7 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
+import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -66,7 +68,13 @@ public abstract class ArmorAbility implements Bundlable {
 		return targetingPrompt() != null;
 	}
 
-	protected static final double HEROIC_ENERGY_REDUCTION = 0.839;
+	public int targetedPos( Char user, int dst ){
+		return new Ballistica( user.pos, dst, Ballistica.PROJECTILE ).collisionPos;
+	}
+
+	// shpd reduced charge use by 12%/23%/32%/40%
+	// rkpd2 reduced charge use by 16/30/40/50%
+	private static final double HEROIC_ENERGY_REDUCTION = 0.839;
 
 	public float chargeUse( Hero hero ){
 		float chargeUse = baseChargeUse;
@@ -74,7 +82,6 @@ public abstract class ArmorAbility implements Bundlable {
 			chargeUse = 85 - hero.pointsInTalent(Talent.EMPOWERED_STRIKE_II)*5;
 		}
 		if (hasTalent(Talent.HEROIC_ENERGY) && hero.hasTalent(Talent.HEROIC_ENERGY)){
-			//reduced charge use by 16%/30%/41%/50%
 			chargeUse *= Math.pow( HEROIC_ENERGY_REDUCTION, hero.pointsInTalent(Talent.HEROIC_ENERGY));
 		}
 		return chargeUse;

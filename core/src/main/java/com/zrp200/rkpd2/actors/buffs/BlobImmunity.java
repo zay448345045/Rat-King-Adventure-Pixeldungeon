@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.zrp200.rkpd2.actors.blobs.*;
 import com.zrp200.rkpd2.actors.mobs.Tengu;
 import com.zrp200.rkpd2.levels.rooms.special.MagicalFireRoom;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class BlobImmunity extends FlavourBuff {
@@ -43,11 +42,6 @@ public class BlobImmunity extends FlavourBuff {
 	@Override
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
-	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 
 	{
@@ -72,8 +66,4 @@ public class BlobImmunity extends FlavourBuff {
 		immunities.add(Tengu.BombAbility.BombBlob.class);
 	}
 
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
-	}
 }

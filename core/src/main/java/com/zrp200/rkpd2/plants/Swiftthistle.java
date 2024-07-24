@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Haste;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.levels.traps.Trap;
@@ -46,10 +48,12 @@ public class Swiftthistle extends Plant {
 	}
 
 	@Override
-	public void affectHero(Char ch, boolean isWarden) {
-		Buff.affect(ch, TimeBubble.class).reset();
-		if (isWarden){
-			Buff.affect(ch, Haste.class, 1f);
+	public void activate( Char ch ) {
+		if (ch != null) {
+			Buff.affect(ch, TimeBubble.class).reset();
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING){
+				Buff.affect(ch, Haste.class, 1f);
+			}
 		}
 	}
 
@@ -97,15 +101,10 @@ public class Swiftthistle extends Plant {
 			left = 7f;
 		}
 
-		public void reset(float time){
-			left = time+1;
-		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-		
+        public void reset(float time){
+            left = time+1;
+        }
+
 		@Override
 		public String desc() {
 			return Messages.get(this, "desc", dispTurns(left));
@@ -127,18 +126,32 @@ public class Swiftthistle extends Plant {
 			}
 		}
 
-		public void triggerPresses() {
-			for (int cell : presses) {
-				Dungeon.level.pressCell(cell);
+		public void triggerPresses(){
+			for (int cell : presses){
+				Trap t = Dungeon.level.traps.get(cell);
+				if (t != null){
+					t.trigger();
+				}
+				Plant p = Dungeon.level.plants.get(cell);
+				if (p != null){
+					p.trigger();
+				}
 			}
 
 			presses = new ArrayList<>();
 		}
 
-		public void disarmPressedTraps(){
+		public void disarmPresses(){
 			for (int cell : presses){
 				Trap t = Dungeon.level.traps.get(cell);
-				if (t != null && t.disarmedByActivation) t.disarm();
+				if (t != null && t.disarmedByActivation) {
+					t.disarm();
+				}
+
+				Plant p = Dungeon.level.plants.get(cell);
+				if (p != null && !(p instanceof Rotberry)) {
+					Dungeon.level.uproot(cell);
+				}
 			}
 
 			presses = new ArrayList<>();
@@ -153,6 +166,7 @@ public class Swiftthistle extends Plant {
 
 		@Override
 		public void fx(boolean on) {
+			if (!(target instanceof Hero)) return;
 			Emitter.freezeEmitters = on;
 			if (on){
 				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {

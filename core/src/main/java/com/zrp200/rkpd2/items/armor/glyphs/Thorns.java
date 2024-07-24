@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,12 @@ public class Thorns extends Armor.Glyph {
 		// lvl 0 - 16.7%
 		// lvl 1 - 23.1%
 		// lvl 2 - 28.5%
-		if ( Random.Float() < procChance) {
+		float procChance = (level+2f)/(level+12f) * procChanceMultiplier(defender);
+		if ( Random.Float() < procChance ) {
 
-			Buff.affect( attacker, Bleeding.class).set( 4 + level );
+			float powerMulti = Math.max(1f, procChance);
+
+			Buff.affect( attacker, Bleeding.class).set( Math.round((4 + level)*powerMulti) );
 
 		}
 

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,11 +77,12 @@ public class SPDAction extends GameAction {
 	public static final GameAction REST         = new SPDAction("rest");
 
 	public static final GameAction TAG_ATTACK   = new SPDAction("tag_attack");
-	public static final GameAction TAG_DANGER   = new SPDAction("tag_danger");
 	public static final GameAction TAG_ACTION   = new SPDAction("tag_action");
 	public static final GameAction TAG_CYCLE   = new SPDAction("tag_cycle");
 	public static final GameAction TAG_LOOT     = new SPDAction("tag_loot");
 	public static final GameAction TAG_RESUME   = new SPDAction("tag_resume");
+
+	public static final GameAction CYCLE        = new SPDAction("cycle");
 
 	public static final GameAction HERO_INFO    = new SPDAction("hero_info");
 	public static final GameAction JOURNAL      = new SPDAction("journal");
@@ -134,7 +135,7 @@ public class SPDAction extends GameAction {
 		defaultBindings.put( Input.Keys.Z,              SPDAction.REST );
 
 		defaultBindings.put( Input.Keys.Q,              SPDAction.TAG_ATTACK );
-		defaultBindings.put( Input.Keys.TAB,            SPDAction.TAG_DANGER );
+		defaultBindings.put( Input.Keys.TAB,            SPDAction.CYCLE);
 		defaultBindings.put( Input.Keys.X,              SPDAction.TAG_ACTION );
 		defaultBindings.put( Input.Keys.F,	         SPDAction.TAG_CYCLE);
 		defaultBindings.put( Input.Keys.C,              SPDAction.TAG_LOOT );
@@ -156,16 +157,16 @@ public class SPDAction extends GameAction {
 	private static final LinkedHashMap<Integer, GameAction> defaultControllerBindings = new LinkedHashMap<>();
 	static {
 		defaultControllerBindings.put( Input.Keys.BUTTON_START,     SPDAction.BACK );
+		defaultControllerBindings.put( Input.Keys.BUTTON_SELECT,    SPDAction.JOURNAL );
 
 		defaultControllerBindings.put( Input.Keys.BUTTON_R2,        SPDAction.LEFT_CLICK );
 		defaultControllerBindings.put( Input.Keys.BUTTON_THUMBR,    SPDAction.LEFT_CLICK );
 		defaultControllerBindings.put( Input.Keys.BUTTON_L2,        SPDAction.RIGHT_CLICK );
-		defaultControllerBindings.put( Input.Keys.BUTTON_SELECT,    SPDAction.MIDDLE_CLICK );
 
 		defaultControllerBindings.put( Input.Keys.DPAD_UP+1000,     SPDAction.TAG_ACTION );
-		defaultControllerBindings.put( Input.Keys.DPAD_LEFT+1000,   SPDAction.TAG_DANGER );
+		defaultControllerBindings.put( Input.Keys.DPAD_LEFT+1000,   SPDAction.TAG_LOOT );
 		defaultControllerBindings.put( Input.Keys.DPAD_DOWN+1000,   SPDAction.TAG_RESUME );
-		defaultControllerBindings.put( Input.Keys.DPAD_RIGHT+1000,  SPDAction.TAG_LOOT );
+		defaultControllerBindings.put( Input.Keys.DPAD_RIGHT+1000,  SPDAction.CYCLE );
 
 		defaultControllerBindings.put( Input.Keys.BUTTON_THUMBL,    SPDAction.WAIT_OR_PICKUP );
 
@@ -182,10 +183,16 @@ public class SPDAction extends GameAction {
 		return new LinkedHashMap<>(defaultControllerBindings);
 	}
 
-	//hard bindings for android devices
 	static {
+		//hard bindings for android devices
 		KeyBindings.addHardBinding( Input.Keys.BACK, SPDAction.BACK );
 		KeyBindings.addHardBinding( Input.Keys.MENU, SPDAction.INVENTORY );
+
+		//hard bindings for desktop fullscreen toggle
+		//not bound to specific game actions, see PixelScene
+		//Note that user-entered bindings can override these individually, and that's fine.
+		KeyBindings.addHardBinding( Input.Keys.ALT_RIGHT, SPDAction.NONE );
+		KeyBindings.addHardBinding( Input.Keys.ENTER, SPDAction.NONE );
 	}
 
 	//we only save/loads keys which differ from the default configuration.
@@ -213,7 +220,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no keys assigned to this action, move to the next one
 					} else {
 						merged.put(firstKeys.getInt(a.name()), a);
-						defaults.remove(firstKeys.getInt(a.name())); //prevent duplicates in other actions
+						//remove whatever the first default key was for this action, if any
+						for (int i : defaults.keySet()) {
+							if (defaults.get(i) == a) {
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the first one from defaults and merge it
@@ -230,7 +243,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no more keys assigned to this action, move to the next one
 					} else {
 						merged.put(secondKeys.getInt(a.name()), a);
-						defaults.remove(secondKeys.getInt(a.name()));
+						//remove whatever the second default key was for this action, if any
+						for (int i : defaults.keySet()){
+							if (defaults.get(i) == a){
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the next one from defaults and merge it
@@ -247,7 +266,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no more keys assigned to this action, move to the next one
 					} else {
 						merged.put(thirdKeys.getInt(a.name()), a);
-						defaults.remove(thirdKeys.getInt(a.name()));
+						//remove whatever the third default key was for this action, if any
+						for (int i : defaults.keySet()){
+							if (defaults.get(i) == a){
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the next one from defaults and merge it
@@ -276,7 +301,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no keys assigned to this action, move to the next one
 					} else {
 						merged.put(firstButtons.getInt(a.name()), a);
-						defaults.remove(firstButtons.getInt(a.name())); //prevent duplicates in other actions
+						//remove whatever the first default button was for this action, if any
+						for (int i : defaults.keySet()) {
+							if (defaults.get(i) == a) {
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the first one from defaults and merge it
@@ -293,7 +324,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no more keys assigned to this action, move to the next one
 					} else {
 						merged.put(secondButtons.getInt(a.name()), a);
-						defaults.remove(secondButtons.getInt(a.name()));
+						//remove whatever the second default button was for this action, if any
+						for (int i : defaults.keySet()) {
+							if (defaults.get(i) == a) {
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the next one from defaults and merge it
@@ -310,7 +347,13 @@ public class SPDAction extends GameAction {
 						continue; //we have no more keys assigned to this action, move to the next one
 					} else {
 						merged.put(thirdButtons.getInt(a.name()), a);
-						defaults.remove(thirdButtons.getInt(a.name()));
+						//remove whatever the third default button was for this action, if any
+						for (int i : defaults.keySet()) {
+							if (defaults.get(i) == a) {
+								defaults.remove(i);
+								break;
+							}
+						}
 					}
 				} else {
 					//if we have no custom key here, find the next one from defaults and merge it

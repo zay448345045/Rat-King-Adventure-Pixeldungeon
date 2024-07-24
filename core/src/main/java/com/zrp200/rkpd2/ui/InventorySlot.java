@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.wands.Wand;
+import com.watabou.gltextures.TextureCache;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.audio.Sample;
 
 public class InventorySlot extends ItemSlot {
 
@@ -63,6 +66,12 @@ public class InventorySlot extends ItemSlot {
 	}
 
 	@Override
+	public void alpha(float value) {
+		super.alpha(value);
+		bg.alpha(value);
+	}
+
+	@Override
 	public void item( Item item ) {
 
 		super.item( item );
@@ -76,7 +85,9 @@ public class InventorySlot extends ItemSlot {
 					item == Dungeon.hero.belongings.armor ||
 					item == Dungeon.hero.belongings.artifact ||
 					item == Dungeon.hero.belongings.misc ||
-					item == Dungeon.hero.belongings.ring;
+					item == Dungeon.hero.belongings.ring ||
+					item == Dungeon.hero.belongings.secondWep ||
+					item == Dungeon.hero.belongings.thirdWep;
 
 			bg.texture( TextureCache.createSolid( equipped ? EQUIPPED : NORMAL ) );
 			bg.resetColor();
@@ -95,7 +106,7 @@ public class InventorySlot extends ItemSlot {
 			if (item.name() == null) {
 				enable( false );
 			} else if (Dungeon.hero.buff(LostInventory.class) != null
-					&& !item.keptThoughLostInvent){
+					&& !item.keptThroughLostInventory()){
 				enable(false);
 			}
 		} else {

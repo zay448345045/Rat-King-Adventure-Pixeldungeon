@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,23 +40,22 @@ public class Overgrowth extends Armor.Glyph {
 	{
 		beneficial = false;
 	}
-	
+
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-		float procChance = 1/20f * procChanceModifier(defender);
-		
-		if ( Random.Float() < procChance) {
-			
+
+		float procChance = 1/20f * procChanceMultiplier(defender);
+		if ( Random.Float() < procChance ) {
+
 			Plant.Seed s;
 			do{
 				s = (Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED);
 			} while (s instanceof Starflower.Seed);
-			
+
 			Plant p = s.couch(defender.pos, null);
 			
 			//momentarily revoke warden benefits, otherwise this curse would be incredibly powerful
-			if (defender instanceof Hero && ((Hero) defender).isSubclassed(HeroSubClass.WARDEN)
-					|| ((Hero)defender).isSubclassed(HeroSubClass.KING)){
+			if (defender instanceof Hero && ((Hero) defender).subClass.is(HeroSubClass.WARDEN)) {
 				HeroSubClass subclass = ((Hero)defender).subClass;
 				((Hero) defender).subClass = HeroSubClass.NONE;
 				p.activate( defender );

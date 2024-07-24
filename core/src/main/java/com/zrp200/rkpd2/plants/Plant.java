@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Barkskin;
-import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -66,31 +65,18 @@ public abstract class Plant implements Bundlable {
 
 		if (Dungeon.level.heroFOV[pos]) Dungeon.hero.byTalent( (talent, points) ->
 				// 3/5 turns based on talent points spent
-				Buff.affect(Dungeon.hero, Barkskin.class)
-						.set(talent == Talent.NATURES_AID ? 3 : 2, 1 + 2 * points),
+				Barkskin.conditionallyAppend(Dungeon.hero, talent == Talent.NATURES_AID ? 3 : 2, 1 + 2 * points),
 				Talent.NOBLE_CAUSE);
 
 		wither();
 		activate( ch );
 	}
-
-	public void activate(Char ch){
-		if (ch instanceof Mob){
-			affectMob((Mob) ch);
-			if (Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.INDIRECT_BENEFITS)){
-				affectHero(Dungeon.hero, true);
-			}
-		} else if (ch instanceof Hero){
-			affectHero(ch, (((Hero)ch).isSubclassed(HeroSubClass.WARDEN) || ((Hero)ch).isSubclassed(HeroSubClass.KING)));
-		}
-		activateMisc(ch);
+	
+	public abstract void activate( Char ch );
+	public static boolean isWarden( Char ch ) {
+		return ch instanceof Hero && ((Hero) ch).subClass.is(HeroSubClass.WARDEN);
 	}
 
-	public void activateMisc(Char ch){ }
-
-	public void affectMob(Mob mob){ }
-
-	public void affectHero(Char ch, boolean isWarden){ }
 	
 	public void wither() {
 		Dungeon.level.uproot( pos );
@@ -189,7 +175,7 @@ public abstract class Plant implements Bundlable {
 				super.onThrow( cell );
 			} else {
 				Dungeon.level.plant( this, cell );
-				if (Dungeon.hero.isSubclassed(HeroSubClass.WARDEN) || Dungeon.hero.isSubclassed(HeroSubClass.KING)) {
+				if (Dungeon.hero.subClass.is(HeroSubClass.WARDEN)) {
 					for (int i : PathFinder.NEIGHBOURS8) {
 						int c = Dungeon.level.map[cell + i];
 						if ( c == Terrain.EMPTY || c == Terrain.EMPTY_DECO

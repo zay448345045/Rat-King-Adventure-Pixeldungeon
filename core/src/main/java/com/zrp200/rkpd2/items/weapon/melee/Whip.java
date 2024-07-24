@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,17 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.utils.Callback;
+
+import java.util.ArrayList;
 
 public class Whip extends MeleeWeapon {
 
@@ -42,7 +52,7 @@ public class Whip extends MeleeWeapon {
 
 	@Override
 	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 20
+		return  5*(tier) +      //15 base, down from 20
 				lvl*(tier);     //+3 per level, down from +4
 	}
 
@@ -81,6 +91,50 @@ public class Whip extends MeleeWeapon {
 	@Override
 	public float warriorDelay() {
 		return 0f;
+	}
+
+	@Override
+	protected void duelistAbility(Hero hero, Integer target) {
+
+		ArrayList<Char> targets = new ArrayList<>();
+		Char closest = null;
+
+		hero.belongings.abilityWeapon = this;
+		for (Char ch : Actor.chars()){
+			if (ch.alignment == Char.Alignment.ENEMY
+					&& !hero.isCharmedBy(ch)
+					&& Dungeon.level.heroFOV[ch.pos]
+					&& hero.canAttack(ch)){
+				targets.add(ch);
+				if (closest == null || Dungeon.level.trueDistance(hero.pos, closest.pos) > Dungeon.level.trueDistance(hero.pos, ch.pos)){
+					closest = ch;
+				}
+			}
+		}
+		hero.belongings.abilityWeapon = null;
+
+		if (targets.isEmpty()) {
+			GLog.w(Messages.get(this, "ability_no_target"));
+			return;
+		}
+
+		throwSound();
+		Char finalClosest = closest;
+		hero.sprite.attack(hero.pos, new Callback() {
+			@Override
+			public void call() {
+				beforeAbilityUsed(hero, finalClosest);
+				for (Char ch : targets) {
+					hero.attack(ch, 1, 0, ch == finalClosest ? Char.INFINITE_ACCURACY : 1);
+					if (!ch.isAlive()){
+						onAbilityKill(hero, ch);
+					}
+				}
+				Invisibility.dispel();
+				hero.spendAndNext(hero.attackDelay());
+				afterAbilityUsed(hero);
+			}
+		});
 	}
 
 }

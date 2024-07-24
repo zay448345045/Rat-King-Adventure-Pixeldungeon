@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.EnhancedRings;
 import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
@@ -43,7 +44,6 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -191,16 +191,28 @@ public class Ring extends KindofMisc {
 		
 		return desc;
 	}
-	
+
+	// implement shattered's ring desc logic here instead of in each ring.
+
+	protected String formatBonus(int buffedBonus) {
+		double bonus = Math.pow(multiplier(), buffedBonus);
+		bonus = multiplier() < 1 ? 1-bonus : bonus-1;
+		return Messages.decimalFormat("#.##", 100f * bonus);
+	}
+
 	protected String statsInfo(){
 		int level = level();
 		if(!isIdentified()) level(0);
-		double bonus = Math.pow(multiplier(),soloBuffedBonus(false));
-		if (bonus > cap() && multiplier() > 1 || bonus < cap() && multiplier() <= 1) bonus = cap();
-		bonus = multiplier() < 1 ? 1-bonus : bonus-1;
-		String res = Messages.get(this,(isIdentified()?"":"typical_")+"stats", new DecimalFormat("#.##").format(100f * bonus));
+		String info = Messages.get(
+				this,
+				(isIdentified()? "" : "typical_") + "stats",
+				formatBonus(soloBuffedBonus())
+		);
+		if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
+			info += "\n\n" + Messages.get(this, "combined_stats", formatBonus(combinedBuffedBonus(Dungeon.hero)));
+		}
 		level(level);
-		return res;
+		return info;
 	}
 	protected float multiplier() {
 		return 0;
@@ -309,7 +321,7 @@ public class Ring extends KindofMisc {
 		levelsToID -= levelPercent;
 		if (levelsToID <= 0){
 			identify();
-			GLog.p( Messages.get(Ring.class, "identify", toString()) );
+			GLog.p( Messages.get(Ring.class, "identify") );
 			Badges.validateItemLevelAquired( this );
 		}
 	}
@@ -333,6 +345,7 @@ public class Ring extends KindofMisc {
 	}
 
 	public static int getBonus(Char target, Class<?extends RingBuff> type){
+		if (target.buff(MagicImmune.class) != null) return 0;
 		int bonus = 0;
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.level();
@@ -341,6 +354,7 @@ public class Ring extends KindofMisc {
 	}
 
 	public static int getBuffedBonus(Char target, Class<?extends RingBuff> type){
+		if (target.buff(MagicImmune.class) != null) return 0;
 		int bonus = 0;
 		for (RingBuff buff : target.buffs(type)) {
 			bonus += buff.buffedLvl();
@@ -349,6 +363,7 @@ public class Ring extends KindofMisc {
 	}
 
 	// this was changed to show visible values, so if you want the actual effect of a given ring, call the corresponding method with a true argument.
+	//just used for ring descriptions
 	public int soloBonus(){
 		return soloBonus(false);
 	}
@@ -368,6 +383,7 @@ public class Ring extends KindofMisc {
 		return ( trueEffect ? cursed : visiblyCursed() ) ? Math.min(0, level-2) : level+1;
 	}
 
+	//just used for ring descriptions
 	public int soloBuffedBonus(){
 		return soloBuffedBonus(false);
 	}
@@ -375,13 +391,47 @@ public class Ring extends KindofMisc {
 		return computeBonus(true, trueEffect);
 	}
 
+	//just used for ring descriptions
+	public int combinedBonus(Hero hero){
+		int bonus = 0;
+		if (hero.belongings.ring() != null && hero.belongings.ring().getClass() == getClass()){
+			bonus += hero.belongings.ring().soloBonus();
+		}
+		if (hero.belongings.misc() != null && hero.belongings.misc().getClass() == getClass()){
+			bonus += ((Ring)hero.belongings.misc()).soloBonus();
+		}
+		return bonus;
+	}
+
+	//just used for ring descriptions
+	public int combinedBuffedBonus(Hero hero){
+		int bonus = 0;
+		if (hero.belongings.ring() != null && hero.belongings.ring().getClass() == getClass()){
+			bonus += hero.belongings.ring().soloBuffedBonus();
+		}
+		if (hero.belongings.misc() != null && hero.belongings.misc().getClass() == getClass()){
+			bonus += ((Ring)hero.belongings.misc()).soloBuffedBonus();
+		}
+		return bonus;
+	}
+
 	public class RingBuff extends Buff {
-		
+
+		@Override
+		public boolean attachTo( Char target ) {
+			if (super.attachTo( target )) {
+				//if we're loading in and the hero has partially spent a turn, delay for 1 turn
+				if (target instanceof Hero && Dungeon.hero == null && cooldown() == 0 && target.cooldown() > 0) {
+					spend(TICK);
+				}
+				return true;
+			}
+			return false;
+		}
+
 		@Override
 		public boolean act() {
-			
 			spend( TICK );
-			
 			return true;
 		}
 

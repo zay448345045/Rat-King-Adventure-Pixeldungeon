@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,34 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.OrderedMap;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.QuickSlot;
+import com.zrp200.rkpd2.Rankings;
+import com.zrp200.rkpd2.SPDSettings;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.Statistics;
+import com.zrp200.rkpd2.actors.hero.Belongings;
+import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.sprites.HeroSprite;
+import com.zrp200.rkpd2.ui.BadgesGrid;
+import com.zrp200.rkpd2.ui.BadgesList;
+import com.zrp200.rkpd2.ui.Button;
+import com.zrp200.rkpd2.ui.CheckBox;
+import com.zrp200.rkpd2.ui.IconButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.ItemSlot;
+import com.zrp200.rkpd2.ui.RedButton;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.TalentButton;
+import com.zrp200.rkpd2.ui.TalentsPane;
+import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -69,14 +95,11 @@ public class WndRanking extends WndTabbed {
 		try {
 			Badges.loadGlobal();
 			Rankings.INSTANCE.loadGameData( rec );
-			if (Dungeon.hero != null) {
-				createControls();
-			} else {
-				hide();
-			}
+			createControls();
 		} catch ( Exception e ) {
-			hide();
-			Game.scene().addToFront( new WndError( Messages.get(WndRanking.class, "error" )));
+			Game.reportException( new RuntimeException("Rankings Display Failed!",e));
+			Dungeon.hero = null;
+			createControls();
 		}
 	}
 	
@@ -89,29 +112,35 @@ public class WndRanking extends WndTabbed {
 	}
 	
 	private void createControls() {
-		
-		Icons[] icons =
-			{Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHALLENGE_ON};
-		Group[] pages =
-			{new StatsTab(), new TalentsTab(), new ItemsTab(), new BadgesTab(), null};
 
-		if (Dungeon.challenges != 0) pages[4] = new ChallengesTab();
-		
-		for (int i=0; i < pages.length; i++) {
+		if (Dungeon.hero != null) {
+			Icons[] icons =
+					{Icons.RANKINGS, Icons.TALENT, Icons.BACKPACK_LRG, Icons.BADGES, Icons.CHALLENGE_ON};
+			Group[] pages =
+					{new StatsTab(), new TalentsTab(), new ItemsTab(), new BadgesTab(), null};
 
-			if (pages[i] == null) {
-				break;
+			if (Dungeon.challenges != 0) pages[4] = new ChallengesTab();
+
+			for (int i = 0; i < pages.length; i++) {
+
+				if (pages[i] == null) {
+					break;
+				}
+
+				add(pages[i]);
+
+				Tab tab = new RankingTab(icons[i], pages[i]);
+				add(tab);
 			}
 
-			add( pages[i] );
-			
-			Tab tab = new RankingTab( icons[i], pages[i] );
-			add( tab );
-		}
+			layoutTabs();
 
-		layoutTabs();
-		
-		select( 0 );
+			select(0);
+		} else {
+			StatsTab tab = new StatsTab();
+			add(tab);
+
+		}
 	}
 
 	private class RankingTab extends IconTab {
@@ -139,64 +168,108 @@ public class WndRanking extends WndTabbed {
 		public StatsTab() {
 			super();
 			
-			String heroClass = Dungeon.hero.className();
+			String heroClass = record.heroClass.name();
+			if (Dungeon.hero != null){
+				heroClass = Dungeon.hero.className();
+			}
 			
 			IconTitle title = new IconTitle();
-			title.icon( HeroSprite.avatar( Dungeon.hero.heroClass, Dungeon.hero.tier() ) );
-			title.label( Messages.get(this, "title", Dungeon.hero.lvl, heroClass ).toUpperCase( Locale.ENGLISH ) );
+			title.icon( HeroSprite.avatar( record.heroClass, record.armorTier ) );
+			title.label( Messages.get(this, "title", record.herolevel, heroClass ).toUpperCase( Locale.ENGLISH ) );
 			title.color(Window.TITLE_COLOR);
 			title.setRect( 0, 0, WIDTH, 0 );
 			add( title );
-			
-			float pos = title.bottom() + GAP + 1;
+
+			if (Dungeon.hero != null && Dungeon.seed != -1){
+				GAP--;
+			}
+
+			float pos = title.bottom() + 1;
+
+			RenderedTextBlock date = PixelScene.renderTextBlock(record.date, 7);
+			date.hardlight(0xCCCCCC);
+			date.setPos(0, pos);
+			add(date);
+
+			RenderedTextBlock version = PixelScene.renderTextBlock(record.version, 7);
+			version.hardlight(0xCCCCCC);
+			version.setPos(WIDTH-version.width(), pos);
+			add(version);
+
+			pos = date.bottom()+5;
 
 			NumberFormat num = NumberFormat.getInstance(Locale.US);
-			pos = statSlot( this, Messages.get(this, "score"), num.format( Statistics.totalScore ), pos );
 
-			IconButton scoreInfo = new IconButton(Icons.get(Icons.INFO)){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
-				}
-			};
-			scoreInfo.setSize(16, 16);
-			scoreInfo.setPos(WIDTH-scoreInfo.width(), pos-14);
-			add(scoreInfo);
-			pos += GAP;
+			if (Dungeon.hero == null){
+				pos = statSlot( this, Messages.get(this, "score"), num.format( record.score ), pos );
+				pos += GAP;
 
-			int strBonus = Dungeon.hero.STR() - Dungeon.hero.STR;
-			if (strBonus > 0)       pos = statSlot(this, Messages.get(this, "str"), Dungeon.hero.STR + " + " + strBonus, pos);
-			else if (strBonus < 0)  pos = statSlot(this, Messages.get(this, "str"), Dungeon.hero.STR + " - " + -strBonus, pos );
-			else                    pos = statSlot(this, Messages.get(this, "str"), Integer.toString(Dungeon.hero.STR), pos);
-			pos = statSlot( this, Messages.get(this, "duration"), num.format( (int)Statistics.duration ), pos );
-			if (Statistics.highestAscent == 0) {
-				pos = statSlot(this, Messages.get(this, "depth"), num.format(Statistics.deepestFloor), pos);
+				Image errorIcon = Icons.WARNING.get();
+				errorIcon.y = pos;
+				add(errorIcon);
+
+				RenderedTextBlock errorText = PixelScene.renderTextBlock(Messages.get(WndRanking.class, "error"), 6);
+				errorText.maxWidth((int)(WIDTH-errorIcon.width()-GAP));
+				errorText.setPos(errorIcon.width()+GAP, pos + (errorIcon.height()-errorText.height())/2);
+				add(errorText);
+
 			} else {
-				pos = statSlot(this, Messages.get(this, "ascent"), num.format(Statistics.highestAscent), pos);
-			}
-			if (Dungeon.seed != -1) {
-				if (Dungeon.daily){
-					pos = statSlot(this, Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_", pos);
-				} else if (!Dungeon.customSeedText.isEmpty()){
-					pos = statSlot(this, Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_", pos);
+
+				pos = statSlot(this, Messages.get(this, "score"), num.format(Statistics.totalScore), pos);
+
+				IconButton scoreInfo = new IconButton(Icons.get(Icons.INFO)) {
+					@Override
+					protected void onClick() {
+						super.onClick();
+						ShatteredPixelDungeon.scene().addToFront(new WndScoreBreakdown());
+					}
+				};
+				scoreInfo.setSize(16, 16);
+				scoreInfo.setPos(WIDTH - scoreInfo.width(), pos - 10 - GAP);
+				add(scoreInfo);
+
+				pos += GAP;
+
+				int strBonus = Dungeon.hero.STR() - Dungeon.hero.STR;
+				if (strBonus > 0)
+					pos = statSlot(this, Messages.get(this, "str"), Dungeon.hero.STR + " + " + strBonus, pos);
+				else if (strBonus < 0)
+					pos = statSlot(this, Messages.get(this, "str"), Dungeon.hero.STR + " - " + -strBonus, pos);
+				else
+					pos = statSlot(this, Messages.get(this, "str"), Integer.toString(Dungeon.hero.STR), pos);
+				pos = statSlot(this, Messages.get(this, "duration"), num.format((int) Statistics.duration), pos);
+				if (Statistics.highestAscent == 0) {
+					pos = statSlot(this, Messages.get(this, "depth"), num.format(Statistics.deepestFloor), pos);
 				} else {
-					pos = statSlot(this, Messages.get(this, "seed"), DungeonSeed.convertToCode(Dungeon.seed), pos);
+					pos = statSlot(this, Messages.get(this, "ascent"), num.format(Statistics.highestAscent), pos);
 				}
-			} else {
-				pos += GAP + 5;
+				if (Dungeon.seed != -1) {
+					if (Dungeon.daily) {
+						if (Dungeon.dailyReplay) {
+							pos = statSlot(this, Messages.get(this, "replay_for"), "_" + Dungeon.customSeedText + "_", pos);
+						} else {
+							pos = statSlot(this, Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_", pos);
+						}
+					} else if (!Dungeon.customSeedText.isEmpty()) {
+						pos = statSlot(this, Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_", pos);
+					} else {
+						pos = statSlot(this, Messages.get(this, "seed"), DungeonSeed.convertToCode(Dungeon.seed), pos);
+					}
+				} else {
+					pos += GAP + 5;
+				}
+
+				pos += GAP;
+
+				pos = statSlot(this, Messages.get(this, "enemies"), num.format(Statistics.enemiesSlain), pos);
+				pos = statSlot(this, Messages.get(this, "gold"), num.format(Statistics.goldCollected), pos);
+				pos = statSlot(this, Messages.get(this, "food"), num.format(Statistics.foodEaten), pos);
+				pos = statSlot(this, Messages.get(this, "alchemy"), num.format(Statistics.itemsCrafted), pos);
 			}
-
-			pos += GAP;
-
-			pos = statSlot( this, Messages.get(this, "enemies"), num.format( Statistics.enemiesSlain ), pos );
-			pos = statSlot( this, Messages.get(this, "gold"), num.format( Statistics.goldCollected ), pos );
-			pos = statSlot( this, Messages.get(this, "food"), num.format( Statistics.foodEaten ), pos );
-			pos = statSlot( this, Messages.get(this, "alchemy"), num.format( Statistics.itemsCrafted ), pos );
 
 			int buttontop = HEIGHT - 16;
 
-			if (Dungeon.seed != -1 && !Dungeon.daily &&
+			if (Dungeon.hero != null && Dungeon.seed != -1 && !Dungeon.daily &&
 					(DeviceCompat.isDebug() || Badges.isUnlocked(Badges.Badge.VICTORY))){
 				final Image icon = Icons.get(Icons.SEED);
 				RedButton btnSeed = new RedButton(Messages.get(this, "copy_seed")){
@@ -304,7 +377,7 @@ public class WndRanking extends WndTabbed {
 
 			float slotWidth = Math.min(28, ((WIDTH - slotsActive + 1) / (float)slotsActive));
 
-			for (int i = 0; i < slotsActive; i++){
+			for (int i = 0; i < QuickSlot.SIZE; i++){
 				if (Dungeon.quickslot.isNonePlaceholder(i)){
 					QuickSlotButton slot = new QuickSlotButton(Dungeon.quickslot.getItem(i));
 
@@ -336,7 +409,7 @@ public class WndRanking extends WndTabbed {
 			camera = WndRanking.this.camera;
 
 			Component badges;
-			if (Badges.totalUnlocked(false) <= 7){
+			if (Badges.filterReplacedBadges(false).size() <= 8){
 				badges = new BadgesList(false);
 			} else {
 				badges = new BadgesGrid(false);

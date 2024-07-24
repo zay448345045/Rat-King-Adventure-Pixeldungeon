@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,12 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Adrenaline;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
+import com.zrp200.rkpd2.actors.buffs.Momentum;
+import com.zrp200.rkpd2.actors.buffs.PinCushion;
+import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -42,6 +47,8 @@ import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.enchantments.Projecting;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.items.weapon.melee.RunicBlade;
 import com.zrp200.rkpd2.items.weapon.melee.Crossbow;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
@@ -50,6 +57,9 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
+import com.zrp200.rkpd2.utils.SafeCast;
 
 import java.util.ArrayList;
 
@@ -75,9 +85,7 @@ abstract public class MissileWeapon extends Weapon {
 	
 	//used to reduce durability from the source weapon stack, rather than the one being thrown.
 	protected MissileWeapon parent;
-	
-	public int tier;
-	
+
 	@Override
 	public int min() {
 		return Math.max(0, min( buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) )) + Dungeon.hero.pointsInTalent(Talent.WEAPON_MASTERY);
@@ -103,7 +111,16 @@ abstract public class MissileWeapon extends Weapon {
 	public int STRReq(int lvl){
 		return STRReq(tier, lvl) - 1; //1 less str than normal for their tier
 	}
-	
+
+	//use the parent item if this has been thrown from a parent
+	public int buffedLvl(){
+		if (parent != null) {
+			return parent.buffedLvl();
+		} else {
+			return super.buffedLvl();
+		}
+	}
+
 	@Override
 	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
 	public Item upgrade() {
@@ -143,7 +160,7 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.remove( AC_EQUIP );
+		if (!hero.hasTalent(Talent.ELITE_DEXTERITY)) actions.remove( AC_EQUIP );
 		return actions;
 	}
 	
@@ -183,20 +200,58 @@ abstract public class MissileWeapon extends Weapon {
 			projecting = true;
 		}
 
-		if (projecting && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4 + Dungeon.hero.pointsInTalent(Talent.RK_PROJECT)){
-			return dst;
-		} else {
-			return super.throwPos(user, dst);
+		RunicBlade.RunicSlashTracker tracker = Dungeon.hero.buff(RunicBlade.RunicSlashTracker.class);
+		boolean ignoreTracker = tracker != null;
+		if (MeleeWeapon.activeAbility instanceof MeleeWeapon.MeleeAbility && ((MeleeWeapon.MeleeAbility)MeleeWeapon.activeAbility).weapon().hasEnchant(Projecting.class, Dungeon.hero)) {
+			projecting = true;
+			ignoreTracker = false;
 		}
+		if (ignoreTracker) tracker.detach();
+		int throwPos;
+		if (projecting
+				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst] || Actor.findChar(dst) != null)
+				&& Dungeon.level.distance(user.pos, dst) <= Math.round(4 * Enchantment.genericProcChanceMultiplier(user))){
+			throwPos = dst;
+		} else {
+			throwPos = super.throwPos(user, dst);
+		}
+		if (ignoreTracker) tracker.attachTo(Dungeon.hero);
+		return throwPos;
 	}
 
 	@Override
-	public float accuracyFactor(Char owner) {
-		float accFactor = super.accuracyFactor(owner);
+	public float accuracyFactor(Char owner, Char target) {
+		float accFactor = super.accuracyFactor(owner, target);
 		if (owner instanceof Hero && owner.buff(Momentum.class) != null && owner.buff(Momentum.class).freerunning()){
 			accFactor *= 1f + 0.2f*((Hero) owner).pointsInTalent(Talent.PROJECTILE_MOMENTUM,Talent.RK_FREERUNNER);
 		}
+
+		accFactor *= adjacentAccFactor(owner, target);
+
 		return accFactor;
+	}
+
+	protected float rangedAccFactor(Char owner) {
+		float factor = .5f;
+		if(owner instanceof Hero) {
+			// +50% / +70% / +90% / +110%
+			factor += 0.2f*((Hero)owner).pointsInTalent(Talent.POINT_BLANK);
+		};
+		return 1 + factor;
+	}
+
+	protected float adjacentAccFactor(Char owner, Char target){
+		if (Dungeon.level.adjacent( owner.pos, target.pos )) {
+			float factor = 0.5f;
+			if (owner instanceof Hero){
+				// -50% / -30% / -10% / +10%
+				int points = ((Hero)owner).pointsInTalent(Talent.POINT_BLANK,Talent.RK_SNIPER);
+				factor += 0.2f*points;
+			}
+			return factor;
+		} else {
+			return rangedAccFactor(owner);
+		}
 	}
 
 	@Override
@@ -216,6 +271,9 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
+
+		RunicBlade.RunicSlashTracker tracker = Dungeon.hero.buff(RunicBlade.RunicSlashTracker.class);
+		if (tracker != null) tracker.detach(); // don't use it for built in effects
 		if (attacker == Dungeon.hero && Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.RK_SNIPER)
 				|| Dungeon.hero.hasTalent(Talent.SHARED_ENCHANTMENT) && Random.Int(4) <= Dungeon.hero.pointsInTalent(Talent.SHARED_ENCHANTMENT)){
 			if (((this instanceof Dart && ((Dart) this).crossbowHasEnchant(Dungeon.hero)) ||
@@ -232,6 +290,14 @@ abstract public class MissileWeapon extends Weapon {
 			Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
 			WandOfBlastWave.throwChar(defender, trajectory, 2, false, true, getClass());
+		}
+		if (tracker != null) tracker.attachTo(Dungeon.hero); // reapply it
+
+		MeleeWeapon.MeleeAbility abilityOverride = SafeCast.cast(MeleeWeapon.activeAbility, MeleeWeapon.MeleeAbility.class);
+		if (abilityOverride != null) {
+			MeleeWeapon wep = abilityOverride.weapon();
+			// so balanced
+			damage = wep.proc(attacker, defender, damage);
 		}
 
 		return super.proc(attacker, defender, damage);
@@ -263,6 +329,19 @@ abstract public class MissileWeapon extends Weapon {
 		}
 	}
 
+
+	public String status() {
+		//show quantity even when it is 1
+		String status = Integer.toString( quantity );
+
+		if(Dungeon.hero.belongings.thirdWep() == this) {
+			// show charges since it matters for the talent interactions
+			MeleeWeapon.Charger charger = Buff.affect(Dungeon.hero, MeleeWeapon.Charger.class);
+			status += " (" + (int)charger.charges[2] + "/" + charger.chargeCap(2) + ")";
+		}
+		return status;
+	}
+
 	@Override
 	public float castDelay(Char user, int dst) {
 		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 1){
@@ -280,13 +359,14 @@ abstract public class MissileWeapon extends Weapon {
 			int targets = 0;
 			Char enemy = Actor.findChar(dst);
 			for(Char c : Dungeon.level.mobs) if(c.alignment == Char.Alignment.ENEMY && (c == enemy || hero.canAttack(c) || c.canAttack(hero) || throwPos(hero,c.pos) == c.pos)) targets++;
-			speedFactor /= 1+.1f*hero.pointsInTalent(Talent.ONE_MAN_ARMY )*Math.max(0,targets-1);
+			speedFactor /= 1 + .11f * hero.pointsInTalent(Talent.ONE_MAN_ARMY) * Math.max(0,targets-1);
 		}
 		return speedFactor / (user.buff(Adrenaline.class) != null?1.5f:1);
 	}
 	public void onRangedAttack(Char enemy, int cell, boolean hit) {
 		if(hit) rangedHit(enemy, cell);
 		else rangedMiss(cell);
+		MeleeWeapon.markAbilityUsed();
 	}
 
 	protected void rangedHit( Char enemy, int cell ){
@@ -333,9 +413,14 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	public float durabilityPerUse(){
+		//classes that override durabilityPerUse can turn rounding off, to do their own rounding after more logic
+		return durabilityPerUse(true);
+	}
+
+	protected final float durabilityPerUse( boolean rounded){
 		int level = level();
 		if(Dungeon.hero.isClassed(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) level++;
-		float usages = baseUses * (float)(Math.pow(3, level));
+		float usages = baseUses * (float)(Math.pow(3, level()));
 
 		final float[] u = {usages};
 		Dungeon.hero.byTalent(
@@ -348,16 +433,19 @@ abstract public class MissileWeapon extends Weapon {
 		if (holster) {
 			usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
 		}
-		
+
 		usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
-		
+
 		//at 100 uses, items just last forever.
 		if (usages >= 100f && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS)) return 0;
 
-		usages = Math.round(usages);
+		if (rounded){usages = Math.round(usages);
 
 		//add a tiny amount to account for rounding error for calculations like 1/3
-		return (MAX_DURABILITY/usages) + 0.001f;
+		return (MAX_DURABILITY/usages) + 0.001f;} else {
+			//rounding can be disabled for classes that override durability per use
+			return MAX_DURABILITY/usages;
+		}
 	}
 	
 	protected void decrementDurability(){

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.blobs.Blob;
 import com.zrp200.rkpd2.actors.blobs.Web;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
@@ -87,7 +88,12 @@ public class WandOfDisintegration extends DamageWand {
 				terrainBonus += terrainPassed/3;
 				terrainPassed = terrainPassed%3;
 
-				chars.add( ch );
+				if (ch instanceof Mob && ((Mob) ch).state == ((Mob) ch).PASSIVE
+						&& !(Dungeon.level.mapped[c] || Dungeon.level.visited[c])){
+					//avoid harming undiscovered passive chars
+				} else {
+					chars.add(ch);
+				}
 			}
 
 			if (Dungeon.level.solid[c]) {

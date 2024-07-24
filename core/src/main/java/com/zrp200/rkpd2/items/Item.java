@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
@@ -51,6 +53,12 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.utils.DungeonSeed;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +76,7 @@ public class Item implements Bundlable {
 	public static final String AC_DROP		= "DROP";
 	public static final String AC_THROW		= "THROW";
 	
-	public String defaultAction = "";
+	protected String defaultAction = "";
 	public boolean usesTargeting;
 
 	//TODO should these be private and accessed through methods?
@@ -86,12 +94,13 @@ public class Item implements Bundlable {
 	public boolean cursed;
 	public boolean cursedKnown;
 
-	public boolean collected;
+	public boolean collected; // if on-collect talents have already been checked; prevents exploits
 
 	// Unique items persist through revival
 	public boolean unique = false;
 
 	// These items are preserved even if the hero's inventory is lost via unblessed ankh
+	// this is largely set by the resurrection window, items can override this to always be kept
 	public boolean keptThoughLostInvent = false;
 
 	// whether an item can be included in heroes remains
@@ -143,6 +152,10 @@ public class Item implements Bundlable {
 		keptThoughLostInvent = false;
 	}
 
+	public boolean keptThroughLostInventory(){
+		return keptThoughLostInvent;
+	}
+
 	public void doThrow( Hero hero ) {
 		GameScene.selectCell(thrower);
 	}
@@ -152,24 +165,32 @@ public class Item implements Bundlable {
 		GameScene.cancel();
 		curUser = hero;
 		curItem = this;
-		
+
 		if (action.equals( AC_DROP )) {
-			
+
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doDrop(hero);
 			}
-			
+
 		} else if (action.equals( AC_THROW )) {
-			
+
 			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
 				doThrow(hero);
 			}
-			
+
 		}
 	}
-	
+
+	//can be overridden if default action is variable
+	public String defaultAction(){
+		return defaultAction;
+	}
+
 	public void execute( Hero hero ) {
-		execute( hero, getDefaultAction());
+		String action = defaultAction();
+		if (action != null) {
+			execute(hero, defaultAction());
+		}
 	}
 	
 	protected void onThrow( int cell ) {
@@ -216,6 +237,7 @@ public class Item implements Bundlable {
 			Badges.validateItemLevelAquired( this );
 			Talent.onItemCollected( Dungeon.hero, this );
 			if (isIdentified()) Catalog.setSeen(getClass());
+
 		}
 
 		if (stackable) {
@@ -223,6 +245,23 @@ public class Item implements Bundlable {
 				if (isSimilar( item )) {
 					item.merge( this );
 					item.updateQuickslot();
+					if (TippedDart.lostDarts > 0){
+						Dart d = new Dart();
+						d.quantity(TippedDart.lostDarts);
+						TippedDart.lostDarts = 0;
+						if (!d.collect()){
+							//have to handle this in an actor as we can't manipulate the heap during pickup
+							Actor.add(new Actor() {
+								{ actPriority = VFX_PRIO; }
+								@Override
+								protected boolean act() {
+									Dungeon.level.drop(d, Dungeon.hero.pos).sprite.drop();
+									Actor.remove(this);
+									return true;
+								}
+							});
+						}
+					}
 					return true;
 				}
 			}
@@ -328,7 +367,8 @@ public class Item implements Bundlable {
 	//note that not all item properties should care about buffs/debuffs! (e.g. str requirement)
 	public int buffedLvl(){
 		int lvl = level();
-		if ((isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )) && Dungeon.hero.buff(Degrade.class) != null) {
+		//only the hero can be affected by Degradation
+		if (Dungeon.hero.buff(Degrade.class) != null && (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this ))) {
 			lvl = Degrade.reduceLevel(lvl);
 			if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		}
@@ -422,13 +462,12 @@ public class Item implements Bundlable {
 	public void onHeroGainExp( int expAmount, Hero hero ){
 		//do nothing by default
 	}
-	
+
 	public static void evoke( Hero hero ) {
 		hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 	}
-	
-	@Override
-	public String toString() {
+
+	public String title() {
 
 		String name = name();
 
@@ -636,6 +675,7 @@ public class Item implements Bundlable {
 						public void call() {
 							curUser = user;
 							Item.this.detach(user.belongings.backpack).onThrow(cell);
+							user.spend(delay);
 							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES,Talent.KINGS_VISION)
 									&& !(Item.this instanceof MissileWeapon)
 									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null){
@@ -646,7 +686,7 @@ public class Item implements Bundlable {
 									Talent.Cooldown.affectHero(Talent.ImprovisedProjectileCooldown.class);
 								}
 							}
-							if(!forceSkipDelay) user.spendAndNext(delay);
+							if(!forceSkipDelay) user.next();
 						}
 					});
 		}

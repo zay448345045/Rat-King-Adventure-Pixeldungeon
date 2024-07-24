@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,18 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.watabou.glwrap.Blending;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Music;
-import com.watabou.utils.FileUtils;
-import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Chrome;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.GamesInProgress;
+import com.zrp200.rkpd2.Rankings;
+import com.zrp200.rkpd2.SPDSettings;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.effects.BannerSprites;
 import com.zrp200.rkpd2.effects.Fireball;
+import com.zrp200.rkpd2.journal.Document;
+import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.Archs;
 import com.zrp200.rkpd2.ui.Icons;
@@ -38,19 +40,31 @@ import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.StyledButton;
 import com.zrp200.rkpd2.windows.WndError;
 import com.zrp200.rkpd2.windows.WndHardNotification;
+import com.watabou.glwrap.Blending;
+import com.watabou.input.ControllerHandler;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Music;
+import com.watabou.utils.FileUtils;
 
 import java.util.Collections;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = ShatteredPixelDungeon.vDLC_1_5;
+	private static final int LATEST_UPDATE = ShatteredPixelDungeon.V2_0_0;
+
+	//used so that the game does not keep showing the window forever if cleaning fails
+	private static boolean triedCleaningTemp = false;
+
 	@Override
 	public void create() {
 		super.create();
 
 		final int previousVersion = SPDSettings.version();
 
-		if (FileUtils.cleanTempFiles()){
+		if (!triedCleaningTemp && FileUtils.cleanTempFiles()){
 			add(new WndHardNotification(Icons.get(Icons.WARNING),
 					Messages.get(WndError.class, "title"),
 					Messages.get(this, "save_warning"),
@@ -59,6 +73,7 @@ public class WelcomeScene extends PixelScene {
 				@Override
 				public void hide() {
 					super.hide();
+					triedCleaningTemp = true;
 					ShatteredPixelDungeon.resetScene();
 				}
 			});
@@ -124,10 +139,20 @@ public class WelcomeScene extends PixelScene {
 			protected void onClick() {
 				super.onClick();
 				if (previousVersion == 0 || SPDSettings.intro()){
+
+					if (previousVersion > 0){
+						updateVersion(previousVersion);
+					}
+
 					SPDSettings.version(ShatteredPixelDungeon.versionCode);
 					GamesInProgress.selectedClass = null;
-					GamesInProgress.curSlot = 1;
-					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+					GamesInProgress.curSlot = GamesInProgress.firstEmpty();
+					if (GamesInProgress.curSlot == -1 || Rankings.INSTANCE.totalNumber > 0){
+						SPDSettings.intro(false);
+						ShatteredPixelDungeon.switchScene(TitleScene.class);
+					} else {
+						ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+					}
 				} else {
 					updateVersion(previousVersion);
 					ShatteredPixelDungeon.switchScene(TitleScene.class);
@@ -162,7 +187,7 @@ public class WelcomeScene extends PixelScene {
 		RenderedTextBlock text = PixelScene.renderTextBlock(6);
 		String message;
 		if (previousVersion == 0 || SPDSettings.intro()) {
-			message = Messages.get(this, "welcome_msg");
+			message = Document.INTROS.pageBody(0);
 		} else if (previousVersion <= ShatteredPixelDungeon.versionCode) {
 			if (previousVersion < LATEST_UPDATE){
 				message = Messages.get(this, "update_intro");
@@ -172,16 +197,31 @@ public class WelcomeScene extends PixelScene {
 				message = Messages.get(this, "patch_intro");
 				message += "\n";
 				message += "\n" + Messages.get(this, "patch_bugfixes");
+//				message += "\n" + Messages.get(this, "patch_translations");
 
 			}
+
 		} else {
 			message = Messages.get(this, "what_msg");
 		}
+
 		text.text(message, Math.min(w-20, 300));
 		float textSpace = okay.top() - topRegion - 4;
 		text.setPos((w - text.width()) / 2f, (topRegion + 2) + (textSpace - text.height())/2);
 		add(text);
 
+		if (SPDSettings.intro() && ControllerHandler.isControllerConnected()){
+			addToFront(new WndHardNotification(Icons.CONTROLLER.get(),
+					Messages.get(WelcomeScene.class, "controller_title"),
+					Messages.get(WelcomeScene.class, "controller_body"),
+					Messages.get(WelcomeScene.class, "controller_okay"),
+					0){
+				@Override
+				public void onBackPressed() {
+					//do nothing, must press the okay button
+				}
+			});
+		}
 	}
 
 	private void placeTorch( float x, float y ) {
@@ -195,6 +235,17 @@ public class WelcomeScene extends PixelScene {
 		//update rankings, to update any data which may be outdated
 		//FIXME this is set to true temporarily as we want to run this no matter what, to ensure the v0.9.0a- badges bug is fixed
 		if (previousVersion < LATEST_UPDATE){
+
+			Badges.loadGlobal();
+			Journal.loadGlobal();
+
+			//pre-unlock Duelist for those who already have a win
+			if (previousVersion <= ShatteredPixelDungeon.v2_0_2){
+				if (Badges.isUnlocked(Badges.Badge.VICTORY) && !Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST)){
+					Badges.unlock(Badges.Badge.UNLOCK_DUELIST);
+				}
+			}
+
 			try {
 				Rankings.INSTANCE.load();
 				for (Rankings.Record rec : Rankings.INSTANCE.records.toArray(new Rankings.Record[0])){
@@ -202,9 +253,9 @@ public class WelcomeScene extends PixelScene {
 						Rankings.INSTANCE.loadGameData(rec);
 						Rankings.INSTANCE.saveGameData(rec);
 					} catch (Exception e) {
-						//if we encounter a fatal per-record error, then clear that record
-						Rankings.INSTANCE.records.remove(rec);
-						ShatteredPixelDungeon.reportException(e);
+						//if we encounter a fatal per-record error, then clear that record's data
+						rec.gameData = null;
+						Game.reportException( new RuntimeException("Rankings Updating Failed!",e));
 					}
 				}
 				if (Rankings.INSTANCE.latestDaily != null){
@@ -212,9 +263,9 @@ public class WelcomeScene extends PixelScene {
 						Rankings.INSTANCE.loadGameData(Rankings.INSTANCE.latestDaily);
 						Rankings.INSTANCE.saveGameData(Rankings.INSTANCE.latestDaily);
 					} catch (Exception e) {
-						//if we encounter a fatal per-record error, then clear that record
-						Rankings.INSTANCE.latestDaily = null;
-						ShatteredPixelDungeon.reportException(e);
+						//if we encounter a fatal per-record error, then clear that record's data
+						Rankings.INSTANCE.latestDaily.gameData = null;
+						Game.reportException( new RuntimeException("Rankings Updating Failed!",e));
 					}
 				}
 				Collections.sort(Rankings.INSTANCE.records, Rankings.scoreComparator);
@@ -222,35 +273,13 @@ public class WelcomeScene extends PixelScene {
 			} catch (Exception e) {
 				//if we encounter a fatal error, then just clear the rankings
 				FileUtils.deleteFile( Rankings.RANKINGS_FILE );
-				ShatteredPixelDungeon.reportException(e);
+				Game.reportException( new RuntimeException("Rankings Updating Failed!",e));
 			}
-			Dungeon.daily = false;
+			Dungeon.daily = Dungeon.dailyReplay = false;
 
-		}
+			Badges.saveGlobal(true);
+			Journal.saveGlobal(true);
 
-		/*
-		//if the player has beaten Goo, automatically give all guidebook pages
-		if (previousVersion <= ShatteredPixelDungeon.v0_1_0) {
-			Badges.loadGlobal();
-			if (Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_1)) {
-				for (String page : Document.ADVENTURERS_GUIDE.pageNames()) {
-					Document.ADVENTURERS_GUIDE.readPage(page);
-				}
-			}
-		}*/
-		/*resetting language preference back to native for finnish speakers if they were on english
-		//This is because Finnish was unmaintained for quite a while
-		if ( previousVersion <= 500
-				&& Languages.matchLocale(Locale.getDefault()) == Languages.FINNISH
-				&& Messages.lang() == Languages.ENGLISH) {
-			SPDSettings.language(Languages.FINNISH);
-			Messages.setup(Languages.FINNISH);
-		}
-		*/
-
-		//defaults to false for older users
-		if (previousVersion <= ShatteredPixelDungeon.V1_0_0){
-			SPDSettings.quickSwapper(false);
 		}
 
 		SPDSettings.version(ShatteredPixelDungeon.versionCode);

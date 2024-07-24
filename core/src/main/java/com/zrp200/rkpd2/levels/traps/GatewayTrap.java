@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,21 @@ package com.zrp200.rkpd2.levels.traps;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -129,9 +137,12 @@ public class GatewayTrap extends Trap {
 				Heap heap = Dungeon.level.heaps.get(pos + i);
 				if (heap != null && heap.type == Heap.Type.HEAP){
 					Item item = heap.pickUp();
-					Heap dropped = Dungeon.level.drop( item, telePos );
-					dropped.type = heap.type;
-					dropped.sprite.view( dropped );
+					Dungeon.level.drop( item, telePos );
+					if (item instanceof Honeypot.ShatteredPot){
+						((Honeypot.ShatteredPot)item).movePot(pos, telePos);
+					}
+					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+					CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 				}
 			}
 		}

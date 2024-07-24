@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,6 +199,10 @@ protected void copyAnimations(CharSprite other) {
 	}
 
 	public void showStatus( int color, String text, Object... args ) {
+		showStatusWithIcon(color, text, FloatingText.NO_ICON, args);
+	}
+
+	public void showStatusWithIcon( int color, String text, int icon, Object... args ) {
 		if (visible) {
 			if (args.length > 0) {
 				text = Messages.format( text, args );
@@ -206,9 +210,9 @@ protected void copyAnimations(CharSprite other) {
 			float x = destinationCenter().x;
 			float y = destinationCenter().y - height()/2f;
 			if (ch != null) {
-				FloatingText.show( x, y, ch.pos, text, color );
+				FloatingText.show( x, y, ch.pos, text, color, icon, true );
 			} else {
-				FloatingText.show( x, y, text, color );
+				FloatingText.show( x, y, -1, text, color, icon, true );
 			}
 		}
 	}
@@ -271,32 +275,32 @@ protected void copyAnimations(CharSprite other) {
 		else callback.call(); // this is the public behavior.
 	}
 
-	public void attack( int cell ) {
+	public synchronized void attack( int cell ) {
 		turnTo( ch.pos, cell );
 		play( attack );
 	}
 
-	public void attack( int cell, Callback callback ) {
+	public final synchronized void attack( int cell, Callback callback ) {
 		doAfterAnim(callback,true);
 		attack(cell);
 	}
 
-	public void operate( int cell ) {
+	public synchronized void operate( int cell ) {
 		turnTo( ch.pos, cell );
 		play( operate );
 	}
 
-	public void operate( int cell, Callback callback ) {
+	public final synchronized void operate( int cell, Callback callback ) {
 		doAfterAnim(callback,true);
 		operate(cell);
 	}
 
-	public void zap( int cell ) {
+	public synchronized void zap( int cell ) {
 		turnTo( ch.pos, cell );
 		play( zap );
 	}
 
-	public void zap( int cell, Callback callback ) {
+	public final synchronized void zap( int cell, Callback callback ) {
 		doAfterAnim(callback,true);
 		zap( cell );
 	}
@@ -313,10 +317,10 @@ protected void copyAnimations(CharSprite other) {
 
 	public void jump( int from, int to, Callback callback ) {
 		float distance = Math.max( 1f, Dungeon.level.trueDistance( from, to ));
-		jump( from, to, callback, distance * 2, distance * 0.1f );
+		jump( from, to, distance * 2, distance * 0.1f, callback );
 	}
 
-	public void jump( int from, int to, Callback callback, float height, float duration ) {
+	public void jump( int from, int to, float height, float duration,  Callback callback ) {
 		jumpCallback = callback;
 
 		jumpTweener = new JumpTweener( this, worldToCamera( to ), height, duration );
@@ -457,7 +461,10 @@ protected void copyAnimations(CharSprite other) {
 				healing.pour(Speck.factory(Speck.HEALING), 0.5f);
 				break;
 			case SHIELDED:
-				GameScene.effect( shield = new ShieldHalo( this ));
+				if (shield != null) {
+					shield.killAndErase();
+				}
+				GameScene.effect(shield = new ShieldHalo(this));
 				break;
 			case SHRUNK:
 				scale.x = 0.75f;
@@ -608,6 +615,7 @@ protected void copyAnimations(CharSprite other) {
 		aura = new Flare(5, size);
 		aura.angularSpeed = 90;
 		aura.color(color, true);
+		aura.visible = visible;
 
 		if (parent != null) {
 			aura.show(this, 0);
@@ -844,6 +852,7 @@ protected void copyAnimations(CharSprite other) {
 			if (jumpCallback != null) {
 				jumpCallback.call();
 			}
+			GameScene.sortMobSprites();
 
 		} else if (tweener == motion) {
 
@@ -854,6 +863,7 @@ protected void copyAnimations(CharSprite other) {
 				motion = null;
 				ch.onMotionComplete();
 
+				GameScene.sortMobSprites();
 				notifyAll();
 			}
 
@@ -861,8 +871,7 @@ protected void copyAnimations(CharSprite other) {
 	}
 
 	@Override
-	public void onComplete( Animation anim ) {
-
+	public synchronized void onComplete( Animation anim ) {
 		if (animCallback != null) {
 			Callback executing = animCallback;
 			animCallback = null;

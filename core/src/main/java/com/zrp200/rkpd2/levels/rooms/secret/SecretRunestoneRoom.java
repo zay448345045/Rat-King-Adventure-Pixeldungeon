@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,18 +69,18 @@ public class SecretRunestoneRoom extends SecretRoom {
 		Heap.Type type = Heap.Type.HEAP;
 		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
-		
+
 		int dropPos;
 		
 		do{
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY);
-		level.drop( Generator.random(Generator.Category.STONE), dropPos).type = type;
+		level.drop( Generator.randomUsingDefaults(Generator.Category.STONE), dropPos).type = type;
 		
 		do{
 			dropPos = level.pointToCell(random());
 		} while (level.map[dropPos] != Terrain.EMPTY || level.heaps.get(dropPos) != null);
-		level.drop( Generator.random(Generator.Category.STONE), dropPos).type = type;
+		level.drop( Generator.randomUsingDefaults(Generator.Category.STONE), dropPos).type = type;
 		
 		do{
 			dropPos = level.pointToCell(random());

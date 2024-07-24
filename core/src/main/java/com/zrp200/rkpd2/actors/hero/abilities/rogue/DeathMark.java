@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,19 +31,24 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.HeroIcon;
-import com.zrp200.rkpd2.utils.BArray;
+import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class DeathMark extends ArmorAbility {
+
+	{
+		baseChargeUse = 25f;
+	}
 
 	public static float damageMultiplier() {
 		if (hero.hasTalent(Talent.CATACLYSMIC_ENERGY)) return 1f;
@@ -55,8 +60,9 @@ public class DeathMark extends ArmorAbility {
 		return Messages.get(this, "prompt");
 	}
 
-	{
-		baseChargeUse = 25f;
+	@Override
+	public int targetedPos(Char user, int dst) {
+		return dst;
 	}
 
 	@Override
@@ -80,7 +86,7 @@ public class DeathMark extends ArmorAbility {
 
 		Char ch = Actor.findChar(target);
 
-		if (ch == null){
+		if (ch == null || !Dungeon.level.heroFOV[target]){
 			GLog.w(Messages.get(this, "no_target"));
 			return;
 		} else if (ch.alignment != Char.Alignment.ENEMY){
@@ -88,10 +94,7 @@ public class DeathMark extends ArmorAbility {
 			return;
 		}
 
-		if (ch != null){
-			Buff.affect(ch, DeathMarkTracker.class, 5f + hero.pointsInTalent(Talent.CATACLYSMIC_ENERGY)
-			 + (hero.hasTalent(Talent.CATACLYSMIC_ENERGY) ? 1 : 0)).setInitialHP(ch.HP);
-		}
+		Buff.affect(ch, DeathMarkTracker.class, DeathMarkTracker.DURATION).setInitialHP(ch.HP);
 
 		armor.useCharge(hero, this);
 		hero.sprite.zap(target);
@@ -161,6 +164,8 @@ public class DeathMark extends ArmorAbility {
 
 	public static class DeathMarkTracker extends FlavourBuff {
 
+		public static float DURATION = 5f;
+
 		int initialHP = 0;
 
 		{
@@ -179,14 +184,8 @@ public class DeathMark extends ArmorAbility {
 		}
 
 		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-
-		@Override
-		public String desc() {
-			//TODO show initial HP here?
-			return Messages.get(this, "desc", dispTurns(visualcooldown()));
+		public float iconFadePercent() {
+			return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 		}
 
 		public void setInitialHP(int hp){
@@ -217,6 +216,7 @@ public class DeathMark extends ArmorAbility {
 				target.die(this);
 				int shld = Math.round(initialHP * (0.125f* hero.shiftedPoints(Talent.DEATHLY_DURABILITY)));
 				if (shld > 0 && target.alignment != Char.Alignment.ALLY){
+					Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shld), FloatingText.SHIELDING);
 					Buff.affect(hero, Barrier.class).setShield(shld);
 				}
 			}

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@
 
 package com.zrp200.rkpd2.levels.features;
 
-import com.watabou.utils.Random;
+import static com.zrp200.rkpd2.utils.SafeCast.cast;
+
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -31,6 +32,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.ArmoredStatue;
+import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.Dewdrop;
@@ -40,6 +42,7 @@ import com.zrp200.rkpd2.items.artifacts.DriedRose;
 import com.zrp200.rkpd2.items.artifacts.SandalsOfNature;
 import com.zrp200.rkpd2.items.food.Berry;
 import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.MiningLevel;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
 
@@ -72,9 +75,7 @@ public class HighGrass {
 		if (freezeTrample) return;
 		
 		Char ch = Actor.findChar(pos);
-		boolean furrow = ch instanceof Hero
-				&& (((Hero)ch).isClassed(HeroClass.HUNTRESS)
-				|| ((Hero)ch).isClassed(HeroClass.RAT_KING));
+		boolean furrow = ch instanceof Hero && ((Hero)ch).heroClass.is(HeroClass.HUNTRESS);
 		if (level.map[pos] == Terrain.FURROWED_GRASS){
 			if (ch instanceof Hero && furrow){
 				//Do nothing
@@ -114,6 +115,7 @@ public class HighGrass {
 													Talent.ROYAL_PRIVILEGE, 2);
 				if (totalBerries > 0){
 
+					// this was removed in shattered but I still need it
 					//pre-1.3.0 saves
 					Talent.NatureBerriesAvailable oldAvailable = ch.buff(Talent.NatureBerriesAvailable.class);
 					if (oldAvailable != null){
@@ -144,20 +146,28 @@ public class HighGrass {
 
 				}
 			}
-			
+
+			//grass gives 1/3 the normal amount of loot in fungi level
+			if (Dungeon.level instanceof MiningLevel
+					&& Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI
+					&& Random.Int(3) != 0){
+				naturalismLevel = -1;
+			}
+
 			if (naturalismLevel >= 0) {
 				// TODO NERF
 				// sigh.
 				int points = Dungeon.hero.pointsInTalent(Talent.NATURES_BETTER_AID);
-				// Seed, scales from 1/25 to 1/5
+				// Seed, scales from 1/25 to 1/9
 				// NBA increases by 17%/33%/50%
-				if (Random.Float() < (1+points/6f)/(25 - (naturalismLevel * 5))) {
+				if (Random.Float() < (1+points/6f)/(25 - (naturalismLevel * 4))) {
 					level.drop(Generator.random(Generator.Category.SEED), pos).sprite.drop();
 				}
 				
-				// Dew, scales from 1/6 to 1/3
+				// Dew, scales from 1/6 to 1/4
 				// NBA increases by 1/12 / 1/6 / 1/4
-				if (Random.Float(24 - naturalismLevel*3) <= 3*(1 + .25*(points/3f))) {
+				// todo this probably isn't right.
+				if (Random.Float(24 - naturalismLevel*2) <= 3*(1 + .25*(points/3f))) {
 					level.drop(new Dewdrop(), pos).sprite.drop();
 				}
 			}

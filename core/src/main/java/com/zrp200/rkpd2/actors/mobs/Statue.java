@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,20 +48,27 @@ public class Statue extends Mob {
 	}
 	
 	public Weapon weapon;
+
+	public boolean levelGenStatue = true;
 	
 	public Statue() {
 		super();
 		
-		do {
-			weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
-		} while (weapon.cursed);
-		
-		weapon.enchant( Enchantment.random() );
-		
 		HP = HT = 15 + Dungeon.getDepth() * 5;
 		defenseSkill = 4 + Dungeon.getDepth();
 	}
-	
+
+	public void createWeapon( boolean useDecks ){
+		if (useDecks) {
+			weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
+		} else {
+			weapon = (MeleeWeapon) Generator.randomUsingDefaults(Generator.Category.WEAPON);
+		}
+		levelGenStatue = useDecks;
+		weapon.cursed = false;
+		weapon.enchant( Enchantment.random() );
+	}
+
 	private static final String WEAPON	= "weapon";
 	
 	@Override
@@ -78,7 +85,7 @@ public class Statue extends Mob {
 	
 	@Override
 	protected boolean act() {
-		if (Dungeon.level.heroFOV[pos]) {
+		if (levelGenStatue && Dungeon.level.visited[pos]) {
 			Notes.add( Notes.Landmark.STATUE );
 		}
 		return super.act();
@@ -91,7 +98,7 @@ public class Statue extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)((9 + Dungeon.getDepth()) * weapon.accuracyFactor(this));
+		return (int)((9 + Dungeon.getDepth()) * weapon.accuracyFactor( this, target ));
 	}
 	
 	@Override
@@ -106,15 +113,18 @@ public class Statue extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, Dungeon.getDepth() + weapon.defenseFactor(this));
+		return super.drRoll() + Random.NormalIntRange(0, Dungeon.getDepth() + weapon.defenseFactor(this));
 	}
 	
 	@Override
-	public void add(Buff buff) {
-		super.add(buff);
-		if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE){
-			state = HUNTING;
+	public boolean add(Buff buff) {
+		if (super.add(buff)) {
+			if (state == PASSIVE && buff.type == Buff.buffType.NEGATIVE) {
+				state = HUNTING;
+			}
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -132,7 +142,7 @@ public class Statue extends Mob {
 		damage = super.attackProc( enemy, damage );
 		damage = weapon.proc( this, enemy, damage );
 		if (!enemy.isAlive() && enemy == Dungeon.hero){
-			Dungeon.fail(getClass());
+			Dungeon.fail(this);
 			GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", name())) );
 		}
 		return damage;
@@ -154,7 +164,9 @@ public class Statue extends Mob {
 	
 	@Override
 	public void destroy() {
-		Notes.remove( Notes.Landmark.STATUE );
+		if (levelGenStatue) {
+			Notes.remove( Notes.Landmark.STATUE );
+		}
 		super.destroy();
 	}
 
@@ -179,11 +191,18 @@ public class Statue extends Mob {
 	}
 
 	public static Statue random(){
+		return random( true );
+	}
+
+	public static Statue random( boolean useDecks ){
+		Statue statue;
 		if (Random.Int(10) == 0){
-			return new ArmoredStatue();
+			statue = new ArmoredStatue();
 		} else {
-			return new Statue();
+			statue = new Statue();
 		}
+		statue.createWeapon(useDecks);
+		return statue;
 	}
 	
 }

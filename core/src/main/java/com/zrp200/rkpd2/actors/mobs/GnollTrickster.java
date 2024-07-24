@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,9 @@ import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.GnollTricksterSprite;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 public class GnollTrickster extends Gnoll {
 
@@ -49,6 +52,7 @@ public class GnollTrickster extends Gnoll {
 
 		EXP = 5;
 
+		WANDERING = new Wandering();
 		state = WANDERING;
 
 		//at half quantity, see createLoot()
@@ -87,11 +91,11 @@ public class GnollTrickster extends Gnoll {
 
 	@Override
 	public boolean canAttack( Char enemy ) {
-		if (buff(ChampionEnemy.Paladin.class) != null){
-			return false;
-		}
-		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-		return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
+        if (buff(ChampionEnemy.Paladin.class) != null){
+            return false;
+        }
+		return !Dungeon.level.adjacent( pos, enemy.pos )
+				&& (super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos);
 	}
 
 	@Override
@@ -153,6 +157,21 @@ public class GnollTrickster extends Gnoll {
 		super.die( cause );
 		if (alignment != Alignment.ALLY)
 			Ghost.Quest.process();
+	}
+
+	protected class Wandering extends Mob.Wandering{
+		@Override
+		protected int randomDestination() {
+			//of two potential wander positions, picks the one closest to the hero
+			int pos1 = super.randomDestination();
+			int pos2 = super.randomDestination();
+			PathFinder.buildDistanceMap(Dungeon.hero.pos, Dungeon.level.passable);
+			if (PathFinder.distance[pos2] < PathFinder.distance[pos1]){
+				return pos2;
+			} else {
+				return pos1;
+			}
+		}
 	}
 
 	private static final String COMBO = "combo";

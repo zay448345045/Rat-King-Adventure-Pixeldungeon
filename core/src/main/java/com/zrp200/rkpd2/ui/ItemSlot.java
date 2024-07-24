@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,9 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.rings.Ring;
+import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
+import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -49,6 +51,8 @@ public class ItemSlot extends Button {
 	public static final int FADED       = 0x999999;
 	public static final int WARNING		= 0xFF8800;
 	public static final int ENHANCED	= 0x3399FF;
+	public static final int MASTERED	= 0xFFFF44;
+	public static final int CURSE_INFUSED	= 0x8800FF;
 	
 	private static final float ENABLED	= 1.0f;
 	private static final float DISABLED	= 0.3f;
@@ -177,6 +181,15 @@ public class ItemSlot extends Button {
 
 	}
 
+	public void alpha( float value ){
+		if (!active) value *= 0.3f;
+		if (sprite != null)     sprite.alpha(value);
+		if (extra != null)      extra.alpha(value);
+		if (status != null)     status.alpha(value);
+		if (itemIcon != null)   itemIcon.alpha(value);
+		if (level != null)      level.alpha(value);
+	}
+
 	public void clear(){
 		item(null);
 		enable(true);
@@ -229,6 +242,15 @@ public class ItemSlot extends Button {
 
 		status.text( item.status() );
 
+		//thrown weapons on their last use show quantity in orange, unless they are single-use
+		if (item instanceof MissileWeapon
+				&& ((MissileWeapon) item).durabilityLeft() <= 50f
+				&& ((MissileWeapon) item).durabilityLeft() <= ((MissileWeapon) item).durabilityPerUse()){
+			status.hardlight(WARNING);
+		} else {
+			status.resetColor();
+		}
+		
 		if(item instanceof ClassArmor) {
 			OmniAbility ability = SafeCast.cast(hero.armorAbility, OmniAbility.class);
 			if(ability != null && ability.activeAbility() != null) {
@@ -255,6 +277,10 @@ public class ItemSlot extends Button {
 				extra.text( Messages.format( TXT_STRENGTH, str ) );
 				if (str > hero.STR()) {
 					extra.hardlight( DEGRADED );
+				} else if (item instanceof Weapon && ((Weapon) item).masteryPotionBonus){
+					extra.hardlight( MASTERED );
+				} else if (item instanceof Armor && ((Armor) item).masteryPotionBonus) {
+					extra.hardlight( MASTERED );
 				} else {
 					extra.resetColor();
 				}
@@ -278,7 +304,17 @@ public class ItemSlot extends Button {
 			level.text( Messages.format( TXT_LEVEL, buffedLvl ) );
 			level.measure();
 			if (trueLvl == buffedLvl || buffedLvl <= 0) {
-				level.hardlight(buffedLvl > 0 ? UPGRADED : DEGRADED);
+				if (buffedLvl > 0){
+					if ((item instanceof Weapon && ((Weapon) item).curseInfusionBonus)
+						|| (item instanceof Armor && ((Armor) item).curseInfusionBonus)
+							|| (item instanceof Wand && ((Wand) item).curseInfusionBonus)){
+						level.hardlight(CURSE_INFUSED);
+					} else {
+						level.hardlight(UPGRADED);
+					}
+				} else {
+					level.hardlight( DEGRADED );
+				}
 			} else {
 				level.hardlight(buffedLvl > trueLvl ? ENHANCED : WARNING);
 			}

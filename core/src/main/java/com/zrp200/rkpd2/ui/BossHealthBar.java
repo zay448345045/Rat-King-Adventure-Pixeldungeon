@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ public class BossHealthBar extends Component {
 		bossInfo.setRect(x, y, bar.width, bar.height);
 
 		if (buffs != null) {
-			buffs.setRect(hp.x, hp.y + 5, 110, 7);
+			buffs.setRect(hp.x, hp.y + 5, 47, 8);
 		}
 
 		skull.x = bar.x+5;
@@ -158,6 +158,12 @@ public class BossHealthBar extends Component {
 			if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)){
 				boss = null;
 				visible = active = false;
+				if (buffs != null) {
+					BuffIndicator.setBossInstance(null);
+					remove(buffs);
+					buffs.destroy();
+					buffs = null;
+				}
 			} else {
 
 				int health = boss.HP;
@@ -171,8 +177,6 @@ public class BossHealthBar extends Component {
 					hp.scale.x = 1;
 					hp.color(0xffff00);
 				}
-
-				if (hp.scale.x < 0.25f) bleed( true );
 
 				if (bleeding != blood.on){
 					if (bleeding)   skull.tint( 0xcc0000, 0.6f );
@@ -200,7 +204,8 @@ public class BossHealthBar extends Component {
 			instance.visible = instance.active = true;
 			if (boss != null){
 				if (instance.buffs != null){
-					instance.buffs.killAndErase();
+					instance.remove(instance.buffs);
+					instance.buffs.destroy();
 				}
 				instance.buffs = new BuffIndicator(boss, false);
 				BuffIndicator.setBossInstance(instance.buffs);
@@ -216,6 +221,10 @@ public class BossHealthBar extends Component {
 
 	public static void bleed(boolean value){
 		bleeding = value;
+	}
+
+	public static boolean isBleeding(){
+		return isAssigned() && bleeding;
 	}
 
 }

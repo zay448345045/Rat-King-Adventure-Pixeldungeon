@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,11 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Heap;
-import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Noisemaker extends Bomb {
@@ -40,105 +39,111 @@ public class Noisemaker extends Bomb {
 		image = ItemSpriteSheet.NOISEMAKER;
 	}
 
-	public void setTrigger(int cell){
-
-		Buff.affect(Dungeon.hero, Trigger.class).set(cell);
-
-		CellEmitter.center( cell ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		Sample.INSTANCE.play( Assets.Sounds.ALERT );
-
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			mob.beckon( cell );
-		}
-
+	@Override
+	protected Fuse createFuse() {
+		return new NoisemakerFuse();
 	}
-	
-	public static class Trigger extends Buff {
 
-		{
-			revivePersists = true;
+	@Override
+	public boolean doPickUp(Hero hero, int pos) {
+		//cannot pickup after first trigger
+		if (fuse instanceof NoisemakerFuse && ((NoisemakerFuse) fuse).triggered){
+			return false;
 		}
+		return super.doPickUp(hero, pos);
+	}
 
-		int cell;
-		int floor;
-		int left;
-		
-		public void set(int cell){
-			floor = Dungeon.getDepth();
-			this.cell = cell;
-			left = 6;
-		}
-		
+	//does not instantly explode
+	public static class NoisemakerFuse extends Fuse {
+
+		private boolean triggered = false;
+
+		private int left;
+
 		@Override
-		public boolean act() {
+		protected boolean act() {
+			if (!triggered){
+				//acts like a normal fuse until first trigger
+				return super.act();
+			} else {
 
-			if (Dungeon.getDepth() != floor){
-				spend(TICK);
+				for (Heap heap : Dungeon.level.heaps.valueList()) {
+					if (heap.items.contains(bomb)) {
+
+						//active noisemakers cannot be snuffed out, blow it up!
+						if (bomb.fuse != this){
+							trigger(heap);
+
+						//check if there is a nearby char, blow up if there is
+						} else if (Actor.findChar(heap.pos) != null)  {
+
+
+							heap.items.remove(bomb);
+							if (heap.items.isEmpty()) {
+								heap.destroy();
+							}
+
+							trigger(heap);
+
+						//otherwise tick down our counter to alert
+						} else {
+
+							spend(TICK);
+							left--;
+
+							if (left <= 0){
+								CellEmitter.center( heap.pos ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+								Sample.INSTANCE.play( Assets.Sounds.ALERT );
+
+								for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+									mob.beckon( heap.pos );
+								}
+								left = 6;
+							}
+						}
+
+						return true;
+					}
+				}
+
+				//can't find our bomb, something must have removed it, do nothing.
+				bomb.fuse = null;
+				Actor.remove( this );
 				return true;
 			}
-
-			Noisemaker bomb = null;
-			Heap heap = Dungeon.level.heaps.get(cell);
-
-			if (heap != null){
-				for (Item i : heap.items){
-					if (i instanceof Noisemaker){
-						bomb = (Noisemaker) i;
-						break;
-					}
-				}
-			}
-
-			if (bomb == null) {
-				detach();
-
-			} else if (Actor.findChar(cell) != null)  {
-
-				heap.items.remove(bomb);
-				if (heap.items.isEmpty()) {
-					heap.destroy();
-				}
-
-				detach();
-				bomb.explode(cell);
-
-			} else {
-				spend(TICK);
-
-				left--;
-
-				if (left <= 0){
-					CellEmitter.center( cell ).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-					Sample.INSTANCE.play( Assets.Sounds.ALERT );
-
-					for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-						mob.beckon( cell );
-					}
-					left = 6;
-				}
-
-			}
-
-			return true;
 		}
 
-		private static final String CELL = "cell";
-		private static final String FLOOR = "floor";
+		@Override
+		//first trigger sets the alarm mechanism, second explodes
+		protected void trigger(Heap heap) {
+			if (!triggered) {
+				triggered = true;
+			} else {
+				super.trigger(heap);
+			}
+		}
+
+		@Override
+		public boolean freeze() {
+			if (!triggered) {
+				return super.freeze();
+			} else {
+				//noisemakers cannot have their fuse snuffed once triggered
+				return false;
+			}
+		}
+
 		private static final String LEFT = "left";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
 			super.storeInBundle(bundle);
-			bundle.put(CELL, cell);
-			bundle.put(FLOOR, floor);
 			bundle.put(LEFT, left);
 		}
-		
+
 		@Override
 		public void restoreFromBundle(Bundle bundle) {
 			super.restoreFromBundle(bundle);
-			cell = bundle.getInt(CELL);
-			floor = bundle.getInt(FLOOR);
 			left = bundle.getInt(LEFT);
 		}
 	}

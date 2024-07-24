@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.rings;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -29,35 +30,24 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.SafeCast;
 
-import java.text.DecimalFormat;
-
 public class RingOfEnergy extends Ring {
 
 	{
 		icon = ItemSpriteSheet.Icons.RING_ENERGY;
 	}
 
-	public String statsInfo() {
-		// manual implementation because custom message...
-		// FIXME: so we put bonus as variable in default info, but hardcode it here? ech
-		int level = level();
-		if(!isIdentified()) level(0);
-		double[] effect = {1.2,1.15};
-		String[] args = new String[2];
-		for(int i=0; i < 2; i++) {
-			args[i] = new DecimalFormat("#.##").format(100 * (Math.min(3f, Math.pow(effect[i], soloBuffedBonus()) - 1)));
-		}
-		level(level);
-		return Messages.get(this, isIdentified()?"stats":"typical_stats", (Object[]) args);
+	@Override
+	protected float multiplier() {
+		return 1.15f;
 	}
-	
+
 	@Override
 	protected RingBuff buff( ) {
 		return new Energy();
 	}
 	
 	public static float wandChargeMultiplier( Char target ){
-		return Math.min(3f, (float)Math.pow(1.20, getBuffedBonus(target, Energy.class)));
+		return Math.min(3f, (float)Math.pow(1.15, getBuffedBonus(target, Energy.class)));
 	}
 
 	public static float artifactChargeMultiplier( Char target ){
@@ -70,7 +60,11 @@ public class RingOfEnergy extends Ring {
 
 		return bonus;
 	}
-	
+
+	public static float armorChargeMultiplier( Char target ){
+		return (float)Math.pow(1.15, getBuffedBonus(target, Energy.class));
+	}
+
 	public class Energy extends RingBuff {
 	}
 }

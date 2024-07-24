@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -41,6 +41,7 @@ public class Corruption extends AllyBuff {
 	//corrupted enemies are usually fully healed and cleansed of most debuffs
 	public static void corruptionHeal(Char target){
 		target.HP = target.HT;
+		target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(target.HT), FloatingText.HEALING);
 		for (Buff buff : target.buffs()) {
 			if (buff.type == Buff.buffType.NEGATIVE
 					&& !(buff instanceof SoulMark)) {
@@ -57,10 +58,10 @@ public class Corruption extends AllyBuff {
 		AllyBuff.affectAndLoot(ch, hero, Corruption.class);
 		return true;
 	}
-	
+
 	@Override
 	public boolean act() {
-		buildToDamage += target.HT/200f;
+		buildToDamage += target.HT/100f;
 
 		int damage = (int)buildToDamage;
 		buildToDamage -= damage;
@@ -84,13 +85,4 @@ public class Corruption extends AllyBuff {
 		return BuffIndicator.CORRUPT;
 	}
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc");
-	}
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -51,22 +51,24 @@ public class MagicalSight extends FlavourBuff {
 	public float iconFadePercent() {
 		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
 	}
-	
+
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
+	public boolean attachTo(Char target) {
+		if (super.attachTo(target)){
+			Buff.detach(target, Blindness.class);
+			return true;
+		}
+		return false;
 	}
-	
+
 	@Override
 	public void detach() {
 		super.detach();
 		Dungeon.observe();
 		GameScene.updateFog();
 	}
-	
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
+
+	{
+		immunities.add(Blindness.class);
 	}
-	
 }

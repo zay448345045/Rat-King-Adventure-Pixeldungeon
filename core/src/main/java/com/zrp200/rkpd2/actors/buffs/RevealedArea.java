@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public class RevealedArea extends FlavourBuff{
 		type = Buff.buffType.POSITIVE;
 	}
 
-	public int pos, depth;
+	public int pos, depth, branch;
 	@SuppressWarnings("unused") public RevealedArea(){}
 	public RevealedArea(int pos, int depth) {
 		this.pos = pos;
@@ -82,15 +82,11 @@ public class RevealedArea extends FlavourBuff{
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", (int)visualcooldown());
 	}
 
+	private static final String BRANCH = "branch";
 	private static final String DEPTH = "depth";
 	private static final String POS = "pos";
 
@@ -98,6 +94,7 @@ public class RevealedArea extends FlavourBuff{
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(DEPTH, depth);
+		bundle.put(BRANCH, branch);
 		bundle.put(POS, pos);
 	}
 
@@ -105,6 +102,7 @@ public class RevealedArea extends FlavourBuff{
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		depth = bundle.getInt(DEPTH);
+		branch = bundle.getInt(BRANCH);
 		pos = bundle.getInt(POS);
 	}
 }

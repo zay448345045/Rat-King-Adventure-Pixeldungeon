@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
+import com.zrp200.rkpd2.Dungeon;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.armor.Armor;
@@ -38,16 +39,25 @@ public class Repulsion extends Armor.Glyph {
 	
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+
+		int level = Math.max( 0, armor.buffedLvl() );
+
 		// lvl 0 - 20%
 		// lvl 1 - 33%
 		// lvl 2 - 43%
-		int level = Math.max( 0, armor.glyphEffectLevel(defender) );
-		float procChance = (level+1f)/(level+5f) * procChanceModifier(defender);
+		float procChance = (level+1f)/(level+5f) * procChanceMultiplier(defender);
+		if (Dungeon.level.adjacent(attacker.pos, defender.pos) && Random.Float() < procChance){
 
-		if (Random.Float() < procChance){
+			float powerMulti = Math.max(1f, procChance);
+
 			int oppositeHero = attacker.pos + (attacker.pos - defender.pos);
 			Ballistica trajectory = new Ballistica(attacker.pos, oppositeHero, Ballistica.MAGIC_BOLT);
-			WandOfBlastWave.throwChar(attacker, trajectory, 2, true, true, getClass());
+			WandOfBlastWave.throwChar(attacker,
+					trajectory,
+					Math.round(2 * powerMulti),
+					true,
+					true,
+					this);
 		}
 		
 		return damage;

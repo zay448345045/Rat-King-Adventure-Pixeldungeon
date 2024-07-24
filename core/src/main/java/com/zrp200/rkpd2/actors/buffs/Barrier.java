@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.levels.RatBossLevel;
+import com.zrp200.rkpd2.items.weapon.enchantments.Blocking;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -70,8 +71,11 @@ public class Barrier extends ShieldBuff {
 	
 	@Override
 	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.SHIELDED);
-		else target.sprite.remove(CharSprite.State.SHIELDED);
+		if (on) {
+			target.sprite.add(CharSprite.State.SHIELDED);
+		} else if (target.buff(Blocking.BlockBuff.class) == null) {
+			target.sprite.remove(CharSprite.State.SHIELDED);
+		}
 	}
 	
 	@Override
@@ -88,12 +92,7 @@ public class Barrier extends ShieldBuff {
 	public String iconTextDisplay() {
 		return Integer.toString(shielding());
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
+
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", shielding());

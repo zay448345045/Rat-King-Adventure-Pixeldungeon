@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -45,16 +46,23 @@ public class Healing extends Buff {
 	
 	@Override
 	public boolean act(){
-		
-		target.HP = Math.min(target.HT, target.HP + healingThisTick());
 
-		if (target.HP == target.HT && target instanceof Hero){
-			((Hero)target).resting = false;
+		if (target.HP < target.HT) {
+			target.HP = Math.min(target.HT, target.HP + healingThisTick());
+
+			if (target.HP == target.HT && target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
+
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healingThisTick()), FloatingText.HEALING);
 		}
 
 		healingLeft -= healingThisTick();
 		
 		if (healingLeft <= 0){
+			if (target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
 			detach();
 		}
 		
@@ -68,11 +76,12 @@ public class Healing extends Buff {
 				Math.round(healingLeft * percentHealPerTick) + flatHealPerTick,
 				healingLeft);
 	}
-	
+
 	public void setHeal(int amount, float percentPerTick, int flatPerTick){
-		healingLeft = amount;
-		percentHealPerTick = percentPerTick;
-		flatHealPerTick = flatPerTick;
+		//multiple sources of healing do not overlap, but do combine the best of their properties
+		healingLeft = Math.max(healingLeft, amount);
+		percentHealPerTick = Math.max(percentHealPerTick, percentPerTick);
+		flatHealPerTick = Math.max(flatHealPerTick, flatPerTick);
 	}
 	
 	public void increaseHeal( int amount ){
@@ -113,11 +122,6 @@ public class Healing extends Buff {
 	@Override
 	public String iconTextDisplay() {
 		return Integer.toString(healingLeft);
-	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 	
 	@Override

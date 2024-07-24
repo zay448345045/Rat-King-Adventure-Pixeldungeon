@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
@@ -57,6 +58,13 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.HashMap;
 
@@ -110,12 +118,23 @@ public class ElementalBlast extends ArmorAbility {
 
 	public static boolean activate(Hero hero, Callback next) {
 		Ballistica aim;
-		//Basically the direction of the aim only matters if it goes outside the map
-		//So we just ensure it won't do that.
-		if (hero.pos % Dungeon.level.width() > 10){
-			aim = new Ballistica(hero.pos, hero.pos - 1, Ballistica.WONT_STOP);
+		//The direction of the aim only matters if it goes outside the map
+		//So we try to aim in the cardinal direction that has the most space
+		int x = hero.pos % Dungeon.level.width();
+		int y = hero.pos / Dungeon.level.width();
+
+		if (Math.max(x, Dungeon.level.width()-x) >= Math.max(y, Dungeon.level.height()-y)){
+			if (x > Dungeon.level.width()/2){
+				aim = new Ballistica(hero.pos, hero.pos - 1, Ballistica.WONT_STOP);
+			} else {
+				aim = new Ballistica(hero.pos, hero.pos + 1, Ballistica.WONT_STOP);
+			}
 		} else {
-			aim = new Ballistica(hero.pos, hero.pos + 1, Ballistica.WONT_STOP);
+			if (y > Dungeon.level.height()/2){
+				aim = new Ballistica(hero.pos, hero.pos - Dungeon.level.width(), Ballistica.WONT_STOP);
+			} else {
+				aim = new Ballistica(hero.pos, hero.pos + Dungeon.level.width(), Ballistica.WONT_STOP);
+			}
 		}
 
 		final Class<? extends Wand>[] wandCls = new Class[]{null};
@@ -176,7 +195,7 @@ public class ElementalBlast extends ArmorAbility {
 		hero.sprite.parent.recycle( MagicMissile.class ).reset(
 				effectTypes.get(wandCls[0]),
 				hero.sprite,
-				aim.path.get(Math.min(aim.path.size()-1, aoeSize / 2)),
+				aim.path.get(Math.min(aoeSize / 2, aim.path.size()-1)),
 				new Callback() {
 					@Override
 					public void call() {
@@ -295,7 +314,7 @@ public class ElementalBlast extends ArmorAbility {
 												knockback,
 												true,
 												true,
-												ElementalBlast.class);
+												new ElementalBlast());
 									}
 
 								//*** Wand of Frost ***
@@ -332,7 +351,13 @@ public class ElementalBlast extends ArmorAbility {
 										mob.HP += healing;
 
 										mob.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
-										mob.sprite.showStatus(CharSprite.POSITIVE, "+%dHP", healing + shielding);
+
+										if (healing > 0) {
+											mob.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healing), FloatingText.HEALING);
+										}
+										if (shielding > 0){
+											mob.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shielding), FloatingText.SHIELDING);
+										}
 									} else {
 										if (!mob.properties().contains(Char.Property.UNDEAD)) {
 											Charm charm = Buff.affect(mob, Charm.class, effectMulti*Charm.DURATION/2f);
@@ -401,7 +426,9 @@ public class ElementalBlast extends ArmorAbility {
 						// fixme rat blast has too many targets this way
 						charsHit = Math.min(5, charsHit);
 						if (charsHit > 0 && hero.hasTalent(Talent.REACTIVE_BARRIER, Talent.RAT_BLAST)){
-							Buff.affect(hero, Barrier.class).setShield(charsHit*(int)hero.byTalent(Talent.REACTIVE_BARRIER, 3, Talent.RAT_BLAST, 2.5f)*miscEffectMulti);
+							int shielding = charsHit*(int)hero.byTalent(Talent.REACTIVE_BARRIER, 3, Talent.RAT_BLAST, 2.5f);
+							hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shielding), FloatingText.SHIELDING);
+							Buff.affect(hero, Barrier.class).setShield(shielding);
 						}
 
 						next.call();
@@ -416,6 +443,7 @@ public class ElementalBlast extends ArmorAbility {
 	@Override
     public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if(MagesStaff.getWandClass() == null) {
+			GLog.w(Messages.get(this, "no_staff"));
 			markAbilityUsed(this);
 			return; // prevents the callback by catching it now.
 		}

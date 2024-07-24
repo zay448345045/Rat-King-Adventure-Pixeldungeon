@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import com.zrp200.rkpd2.levels.rooms.standard.ImpShopRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
+import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
@@ -88,15 +89,16 @@ public class CityBossLevel extends Level {
 	@Override
 	public void playLevelMusic() {
 		if (locked){
-			Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);
+			if (BossHealthBar.isBleeding()){
+				Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+			} else {
+				Music.INSTANCE.play(Assets.Music.CITY_BOSS, true);
+			}
 		//if top door isn't unlocked
 		} else if (map[topDoor] == Terrain.LOCKED_DOOR){
 			Music.INSTANCE.end();
 		} else {
-			Music.INSTANCE.playTracks(
-					new String[]{Assets.Music.CITY_1, Assets.Music.CITY_2, Assets.Music.CITY_2},
-					new float[]{1, 1, 0.5f},
-					false);
+			Music.INSTANCE.playTracks(CityLevel.CITY_TRACK_LIST, CityLevel.CITY_TRACK_CHANCES, false);
 		}
 	}
 
@@ -167,7 +169,7 @@ public class CityBossLevel extends Level {
 		Painter.fillDiamond(this, arena, 1, Terrain.EMPTY);
 
 		Painter.fill(this, arena, 5, Terrain.EMPTY_SP);
-		Painter.fill(this, arena, 6, Terrain.STATUE_SP);
+		Painter.fill(this, arena, 6, Terrain.CUSTOM_DECO);
 
 		c = arena.center();
 		Painter.set(this, c.x-3, c.y, Terrain.STATUE);
@@ -202,6 +204,7 @@ public class CityBossLevel extends Level {
 		Painter.fill(this, end.left+5, end.bottom+1, 5, 1, Terrain.EMPTY);
 		Painter.fill(this, end.left+6, end.bottom+2, 3, 1, Terrain.EMPTY);
 
+		impShop.paint(this);
 		new CityPainter().paint(this, null);
 
 		//pillars last, no deco on these
@@ -267,38 +270,47 @@ public class CityBossLevel extends Level {
 
 	@Override
 	protected void createItems() {
-		Item item = Bones.get();
-		if (item != null) {
-			int pos;
-			do {
-				pos = randomRespawnCell(null);
-			} while (pos == entrance());
-			drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
-		}
+		Random.pushGenerator(Random.Long());
+			ArrayList<Item> bonesItems = Bones.get();
+			if (bonesItems != null) {
+				int pos;
+				do {
+					pos = randomRespawnCell(null);
+				} while (pos == entrance());
+				for (Item i : bonesItems) {
+					drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+				}
+			}
+		Random.popGenerator();
 	}
 
 	@Override
 	public int randomRespawnCell( Char ch ) {
-		int cell;
-		do {
-			cell = entrance() + PathFinder.NEIGHBOURS8[Random.Int(8)];
-		} while (!passable[cell]
-				|| (Char.hasProp(ch, Char.Property.LARGE) && !openSpace[cell])
-				|| Actor.findChar(cell) != null);
-		return cell;
+		ArrayList<Integer> candidates = new ArrayList<>();
+		for (int i : PathFinder.NEIGHBOURS8){
+			int cell = entrance() + i;
+			if (passable[cell]
+					&& Actor.findChar(cell) == null
+					&& (!Char.hasProp(ch, Char.Property.LARGE) || openSpace[cell])){
+				candidates.add(cell);
+			}
+		}
+
+		if (candidates.isEmpty()){
+			return -1;
+		} else {
+			return Random.element(candidates);
+		}
 	}
 
 	@Override
 	public void occupyCell( Char ch ) {
-
-		super.occupyCell( ch );
-
 		if (map[bottomDoor] != Terrain.LOCKED_DOOR && map[topDoor] == Terrain.LOCKED_DOOR
 				&& ch.pos < bottomDoor && ch == Dungeon.hero) {
-
 			seal();
-
 		}
+
+		super.occupyCell( ch );
 	}
 
 	@Override
@@ -353,7 +365,12 @@ public class CityBossLevel extends Level {
 		Game.runOnRenderThread(new Callback() {
 			@Override
 			public void call() {
-				Music.INSTANCE.end();
+				Music.INSTANCE.fadeOut(5f, new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.end();
+					}
+				});
 			}
 		});
 	}
@@ -513,13 +530,13 @@ public class CityBossLevel extends Level {
 						data[++i] = 13 * 8 + 2;
 						data[++i] = 13 * 8 + 3;
 
-						//mid row of DK's throne
-					}else if (map[i + 1] == Terrain.STATUE_SP) {
+					//mid row of DK's throne
+					}else if (map[i + 1] == Terrain.CUSTOM_DECO) {
 						data[i] = 14 * 8 + 1;
 						data[++i] = 14 * 8 + 2; //TODO finalize throne visuals
 						data[++i] = 14 * 8 + 3;
 
-						//bottom row of DK's throne
+					//bottom row of DK's throne
 					} else if (map[i+1] == Terrain.EMPTY_SP && map[i-tileW] == Terrain.EMPTY_SP){
 						data[i] = 15*8 + 1;
 						data[++i] = 15*8 + 2;
@@ -556,7 +573,7 @@ public class CityBossLevel extends Level {
 
 				//DK arena tiles
 			} else {
-				if (Dungeon.level.map[cell] == Terrain.STATUE_SP){
+				if (Dungeon.level.map[cell] == Terrain.CUSTOM_DECO){
 					return Messages.get(CityBossLevel.class, "throne_name");
 				} else if (Dungeon.level.map[cell] == Terrain.PEDESTAL){
 					return Messages.get(CityBossLevel.class, "summoning_name");
@@ -582,7 +599,7 @@ public class CityBossLevel extends Level {
 
 			//DK arena tiles
 			} else {
-				if (Dungeon.level.map[cell] == Terrain.STATUE_SP){
+				if (Dungeon.level.map[cell] == Terrain.CUSTOM_DECO){
 					return Messages.get(CityBossLevel.class, "throne_desc");
 				} else if (Dungeon.level.map[cell] == Terrain.PEDESTAL){
 					return Messages.get(CityBossLevel.class, "summoning_desc");
@@ -658,7 +675,7 @@ public class CityBossLevel extends Level {
 				//Statues that need to face left instead of right
 				if (map[i] == Terrain.STATUE && i%tileW > 7){
 					data[i-tileW] = 14*8 + 4;
-				} else if (map[i] == Terrain.STATUE_SP){
+				} else if (map[i] == Terrain.CUSTOM_DECO){
 					data[i-tileW] = 13*8 + 5;
 				}
 

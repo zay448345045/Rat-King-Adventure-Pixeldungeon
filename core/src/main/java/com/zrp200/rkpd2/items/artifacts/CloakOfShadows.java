@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,9 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.Preparation;
+import com.zrp200.rkpd2.actors.buffs.Regeneration;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
@@ -50,7 +51,6 @@ import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.utils.SafeCast;
-
 import java.util.ArrayList;
 
 public class CloakOfShadows extends Artifact {
@@ -79,14 +79,15 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER)) && !cursed) {
-			if ((charge > 0 || activeBuff != null)) {
+		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_CLOAK,Talent.RK_FREERUNNER))
+				&& !cursed
+				&& hero.buff(MagicImmune.class) == null
+				&& (charge > 0 || activeBuff != null)) {
+			actions.add(AC_STEALTH);
 
-				actions.add(AC_STEALTH);
-			}
-			if (charge > 0 && hero.hasTalent(Talent.ASSASSINS_REACH)){
-				actions.add(AC_TELEPORT);
-			}
+            if (hero.hasTalent(Talent.ASSASSINS_REACH)){
+                actions.add(AC_TELEPORT);
+            }
 		}
 		return actions;
 	}
@@ -95,6 +96,8 @@ public class CloakOfShadows extends Artifact {
 	public void execute( Hero hero, String action ) {
 
 		super.execute(hero, action);
+
+		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals( AC_STEALTH )) {
 
@@ -246,6 +249,8 @@ public class CloakOfShadows extends Artifact {
 public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 	@Override
 	public void charge(Hero target, float amount) {
+		if (cursed || target.buff(MagicImmune.class) != null) return;
+
 		if (charge < chargeCap) {
 			// moved previous equip for free mechanic to light cloak
 			if (!isEquipped(target)) amount *= target.byTalent(
@@ -298,9 +303,8 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 	public class cloakRecharge extends ArtifactBuff implements ActionIndicator.Action {
 		@Override
 		public boolean act() {
-			if (charge < chargeCap) {
-				LockedFloor lock = target.buff(LockedFloor.class);
-				if (activeBuff == null && (lock == null || lock.regenOn())) {
+			if (charge < chargeCap && !cursed && target.buff(MagicImmune.class) == null) {
+				if (activeBuff == null && Regeneration.regenOn()) {
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
@@ -324,8 +328,9 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 					}
 
 				}
-			} else
+			} else {
 				partialCharge = 0;
+			}
 
 			if (cooldown > 0)
 				cooldown --;
@@ -416,12 +421,16 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		}
 
 		@Override
+		public String desc() {
+			return Messages.get(this, "desc", turnsToCost);
+		}
+
+		@Override
 		public boolean attachTo( Char target ) {
 			Hero hero = SafeCast.cast(target, Hero.class);
 			if (hero != null && super.attachTo(target)) {
 				target.invisible++;
-				if (hero.subClass == HeroSubClass.ASSASSIN
-						|| hero.subClass == HeroSubClass.KING) {
+				if (hero.subClass.is(HeroSubClass.ASSASSIN)) {
 					Buff.affect(target, Preparation.class);
 				}
 				if (hero.hasTalent(Talent.MENDING_SHADOWS,Talent.NOBLE_CAUSE)){
@@ -475,6 +484,10 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		}
 
 		public void dispel(){
+			if (turnsToCost <= 0 && charge > 0){
+				charge--;
+			}
+			updateQuickslot();
 			detach();
 		}
 
@@ -482,16 +495,6 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		public void fx(boolean on) {
 			if (on) target.sprite.add( CharSprite.State.INVISIBLE );
 			else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
-		}
-
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-
-		@Override
-		public String desc() {
-			return Messages.get(this, "desc");
 		}
 
 		@Override

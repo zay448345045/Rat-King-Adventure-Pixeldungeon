@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,22 @@ import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.levels.rooms.Room;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 
 public class GrassyGraveRoom extends StandardRoom {
-	
+
+	@Override
+	public void merge(Level l, Room other, Rect merge, int mergeTerrain) {
+		if (mergeTerrain == Terrain.EMPTY &&
+				(other instanceof GrassyGraveRoom || other instanceof PlantsRoom)){
+			super.merge(l, other, merge, Terrain.GRASS);
+		} else {
+			super.merge(l, other, merge, mergeTerrain);
+		}
+	}
+
 	@Override
 	public void paint(Level level) {
 		

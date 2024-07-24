@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.hero;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
 import com.zrp200.rkpd2.actors.buffs.RobotTransform;
@@ -38,6 +39,7 @@ import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -57,6 +59,10 @@ public class Belongings implements Iterable<Item> {
 				if (item instanceof Bag){
 					cap++;
 				}
+			}
+			if (Dungeon.hero != null && Dungeon.hero.belongings.secondWep != null){
+				//secondary weapons still occupy an inv. slot
+				cap--;
 			}
 			return cap;
 		}
@@ -80,27 +86,70 @@ public class Belongings implements Iterable<Item> {
 	//used when thrown weapons temporary become the current weapon
 	public KindOfWeapon thrownWeapon = null;
 
+	//used to ensure that the duelist always uses the weapon she's using the ability of
+	public KindOfWeapon abilityWeapon = null;
+
+	//used by the champion subclass
+	public KindOfWeapon secondWep = null;
+	public KindOfWeapon thirdWep = null; // for elite dexterity
+
 	//*** these accessor methods are so that worn items can be affected by various effects/debuffs
 	// we still want to access the raw equipped items in cases where effects should be ignored though,
 	// such as when equipping something, showing an interface, or dealing with items from a dead hero
 
-	public KindOfWeapon weapon(){
-		if (owner.buff(RobotTransform.class) != null) return null;
-		//no point in lost invent check, if it's assigned it must be usable
+	//normally the primary equipped weapon, but can also be a thrown weapon or an ability's weapon
+	public KindOfWeapon attackingWeapon(){
 		if (thrownWeapon != null) return thrownWeapon;
+		if (abilityWeapon != null) return abilityWeapon;
+		return weapon();
+	}
 
+	public KindOfWeapon weapon(int slot) {
+		return weapon(slot, false);
+	}
+	public KindOfWeapon weapon(int slot, boolean field) {
+		KindOfWeapon weapon;
+		switch (slot) {
+			case 0: weapon = this.weapon; break;
+			case 1: weapon = secondWep; break;
+			case 2: weapon = thirdWep; break;
+			default: throw new IllegalArgumentException();
+		}
+		if (field) return weapon;
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
-		if (!lostInvent || (weapon != null && weapon.keptThoughLostInvent)){
+		if (!lostInvent || (weapon != null && weapon.keptThroughLostInventory())){
 			return weapon;
 		} else {
 			return null;
 		}
 	}
 
+	public KindOfWeapon[] weapons() { return weapons(false); }
+	public KindOfWeapon[] weapons(boolean field) {
+		KindOfWeapon[] weapons = new KindOfWeapon[3];
+		for (int i = 0; i < weapons.length; i++) weapons[i] = weapon(i, field);
+		return weapons;
+	}
+
+	public int findWeapon(KindOfWeapon w) {
+		KindOfWeapon[] weapons = weapons(true);
+		for (int i = 0; i < weapons.length; i++) if (weapons[i] == w) return i;
+		return -1;
+	}
+
+	public void setWeapon(int slot, KindOfWeapon weapon) {
+		switch (slot) {
+			case 0: this.weapon = weapon; break;
+			case 1: secondWep = weapon; break;
+			case 2: thirdWep = weapon; break;
+			default: throw new IllegalArgumentException();
+		}
+	}
+
 	public Armor armor(){
 		if (owner.buff(RobotTransform.class) != null) return null;
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
-		if (!lostInvent || (armor != null && armor.keptThoughLostInvent)){
+		if (!lostInvent || (armor != null && armor.keptThroughLostInventory())){
 			return armor;
 		} else {
 			return null;
@@ -109,7 +158,7 @@ public class Belongings implements Iterable<Item> {
 
 	public Artifact artifact(){
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
-		if (!lostInvent || (artifact != null && artifact.keptThoughLostInvent)){
+		if (!lostInvent || (artifact != null && artifact.keptThroughLostInventory())){
 			return artifact;
 		} else {
 			return null;
@@ -118,7 +167,7 @@ public class Belongings implements Iterable<Item> {
 
 	public KindofMisc misc(){
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
-		if (!lostInvent || (misc != null && misc.keptThoughLostInvent)){
+		if (!lostInvent || (misc != null && misc.keptThroughLostInventory())){
 			return misc;
 		} else {
 			return null;
@@ -127,12 +176,16 @@ public class Belongings implements Iterable<Item> {
 
 	public Ring ring(){
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
-		if (!lostInvent || (ring != null && ring.keptThoughLostInvent)){
+		if (!lostInvent || (ring != null && ring.keptThroughLostInventory())){
 			return ring;
 		} else {
 			return null;
 		}
 	}
+
+	public KindOfWeapon weapon() { return weapon(0); }
+	public KindOfWeapon secondWep() { return weapon(1); }
+	public KindOfWeapon thirdWep() { return weapon(2); }
 
 	// ***
 	
@@ -141,6 +194,9 @@ public class Belongings implements Iterable<Item> {
 	private static final String ARTIFACT   = "artifact";
 	private static final String MISC       = "misc";
 	private static final String RING       = "ring";
+
+	private static final String SECOND_WEP = "second_wep";
+	private static final String THIRD_WEP = "third_wep";
 
 	public void storeInBundle( Bundle bundle ) {
 		
@@ -151,15 +207,33 @@ public class Belongings implements Iterable<Item> {
 		bundle.put( ARTIFACT, artifact );
 		bundle.put( MISC, misc );
 		bundle.put( RING, ring );
+		bundle.put( SECOND_WEP, secondWep );
+		bundle.put( THIRD_WEP, thirdWep );
 	}
 	
 	public void restoreFromBundle( Bundle bundle ) {
 		
 		backpack.clear();
 		backpack.restoreFromBundle( bundle );
-		
-		weapon = (KindOfWeapon) bundle.get(WEAPON);
-		if (weapon() != null)       weapon().activate(owner);
+
+		String[] weapons = {WEAPON, SECOND_WEP, THIRD_WEP};
+		for (int i = 0; i < weapons.length; i++) {
+			KindOfWeapon weapon = (KindOfWeapon) bundle.get(weapons[i]);
+			if (weapon instanceof MissileWeapon) {
+				// prevent item duplication
+				MissileWeapon w = (MissileWeapon) getSimilar(weapon);
+				if (w != null) {
+					// prevent quickslot inconsistencies
+					int slot = Dungeon.quickslot.getSlot(weapon);
+					weapon = w;
+					if (slot >= 0) {
+						Dungeon.quickslot.setSlot(slot, weapon);
+					}
+				};
+			}
+			setWeapon(i, weapon);
+			if (weapon(i) != null) weapon(i).activate(owner);
+		}
 		
 		armor = (Armor)bundle.get( ARMOR );
 		if (armor() != null)        armor().activate( owner );
@@ -209,7 +283,7 @@ public class Belongings implements Iterable<Item> {
 
 		for (Item item : this) {
 			if (itemClass.isInstance( item )) {
-				if (!lostInvent || item.keptThoughLostInvent) {
+				if (!lostInvent || item.keptThroughLostInventory()) {
 					return (T) item;
 				}
 			}
@@ -225,7 +299,7 @@ public class Belongings implements Iterable<Item> {
 
 		for (Item item : this) {
 			if (itemClass.isInstance( item )) {
-				if (!lostInvent || item.keptThoughLostInvent) {
+				if (!lostInvent || item.keptThroughLostInventory()) {
 					result.add((T) item);
 				}
 			}
@@ -240,7 +314,7 @@ public class Belongings implements Iterable<Item> {
 		
 		for (Item item : this) {
 			if (contains == item) {
-				if (!lostInvent || item.keptThoughLostInvent) {
+				if (!lostInvent || item.keptThroughLostInventory()) {
 					return true;
 				}
 			}
@@ -249,14 +323,15 @@ public class Belongings implements Iterable<Item> {
 		return false;
 	}
 	
-	public Item getSimilar( Item similar ){
+	public <T extends Item> T getSimilar( T similar ){
 
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
 		
 		for (Item item : this) {
 			if (similar != item && similar.isSimilar(item)) {
-				if (!lostInvent || item.keptThoughLostInvent) {
-					return item;
+				if (!lostInvent || item.keptThroughLostInventory()) {
+					//noinspection unchecked
+					return (T)item;
 				}
 			}
 		}
@@ -264,33 +339,34 @@ public class Belongings implements Iterable<Item> {
 		return null;
 	}
 	
-	public ArrayList<Item> getAllSimilar( Item similar ){
+	public <T extends Item> ArrayList<T> getAllSimilar( T similar ){
 		ArrayList<Item> result = new ArrayList<>();
 
 		boolean lostInvent = owner != null && owner.buff(LostInventory.class) != null;
 		
 		for (Item item : this) {
 			if (item != similar && similar.isSimilar(item)) {
-				if (!lostInvent || item.keptThoughLostInvent) {
+				if (!lostInvent || item.keptThroughLostInventory()) {
 					result.add(item);
 				}
 			}
 		}
-		
-		return result;
+		//noinspection unchecked
+		return (ArrayList<T>) result;
 	}
 
 	//triggers when a run ends, so ignores lost inventory effects
 	public void identify() {
 		for (Item item : this) {
-			item.identify();
+			item.identify(false);
 		}
 	}
 	
 	public void observe() {
-		if (weapon() != null) {
-			weapon().identify();
-			Badges.validateItemLevelAquired(weapon());
+		for (KindOfWeapon wep : weapons()) {
+			if (wep == null) continue;
+			wep.identify();
+			Badges.validateItemLevelAquired(wep);
 		}
 		if (armor() != null) {
 			armor().identify();
@@ -317,7 +393,7 @@ public class Belongings implements Iterable<Item> {
 	}
 	
 	public void uncurseEquipped() {
-		ScrollOfRemoveCurse.uncurse( owner, armor(), weapon(), artifact(), misc(), ring());
+		ScrollOfRemoveCurse.uncurse( owner, armor(), weapon(), artifact(), misc(), ring(), secondWep(), thirdWep());
 	}
 	
 	public Item randomUnequipped() {
@@ -352,7 +428,7 @@ public class Belongings implements Iterable<Item> {
 		
 		private Iterator<Item> backpackIterator = backpack.iterator();
 		
-		private Item[] equipped = {weapon, armor, artifact, misc, ring};
+		private Item[] equipped = {weapon, armor, artifact, misc, ring, secondWep, thirdWep};
 		private int backpackIndex = equipped.length;
 		
 		@Override
@@ -397,6 +473,12 @@ public class Belongings implements Iterable<Item> {
 				break;
 			case 4:
 				equipped[4] = ring = null;
+				break;
+			case 5:
+				equipped[5] = secondWep = null;
+				break;
+			case 6:
+				equipped[6] = secondWep = null;
 				break;
 			default:
 				backpackIterator.remove();

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,17 @@ import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.journal.Journal;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.Archs;
+import com.zrp200.rkpd2.ui.Button;
+import com.zrp200.rkpd2.ui.ExitButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.windows.WndGameInProgress;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.NinePatch;
 
 import java.util.ArrayList;
 
@@ -73,13 +82,17 @@ public class StartScene extends PixelScene {
 		add(title);
 		
 		ArrayList<GamesInProgress.Info> games = GamesInProgress.checkAll();
-		
-		int slotGap = landscape() ? 5 : 10;
+
 		int slotCount = Math.min(GamesInProgress.MAX_SLOTS, games.size()+1);
+		int slotGap = 10 - slotCount;
 		int slotsHeight = slotCount*SLOT_HEIGHT + (slotCount-1)* slotGap;
-		
-		float yPos = (h - slotsHeight)/2f;
-		if (landscape()) yPos += 8;
+
+		while (slotsHeight > (h-title.bottom()-2)){
+			slotGap--;
+			slotsHeight -= slotCount-1;
+		}
+
+		float yPos = (h - slotsHeight + title.bottom() + 2)/2f;
 		
 		for (GamesInProgress.Info game : games) {
 			SaveSlotButton existingGame = new SaveSlotButton();
@@ -203,7 +216,11 @@ public class StartScene extends PixelScene {
 				}
 
 				if (info.daily){
-					steps.hardlight(0.5f, 1f, 2f);
+					if (info.dailyReplay){
+						steps.hardlight(1f, 0.5f, 2f);
+					} else {
+						steps.hardlight(0.5f, 1f, 2f);
+					}
 				} else if (!info.customSeed.isEmpty()){
 					steps.hardlight(1f, 1.5f, 0.67f);
 				}

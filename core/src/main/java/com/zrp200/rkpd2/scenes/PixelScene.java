@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,7 @@
 
 package com.zrp200.rkpd2.scenes;
 
-import com.watabou.gltextures.TextureCache;
-import com.watabou.glwrap.Blending;
-import com.watabou.input.PointerEvent;
-import com.watabou.noosa.*;
-import com.watabou.noosa.BitmapText.Font;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Reflection;
+import com.badlogic.gdx.Input;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.SPDSettings;
@@ -38,9 +31,11 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Tooltip;
 import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.utils.Holiday;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.ControllerHandler;
+import com.watabou.input.KeyEvent;
 import com.watabou.input.PointerEvent;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.BitmapText.Font;
@@ -54,9 +49,11 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.ui.Component;
 import com.watabou.noosa.ui.Cursor;
 import com.watabou.utils.Callback;
+import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
+import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
 
@@ -90,6 +87,8 @@ public class PixelScene extends Scene {
 
 	protected boolean inGameScene = false;
 
+	private Signal.Listener<KeyEvent> fullscreenListener;
+
 	@Override
 	public void create() {
 
@@ -101,6 +100,8 @@ public class PixelScene extends Scene {
 		if (!inGameScene && InterlevelScene.lastRegion != -1){
 			InterlevelScene.lastRegion = -1;
 			TextureCache.clear();
+			//good time to clear holiday cache as well
+			Holiday.clearCachedHoliday();
 		}
 
 		float minWidth, minHeight, scaleFactor;
@@ -170,6 +171,34 @@ public class PixelScene extends Scene {
 
 	@Override
 	public void update() {
+		//we create this here so that it is last in the scene
+		if (DeviceCompat.isDesktop() && fullscreenListener == null){
+			KeyEvent.addKeyListener(fullscreenListener = new Signal.Listener<KeyEvent>() {
+
+				private boolean alt;
+				private boolean enter;
+
+				@Override
+				public boolean onSignal(KeyEvent keyEvent) {
+
+					//we don't use keybindings for these as we want the user to be able to
+					// bind these keys to other actions when pressed individually
+					if (keyEvent.code == Input.Keys.ALT_RIGHT){
+						alt = keyEvent.pressed;
+					} else if (keyEvent.code == Input.Keys.ENTER){
+						enter = keyEvent.pressed;
+					}
+
+					if (alt && enter){
+						SPDSettings.fullscreen(!SPDSettings.fullscreen());
+						return true;
+					}
+
+					return false;
+				}
+			});
+		}
+
 		super.update();
 		//20% deadzone
 		if (!Cursor.isCursorCaptured()) {
@@ -192,8 +221,31 @@ public class PixelScene extends Scene {
 				PointF virtualCursorPos = ControllerHandler.getControllerPointerPos();
 				virtualCursorPos.x += defaultZoom * sensitivity * Game.elapsed * xMove;
 				virtualCursorPos.y += defaultZoom * sensitivity * Game.elapsed * yMove;
-				virtualCursorPos.x = GameMath.gate(0, virtualCursorPos.x, Game.width);
-				virtualCursorPos.y = GameMath.gate(0, virtualCursorPos.y, Game.height);
+
+				PointF cameraShift = new PointF();
+
+				if (virtualCursorPos.x < 0){
+					cameraShift.x = virtualCursorPos.x;
+					virtualCursorPos.x = 0;
+				} else if (virtualCursorPos.x > Camera.main.screenWidth()){
+					cameraShift.x = (virtualCursorPos.x - Camera.main.screenWidth());
+					virtualCursorPos.x = Camera.main.screenWidth();
+				}
+
+				if (virtualCursorPos.y < 0){
+					cameraShift.y = virtualCursorPos.y;
+					virtualCursorPos.y = 0;
+				} else if (virtualCursorPos.y > Camera.main.screenHeight()){
+					cameraShift.y = (virtualCursorPos.y - Camera.main.screenHeight());
+					virtualCursorPos.y = Camera.main.screenHeight();
+				}
+
+				cameraShift.invScale(Camera.main.zoom);
+				cameraShift.x *= Camera.main.edgeScroll.x;
+				cameraShift.y *= Camera.main.edgeScroll.y;
+				if (cameraShift.length() > 0){
+					Camera.main.shift(cameraShift);
+				}
 				ControllerHandler.updateControllerPointer(virtualCursorPos, true);
 			}
 		}
@@ -253,6 +305,9 @@ public class PixelScene extends Scene {
 	public void destroy() {
 		super.destroy();
 		PointerEvent.clearListeners();
+		if (fullscreenListener != null){
+			KeyEvent.removeKeyListener(fullscreenListener);
+		}
 		if (cursor != null){
 			cursor.destroy();
 		}
@@ -331,6 +386,10 @@ public class PixelScene extends Scene {
 				}
 			}
 		});
+	}
+public static void shake( float magnitude, float duration){
+		magnitude *= SPDSettings.screenShake();
+		Camera.main.shake(magnitude, duration);
 	}
 
 	protected static class Fader extends ColorBlock {

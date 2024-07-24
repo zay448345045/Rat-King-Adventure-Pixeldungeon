@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.buffs.Regeneration;
 import com.zrp200.rkpd2.actors.buffs.ShieldBuff;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -41,6 +42,7 @@ import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndUseItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
 
@@ -63,6 +65,21 @@ public class BrokenSeal extends Item {
 
 	private Armor.Glyph glyph;
 
+	public boolean canTransferGlyph(){
+		if (glyph == null){
+			return false;
+		}
+		if (hero.hasTalent(Talent.RUNIC_TRANSFERENCE) || hero.pointsInTalent(Talent.POWER_WITHIN) == 2){
+			return true;
+		} else if (hero.pointsInTalent(Talent.POWER_WITHIN) == 1
+			&& (Arrays.asList(Armor.Glyph.common).contains(glyph.getClass())
+				|| Arrays.asList(Armor.Glyph.uncommon).contains(glyph.getClass()))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public Armor.Glyph getGlyph(){
 		return glyph;
 	}
@@ -75,12 +92,10 @@ public class BrokenSeal extends Item {
 	public static int maxShieldFromTalents(boolean armorAttached) {
 		// iron will is 1 (0+1) / 3 (1+2) / 5 (2+3)
 		// noble cause is 0/1/2
-		int points = 0;
-		if(armorAttached || hero.heroClass != HeroClass.RAT_KING)
-			points += hero.pointsInTalent(Talent.NOBLE_CAUSE);
-		if(armorAttached || hero.heroClass != HeroClass.WARRIOR)
-			points += hero.pointsInTalent(Talent.IRON_WILL) + hero.shiftedPoints(Talent.IRON_WILL);
-		return points;
+		return armorAttached || !hero.heroClass.is(HeroClass.WARRIOR) ?
+				hero.pointsInTalent(Talent.NOBLE_CAUSE, Talent.IRON_WILL)
+						+ hero.shiftedPoints(Talent.IRON_WILL)
+				: 0;
 	}
 
 	public int maxShield( int armTier, int armLvl ){
@@ -143,9 +158,8 @@ public class BrokenSeal extends Item {
 				if (!armor.levelKnown){
 					GLog.w(Messages.get(BrokenSeal.class, "unknown_armor"));
 
-				} else if ((armor.cursed || armor.level() < 0)
-						&& (seal.getGlyph() == null || !seal.getGlyph().curse())){
-					GLog.w(Messages.get(BrokenSeal.class, "degraded_armor"));
+				} else if (armor.cursed && (seal.getGlyph() == null || !seal.getGlyph().curse())){
+					GLog.w(Messages.get(BrokenSeal.class, "cursed_armor"));
 
 				} else if (armor.glyph != null && seal.getGlyph() != null
 						&& armor.glyph.getClass() != seal.getGlyph().getClass()) {
@@ -215,7 +229,7 @@ public class BrokenSeal extends Item {
 
 		@Override
 		public synchronized boolean act() {
-			if (shielding() < maxShield()) {
+			if (Regeneration.regenOn() && shielding() < maxShield()) {
 				float rechargeRate = getRechargeRate();
 				partialShield += rechargeRate; // this adjusts the seal recharge rate.
 			}

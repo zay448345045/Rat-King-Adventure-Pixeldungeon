@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2023 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,22 @@ package com.zrp200.rkpd2.items.armor.glyphs;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.hero.abilities.duelist.ElementalStrike;
+import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
 import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
 import com.zrp200.rkpd2.actors.mobs.*;
 import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.bombs.Bomb;
+import com.zrp200.rkpd2.items.rings.RingOfArcana;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
+import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.items.wands.*;
+import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
+import com.zrp200.rkpd2.items.weapon.enchantments.Grim;
+import com.zrp200.rkpd2.items.weapon.enchantments.Shocking;
+import com.zrp200.rkpd2.items.weapon.missiles.ForceCube;
 import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.levels.traps.GrimTrap;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -50,6 +62,13 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( DisintegrationTrap.class );
 		RESISTS.add( GrimTrap.class );
 
+		RESISTS.add( Bomb.ConjuredBomb.class );
+		RESISTS.add( ScrollOfRetribution.class );
+		RESISTS.add( ScrollOfPsionicBlast.class );
+		RESISTS.add( ScrollOfTeleportation.class );
+
+		RESISTS.add( ElementalBlast.class );
+		RESISTS.add( CursedWand.class );
 		RESISTS.add( WandOfBlastWave.class );
 		RESISTS.add( WandOfDisintegration.class );
 		RESISTS.add( WandOfFireblast.class );
@@ -60,6 +79,11 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WandOfPrismaticLight.class );
 		RESISTS.add( WandOfTransfusion.class );
 		RESISTS.add( WandOfWarding.Ward.class );
+
+		RESISTS.add( ElementalStrike.class );
+		RESISTS.add( Blazing.class );
+		RESISTS.add( Shocking.class );
+		RESISTS.add( Grim.class );
 
 		RESISTS.add( WarpBeacon.class );
 
@@ -76,12 +100,19 @@ public class AntiMagic extends Armor.Glyph {
 	
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-		//no proc effect, see Hero.damage and GhostHero.damage and ArmoredStatue.damage
+		//no proc effect, see:
+		// Hero.damage
+		// GhostHero.damage
+		// Shadowclone.damage
+		// ArmoredStatue.damage
+		// PrismaticImage.damage
 		return damage;
 	}
 	
-	public static int drRoll( int level ){
-		return Random.NormalIntRange(level, 3 + Math.round(level*1.5f));
+	public static int drRoll( Char ch, int level ){
+		return Random.NormalIntRange(
+				Math.round(level * genericProcChanceMultiplier(ch)),
+				Math.round((3 + (level*1.5f)) * genericProcChanceMultiplier(ch)));
 	}
 
 	@Override

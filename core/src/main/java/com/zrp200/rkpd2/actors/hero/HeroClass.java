@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,24 +27,17 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.*;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.WarriorParry;
+import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
-import com.zrp200.rkpd2.actors.hero.abilities.huntress.NaturesPower;
-import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
-import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
-import com.zrp200.rkpd2.actors.hero.abilities.mage.ElementalBlast;
-import com.zrp200.rkpd2.actors.hero.abilities.mage.WarpBeacon;
-import com.zrp200.rkpd2.actors.hero.abilities.mage.WildMagic;
+import com.zrp200.rkpd2.actors.hero.abilities.duelist.*;
+import com.zrp200.rkpd2.actors.hero.abilities.huntress.*;
+import com.zrp200.rkpd2.actors.hero.abilities.mage.*;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.MusRexIra;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
-import com.zrp200.rkpd2.actors.hero.abilities.rat_king.Wrath;
-import com.zrp200.rkpd2.actors.hero.abilities.rogue.DeathMark;
-import com.zrp200.rkpd2.actors.hero.abilities.rogue.ShadowClone;
-import com.zrp200.rkpd2.actors.hero.abilities.rogue.SmokeBomb;
-import com.zrp200.rkpd2.actors.hero.abilities.warrior.Endure;
-import com.zrp200.rkpd2.actors.hero.abilities.warrior.HeroicLeap;
-import com.zrp200.rkpd2.actors.hero.abilities.warrior.Shockwave;
+import com.zrp200.rkpd2.actors.hero.abilities.rat_king.*;
+import com.zrp200.rkpd2.actors.hero.abilities.rogue.*;
+import com.zrp200.rkpd2.actors.hero.abilities.warrior.*;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
@@ -63,7 +56,9 @@ import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
 import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
 import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
+import com.zrp200.rkpd2.items.potions.PotionOfStrength;
 import com.zrp200.rkpd2.items.quest.Chaosstone;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfMirrorImage;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.*;
 import com.zrp200.rkpd2.items.wands.Wand;
@@ -72,9 +67,11 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.melee.Dagger;
 import com.zrp200.rkpd2.items.weapon.melee.Gloves;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+import com.zrp200.rkpd2.items.weapon.melee.Rapier;
 import com.zrp200.rkpd2.items.weapon.melee.WornShortsword;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingKnife;
+import com.zrp200.rkpd2.items.weapon.missiles.ThrowingSpike;
 import com.zrp200.rkpd2.items.weapon.missiles.ThrowingStone;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.utils.DungeonSeed;
@@ -98,9 +95,15 @@ public enum HeroClass {
 			return item instanceof MissileWeapon && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS) ? 1 : 0;
 		}
 	},
+	DUELIST(CHAMPION, MONK),
 	RAT_KING (HeroSubClass.KING);
 
 	private ArrayList<HeroSubClass> subClasses;
+
+	/** useful for sharing attributes with Rat King **/
+	public boolean is(HeroClass cls) {
+		return this == cls || this == RAT_KING && cls != DUELIST;
+	}
 
 	public static final int MAGE_WAND_BOOST = 2;
 	public int getBonus(Item item) { return 0; }
@@ -165,7 +168,7 @@ public enum HeroClass {
 		Talent.initClassTalents(hero);
 
 		Item i = new ClothArmor().identify();
-		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor) i;
+		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
 
 		if (Dungeon.isChallenged(Challenges.NO_VEGAN)){
 			i = new MysteryMeat();
@@ -196,31 +199,39 @@ public enum HeroClass {
 		}
 		switch (this) {
 			case WARRIOR:
-				initWarrior(hero);
+				initWarrior( hero );
 				break;
 
 			case MAGE:
-				initMage(hero);
+				initMage( hero );
 				break;
 
 			case ROGUE:
-				initRogue(hero);
+				initRogue( hero );
 				break;
 
 			case HUNTRESS:
-				initHuntress(hero);
+				initHuntress( hero );
 				break;
+
+			case DUELIST:
+				initDuelist( hero );
+				break;
+
 			case RAT_KING:
 				initRatKing(hero);
 				break;
 		}
 
-		for (int s = 0; s < QuickSlot.SIZE; s++) {
-			if (Dungeon.quickslot.getItem(s) == null) {
-				Dungeon.quickslot.setSlot(s, waterskin);
-				break;
+		if (SPDSettings.quickslotWaterskin()) {
+			for (int s = 0; s < QuickSlot.SIZE; s++) {
+				if (Dungeon.quickslot.getItem(s) == null) {
+					Dungeon.quickslot.setSlot(s, waterskin);
+					break;
+				}
 			}
 		}
+
 	}
 
 	public Badges.Badge masteryBadge() {
@@ -233,6 +244,8 @@ public enum HeroClass {
 				return Badges.Badge.MASTERY_ROGUE;
 			case HUNTRESS:
 				return Badges.Badge.MASTERY_HUNTRESS;
+			case DUELIST:
+				return Badges.Badge.MASTERY_DUELIST;
 			case RAT_KING:
 				return Badges.Badge.MASTERY_RAT_KING;
 		}
@@ -317,6 +330,20 @@ public enum HeroClass {
 		new ScrollOfLullaby().identify();
 	}
 
+	private static void initDuelist( Hero hero ) {
+
+		(hero.belongings.weapon = new Rapier()).identify();
+		hero.belongings.weapon.activate(hero);
+
+		ThrowingSpike spikes = new ThrowingSpike();
+		spikes.quantity(2).collect();
+
+		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
+		Dungeon.quickslot.setSlot(1, spikes);
+
+		new PotionOfStrength().identify();
+		new ScrollOfMirrorImage().identify();
+	}
 	private static void initRatKing( Hero hero ) {
 		// warrior
 		if (hero.belongings.armor != null){
@@ -369,6 +396,10 @@ public enum HeroClass {
 		return Messages.get(HeroClass.class, name()+"_desc");
 	}
 
+	public String shortDesc(){
+		return Messages.get(HeroClass.class, name()+"_desc_short");
+	}
+
 	public ArrayList<HeroSubClass> subClasses() {
 		ArrayList<HeroSubClass> subClasses = this.subClasses;
 		if ((Badges.isUnlocked(Badges.Badge.DEFEATED_RK) || Badges.isUnlocked(secretSub().secretBadge()))
@@ -389,6 +420,8 @@ public enum HeroClass {
 				return new ArmorAbility[]{new SmokeBomb(), new DeathMark(), new ShadowClone()};
 			case HUNTRESS:
 				return new ArmorAbility[]{new SpectralBlades(), new NaturesPower(), new SpiritHawk()};
+			case DUELIST:
+				return new ArmorAbility[]{new Challenge(), new ElementalStrike(), new Feint()};
 			case RAT_KING:
 				return new ArmorAbility[]{new LegacyWrath(), new Ratmogrify(), new MusRexIra(), new Wrath(), new OmniAbility()};
 		}
@@ -404,6 +437,8 @@ public enum HeroClass {
 				return Assets.Sprites.ROGUE;
 			case HUNTRESS:
 				return Assets.Sprites.HUNTRESS;
+			case DUELIST:
+				return Assets.Sprites.DUELIST;
 			case RAT_KING:
 				return Assets.Sprites.RAT_KING_HERO;
 		}
@@ -411,16 +446,6 @@ public enum HeroClass {
 
 	public String splashArt(){
 		return "splashes/" + name().toLowerCase(Locale.ENGLISH) + ".jpg";
-		/*switch (this) {
-			case WARRIOR: default:
-				return Assets.Splashes.WARRIOR;
-			case MAGE:
-				return Assets.Splashes.MAGE;
-			case ROGUE:
-				return Assets.Splashes.ROGUE;
-			case HUNTRESS:
-				return Assets.Splashes.HUNTRESS;
-		}*/
 	}
 	
 	public String[] perks() {
@@ -442,12 +467,15 @@ public enum HeroClass {
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_ROGUE);
 			case HUNTRESS:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_HUNTRESS);
+			case DUELIST:
+				return Badges.isUnlocked(Badges.Badge.UNLOCK_DUELIST);
 		}
 		 */
 	}
 	
 	public String unlockMsg() {
-		return Messages.get(HeroClass.class, name() + "_unlock");
+		String msg = Messages.get(HeroClass.class, name() + "_unlock");
+		return msg != Messages.NO_TEXT_FOUND ? msg : shortDesc() + "\n\n" + Messages.get(HeroClass.class, name()+"_unlock");
 	}
 
 }

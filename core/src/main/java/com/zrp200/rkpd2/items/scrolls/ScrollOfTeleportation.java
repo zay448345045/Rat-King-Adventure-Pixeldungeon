@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Roots;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -41,7 +43,7 @@ import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.utils.BArray;
+import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class ScrollOfTeleportation extends Scroll {
 	@Override
 	public void doRead() {
 
+		detach(curUser.belongings.backpack);
 		Sample.INSTANCE.play( Assets.Sounds.READ );
 		
 		if (teleportPreferringUnseen( curUser )){
@@ -77,6 +80,7 @@ public class ScrollOfTeleportation extends Scroll {
 		
 		appear( ch, pos );
 		Dungeon.level.occupyCell( ch );
+		Buff.detach(ch, Roots.class);
 		if (ch == Dungeon.hero) {
 			Dungeon.observe();
 			GameScene.updateFog();
@@ -84,18 +88,18 @@ public class ScrollOfTeleportation extends Scroll {
 		return true;
 		
 	}
-	
-	public static boolean teleportHero( Hero hero ) {
-		return teleportChar( hero );
-	}
-	
+
 	public static boolean teleportChar( Char ch ) {
+		return teleportChar( ch, ScrollOfTeleportation.class );
+	}
+
+	public static boolean teleportChar( Char ch, Class source ) {
 
 		if (!(Dungeon.level instanceof RegularLevel)){
 			return teleportInNonRegularLevel( ch, false );
 		}
 
-		if (Char.hasProp(ch, Char.Property.IMMOVABLE)){
+		if (Char.hasProp(ch, Char.Property.IMMOVABLE) || ch.isImmune(source)){
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 			return false;
 		}
@@ -118,6 +122,7 @@ public class ScrollOfTeleportation extends Scroll {
 			
 			appear( ch, pos );
 			Dungeon.level.occupyCell( ch );
+			Buff.detach(ch, Roots.class);
 			
 			if (ch == Dungeon.hero) {
 				GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
@@ -188,7 +193,8 @@ public class ScrollOfTeleportation extends Scroll {
 			}
 			GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
 			appear( hero, pos );
-			Dungeon.level.occupyCell(hero );
+			Dungeon.level.occupyCell( hero );
+			Buff.detach(hero, Roots.class);
 			if (secretDoor && level.map[doorPos] == Terrain.SECRET_DOOR){
 				Sample.INSTANCE.play( Assets.Sounds.SECRET );
 				int oldValue = Dungeon.level.map[doorPos];
@@ -205,7 +211,7 @@ public class ScrollOfTeleportation extends Scroll {
 
 	//teleports to a random pathable location on the floor
 	//prefers not seen(optional) > not visible > visible
-	public static boolean teleportInNonRegularLevel(Char ch, boolean preferNotSeen ){
+	private static boolean teleportInNonRegularLevel(Char ch, boolean preferNotSeen ){
 
 		if (Char.hasProp(ch, Char.Property.IMMOVABLE)){
 			GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
@@ -254,6 +260,8 @@ public class ScrollOfTeleportation extends Scroll {
 		appear( ch, pos );
 		Dungeon.level.occupyCell( ch );
 
+		Buff.detach(ch, Roots.class);
+
 		if (ch == Dungeon.hero) {
 			GLog.i( Messages.get(ScrollOfTeleportation.class, "tele") );
 
@@ -279,7 +287,10 @@ public class ScrollOfTeleportation extends Scroll {
 		}
 
 		ch.move( pos, false );
-		if (ch.pos == pos) ch.sprite.place( pos );
+		if (ch.pos == pos) {
+			ch.sprite.interruptMotion();
+			ch.sprite.place(pos);
+		}
 
 		if (ch.invisible == 0) {
 			ch.sprite.alpha( 0 );
@@ -287,6 +298,22 @@ public class ScrollOfTeleportation extends Scroll {
 		}
 
 		if (Dungeon.level.heroFOV[pos] || ch == Dungeon.hero ) {
+			ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+		}
+	}
+
+	//just plays the VFX for teleporting, without any position changes
+	public static void appearVFX( Char ch ){
+		if (Dungeon.level.heroFOV[ch.pos]){
+			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+		}
+
+		if (ch.invisible == 0) {
+			ch.sprite.alpha( 0 );
+			ch.sprite.parent.add( new AlphaTweener( ch.sprite, 1, 0.4f ) );
+		}
+
+		if (Dungeon.level.heroFOV[ch.pos]) {
 			ch.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 		}
 	}

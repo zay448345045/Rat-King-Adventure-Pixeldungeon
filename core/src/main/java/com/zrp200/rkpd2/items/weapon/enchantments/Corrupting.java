@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +21,17 @@
 
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
-import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Adrenaline;
+import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Corruption;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.sprites.ItemSprite;
+import com.watabou.utils.Random;
 
 public class Corrupting extends Weapon.Enchantment {
 	
@@ -43,8 +48,21 @@ public class Corrupting extends Weapon.Enchantment {
 		if (damage >= defender.HP
 				&& Random.Float() < procChance
 				&& defender instanceof Mob
-				&& defender.isAlive()
-				&& Corruption.corrupt((Mob)defender)){
+				&& defender.isAlive()){
+			
+			Mob enemy = (Mob) defender;
+			Hero hero = (attacker instanceof Hero) ? (Hero) attacker : Dungeon.hero;
+
+			Corruption.corruptionHeal(enemy);
+
+			AllyBuff.affectAndLoot(enemy, hero, Corruption.class);
+
+			float powerMulti = Math.max(1f, procChance);
+			if (powerMulti > 1.1f){
+				//1 turn of adrenaline for each 20% above 100% proc rate
+				Buff.affect(enemy, Adrenaline.class, Math.round(5*(powerMulti-1f)));
+			}
+			
 			return 0;
 		}
 		

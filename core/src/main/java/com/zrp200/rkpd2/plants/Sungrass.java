@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,10 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Healing;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.CellEmitter;
-import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.particles.ShaftParticle;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
@@ -42,16 +43,16 @@ public class Sungrass extends Plant {
 	}
 
 	@Override
-	public void affectHero(Char ch, boolean isWarden) {
-		if (isWarden){
-			Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
-		} else {
-			Buff.affect(ch, Health.class).boost(ch.HT);
+	public void activate( Char ch ) {
+		
+		if (ch != null){
+			if (ch instanceof Hero && ((Hero) ch).subClass == HeroSubClass.WARDEN || Dungeon.hero.subClass == HeroSubClass.KING) {
+				Buff.affect(ch, Healing.class).setHeal(ch.HT, 0, 1);
+			} else {
+				Buff.affect(ch, Health.class).boost(ch.HT);
+			}
 		}
-	}
-
-	@Override
-	public void activateMisc(Char ch) {
+		
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
 		}
@@ -90,15 +91,20 @@ public class Sungrass extends Plant {
 			partialHeal += (40 + target.HT)/150f;
 			
 			if (partialHeal > 1){
-				target.HP += (int)partialHeal;
-				level -= (int)partialHeal;
-				partialHeal -= (int)partialHeal;
-				target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-				
-				if (target.HP >= target.HT) {
-					target.HP = target.HT;
-					if (target instanceof Hero){
-						((Hero)target).resting = false;
+				int healThisTurn = (int)partialHeal;
+				partialHeal -= healThisTurn;
+				level -= healThisTurn;
+
+				if (target.HP < target.HT) {
+
+					target.HP += healThisTurn;
+					target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(healThisTurn), FloatingText.HEALING);
+
+					if (target.HP >= target.HT) {
+						target.HP = target.HT;
+						if (target instanceof Hero) {
+							((Hero) target).resting = false;
+						}
 					}
 				}
 			}
@@ -133,11 +139,6 @@ public class Sungrass extends Plant {
 		@Override
 		public String iconTextDisplay() {
 			return Integer.toString(level);
-		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
 		}
 
 		@Override

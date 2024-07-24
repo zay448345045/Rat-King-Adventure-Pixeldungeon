@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,12 @@ import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
+import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Spear extends MeleeWeapon {
@@ -55,6 +61,40 @@ public class Spear extends MeleeWeapon {
 			return damage*2;
 		}
 		return damage;
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected DuelistAbility duelistAbility() {
+		// 1.45 at t2, 1.3 at t5
+		return new MeleeAbility(1.45f - (tier-2)/20f) {
+			@Override
+			protected boolean canAttack(Hero hero, Char enemy) {
+				return super.canAttack(hero, enemy) && !Dungeon.level.adjacent(hero.pos, enemy.pos);
+			}
+			int oldPos;
+
+			@Override
+			protected void beforeAbilityUsed(Hero hero, Char target) {
+				super.beforeAbilityUsed(hero, target);
+				if(target != null) oldPos = target.pos;
+			}
+
+			@Override
+			protected void proc(Hero hero, Char enemy) {
+				if (enemy.pos != oldPos) return;
+				//trace a ballistica to our target (which will also extend past them
+				Ballistica trajectory = new Ballistica(hero.pos, enemy.pos, Ballistica.STOP_TARGET);
+				//trim it to just be the part that goes past them
+				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+				//knock them back along that ballistica
+				WandOfBlastWave.throwChar(enemy, trajectory, 1, true, false, hero.getClass());
+			}
+		};
 	}
 
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2021 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
+import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.sprites.CharSprite;
+import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -30,8 +34,6 @@ import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.ui.BuffIndicator;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
 
@@ -70,7 +72,7 @@ public class SoulMark extends FlavourBuff {
 
 	public static void process(Char defender, int bonusDuration, float chance, boolean afterDamage, boolean extend) {
 		if (defender != hero
-				&& (hero.isSubclassed(HeroSubClass.WARLOCK) || hero.isSubclassed(HeroSubClass.KING))
+				&& hero.subClass.is(HeroSubClass.WARLOCK)
 				&& Random.Float() < chance) {
 			float duration = DURATION + bonusDuration;
 			(extend ? affect(defender, SoulMark.class, duration)
@@ -108,12 +110,12 @@ public class SoulMark extends FlavourBuff {
 
 	@Override
 	public int icon() {
-		return BuffIndicator.CORRUPT;
+		return BuffIndicator.INVERT_MARK;
 	}
 
 	@Override
 	public void tintIcon(Image icon) {
-		icon.hardlight(0.5f, 0.5f, 0.5f);
+		icon.hardlight(0.5f, 0.2f, 1f);
 	}
 
 	@Override
@@ -125,11 +127,6 @@ public class SoulMark extends FlavourBuff {
 	public void fx(boolean on) {
 		if (on) target.sprite.add(CharSprite.State.MARKED);
 		else target.sprite.remove(CharSprite.State.MARKED);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 
 	@Override

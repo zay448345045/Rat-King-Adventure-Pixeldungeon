@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.levels.rooms.connection;
 
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.levels.rooms.Room;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
@@ -50,7 +52,7 @@ public abstract class ConnectionRoom extends Room {
 		//traps cannot appear in connection rooms on floor 1
 		return super.canPlaceTrap(p) && Dungeon.getDepth() > 1;
 	}
-	
+
 	//FIXME this is a very messy way of handing variable connection rooms
 	private static ArrayList<Class<?extends ConnectionRoom>> rooms = new ArrayList<>();
 	static {

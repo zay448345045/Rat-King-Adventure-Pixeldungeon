@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
-import com.zrp200.rkpd2.actors.buffs.LockedFloor;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
@@ -43,14 +42,14 @@ import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
-import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
+import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.ui.HeroIcon;
-import com.zrp200.rkpd2.utils.BArray;
+import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
 
@@ -71,6 +70,11 @@ public class WarpBeacon extends ArmorAbility {
 			return Messages.get(this, "prompt");
 		}
 		return super.targetingPrompt();
+	}
+
+	@Override
+	public int targetedPos(Char user, int dst) {
+		return dst;
 	}
 
 	@Override
@@ -118,11 +122,10 @@ public class WarpBeacon extends ArmorAbility {
 						if (tracker.depth == Dungeon.depth && tracker.branch == Dungeon.branch){
 							Char existing = Actor.findChar(tracker.pos);
 
-							ScrollOfTeleportation.appear(hero, tracker.pos);
-							if (hero.hasTalent(Talent.CHRONO_SCREW)){
-								Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(1
-										+ 1.5f*(hero.pointsInTalent(Talent.CHRONO_SCREW)-1));
-							}
+                            if (hero.hasTalent(Talent.CHRONO_SCREW)){
+                                Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(1
+                                        + 1.5f*(hero.pointsInTalent(Talent.CHRONO_SCREW)-1));
+                            }
 
 							if (existing != null && existing != hero){
 								//if (hero.hasTalent(Talent.TELEFRAG)){
@@ -153,19 +156,27 @@ public class WarpBeacon extends ArmorAbility {
 									Random.shuffle(candidates);
 
 									if (!candidates.isEmpty()){
-										Actor.addDelayed( new Pushing( toPush, toPush.pos, candidates.get(0) ), -1 );
+										ScrollOfTeleportation.appear(hero, tracker.pos);
+										Actor.add( new Pushing( toPush, toPush.pos, candidates.get(0) ));
 
 										toPush.pos = candidates.get(0);
 										Dungeon.level.occupyCell(toPush);
 										hero.next();
-
+									} else {
+										GLog.w( Messages.get(ScrollOfTeleportation.class, "no_tele") );
 									}
+								} else {
+									ScrollOfTeleportation.appear(hero, tracker.pos);
 								}
+							} else {
+								ScrollOfTeleportation.appear(hero, tracker.pos);
 							}
 
 							Invisibility.dispel();
 							Dungeon.observe();
 							GameScene.updateFog();
+							hero.checkVisibleMobs();
+							AttackIndicator.updateState();
 
 						} else {
 
@@ -174,10 +185,8 @@ public class WarpBeacon extends ArmorAbility {
 								return;
 							}
 
-							TimekeepersHourglass.timeFreeze timeFreeze = hero.buff(TimekeepersHourglass.timeFreeze.class);
-							if (timeFreeze != null) timeFreeze.disarmPressedTraps();
-							Swiftthistle.TimeBubble timeBubble = hero.buff(Swiftthistle.TimeBubble.class);
-							if (timeBubble != null) timeBubble.disarmPressedTraps();
+							//transition before dispel, to cancel out trap effects
+							Level.beforeTransition();
 							Invisibility.dispel();
 
 							InterlevelScene.mode = InterlevelScene.Mode.RETURN;
@@ -207,6 +216,7 @@ public class WarpBeacon extends ArmorAbility {
 			PathFinder.buildDistanceMap(target, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
 			if (Dungeon.level.pit[target] ||
 					(Dungeon.level.solid[target] && !Dungeon.level.passable[target]) ||
+					!(Dungeon.level.passable[target] || Dungeon.level.avoid[target]) ||
 					PathFinder.distance[hero.pos] == Integer.MAX_VALUE){
 				GLog.w( Messages.get(WarpBeacon.class, "invalid_beacon") );
 				return;

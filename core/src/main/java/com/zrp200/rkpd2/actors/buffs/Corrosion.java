@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,16 +90,6 @@ public class Corrosion extends Buff implements Hero.Doom {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
-	public String heroMessage() {
-		return Messages.get(this, "heromsg");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", dispTurns(left), (int)damage);
 	}
@@ -131,7 +121,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 			Badges.validateDeathFromFriendlyMagic();
 		}
 
-		Dungeon.fail( getClass() );
+		Dungeon.fail( this );
 		GLog.n(Messages.get(this, "ondeath"));
 	}
 

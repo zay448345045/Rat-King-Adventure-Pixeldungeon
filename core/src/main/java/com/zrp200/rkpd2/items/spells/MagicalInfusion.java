@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,13 +22,12 @@
 package com.zrp200.rkpd2.items.spells;
 
 import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.buffs.Degrade;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
+import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -59,11 +58,14 @@ public class MagicalInfusion extends InventorySpell {
 		} else if (item instanceof Armor && ((Armor) item).glyph != null) {
 			((Armor) item).upgrade(true);
 		} else {
+			boolean wasCursed = item.cursed;
+			boolean wasCurseInfused = item instanceof Wand && ((Wand) item).curseInfusionBonus;
 			item.upgrade();
+			if (wasCursed) item.cursed = true;
+			if (wasCurseInfused) ((Wand) item).curseInfusionBonus = true;
 		}
 		
-		GLog.p( Messages.get(this, "infuse", item.name()) );
-		Talent.onUpgradeScrollUsed( Dungeon.hero );
+		GLog.p( Messages.get(this, "infuse") );
 		Badges.validateItemLevelAquired(item);
 
 		Statistics.upgradesUsed++;
@@ -71,8 +73,8 @@ public class MagicalInfusion extends InventorySpell {
 	
 	@Override
 	public int value() {
-		//prices of ingredients, divided by output quantity
-		return Math.round(quantity * ((50 + 40) / 1f));
+		//prices of ingredients
+		return (50 + 40) * quantity;
 	}
 	
 	public static class Recipe extends com.zrp200.rkpd2.items.Recipe.SimpleRecipe {

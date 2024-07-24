@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,7 +201,11 @@ public class WndHero extends WndTabbed {
 			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
 			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
 			if (Dungeon.daily){
-				statSlot( Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_" );
+				if (!Dungeon.dailyReplay) {
+					statSlot(Messages.get(this, "daily_for"), "_" + Dungeon.customSeedText + "_");
+				} else {
+					statSlot(Messages.get(this, "replay_for"), "_" + Dungeon.customSeedText + "_");
+				}
 			} else if (!Dungeon.customSeedText.isEmpty()){
 				statSlot( Messages.get(this, "custom_seed"), "_" + Dungeon.customSeedText + "_" );
 			} else {
@@ -316,7 +320,7 @@ public class WndHero extends WndTabbed {
 				icon.y = this.y;
 				add( icon );
 
-				txt = PixelScene.renderTextBlock( buff.toString(), 8 );
+				txt = PixelScene.renderTextBlock( Messages.titleCase(buff.name()), 8 );
 				txt.setPos(
 						icon.width + GAP,
 						this.y + (icon.height - txt.height()) / 2

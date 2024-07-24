@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,22 +29,35 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.Vulnerable;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.mobs.Bat;
+import com.zrp200.rkpd2.actors.mobs.Bee;
+import com.zrp200.rkpd2.actors.mobs.Crab;
+import com.zrp200.rkpd2.actors.mobs.Scorpio;
+import com.zrp200.rkpd2.actors.mobs.Spinner;
+import com.zrp200.rkpd2.actors.mobs.Swarm;
+import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
-import com.zrp200.rkpd2.items.weapon.Weapon;
+import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.MiningLevel;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;
 
-public class Pickaxe extends Weapon {
+//various code in here supports old blacksmith quest logic from before v2.2.0
+public class Pickaxe extends MeleeWeapon {
 	
 	public static final String AC_MINE	= "MINE";
 	
@@ -59,32 +72,27 @@ public class Pickaxe extends Weapon {
 		
 		unique = true;
 		bones = false;
-		
-		defaultAction = AC_MINE;
 
+		tier = 2;
 	}
 	
 	public boolean bloodStained = false;
 
 	@Override
-	public int min(int lvl) {
-		return 2;   //tier 2
-	}
-
-	@Override
-	public int max(int lvl) {
-		return 15;  //tier 2
-	}
-
-	@Override
 	public int STRReq(int lvl) {
-		return STRReq(3, lvl); //tier 3
+		return super.STRReq(lvl) + 2; //tier 3 strength requirement with tier 2 damage stats
 	}
 
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_MINE );
+		if (Blacksmith.Quest.oldMiningQuest()) {
+			actions.add(AC_MINE);
+		}
+		if (Dungeon.level instanceof MiningLevel){
+			actions.remove(AC_DROP);
+			actions.remove(AC_THROW);
+		}
 		return actions;
 	}
 	
@@ -121,7 +129,7 @@ public class Pickaxe extends Weapon {
 							
 							DarkGold gold = new DarkGold();
 							if (gold.doPickUp( Dungeon.hero )) {
-								GLog.i( Messages.get(Dungeon.hero, "you_now_have", gold.name()) );
+								GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", gold.name())) );
 							} else {
 								Dungeon.level.drop( gold, hero.pos ).sprite.drop();
 							}
@@ -138,20 +146,10 @@ public class Pickaxe extends Weapon {
 			
 		}
 	}
-	
-	@Override
-	public boolean isUpgradable() {
-		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		if (!bloodStained && defender instanceof Bat) {
+		if (Blacksmith.Quest.oldBloodQuest() && !bloodStained && defender instanceof Bat) {
 			Actor.add(new Actor() {
 
 				{
@@ -170,9 +168,53 @@ public class Pickaxe extends Weapon {
 				}
 			});
 		}
-		return damage;
+		return super.proc( attacker, defender, damage );
 	}
-	
+
+	@Override
+	public boolean keptThroughLostInventory() {
+		//pickaxe is always kept when it's needed for the mining level
+		return super.keptThroughLostInventory() || Dungeon.level instanceof MiningLevel;
+	}
+
+	@Override
+	public String defaultAction() {
+		if (AC_ABILITY.equals(super.defaultAction())){
+			return AC_ABILITY;
+		} else if (Blacksmith.Quest.oldMiningQuest()) {
+			return AC_MINE;
+		} else {
+			return super.defaultAction();
+		}
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	private static class Pierce extends MeleeAbility {
+		@Override
+		public float dmgMulti(Char enemy) {
+			float multi = super.dmgMulti(enemy);
+			if (Char.hasProp(enemy, Char.Property.INORGANIC)
+					|| enemy instanceof Swarm
+					|| enemy instanceof Bee
+					|| enemy instanceof Crab
+					|| enemy instanceof Spinner
+					|| enemy instanceof Scorpio) multi *= 2;
+			return multi;
+		}
+
+		@Override
+		protected void proc(Hero hero, Char enemy) {
+			Buff.affect(enemy, Vulnerable.class, 3f);
+		}
+	} @Override
+	protected MeleeAbility duelistAbility() {
+		return new Pierce();
+	}
+
 	private static final String BLOODSTAINED = "bloodStained";
 	
 	@Override
@@ -191,7 +233,11 @@ public class Pickaxe extends Weapon {
 	
 	@Override
 	public Glowing glowing() {
-		return bloodStained ? BLOODY : null;
+		if (super.glowing() == null) {
+			return bloodStained ? BLOODY : null;
+		} else {
+			return super.glowing();
+		}
 	}
 
 }

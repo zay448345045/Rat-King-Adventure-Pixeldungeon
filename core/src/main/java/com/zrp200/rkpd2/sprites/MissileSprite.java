@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.mobs.GnollGeomancer;
 import com.zrp200.rkpd2.actors.buffs.RobotTransform;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpectralBlades;
 import com.zrp200.rkpd2.items.Item;
@@ -88,6 +89,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 	static {
 		ANGULAR_SPEEDS.put(Dart.class,          0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
+		ANGULAR_SPEEDS.put(ThrowingSpike.class, 0);
 		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
 		ANGULAR_SPEEDS.put(ThrowingSpear.class, 0);
 		ANGULAR_SPEEDS.put(Kunai.class,         0);
@@ -97,21 +99,23 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(RunicBladeMkII.RunicMissile.class, 0);
 		ANGULAR_SPEEDS.put(ExoKnife.RunicMissile.class, 0);
 		ANGULAR_SPEEDS.put(RobotTransform.RunicMissile.class, 0);
-		
+
 		ANGULAR_SPEEDS.put(SpiritBow.SpiritArrow.class,       0);
 		ANGULAR_SPEEDS.put(ScorpioSprite.ScorpioShot.class,   0);
 		ANGULAR_SPEEDS.put(RatKingBossSprite.ScorpioShot.class, 0);
 		ANGULAR_SPEEDS.put(NerfGun.NerfAmmo.class,          0);
-		
+
 		//720 is default
-		
+
+		ANGULAR_SPEEDS.put(GnollGeomancer.Boulder.class,   90);
+
 		ANGULAR_SPEEDS.put(HeavyBoomerang.class,1440);
 		ANGULAR_SPEEDS.put(Bolas.class,         1440);
 		ANGULAR_SPEEDS.put(HomingBoomerang.class, 1440);
-		
+
 		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
 		ANGULAR_SPEEDS.put(SpectralBlades.BirbBlade.class, 0);
-		
+
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class,      2160);
 	}
 
@@ -153,7 +157,13 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 			flipHorizontal = true;
 			updateFrame();
 		}
-		
+
+		if (item instanceof GnollGeomancer.Boulder){
+			angle = 0;
+			flipHorizontal = false;
+			updateFrame();
+		}
+
 		float speed = SPEED;
 		if (item instanceof RobotTransform.RunicMissile){
 			speed *= 4f;
@@ -167,7 +177,8 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		if (item instanceof NerfGun.SmallDart){
 			speed *= 3.66f;
 		}
-		if (item instanceof Dart && Dungeon.hero.belongings.weapon() instanceof Crossbow){
+		if (item instanceof Dart
+				&& Crossbow.find(Dungeon.hero) != null){
 			speed *= 3f;
 			
 		} else if (item instanceof SpiritBow.SpiritArrow

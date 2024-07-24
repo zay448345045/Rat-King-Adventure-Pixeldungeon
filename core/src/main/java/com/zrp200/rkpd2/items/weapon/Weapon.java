@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,16 +35,24 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.actors.hero.abilities.duelist.ElementalStrike;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
+import com.zrp200.rkpd2.items.rings.RingOfArcana;
 import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.rings.RingOfFuror;
 import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
+import com.zrp200.rkpd2.items.weapon.curses.Annoying;
+import com.zrp200.rkpd2.items.weapon.curses.Chaotic;
+import com.zrp200.rkpd2.items.weapon.curses.Dazzling;
+import com.zrp200.rkpd2.items.weapon.curses.Displacing;
 import com.zrp200.rkpd2.items.weapon.curses.Explosive;
 import com.zrp200.rkpd2.items.weapon.curses.*;
 import com.zrp200.rkpd2.items.weapon.enchantments.*;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+import com.zrp200.rkpd2.items.weapon.melee.RunicBlade;
+import com.zrp200.rkpd2.items.weapon.melee.Scimitar;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.utils.DungeonSeed;
@@ -60,10 +68,17 @@ abstract public class Weapon extends KindOfWeapon {
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
     public int tier;
 
-    public enum Augment {
-		SPEED   (0.7f, 0.6667f),
-		DAMAGE  (1.5f, 1.6667f),
-		NONE	(1.0f, 1.0000f);
+    public int tier;
+
+	@Override
+	public void hitSound(float pitch) {
+		super.hitSound(pitch);
+	}
+
+	public enum Augment {
+		SPEED   (0.7f, 2/3f),
+		DAMAGE  (1.5f, 5/3f),
+		NONE	(1.0f, 1f);
 
 		private float damageFactor;
 		private float delayFactor;
@@ -91,6 +106,7 @@ abstract public class Weapon extends KindOfWeapon {
 	private float availableUsesToID = USES_TO_ID/2f;
 	
 	public Enchantment enchantment;
+	public boolean enchantHardened = false;
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 	
@@ -127,6 +143,7 @@ abstract public class Weapon extends KindOfWeapon {
 	private static final String USES_LEFT_TO_ID = "uses_left_to_id";
 	private static final String AVAILABLE_USES  = "available_uses";
 	private static final String ENCHANTMENT	    = "enchantment";
+	private static final String ENCHANT_HARDENED = "enchant_hardened";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
 	private static final String AUGMENT	        = "augment";
@@ -137,6 +154,7 @@ abstract public class Weapon extends KindOfWeapon {
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( ENCHANTMENT, enchantment );
+		bundle.put( ENCHANT_HARDENED, enchantHardened );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( AUGMENT, augment );
@@ -148,6 +166,7 @@ abstract public class Weapon extends KindOfWeapon {
 		usesLeftToID = bundle.getFloat( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getFloat( AVAILABLE_USES );
 		enchantment = (Enchantment)bundle.get( ENCHANTMENT );
+		enchantHardened = bundle.getBoolean( ENCHANT_HARDENED );
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 
@@ -162,7 +181,7 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	@Override
-	public float accuracyFactor( Char owner ) {
+	public float accuracyFactor(Char owner, Char target) {
 		
 		int encumbrance = 0;
 		
@@ -197,13 +216,25 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	protected float speedMultiplier(Char owner ){
-		return RingOfFuror.attackSpeedMultiplier(owner);
+		float multi = RingOfFuror.attackSpeedMultiplier(owner);
+
+		if (owner.buff(Scimitar.SwordDance.class) != null){
+			multi += 0.6f;
+		}
+
+		return multi;
 	}
 
 	@Override
 	public int reachFactor(Char owner) {
 		int reach = RCH;
-		if(hasEnchant(Projecting.class, owner)) reach++;
+		if (owner instanceof Hero && RingOfForce.fightingUnarmed((Hero) owner)){
+			reach = 1; //brawlers stance benefits from enchantments, but not innate reach
+			if (!RingOfForce.unarmedGetsWeaponEnchantment((Hero) owner)){
+				return reach;
+			}
+		}
+		if(hasEnchant(Projecting.class, owner)) reach +=Math.round(RingOfArcana.enchantPowerMultiplier(owner));
 		if(RobotBuff.isRobot()) reach++;
 		if(owner.buff(ChampionEnemy.Projecting.class) != null) reach += 2;
 		if(owner.buff(ChampionEnemy.Giant.class) != null) reach += 1;
@@ -250,12 +281,26 @@ abstract public class Weapon extends KindOfWeapon {
 		return level;
 	}
 
+	private static boolean evaluatingTwinUpgrades = false;
 	@Override
 	public int buffedLvl() {
 		if (Dungeon.hero.buff(PowerfulDegrade.class) != null) return 0;
 		int lvl = super.buffedLvl();
 		if((isEquipped(Dungeon.hero) || Dungeon.hero.belongings.contains(this))
 				&& (Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null && Dungeon.hero.isClassed(HeroClass.ROGUE))) lvl++;
+
+		if (!evaluatingTwinUpgrades && isEquipped(Dungeon.hero) && Dungeon.hero.hasTalent(Talent.TWIN_UPGRADES)){
+			evaluatingTwinUpgrades = true;
+			for (KindOfWeapon weapon : Dungeon.hero.belongings.weapons()) {
+				if (weapon == this || !(weapon instanceof Weapon)) continue;
+				//weaker weapon needs to be 2/1/0 tiers lower, based on talent level
+				if ((tier + (3 - Dungeon.hero.pointsInTalent(Talent.TWIN_UPGRADES))) <= ((Weapon) weapon).tier
+						&& weapon.buffedLvl() > lvl) {
+					lvl = weapon.buffedLvl();
+				}
+			}
+			evaluatingTwinUpgrades = false;
+		}
 		return lvl;
 	}
 	
@@ -270,16 +315,25 @@ abstract public class Weapon extends KindOfWeapon {
 			if (enchantment == null){
 				enchant(Enchantment.random());
 			}
-		} else {
-			if (hasCurseEnchant()){
+		} else if (enchantment != null) {
+			//chance to lose harden buff is 10/20/40/80/100% when upgrading from +6/7/8/9/10
+			if (enchantHardened){
+				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6)){
+					enchantHardened = false;
+				}
+
+			//chance to remove curse is a static 33%
+			} else if (hasCurseEnchant()) {
 				if (Random.Int(3) == 0) enchant(null);
+
+			//otherwise chance to lose enchant is 10/20/40/80/100% when upgrading from +4/5/6/7/8
 			} else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
 				enchant(null);
 			}
 		}
 		
 		cursed = false;
-		
+
 		return super.upgrade();
 	}
 	
@@ -353,18 +407,18 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 
 	public static abstract class Enchantment implements Bundlable {
-		
-		private static final Class<?>[] common = new Class<?>[]{
+
+		public static final Class<?>[] common = new Class<?>[]{
 				Blazing.class, Chilling.class, Kinetic.class, Shocking.class};
-		
-		private static final Class<?>[] uncommon = new Class<?>[]{
+
+		public static final Class<?>[] uncommon = new Class<?>[]{
 				Blocking.class, Blooming.class, Elastic.class,
 				Lucky.class, Projecting.class, Unstable.class};
-		
-		private static final Class<?>[] rare = new Class<?>[]{
+
+		public static final Class<?>[] rare = new Class<?>[]{
 				Corrupting.class, Grim.class, Vampiric.class};
-		
-		private static final float[] typeChances = new float[]{
+
+		public static final float[] typeChances = new float[]{
 				50, //12.5% each
 				40, //6.67% each
 				10  //3.33% each
@@ -403,28 +457,52 @@ abstract public class Weapon extends KindOfWeapon {
 			}, attacker, defender, damage);
 		}
 
-		public static float procChanceMultiplier( Char attacker ){
-			float multi = 1f;
+		public static float genericProcChanceMultiplier( Char attacker, boolean applyArcana ){
+			float multi = 1;
+			if(applyArcana) multi *= RingOfArcana.enchantPowerMultiplier(attacker);
 			boolean heroAttack = attacker instanceof Hero;
 			Berserk rage = attacker.buff(Berserk.class);
 			if (rage != null) {
-				float byTalent = 1f;
-				if (heroAttack)
-					byTalent = ((Hero) attacker).byTalent(
-							Talent.ENRAGED_CATALYST, 1 / 5f,
-							Talent.RK_BERSERKER, 0.15f);
-				multi += rage.rageAmount() * byTalent;
+				multi = rage.enchantFactor(multi);
+//				multi += rage.rageAmount() * ((Hero) attacker).byTalent(
+//						Talent.ENRAGED_CATALYST, 1/5f,
+//						Talent.RK_BERSERKER, 0.15f);
 			}
+
 			// note I'm specifically preventing it from lowering the chance. I already handled that in Weapon#attackProc.
 			multi += Math.max(0, Talent.SpiritBladesTracker.getProcModifier()-1);
+
+			if (attacker.buff(RunicBlade.RunicSlashTracker.class) != null){
+				multi += 3f;
+				//handled already
+				//attacker.buff(RunicBlade.RunicSlashTracker.class).detach();
+			}
+
+			if (attacker.buff(ElementalStrike.DirectedPowerTracker.class) != null){
+				multi += attacker.buff(ElementalStrike.DirectedPowerTracker.class).enchBoost;
+				attacker.buff(ElementalStrike.DirectedPowerTracker.class).detach();
+			}
+
+			if (attacker.buff(Talent.SpiritBladesTracker.class) != null
+					&& ((Hero)attacker).pointsInTalent(Talent.SPIRIT_BLADES) == 4){
+				multi += 0.1f;
+			}
 			if (heroAttack && attacker.buff(Talent.StrikingWaveTracker.class) != null
 					&& ((Hero)attacker).pointsInTalent(Talent.STRIKING_WAVE) == 4){
 				multi += 0.2f;
 			}
+
 			if (attacker.buff(RingOfForce.Force.class) != null && heroAttack && ((Hero) attacker).belongings.weapon() == null){
 				multi *= 1.5f;
 			}
 			return multi;
+		}
+		public static float genericProcChanceMultiplier(Char attacker) {
+			return genericProcChanceMultiplier(attacker, true);
+		}
+
+		protected float procChanceMultiplier( Char attacker) {
+			return genericProcChanceMultiplier(attacker);
 		}
 
 		public String name() {
@@ -450,10 +528,13 @@ abstract public class Weapon extends KindOfWeapon {
 			return false;
 		}
 
+		protected float procChance(Char attacker, int level, float numerator, float denominator) {
+			return procChanceMultiplier(attacker) * (numerator+level)/(denominator+level);
+		}
 		// just a faster way to get proc chances resolved while factoring in enchant modifiers.
 		// results in (N+L)/(D+L) * modifier chance of returning true.
-		public static boolean proc(Char attacker, int level, float numerator, float denominator) {
-			return Random.Float() < procChanceMultiplier(attacker) * (numerator+level)/(denominator+level);
+		public boolean proc(Char attacker, int level, float numerator, float denominator) {
+			return Random.Float() < procChance(attacker, level, numerator, denominator);
 		}
 
 		@Override

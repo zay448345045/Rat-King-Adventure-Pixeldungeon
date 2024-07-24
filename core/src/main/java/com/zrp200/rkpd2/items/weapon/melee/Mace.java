@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,13 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Vertigo;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
+import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.Vulnerable;
+import com.zrp200.rkpd2.actors.buffs.Weakness;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Mace extends MeleeWeapon {
@@ -60,6 +67,38 @@ public class Mace extends MeleeWeapon {
 			Buff.prolong(enemy, Vertigo.class, Random.NormalIntRange(1, 4));
 		}
 		return 0;
+	}
+
+	@Override
+	public String targetingPrompt() {
+		return Messages.get(this, "prompt");
+	}
+
+	@Override
+	protected DuelistAbility duelistAbility() {
+		// 1.45 at t2, 1.4 at t3, 1.35 at t4, 1.3 at t5
+		return new HeavyBlow(1.5f - 0.05f * tier);
+	}
+
+	public static class HeavyBlow extends MeleeAbility {
+
+		HeavyBlow(float dmgMulti) { super(dmgMulti); }
+		@Override public float accMulti() { return 0.25f; }
+
+		@Override
+		public void afterHit(Char enemy, boolean hit) {
+			if (enemy.isAlive()) {
+				Buff.affect(enemy, Vulnerable.class, 5f);
+				Buff.affect(enemy, Weakness.class, 5f);
+			}
+		}
+		protected int baseChargeUse(Hero hero, Char target){
+			if (target == null || (target instanceof Mob && ((Mob) target).surprisedBy(hero))) {
+				return 1;
+			} else {
+				return 2;
+			}
+		}
 	}
 
 }

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.MagicalSleep;
 import com.zrp200.rkpd2.actors.mobs.Mob;
+import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.watabou.noosa.audio.Sample;
 
 public class StoneOfDeepSleep extends Runestone {
 
@@ -46,6 +48,7 @@ public class StoneOfDeepSleep extends Runestone {
 			if (c instanceof Mob){
 
 				Buff.affect(c, MagicalSleep.class);
+				c.sprite.centerEmitter().start( Speck.factory( Speck.NOTE ), 0.3f, 5 );
 
 			}
 

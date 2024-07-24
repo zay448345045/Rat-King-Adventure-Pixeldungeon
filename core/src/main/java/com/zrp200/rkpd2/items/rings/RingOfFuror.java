@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ public class RingOfFuror extends Ring {
 
 	@Override
 	protected float multiplier() {
-		return 1.105f;
+		return MULTIPLIER;
 	}
 
 	@Override
@@ -42,13 +42,15 @@ public class RingOfFuror extends Ring {
 		return new Furor();
 	}
 
+	private static final float MULTIPLIER = 1.09051f;
+
 	@Override
 	protected float cap() {
 		return 3f;
 	}
 
 	public static float attackSpeedMultiplier(Char target ){
-		float min = Math.min(2f, (float) Math.pow(1.105, getBuffedBonus(target, Furor.class)));
+		float min = Math.min(2f, (float) Math.pow(MULTIPLIER, getBuffedBonus(target, Furor.class)));
 		Hunger hunger = Dungeon.hero.buff(Hunger.class);
 		if (hunger != null && hunger.accumulatingDamage > 0){
 			min *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);

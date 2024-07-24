@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
@@ -73,7 +74,10 @@ public class WildMagic extends ArmorAbility {
 		ArrayList<Wand> wands = hero.belongings.getAllItems(Wand.class);
 		Random.shuffle(wands);
 
-		float chargeUsePerShot = (float)Math.pow(0.67f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
+		float chargeUsePerShot = 0.5f * (float)Math.pow(
+				0.67f,
+				hero.pointsInTalent(Talent.CONSERVED_MAGIC)
+		);
 
 		for (Wand w : wands.toArray(new Wand[0])){
 			if (w.curCharges < w.getMinCharges() + 1 && w.partialCharge < chargeUsePerShot){
@@ -145,7 +149,9 @@ public class WildMagic extends ArmorAbility {
 		}
 	};
 
-	public static void zapWand(ArrayList<Wand> wands, Hero hero, int cell){
+	Actor wildMagicActor = null;
+
+	private void zapWand( ArrayList<Wand> wands, Hero hero, int cell){
 		Wand cur = wands.remove(0);
 
 		Ballistica aim = new Ballistica(hero.pos, cell, cur.collisionProperties(cell));
@@ -153,53 +159,76 @@ public class WildMagic extends ArmorAbility {
 		hero.sprite.zap(cell);
 
 		float startTime = Game.timeTotal;
-		if (!hero.hasTalent(Talent.ELDRITCH_BLESSING) && !cur.cursed) {
-			cur.fx(aim, new Callback() {
-				@Override
-				public void call() {
-					cur.onZap(aim);
-					if (Game.timeTotal - startTime < 0.33f){
-						hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+		if (cur.tryToZap(hero, cell)) {
+			if (!hero.hasTalent(Talent.ELDRITCH_BLESSING) && !cur.cursed) {
+				cur.fx(aim, new Callback() {
+					@Override
+					public void call() {
+						cur.onZap(aim);
+						if (Game.timeTotal - startTime < 0.33f) {
+							hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+								@Override
+								protected void onComplete() {
+									afterZap(cur, wands, hero, cell);
+								}
+							});
+						} else {
+							afterZap(cur, wands, hero, cell);
+						}
+					}
+				});
+			} else {
+				CursedWand.cursedZap(cur,
+						hero,
+						new Ballistica(hero.pos, cell, Ballistica.MAGIC_BOLT),
+						new Callback() {
 							@Override
-							protected void onComplete() {
-								afterZap(cur, wands, hero, cell);
+							public void call() {
+								if (Game.timeTotal - startTime < 0.33f) {
+									hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
+										@Override
+										protected void onComplete() {
+											afterZap(cur, wands, hero, cell);
+										}
+									});
+								} else {
+									afterZap(cur, wands, hero, cell);
+								}
 							}
 						});
-					} else {
-						afterZap(cur, wands, hero, cell);
-					}
-				}
-			});
+			}
 		} else {
-			CursedWand.cursedZap(cur,
-					hero,
-					new Ballistica(hero.pos, cell, Ballistica.MAGIC_BOLT),
-					new Callback() {
-						@Override
-						public void call() {
-							if (Game.timeTotal - startTime < 0.33f){
-								hero.sprite.parent.add(new Delayer(0.33f - (Game.timeTotal - startTime)) {
-									@Override
-									protected void onComplete() {
-										afterZap(cur, wands, hero, cell);
-									}
-								});
-							} else {
-								afterZap(cur, wands, hero, cell);
-							}
-						}
-					});
+			afterZap(cur, wands, hero, cell);
 		}
 	}
 
 	private static void afterZap( Wand cur, ArrayList<Wand> wands, Hero hero, int target){
-		cur.partialCharge -= (float) Math.pow(0.67f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
+		cur.partialCharge -= 0.5f * (float) Math.pow(0.67f, hero.pointsInTalent(Talent.CONSERVED_MAGIC));
 		if (cur.partialCharge < 0) {
 			cur.partialCharge++;
 			cur.curCharges--;
 		}
+		if (wildMagicActor != null){
+			wildMagicActor.next();
+			wildMagicActor = null;
+		}
+
+		Char ch = Actor.findChar(target);
 		if (!wands.isEmpty() && hero.isAlive()) {
-			zapWand(wands, hero, target);
+			Actor.add(new Actor() {
+				{
+					actPriority = VFX_PRIO-1;
+				}
+
+				@Override
+				protected boolean act() {
+					wildMagicActor = this;
+					zapWand(wands, hero, ch == null ? target : ch.pos);
+					Actor.remove(this);
+					return false;
+				}
+			});
+			hero.next();
 		} else {
 			if (hero.buff(WildMagicTracker.class) != null) {
 				hero.buff(WildMagicTracker.class).detach();

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
 import com.zrp200.rkpd2.items.armor.glyphs.Brimstone;
+import com.zrp200.rkpd2.items.rings.RingOfAccuracy;
+import com.zrp200.rkpd2.items.rings.RingOfEvasion;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.PrismaticSprite;
@@ -93,7 +95,12 @@ public class PrismaticImage extends AbstractMirrorImage {
 			}
 		}
 	}
-	
+
+	@Override
+	public boolean isActive() {
+		return isAlive() || deathTimer > 0;
+	}
+
 	private static final String HEROID	= "hero_id";
 	private static final String TIMER	= "timer";
 	
@@ -128,12 +135,18 @@ public class PrismaticImage extends AbstractMirrorImage {
 	}
 
 	@Override
+	protected int heroEvasion() {
+		// armor boosts contribute to evasion
+		return hero.belongings.armor != null ?
+				(int)hero.belongings.armor().evasionFactor(this, super.heroEvasion())
+				: super.heroEvasion();
+	}
+
+	@Override
 	public int drRoll() {
-		if (hero != null){
-			return hero.drRoll();
-		} else {
-			return 0;
-		}
+		int dr = super.drRoll();
+		if (hero != null) dr += hero.drRoll();
+		return dr;
 	}
 
 	@Override
@@ -143,12 +156,10 @@ public class PrismaticImage extends AbstractMirrorImage {
 
 	@Override
 	public int defenseProc(Char enemy, int damage) {
-		damage = super.defenseProc(enemy, damage);
 		if (hero != null && hero.belongings.armor() != null){
-			return hero.belongings.armor().proc( enemy, this, damage );
-		} else {
-			return damage;
+			damage = hero.belongings.armor().proc( enemy, this, damage );
 		}
+		return super.defenseProc(enemy, damage);
 	}
 	
 	@Override
@@ -157,7 +168,8 @@ public class PrismaticImage extends AbstractMirrorImage {
 		//TODO improve this when I have proper damage source logic
 		if (hero != null && hero.belongings.armor() != null && hero.belongings.armor().hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= AntiMagic.drRoll(hero.belongings.armor(). glyphEffectLevel(hero));
+			dmg -= AntiMagic.drRoll(hero, hero.belongings.armor(). glyphEffectLevel(hero));
+			dmg = Math.max(dmg, 0);
 		}
 		
 		super.damage(dmg, src);
@@ -177,7 +189,6 @@ public class PrismaticImage extends AbstractMirrorImage {
 				(hero.belongings.weapon() != null && hero.belongings.weapon().canReach(this, enemy.pos)) ||
 				(hero.hasTalent(Talent.SPECTRE_ALLIES) && KindOfWeapon.canReach(this, enemy.pos, 1 + hero.pointsInTalent(Talent.SPECTRE_ALLIES)));
 	}
-
 	@Override
 	public boolean isImmune(Class effect) {
 		if (effect == Burning.class

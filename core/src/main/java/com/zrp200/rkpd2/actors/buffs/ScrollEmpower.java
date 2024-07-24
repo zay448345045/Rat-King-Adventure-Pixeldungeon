@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 import static com.zrp200.rkpd2.Dungeon.hero;
+import static com.zrp200.rkpd2.actors.hero.Talent.INSCRIBED_POWER;
 
 public class ScrollEmpower extends Buff {
 
@@ -38,14 +39,15 @@ public class ScrollEmpower extends Buff {
 	}
 
 	public static int boost() {
-		return hero.hasTalent(Talent.RK_BATTLEMAGE) ? 3 : 2*hero.pointsInTalent(Talent.EMPOWERING_SCROLLS);
+		// 2 for restoration, 2/4 for inscribed power. +1 inscribed power is the same as +2 shattered's.
+		return 2 + 2*(1+hero.pointsInTalent(INSCRIBED_POWER)/2);
 	}
 
 
 	private int left;
 
-	public void reset(){
-		left = hero.pointsInTalent(Talent.EMPOWERING_SCROLLS, Talent.RK_BATTLEMAGE);
+	public void reset(int left){
+		this.left = left;
 		Item.updateQuickslot();
 	}
 
@@ -80,11 +82,6 @@ public class ScrollEmpower extends Buff {
 	@Override
 	public String iconTextDisplay() {
 		return Integer.toString(left);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 
 	@Override

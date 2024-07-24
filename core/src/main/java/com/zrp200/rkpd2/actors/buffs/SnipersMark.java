@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,11 @@ import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.ItemSprite;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.utils.GLog;
+import com.zrp200.rkpd2.ui.HeroIcon;
 
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
@@ -114,7 +113,7 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 	private static final String OBJECT    = "object";
 	private static final String OBJECTS	  = "objects";
 	private static final String LEVEL     = "level",
-								LEVELS    = LEVEL+"s";
+			LEVELS    = LEVEL+"s";
 
 	public static final float DURATION = 4f;
 
@@ -146,13 +145,13 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 		ActionIndicator.setAction(this);
 		return super.attachTo(target);
 	}
-	
+
 	@Override
 	public void detach() {
 		super.detach();
 		ActionIndicator.clearAction(this);
 	}
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
@@ -216,11 +215,6 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String desc() {
 		HeroSubClass sub = Dungeon.hero.subClass;
 		String[] args = new String[5];
@@ -249,8 +243,13 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 	}
 
 	@Override
-	public Image actionIcon() {
-		return new ItemSprite(ItemSpriteSheet.SPIRIT_BOW, null);
+	public int actionIcon() {
+		return HeroIcon.SNIPERS_MARK;
+	}
+
+	@Override
+	public int indicatorColor() {
+		return 0x444444;
 	}
 
 	// only one action handler can be active at a time.
@@ -333,6 +332,7 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 	}
 
 	// this is the safe way to create new actions. will prevent duplication of free-targets as well.
+
 	@Override
 	public void doAction() {
 		if (hero == null) return;
@@ -461,8 +461,7 @@ public class SnipersMark extends FlavourBuff implements ActionIndicator.Action {
 
 		int cell = QuickSlotButton.autoAim(ch, arrow);
 
-		int points = hero.pointsInTalent(Talent.SHARED_UPGRADES, Talent.RK_SNIPER);
-		if(hero.canHaveTalent(Talent.SHARED_UPGRADES)) points++; // free +1.
+		int points = hero.shiftedPoints(Talent.SHARED_UPGRADES, Talent.RK_SNIPER);
 		arrow.sniperSpecialBonusDamage = level*points/10f;
 
 		Buff.detach(hero, Preparation.class); // nope!

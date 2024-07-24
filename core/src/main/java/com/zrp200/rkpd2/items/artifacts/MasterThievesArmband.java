@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.CounterBuff;
 import com.zrp200.rkpd2.actors.buffs.Cripple;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
@@ -46,6 +48,9 @@ import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -68,13 +73,21 @@ public class MasterThievesArmband extends Artifact {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (isEquipped(hero) && charge > 0 && !cursed) actions.add(AC_STEAL);
+		if (isEquipped(hero)
+				&& charge > 0
+				&& hero.buff(MagicImmune.class) == null
+				&& !cursed) {
+			actions.add(AC_STEAL);
+		}
 		return actions;
 	}
 
 	@Override
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
+
+		if (hero.buff(MagicImmune.class) != null) return;
+
 		if (action.equals(AC_STEAL)){
 
 			curUser = hero;
@@ -124,6 +137,8 @@ public class MasterThievesArmband extends Artifact {
 							boolean surprised = ((Mob) ch).surprisedBy(curUser, false);
 							float lootMultiplier = 1f + 0.1f*level();
 							int debuffDuration = 3 + level()/2;
+
+							Invisibility.dispel(curUser);
 
 							if (surprised){
 								lootMultiplier += 0.5f;
@@ -203,6 +218,7 @@ public class MasterThievesArmband extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
+		if (cursed || target.buff(MagicImmune.class) != null) return;
 		partialCharge += 0.1f * amount;
 		partialCharge = Math.min(partialCharge, chargeCap - charge);
 		while (partialCharge >= 1f){
@@ -236,15 +252,6 @@ public class MasterThievesArmband extends Artifact {
 		return desc;
 	}
 
-	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		super.restoreFromBundle(bundle);
-		//conversion for old armband on pre-1.2.0 saves
-		if (exp > Math.round(10 + level()*3.33f)){
-			exp = 0;
-		}
-	}
-
 	public static interface ThieveryBuff {
 		public boolean isCursed();
 		public int chargesToUse(Item item);
@@ -265,7 +272,7 @@ public class MasterThievesArmband extends Artifact {
 		}
 
 		public void gainCharge(float levelPortion) {
-			if (cursed) return;
+			if (cursed || target.buff(MagicImmune.class) != null) return;
 
 			if (charge < chargeCap){
 				float chargeGain = 3f * levelPortion;

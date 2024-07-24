@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.SafeCast;
@@ -49,8 +50,7 @@ public class Invisibility extends FlavourBuff {
 			target.invisible++;
 			Hero hero = SafeCast.cast(target, Hero.class);
 			if(hero != null) {
-				if(hero.subClass == HeroSubClass.ASSASSIN
-						|| hero.subClass == HeroSubClass.KING) {
+				if(hero.subClass.is(HeroSubClass.ASSASSIN)) {
 					Buff.affect(target, Preparation.class);
 				}
 				if(hero.hasTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE)) {
@@ -86,16 +86,6 @@ public class Invisibility extends FlavourBuff {
 		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
 	}
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
-	}
-
 	public static void dispel() {
 		if (Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER) == 3){
 			if (Dungeon.hero.buff(DispelDelayer.class) == null && Dungeon.hero.invisible > 0){
@@ -119,48 +109,37 @@ public class Invisibility extends FlavourBuff {
 		}
 	}
 
-	public static void actualDispel() {
-		for ( Buff invis : Dungeon.hero.buffs( Invisibility.class )){
+		dispel(Dungeon.hero);
+	}
+
+	public static void dispel(Char ch){
+
+		for ( Buff invis : ch.buffs( Invisibility.class )){
 			invis.detach();
 		}
-		CloakOfShadows.cloakStealth cloakBuff = Dungeon.hero.buff( CloakOfShadows.cloakStealth.class );
+		CloakOfShadows.cloakStealth cloakBuff = ch.buff( CloakOfShadows.cloakStealth.class );
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
 		}
-		KromerCloak.cloakStealth kromerBuff = Dungeon.hero.buff(KromerCloak.cloakStealth.class );
+KromerCloak.cloakStealth kromerBuff = Dungeon.hero.buff(KromerCloak.cloakStealth.class );
 		if (kromerBuff != null) {
 			kromerBuff.dispel();
 		}
 
-		//these aren't forms of invisibilty, but do dispel at the same time as it.
-		TimekeepersHourglass.TimeFreezing timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.TimeFreezing.class );
+		//these aren't forms of invisibility, but do dispel at the same time as it.
+		TimekeepersHourglass.TimeFreezing timeFreeze = ch.buff( TimekeepersHourglass.TimeFreezing.class );
 		if (timeFreeze != null) {
 			timeFreeze.detach();
 		}
 
-		Preparation prep = Dungeon.hero.buff( Preparation.class );
+		Preparation prep = ch.buff( Preparation.class );
 		if (prep != null){
 			prep.detach();
 		}
-	}
 
-	public static class DispelDelayer extends FlavourBuff {
-
-		{
-			actPriority = BUFF_PRIO + 1;
-		}
-
-		@Override
-		public boolean act() {
-			actualDispel();
-			detach();
-			return true;
-		}
-
-		@Override
-		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.SPIRIT);
-			else target.sprite.remove(CharSprite.State.SPIRIT);
+		Swiftthistle.TimeBubble bubble =  ch.buff( Swiftthistle.TimeBubble.class );
+		if (bubble != null){
+			bubble.detach();
 		}
 	}
 }

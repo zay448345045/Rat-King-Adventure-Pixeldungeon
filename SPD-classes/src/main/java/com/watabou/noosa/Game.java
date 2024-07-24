@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,9 +146,11 @@ public class Game implements ApplicationListener {
 		}
 	}
 
-	//FIXME this is a temporary workaround to improve start times on android (first frame is 'cheated' and skips rendering)
-	//this is partly to improve stats on google play, and partly to try and diagnose what the cause of slow loading times is
-	//ultimately once the cause is found it should be fixed and this should no longer be needed
+	///justResumed is used for two purposes:
+	//firstly, to clear pointer events when the game is resumed,
+	// this helps with input errors caused by system gestures on iOS/Android
+	//secondly, as a bit of a hack to improve start time metrics on Android,
+	// as texture refreshing leads to slow warm starts. TODO would be nice to fix this properly
 	private boolean justResumed = true;
 
 	@Override
@@ -160,6 +162,7 @@ public class Game implements ApplicationListener {
 		}
 
 		if (justResumed){
+			PointerEvent.clearPointerEvents();
 			justResumed = false;
 			if (DeviceCompat.isAndroid()) return;
 		}
@@ -277,6 +280,7 @@ public class Game implements ApplicationListener {
 
 		inputHandler.processAllEvents();
 
+		Music.INSTANCE.update();
 		Sample.INSTANCE.update();
 		scene.update();
 		Camera.updateAll();
@@ -313,7 +317,9 @@ public class Game implements ApplicationListener {
 	}
 	
 	public static void vibrate( int milliseconds ) {
-		platform.vibrate( milliseconds );
+		if (platform.supportsVibration()) {
+			platform.vibrate(milliseconds);
+		}
 	}
 
 	public interface SceneChangeCallback{

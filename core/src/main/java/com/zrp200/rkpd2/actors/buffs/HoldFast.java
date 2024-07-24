@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,13 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class HoldFast extends Buff {
 
@@ -37,13 +41,21 @@ public class HoldFast extends Buff {
 
 	@Override
 	public boolean act() {
-		if (pos == -1) pos = target.pos;
 		if (pos != target.pos) {
 			detach();
 		} else {
 			spend(TICK);
 		}
 		return true;
+	}
+
+	public int armorBonus(){
+		if (pos == target.pos && target instanceof Hero){
+			return Random.NormalIntRange(0, 2* ((Hero) target).pointsInTalent(Talent.HOLD_FAST));
+		} else {
+			detach();
+			return 0;
+		}
 	}
 
 	@Override
@@ -54,11 +66,6 @@ public class HoldFast extends Buff {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(1.9f, 2.4f, 3.25f);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 
 	public static int armor() {
@@ -74,5 +81,17 @@ public class HoldFast extends Buff {
 		return Messages.get(this, "desc", Dungeon.hero.heroClass.title(), minArmor(), armor());
 	}
 
+	private static final String POS = "pos";
 
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(POS, pos);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		pos = bundle.getInt(POS);
+	}
 }

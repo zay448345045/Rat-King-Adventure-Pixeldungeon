@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
@@ -40,7 +39,7 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.FetidRatSprite;
 import com.zrp200.rkpd2.sprites.GnollTricksterSprite;
 import com.zrp200.rkpd2.sprites.GreatCrabSprite;
-import com.zrp200.rkpd2.ui.ItemSlot;
+import com.zrp200.rkpd2.ui.ItemButton;
 import com.zrp200.rkpd2.ui.RedButton;
 import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.Window;
@@ -89,11 +88,23 @@ public class WndSadGhost extends Window {
 		message.setPos(0, titlebar.bottom() + GAP);
 		add( message );
 
-		RewardButton btnWeapon = new RewardButton( Ghost.Quest.weapon );
+		ItemButton btnWeapon = new ItemButton(){
+			@Override
+			protected void onClick() {
+				GameScene.show(new RewardWindow(item()));
+			}
+		};
+		btnWeapon.item( Ghost.Quest.weapon );
 		btnWeapon.setRect( (WIDTH - BTN_GAP) / 2 - BTN_SIZE, message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 		add( btnWeapon );
 
-		RewardButton btnArmor = new RewardButton( Ghost.Quest.armor );
+		ItemButton btnArmor = new ItemButton(){
+			@Override
+			protected void onClick() {
+				GameScene.show(new RewardWindow(item()));
+			}
+		};
+		btnArmor.item( Ghost.Quest.armor );
 		btnArmor.setRect( btnWeapon.right() + BTN_GAP, btnWeapon.top(), BTN_SIZE, BTN_SIZE );
 		add(btnArmor);
 
@@ -114,7 +125,7 @@ public class WndSadGhost extends Window {
 		
 		reward.identify(false);
 		if (reward.doPickUp( Dungeon.hero )) {
-			GLog.i( Messages.get(Dungeon.hero, "you_now_have", reward.name()) );
+			GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", reward.name())) );
 		} else {
 			Dungeon.level.drop( reward, ghost.pos ).sprite.drop();
 		}
@@ -124,47 +135,8 @@ public class WndSadGhost extends Window {
 		if (Random.Int(2) == 0){
 			Dungeon.level.drop(new Kromer(), ghost.pos).sprite.drop();
 		}
-		
+
 		Ghost.Quest.complete();
-	}
-
-	private class RewardButton extends Component {
-
-		protected NinePatch bg;
-		protected ItemSlot slot;
-
-		public RewardButton( Item item ){
-			bg = Chrome.get( Chrome.Type.RED_BUTTON);
-			add( bg );
-
-			slot = new ItemSlot( item ){
-				@Override
-				protected void onPointerDown() {
-					bg.brightness( 1.2f );
-					Sample.INSTANCE.play( Assets.Sounds.CLICK );
-				}
-				@Override
-				protected void onPointerUp() {
-					bg.resetColor();
-				}
-				@Override
-				protected void onClick() {
-					GameScene.show(new RewardWindow(item));
-				}
-			};
-			add(slot);
-		}
-
-		@Override
-		protected void layout() {
-			super.layout();
-
-			bg.x = x;
-			bg.y = y;
-			bg.size( width, height );
-
-			slot.setRect( x + 2, y + 2, width - 4, height - 4 );
-		}
 	}
 
 	private class RewardWindow extends WndInfoItem {

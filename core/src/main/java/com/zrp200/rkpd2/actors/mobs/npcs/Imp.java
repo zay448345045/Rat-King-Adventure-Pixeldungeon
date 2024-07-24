@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,12 +62,12 @@ public class Imp extends NPC {
 			die(null);
 			return true;
 		}
-		if (!Quest.given && Dungeon.level.heroFOV[pos]) {
-			if (!seenBefore) {
-				yell( Messages.get(this, "hey", Dungeon.hero.name() ) );
-			}
+		if (!Quest.given && Dungeon.level.visited[pos]) {
 			Notes.add( Notes.Landmark.IMP );
-			seenBefore = true;
+			if (!seenBefore && Dungeon.level.heroFOV[pos]) {
+				yell(Messages.get(this, "hey", Messages.titleCase(Dungeon.hero.name())));
+				seenBefore = true;
+			}
 		} else {
 			seenBefore = false;
 		}
@@ -79,13 +79,15 @@ public class Imp extends NPC {
 	public int defenseSkill( Char enemy ) {
 		return INFINITE_EVASION;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -114,8 +116,8 @@ public class Imp extends NPC {
 				});
 			} else {
 				tell( Quest.alternative ?
-						Messages.get(this, "monks_2", Dungeon.hero.name())
-						: Messages.get(this, "golems_2", Dungeon.hero.name()) );
+						Messages.get(this, "monks_2", Messages.titleCase(Dungeon.hero.name()))
+						: Messages.get(this, "golems_2", Messages.titleCase(Dungeon.hero.name())) );
 			}
 			
 		} else {
@@ -140,7 +142,7 @@ public class Imp extends NPC {
 	
 	public void flee() {
 		
-		yell( Messages.get(this, "cya", Dungeon.hero.name()) );
+		yell( Messages.get(this, "cya", Messages.titleCase(Dungeon.hero.name())) );
 		
 		destroy();
 		sprite.die();
@@ -158,6 +160,8 @@ public class Imp extends NPC {
 		
 		public static void reset() {
 			spawned = false;
+			given = false;
+			completed = false;
 
 			reward = null;
 		}

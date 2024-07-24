@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,13 +33,18 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.ArmorAbility;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
+import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
@@ -47,6 +52,11 @@ public class Shockwave extends ArmorAbility {
 
 	{
 		baseChargeUse = 35f;
+	}
+
+	@Override
+	public int targetedPos(Char user, int dst) {
+		return new Ballistica( user.pos, dst, Ballistica.STOP_SOLID | Ballistica.STOP_TARGET ).collisionPos;
 	}
 
 	@Override
@@ -79,7 +89,7 @@ public class Shockwave extends ArmorAbility {
 		hero.sprite.zap(target);
 		// TODO fix so that sounds can just play as soon as possible.
 		Sample.INSTANCE.playDelayed(Assets.Sounds.BLAST, next == null ? 0f : 0.125f, next == null ? 1f : 3f, 0.5f);
-		Camera.main.shake(2, 0.5f);
+		PixelScene.shake(2, 0.5f);
 		//final zap at 2/3 distance, for timing of the actual effect
 		MagicMissile.boltFromChar(hero.sprite.parent,
 				MagicMissile.FORCE_CONE,
@@ -106,9 +116,11 @@ public class Shockwave extends ArmorAbility {
 							if (Random.Int(10) < hero.byTalent(
 									STRIKING_WAVE, 3,
 									AFTERSHOCK, 2)){
+								boolean wasEnemy = ch.alignment == Char.Alignment.ENEMY
+										|| (ch instanceof Mimic && ch.alignment == Char.Alignment.NEUTRAL);
 								damage = hero.attackProc(ch, damage);
 								ch.damage(damage, hero);
-								switch (hero.subClass) {
+								if(wasEnemy) switch (hero.subClass) {
 									case KING: case GLADIATOR:
 										Buff.affect( hero, Combo.class ).hit( ch );
 								}

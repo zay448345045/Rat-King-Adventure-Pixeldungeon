@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,9 +43,10 @@ import com.zrp200.rkpd2.items.armor.ClassArmor;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
-import com.zrp200.rkpd2.utils.BArray;
+import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import static com.watabou.utils.Reflection.newInstance;
@@ -55,6 +56,11 @@ public class SmokeBomb extends ArmorAbility {
 
 	{
 		baseChargeUse = 50;
+	}
+
+	@Override
+	public boolean useTargeting() {
+		return false;
 	}
 
 	@Override
@@ -70,24 +76,24 @@ public class SmokeBomb extends ArmorAbility {
 	public float chargeUse(Hero hero) {
 		float chargeUse = super.chargeUse(hero);
 		if(isShadowStep(hero)) {
-			//reduced charge use by 24%/42%/56%/67%
-			chargeUse *= Math.pow(0.76, hero.pointsInTalent(Talent.SHADOW_STEP));
+			//reduced charge use by 20%/36%/50%/60%
+			chargeUse *= Math.pow(0.795, hero.pointsInTalent(Talent.SHADOW_STEP));
 		}
 		return chargeUse;
 	}
 
 	public static boolean isValidTarget(Hero hero, int target, int limit) {
-		Char ch = Actor.findChar( target );
-		if(ch == hero) {
-			GLog.w( Messages.get(ArmorAbility.class, "self_target") );
+
+		if (target != hero.pos && hero.rooted){
+			PixelScene.shake( 1, 1f );
 			return false;
 		}
 
-		PathFinder.buildDistanceMap(hero.pos, BArray.not(Dungeon.level.solid,null), limit);
+		PathFinder.buildDistanceMap(hero.pos, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null), limit);
 
 		if ( PathFinder.distance[target] == Integer.MAX_VALUE ||
 				!Dungeon.level.heroFOV[target] ||
-				ch != null) {
+				(target != hero.pos && Actor.findChar( target ) != null)) {
 
 			GLog.w( Messages.get(SmokeBomb.class, "fov") );
 			return false;
@@ -129,6 +135,7 @@ public class SmokeBomb extends ArmorAbility {
 		GameScene.updateFog();
 	}
 
+
 	public static <T extends Mob> void doBodyReplacement(Hero hero, Talent talent, Class<T> ninjaLogClass) {
 		if(!hero.hasTalent(talent)) return;
 		for (Char ch : Actor.chars()){
@@ -140,12 +147,13 @@ public class SmokeBomb extends ArmorAbility {
 		T n = newInstance(ninjaLogClass);
 		n.pos = hero.pos;
 		GameScene.add(n);
+		Dungeon.level.occupyCell(n);
 	}
 
 	@Override
     public void activate(ClassArmor armor, Hero hero, Integer target) {
 		if (target != null) {
-			if(!isValidTarget(hero, target, 12)) return;
+			if(!isValidTarget(hero, target, 10)) return;
 
 			if (!isShadowStep(hero)) {
 				blindAdjacentMobs(hero);
@@ -227,7 +235,7 @@ public class SmokeBomb extends ArmorAbility {
 				return Random.NormalIntRange(hero.pointsInTalent(Talent.SHADOWSPEC_SLICE),
 						(int)hero.pointsInTalent(Talent.SHADOWSPEC_SLICE)*5);
 			}
-			return Random.NormalIntRange(hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SMOKE_AND_MIRRORS),
+			return super.drRoll() + Random.NormalIntRange(hero.pointsInTalent(Talent.BODY_REPLACEMENT, Talent.SMOKE_AND_MIRRORS),
 					(int)hero.byTalent(Talent.BODY_REPLACEMENT, 5, Talent.SMOKE_AND_MIRRORS, 3));
 		}
 

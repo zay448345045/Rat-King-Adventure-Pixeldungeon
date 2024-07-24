@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.actors.hero.abilities.rat_king;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -57,6 +58,12 @@ public class OmniAbility extends ArmorAbility {
             hero.talents.set(3, transferTalents(armorAbility));
             hero.talents.get(3).put(Talent.HEROIC_RATINESS, ratiness);
         }
+    }
+
+    @Override
+    public int targetedPos(Char user, int dst) {
+        return armorAbility != null ? armorAbility.targetedPos(user, dst) :
+                super.targetedPos(user, dst);
     }
 
     @Override public boolean useTargeting() {

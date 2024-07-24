@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.artifacts.Artifact;
+import com.zrp200.rkpd2.items.artifacts.HornOfPlenty;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
@@ -92,6 +94,7 @@ public class Food extends Item {
 				|| hero.hasTalent(Talent.MYSTICAL_MEAL)
 				|| hero.hasTalent(Talent.INVIGORATING_MEAL)
 				|| hero.hasTalent(Talent.ROYAL_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
 				|| hero.hasTalent(Talent.EFFICIENT_TRAINING) ? 2
 				: 0;
 		return TIME_TO_EAT - reduction;
@@ -102,11 +105,18 @@ public class Food extends Item {
 	}
 	
 	protected void satisfy( Hero hero ){
+		float foodVal = energy;
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
-			Buff.affect(hero, Hunger.class).satisfy(energy/3f);
-		} else {
-			Buff.affect(hero, Hunger.class).satisfy(energy);
+			foodVal /= 3f;
 		}
+
+		Artifact.ArtifactBuff buff = hero.buff( HornOfPlenty.hornRecharge.class );
+		if (buff != null && buff.isCursed()){
+			foodVal *= 0.67f;
+			GLog.n( Messages.get(Hunger.class, "cursedhorn") );
+		}
+
+		Buff.affect(hero, Hunger.class).satisfy(foodVal);
 	}
 	
 	@Override

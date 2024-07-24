@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,16 +45,6 @@ public class Adrenaline extends FlavourBuff {
 	public float iconFadePercent() {
 		float duration = target instanceof Hero ? 2+2*((Hero)target).pointsInTalent(Talent.INVIGORATING_MEAL) : DURATION;
 		return Math.max(0, (duration - visualcooldown()) / duration);
-	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
 	}
 	
 }

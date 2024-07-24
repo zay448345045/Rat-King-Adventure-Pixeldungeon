@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Char;
@@ -33,13 +35,21 @@ import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.items.KingsCrown;
 import com.zrp200.rkpd2.items.artifacts.SoulOfYendor;
 import com.zrp200.rkpd2.levels.features.LevelTransition;
+import com.zrp200.rkpd2.items.KingsCrown;
+import com.zrp200.rkpd2.items.remains.CrownShard;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.RatKingSprite;
 import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
 import com.zrp200.rkpd2.windows.WndOptions;
+import com.zrp200.rkpd2.utils.Holiday;
+import com.zrp200.rkpd2.windows.WndInfoArmorAbility;
+import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndQuest;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 
 public class RatKing extends NPC {
 
@@ -63,13 +73,15 @@ public class RatKing extends NPC {
 	protected Char chooseEnemy() {
 		return null;
 	}
-	
+
 	@Override
 	public void damage( int dmg, Object src ) {
+		//do nothing
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public boolean add( Buff buff ) {
+		return false;
 	}
 	
 	@Override
@@ -82,10 +94,13 @@ public class RatKing extends NPC {
 	@Override
 	protected void onAdd() {
 		super.onAdd();
-		if (Dungeon.depth != 5){
+		if (firstAdded && Dungeon.depth != 5){
 			yell(Messages.get(this, "confused"));
 		}
 	}
+
+	// this isn't stored currently
+	private boolean discussedShard = false;
 
 	@Override
 	protected boolean act() {
@@ -176,7 +191,11 @@ public class RatKing extends NPC {
 					}
 				});
 			}
-		} else if (Dungeon.hero.armorAbility instanceof Ratmogrify) {
+		} else if (!discussedShard && Dungeon.hero.belongings.getItem(CrownShard.class) != null) {
+			yell(Messages.get(this, "crownshard"));
+			discussedShard = true;
+		}
+		else if (Dungeon.hero.armorAbility instanceof Ratmogrify) {
 			yell( Messages.get(RatKing.class, "crown_after") );
 		} else {
 			yell( Messages.get(this, "what_is_it") );
@@ -186,8 +205,10 @@ public class RatKing extends NPC {
 	
 	@Override
 	public String description() {
-		return ((RatKingSprite)sprite).festive ?
-				Messages.get(this, "desc_festive")
-				: super.description();
+		if (Holiday.getCurrentHoliday() == Holiday.WINTER_HOLIDAYS){
+			return Messages.get(this, "desc_festive");
+		} else {
+			return super.description();
+		}
 	}
 }

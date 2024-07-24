@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.items.weapon.enchantments;
 
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.levels.features.HighGrass;
@@ -43,22 +44,42 @@ public class Blooming extends Weapon.Enchantment {
 		// lvl 2 - 60%
 		float procChance = (level+1f)/(level+3f) * procChanceMultiplier(attacker);
 		if (Random.Float() < procChance) {
-			
-			boolean secondPlant = level > Random.Int(10);
+
+			float powerMulti = Math.max(1f, procChance);
+
+			float plants = (1f + 0.1f*level) * powerMulti;
+			if (Random.Float() < plants%1){
+				plants = (float)Math.ceil(plants);
+			} else {
+				plants = (float)Math.floor(plants);
+			}
+
 			if (plantGrass(defender.pos)){
-				if (secondPlant) secondPlant = false;
-				else return damage;
+				plants--;
+				if (plants <= 0){
+					return damage;
+				}
 			}
 			
 			ArrayList<Integer> positions = new ArrayList<>();
 			for (int i : PathFinder.NEIGHBOURS8){
-				positions.add(i);
+				if (defender.pos + i != attacker.pos) {
+					positions.add(defender.pos + i);
+				}
 			}
 			Random.shuffle( positions );
+
+			//The attacker's position is always lowest priority
+			if (Dungeon.level.adjacent(attacker.pos, defender.pos)){
+				positions.add(attacker.pos);
+			}
+
 			for (int i : positions){
-				if (plantGrass(defender.pos + i)){
-					if (secondPlant) secondPlant = false;
-					else return damage;
+				if (plantGrass(i)){
+					plants--;
+					if (plants <= 0) {
+						return damage;
+					}
 				}
 			}
 			

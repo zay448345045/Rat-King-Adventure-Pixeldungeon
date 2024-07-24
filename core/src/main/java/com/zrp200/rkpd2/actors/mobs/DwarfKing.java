@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 package com.zrp200.rkpd2.actors.mobs;
 
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundle;
@@ -57,6 +59,14 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.KingSprite;
 import com.zrp200.rkpd2.ui.BossHealthBar;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.utils.GLog;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,7 +123,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 10);
+		return super.drRoll() + Random.NormalIntRange(0, 10);
 	}
 
 	private int phase = 0; // phase 0 is when he hasn't actually reacted yet.
@@ -181,6 +191,9 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		if (phase == 2) properties.add(Property.IMMOVABLE);
 		// this is possible but unlikely.
 		if(buff(DKBarrior.class) != null && phase < 2) new PhaseChange(true);
+
+		BossHealthBar.assignBoss(this);
+		if (phase == 3) BossHealthBar.bleed(true);
 	}
 	// for dialogues when he shows a new power.
 	private boolean yellSpecialNotice, yellStrong, golemSpawned;
@@ -493,22 +506,22 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	@Override
 	public boolean isInvulnerable(Class effect) {
-		return phase == 2 && effect != KingDamager.class;
+		if (effect == KingDamager.class){
+			return false;
+		} else {
+			return phase == 2 || super.isInvulnerable(effect);
+		}
 	}
 
 	protected void onDamage(int dmg, Object src) { // handle locked floor
 		super.onDamage(dmg, src);
 		if(!isImmune( src.getClass() )) handleLockedFloor(dmg);
 	}
-	private void handleLockedFloor(int dmg) {
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if (lock != null) lock.addTime(dmg/3);
-	}
 
 	@Override
 	public void damage(int dmg, Object src) {
-		//hero only counts as unarmed if they have no weapon and aren't benefiting from force
-		if (src == Dungeon.hero && (Dungeon.hero.belongings.weapon() != null || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
+		//hero counts as unarmed if they aren't attacking with a weapon and aren't benefiting from force
+		if (src == Dungeon.hero && (!RingOfForce.fightingUnarmed(Dungeon.hero) || Dungeon.hero.buff(RingOfForce.Force.class) != null)){
 			Statistics.qualifiedForBossChallengeBadge = false;
 		//Corrosion, corruption, and regrowth do no direct damage and so have their own custom logic
 		//Transfusion damages DK and so doesn't need custom logic
@@ -568,6 +581,14 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 			else if (isAlive() && phase == 3 && preHP > 20 && HP < 20) {
 				yell(Messages.get(this, "losing"));
 			}
+		}
+	}
+
+	private void handleLockedFloor(int dmg) {
+		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
+		if (lock != null){
+			if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES))   lock.addTime(dmg/5f);
+			else                                                    lock.addTime(dmg/3f);
 		}
 	}
 
@@ -638,6 +659,18 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 		summonsMade = 1; //monk/warlock on 3rd summon
 		sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.4f, 2 );
 		Sample.INSTANCE.play( CHALLENGE );
+		BossHealthBar.bleed(true);
+		Game.runOnRenderThread(new Callback() {
+			@Override
+			public void call() {
+				Music.INSTANCE.fadeOut(0.5f, new Callback() {
+					@Override
+					public void call() {
+						Music.INSTANCE.play(Assets.Music.CITY_BOSS_FINALE, true);
+					}
+				});
+			}
+		});
 	}
 
 	@Override
@@ -652,14 +685,15 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 		super.die( cause );
 
-		if (Dungeon.level.solid[pos]){
-			Heap h = Dungeon.level.heaps.get(pos);
-			if (h != null) {
-				for (Item i : h.items) {
-					Dungeon.level.drop(i, pos + Dungeon.level.width());
-				}
-				h.destroy();
+		Heap h = Dungeon.level.heaps.get(CityBossLevel.throne);
+		if (h != null) {
+			for (Item i : h.items) {
+				Dungeon.level.drop(i, CityBossLevel.throne + Dungeon.level.width());
 			}
+			h.destroy();
+		}
+
+		if (Dungeon.level.solid[pos]){
 			Dungeon.level.drop(new KingsCrown(), pos + Dungeon.level.width()).sprite.drop(pos);
 		} else {
 			Dungeon.level.drop(new KingsCrown(), pos).sprite.drop();
@@ -707,6 +741,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	public static class DKGhoul extends Ghoul implements Subject {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 			if (warped)
 				Buff.affect(this, Speed.class, 200f);
@@ -721,6 +756,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	public static class DKMonk extends Monk implements Subject {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 			if (warped)
 				Buff.affect(this, Speed.class, 200f);
@@ -729,6 +765,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	public static class DKWarlock extends Warlock implements Subject {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 			if (warped)
 				Buff.affect(this, Speed.class, 200f);
@@ -745,6 +782,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 	public static class DKGolem extends Golem implements Subject {
 		{
+			properties.add(Property.BOSS_MINION);
 			state = HUNTING;
 			if (warped)
 				Buff.affect(this, Speed.class, 200f);
@@ -843,7 +881,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 					}
 				} else {
 					Char ch = Actor.findChar(pos);
-					ch.damage(Random.NormalIntRange(20, 40), summon);
+					ch.damage(Random.NormalIntRange(20, 40), this);
 					if (king.phase == 2){
 						if (Dungeon.isChallenged(Challenges.STRONGER_BOSSES)){
 							target.damage(target.HT/18, new KingDamager());
@@ -853,6 +891,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 					}
 					if (!ch.isAlive() && ch == Dungeon.hero) {
 						Dungeon.fail(DwarfKing.class);
+						GLog.n( Messages.capitalize(Messages.get(Char.class, "kill", Messages.get(DwarfKing.class, "name"))));
 					}
 				}
 
@@ -865,7 +904,7 @@ public class DwarfKing extends Mob implements Hero.DeathCommentator {
 
 		@Override
 		public void fx(boolean on) {
-			if (on && particles == null) {
+			if (on && (particles == null || particles.parent == null)) {
 				particles = CellEmitter.get(pos);
 
 				if (summon == DKGolem.class){

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,21 +32,20 @@ import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class AssassinsBlade extends MeleeWeapon {
+public class AssassinsBlade extends Dirk {
 
 	{
 		image = ItemSpriteSheet.ASSASSINS_BLADE;
-		hitSound = Assets.Sounds.HIT_STAB;
 		hitSoundPitch = 0.9f;
 
 		tier = 4;
-	}
 
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //20 base, down from 25
-				lvl*(tier+1);   //scaling unchanged
-	}
+		//20 base, down from 25
+		//scaling unchanged
+
+        //deals 50% toward max to max on surprise, instead of min to max.
+        surpriseTowardMax = 0.50f;
+    }
 
 	@Override
 	public int damageRoll(Char owner) {
@@ -78,4 +77,5 @@ public class AssassinsBlade extends MeleeWeapon {
 		return super.warriorAttack(damage, enemy);
 	}
 
+    @Override protected int maxDist() { return 4; }
 }

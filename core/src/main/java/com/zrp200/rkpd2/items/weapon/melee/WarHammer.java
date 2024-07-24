@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,22 +28,18 @@ import com.zrp200.rkpd2.actors.buffs.Paralysis;
 import com.zrp200.rkpd2.items.armor.glyphs.Viscosity;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class WarHammer extends MeleeWeapon {
+public class WarHammer extends Mace {
 
 	{
 		image = ItemSpriteSheet.WAR_HAMMER;
 		hitSound = Assets.Sounds.HIT_CRUSH;
-		hitSoundPitch = 1f;
 
 		tier = 5;
 		ACC = 1.20f; //20% boost to accuracy
 	}
 
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //24 base, down from 30
-				lvl*(tier+1);   //scaling unchanged
-	}
+	//24 base, down from 30
+	//scaling unchanged
 
 	@Override
 	public int warriorAttack(int damage, Char enemy) {

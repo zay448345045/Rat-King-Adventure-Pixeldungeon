@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,13 +46,17 @@ public class ArmoredStatue extends Statue {
 	public ArmoredStatue(){
 		super();
 
-		do {
-			armor = Generator.randomArmor();
-		} while (armor.cursed);
-		armor.inscribe(Armor.Glyph.random());
-
 		//double HP
 		HP = HT = 30 + Dungeon.getDepth() * 10;
+	}
+
+	@Override
+	public void createWeapon(boolean useDecks) {
+		super.createWeapon(useDecks);
+
+		armor = Generator.randomArmor();
+		armor.cursed = false;
+		armor.inscribe(Armor.Glyph.random());
 	}
 
 	private static final String ARMOR	= "armor";
@@ -91,8 +95,8 @@ public class ArmoredStatue extends Statue {
 
 	@Override
 	public int defenseProc(Char enemy, int damage) {
-		damage = super.defenseProc(enemy, damage);
-		return armor.proc(enemy, this, damage);
+		damage = armor.proc(enemy, this, damage);
+		return super.defenseProc(enemy, damage);
 	}
 
 	@Override
@@ -100,7 +104,8 @@ public class ArmoredStatue extends Statue {
 		//TODO improve this when I have proper damage source logic
 		if (armor != null && armor.hasGlyph(AntiMagic.class, this)
 				&& AntiMagic.RESISTS.contains(src.getClass())){
-			dmg -= AntiMagic.drRoll(armor.buffedLvl());
+			dmg -= AntiMagic.drRoll(this, armor.buffedLvl());
+			dmg = Math.max(dmg, 0);
 		}
 
 		super.damage( dmg, src );

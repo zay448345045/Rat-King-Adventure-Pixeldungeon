@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,19 @@ import com.zrp200.rkpd2.items.potions.exotic.ExoticPotion;
 import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
-import com.zrp200.rkpd2.items.spells.*;
+import com.zrp200.rkpd2.items.spells.Alchemize;
+import com.zrp200.rkpd2.items.spells.AquaBlast;
+import com.zrp200.rkpd2.items.spells.ArcaneCatalyst;
+import com.zrp200.rkpd2.items.spells.BeaconOfReturning;
+import com.zrp200.rkpd2.items.spells.CurseInfusion;
+import com.zrp200.rkpd2.items.spells.FeatherFall;
+import com.zrp200.rkpd2.items.spells.MagicalInfusion;
+import com.zrp200.rkpd2.items.spells.PhaseShift;
+import com.zrp200.rkpd2.items.spells.ReclaimTrap;
+import com.zrp200.rkpd2.items.spells.Recycle;
+import com.zrp200.rkpd2.items.spells.SummonElemental;
+import com.zrp200.rkpd2.items.spells.TelekineticGrab;
+import com.zrp200.rkpd2.items.spells.WildEnergy;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
 import com.zrp200.rkpd2.items.weapon.KromerBow;
@@ -287,7 +299,6 @@ public abstract class Recipe {
 		new CurseInfusion.Recipe(),
 		new FeatherFall.Recipe(),
 		new MagicalInfusion.Recipe(),
-		new MagicalPorter.Recipe(),
 		new PhaseShift.Recipe(),
 		new ReclaimTrap.Recipe(),
 		new Recycle.Recipe(),

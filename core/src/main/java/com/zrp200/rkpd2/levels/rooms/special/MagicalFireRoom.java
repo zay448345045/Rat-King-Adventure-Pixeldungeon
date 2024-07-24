@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ import com.zrp200.rkpd2.actors.buffs.Burning;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.Generator;
-import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfFrost;
@@ -48,6 +47,9 @@ import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class MagicalFireRoom extends SpecialRoom {
@@ -193,15 +195,23 @@ public class MagicalFireRoom extends SpecialRoom {
 							cur[cell] = 0;
 							clearAll = true;
 						}
-						if (freeze != null && freeze.volume > 0 && freeze.cur[cell] > 0){
-							freeze.clear(cell);
-							cur[cell] = 0;
-							clearAll = true;
+						//overrides fire
+						if (fire != null && fire.volume > 0 && fire.cur[cell] > 0){
+							fire.clear(cell);
 						}
-						if (bliz != null && bliz.volume > 0 && bliz.cur[cell] > 0){
-							bliz.clear(cell);
-							cur[cell] = 0;
-							clearAll = true;
+
+						//clears itself if there is frost/blizzard on or next to it
+						for (int k : PathFinder.NEIGHBOURS9) {
+							if (freeze != null && freeze.volume > 0 && freeze.cur[cell+k] > 0) {
+								freeze.clear(cell);
+								cur[cell] = 0;
+								clearAll = true;
+							}
+							if (bliz != null && bliz.volume > 0 && bliz.cur[cell+k] > 0) {
+								bliz.clear(cell);
+								cur[cell] = 0;
+								clearAll = true;
+							}
 						}
 						l.passable[cell] = cur[cell] == 0 && (Terrain.flags[l.map[cell]] & Terrain.PASSABLE) != 0;
 					}
@@ -211,6 +221,7 @@ public class MagicalFireRoom extends SpecialRoom {
 							|| cur[cell+1] > 0
 							|| cur[cell-Dungeon.level.width()] > 0
 							|| cur[cell+Dungeon.level.width()] > 0) {
+
 						//spread fire to nearby flammable cells
 						if (Dungeon.level.flamable[cell] && (fire == null || fire.volume == 0 || fire.cur[cell] == 0)){
 							GameScene.add(Blob.seed(cell, 4, Fire.class));
@@ -220,6 +231,13 @@ public class MagicalFireRoom extends SpecialRoom {
 						Char ch = Actor.findChar(cell);
 						if (ch != null && !ch.isImmune(getClass())) {
 							Buff.affect(ch, Burning.class).reignite(ch, 4f);
+						}
+
+						//burn adjacent heaps, but only on outside and non-water cells
+						if (Dungeon.level.heaps.get(cell) != null
+							&& Dungeon.level.map[cell] != Terrain.EMPTY_SP
+							&& Dungeon.level.map[cell] != Terrain.WATER){
+							Dungeon.level.heaps.get(cell).burn();
 						}
 					}
 

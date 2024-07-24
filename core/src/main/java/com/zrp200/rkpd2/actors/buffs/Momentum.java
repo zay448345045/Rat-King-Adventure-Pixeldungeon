@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,17 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.ActionIndicator;
-import com.zrp200.rkpd2.ui.BuffIcon;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.ui.HeroIcon;
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.Visual;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
 
 public class Momentum extends Buff implements ActionIndicator.Action {
 	
@@ -53,6 +61,12 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 	private boolean movedLastTurn = true;
 
 	@Override
+	public void detach() {
+		super.detach();
+		ActionIndicator.clearAction(this);
+	}
+
+	@Override
 	public boolean act() {
 		if (freerunCooldown > 0){
 			freerunCooldown--;
@@ -62,6 +76,8 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		if (freerunCooldown == 0 && !freerunning() && target.invisible > 0 && Dungeon.hero.pointsInTalent(Talent.SPEEDY_STEALTH,Talent.RK_FREERUNNER) >= 1){
 			momentumStacks = Math.min(momentumStacks + (Dungeon.hero.hasTalent(Talent.SPEEDY_STEALTH)?3:2), getMaxMomentum());
 			movedLastTurn = true;
+			ActionIndicator.setAction(this);
+			BuffIndicator.refreshHero();
 		}
 
 		if (freerunTurns > 0){
@@ -73,7 +89,9 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 			momentumStacks = (int)GameMath.gate(0, momentumStacks-1, Math.round(momentumStacks * 0.667f));
 			if (momentumStacks <= 0) {
 				ActionIndicator.clearAction(this);
-				if (freerunCooldown <= 0) detach();
+				BuffIndicator.refreshHero();
+			} else {
+				ActionIndicator.refresh();
 			}
 		}
 		movedLastTurn = false;
@@ -88,6 +106,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 			postpone(target.cooldown()+(1/target.speed()));
 			momentumStacks = Math.min(momentumStacks + 1, getMaxMomentum());
 			ActionIndicator.setAction(this);
+			BuffIndicator.refreshHero();
 		}
 	}
 
@@ -121,18 +140,16 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 	
 	@Override
 	public int icon() {
-		return BuffIndicator.MOMENTUM;
+		if (momentumStacks > 0 || freerunCooldown > 0)  return BuffIndicator.MOMENTUM;
+		else                                            return BuffIndicator.NONE;
 	}
 	
 	@Override
 	public void tintIcon(Image icon) {
-		if (freerunTurns > 0){
+		if (freerunCooldown == 0 || freerunTurns > 0){
 			icon.hardlight(1,1,0);
-		} else if (freerunCooldown > 0){
-			icon.hardlight(0.5f,0.5f,1);
 		} else {
-			icon.hardlight(1f - (momentumStacks /(getMaxMomentum() * 1f)),1,
-					1f - (momentumStacks /(getMaxMomentum() * 1f)));
+			icon.hardlight(0.5f,0.5f,1);
 		}
 	}
 
@@ -145,7 +162,7 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		} else if (freerunCooldown > 0){
 			return (freerunCooldown) / (30f*cooldownScaling());
 		} else {
-			return (getMaxMomentum() - momentumStacks) / (getMaxMomentum() * 1f);
+			return 0;
 		}
 	}
 
@@ -156,12 +173,12 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		} else if (freerunCooldown > 0){
 			return Integer.toString(freerunCooldown);
 		} else {
-			return Integer.toString(momentumStacks);
+			return "";
 		}
 	}
 
 	@Override
-	public String toString() {
+	public String name() {
 		if (freerunTurns > 0){
 			return Messages.get(this, "running");
 		} else if (freerunCooldown > 0){
@@ -201,22 +218,28 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		momentumStacks = bundle.getInt(STACKS);
 		freerunTurns = bundle.getInt(FREERUN_TURNS);
 		freerunCooldown = bundle.getInt(FREERUN_CD);
-		if ( usable() ){
-			ActionIndicator.setAction(this);
-		}
+		ActionIndicator.setAction(this);
 		movedLastTurn = false;
 	}
 
+
 	@Override
-	public String actionName() {
-		return Messages.get(this, "action_name");
+	public int actionIcon() {
+		return HeroIcon.MOMENTUM;
 	}
 
 	@Override
-	public Image actionIcon() {
-		Image im = new BuffIcon(BuffIndicator.HASTE, true);
-		im.hardlight(0x99992E);
-		return im;
+	public Visual secondaryVisual() {
+		BitmapText txt = new BitmapText(PixelScene.pixelFont);
+		txt.text(Integer.toString((int)momentumStacks) );
+		txt.hardlight(CharSprite.POSITIVE);
+		txt.measure();
+		return txt;
+	}
+
+	@Override
+	public int indicatorColor() {
+		return 0x444444;
 	}
 
 	public float cooldownScaling(){

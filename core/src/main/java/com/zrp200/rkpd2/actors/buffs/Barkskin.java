@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.utils.Bundle;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
@@ -59,8 +60,7 @@ public class Barkskin extends Buff {
 	}
 	
 	public void set( int value, int time ) {
-		//decide whether to override, preferring high value + low interval
-		if (Math.sqrt(interval)*level <= Math.sqrt(time)*value) {
+		if (level <= value) {
 			level = value;
 			interval = time;
 			spend(time - cooldown() - 1);
@@ -76,7 +76,7 @@ public class Barkskin extends Buff {
 	public static int getGrassDuration(Hero hero) {
 		float modifier = 0;
 		if(hero.hasTalent(Talent.BARKSKIN, Talent.RK_WARDEN)) {
-			modifier = hero.byTalent(true, true,
+			modifier = hero.byTalent(
 					Talent.BARKSKIN, BARKSKIN_MODIFIER,
 					Talent.RK_WARDEN, .5f);
 		} else if(hero.canHaveTalent(Talent.BARKSKIN)) {
@@ -103,11 +103,6 @@ public class Barkskin extends Buff {
 	}
 
 	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-
-	@Override
 	public String desc() {
 		return Messages.get(this, "desc", level, dispTurns(visualcooldown()));
 	}
@@ -127,5 +122,27 @@ public class Barkskin extends Buff {
 		super.restoreFromBundle( bundle );
 		interval = bundle.getInt( INTERVAL );
 		level = bundle.getInt( LEVEL );
+	}
+
+	//These two methods allow for multiple instances of barkskin to stack in terms of duration
+	// but only the stronger bonus is applied
+
+	public static int currentLevel(Char ch ){
+		int level = 0;
+		for (Barkskin b : ch.buffs(Barkskin.class)){
+			level = Math.max(level, b.level);
+		}
+		return level;
+	}
+
+	//reset if a matching buff exists, otherwise append
+	public static void conditionallyAppend(Char ch, int level, int interval){
+		for (Barkskin b : ch.buffs(Barkskin.class)){
+			if (b.interval == interval){
+				b.set(level, interval);
+				return;
+			}
+		}
+		Buff.append(ch, Barkskin.class).set(level, interval);
 	}
 }

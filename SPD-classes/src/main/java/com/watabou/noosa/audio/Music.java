@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ package com.watabou.noosa.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.watabou.noosa.Game;
+import com.watabou.utils.Callback;
 import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
@@ -41,6 +42,10 @@ public enum Music {
 	private boolean enabled = true;
 	private float volume = 1f;
 
+	private float fadeTime = -1f;
+	private float fadeTotal = -1f;
+	private Callback onFadeOut = null;
+
 	String[] trackList;
 	float[] trackChances;
 	private final ArrayList<String> trackQueue = new ArrayList<>();
@@ -48,6 +53,7 @@ public enum Music {
 
 	public synchronized void play( String assetName, boolean looping ) {
 		if (isPlaying() && lastPlayed != null && lastPlayed.equals( assetName )) {
+			player.setVolume(volumeWithFade());
 			return;
 		}
 
@@ -75,15 +81,25 @@ public enum Music {
 
 		if (isPlaying() && this.trackList != null && tracks.length == trackList.length){
 
-			boolean sameList = true;
-			for (int i = 0; i < tracks.length; i ++){
-				if (!tracks[i].equals(trackList[i]) || chances[i] != trackChances[i]){
-					sameList = false;
-					break;
+			//lists are considered the same if they are identical or merely shifted
+			// e.g. the regular title theme and the victory theme are considered equivalent
+			boolean sameList = false;
+			for (int ofs = 0; ofs < tracks.length; ofs++){
+				sameList = true;
+				for (int j = 0; j < tracks.length; j++){
+					int i = (j+ofs)%tracks.length;
+					if (!tracks[i].equals(trackList[j]) || chances[i] != trackChances[j]){
+						sameList = false;
+						break;
+					}
 				}
+				if (sameList) break;
 			}
 
-			if (sameList) return;
+			if (sameList) {
+				player.setVolume(volumeWithFade());
+				return;
+			}
 		}
 
 		stop();
@@ -109,14 +125,44 @@ public enum Music {
 		play(trackQueue.remove(0), trackLooper);
 	}
 
-	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = music -> {
-		//we do this in a separate thread to avoid graphics hitching while the music is prepared
-		//FIXME this fixes graphics stutter but there's still some audio stutter, perhaps keep more than 1 player alive?
-		if (!DeviceCompat.isDesktop()) {
-			new Thread(() -> playNextTrack(music)).start();
+	public synchronized void fadeOut(float duration, Callback onComplete){
+		if (fadeTotal == -1f) {
+			fadeTotal = duration;
+			fadeTime = 0f;
 		} else {
-			//don't use a separate thread on desktop, causes errors and makes no performance difference(?)
-			playNextTrack(music);
+			fadeTime = (fadeTime/fadeTotal) * duration;
+			fadeTotal = duration;
+		}
+		onFadeOut = onComplete;
+	}
+
+	public synchronized void update(){
+		if (fadeTotal > 0f){
+			fadeTime += Game.elapsed;
+
+			if (player != null) {
+				player.setVolume(volumeWithFade());
+			}
+
+			if (fadeTime >= fadeTotal) {
+				fadeTime = fadeTotal = -1f;
+				if (onFadeOut != null){
+					onFadeOut.call();
+				}
+			}
+		}
+	}
+
+	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = music -> {
+		//don't play the next track if we're currently in the middle of a fade
+		if (fadeTotal == -1f) {
+			//we do this in a separate thread to avoid graphics hitching while the music is prepared
+			if (!DeviceCompat.isDesktop()) {
+				new Thread(() -> playNextTrack(music)).start();
+			} else {
+				//don't use a separate thread on desktop, causes errors and makes no performance difference
+				playNextTrack(music);
+			}
 		}
 	};
 
@@ -145,9 +191,11 @@ public enum Music {
 
 	private synchronized void play(String track, com.badlogic.gdx.audio.Music.OnCompletionListener listener){
 		try {
+			fadeTime = fadeTotal = -1;
+
 			player = Gdx.audio.newMusic(Gdx.files.internal(track));
 			player.setLooping(looping);
-			player.setVolume(volume);
+			player.setVolume(volumeWithFade());
 			player.play();
 			if (listener != null) {
 				player.setOnCompletionListener(listener);
@@ -177,7 +225,6 @@ public enum Music {
 		}
 	}
 
-	//TODO do we need to dispose every player? Maybe just stop them and keep an LRU cache of 2 or 3?
 	public synchronized void stop() {
 		if (player != null) {
 			player.dispose();
@@ -188,7 +235,15 @@ public enum Music {
 	public synchronized void volume( float value ) {
 		volume = value;
 		if (player != null) {
-			player.setVolume( value );
+			player.setVolume( volumeWithFade() );
+		}
+	}
+
+	private synchronized float volumeWithFade(){
+		if (fadeTotal > 0f){
+			return Math.max(0, volume * ((fadeTotal - fadeTime) / fadeTotal));
+		} else {
+			return volume;
 		}
 	}
 

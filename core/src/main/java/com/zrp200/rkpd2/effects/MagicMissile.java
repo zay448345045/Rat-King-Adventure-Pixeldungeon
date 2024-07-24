@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,18 @@
 
 package com.zrp200.rkpd2.effects;
 
+import com.zrp200.rkpd2.actors.Actor;
+import com.zrp200.rkpd2.effects.particles.BloodParticle;
+import com.zrp200.rkpd2.effects.particles.CorrosionParticle;
+import com.zrp200.rkpd2.effects.particles.ElmoParticle;
+import com.zrp200.rkpd2.effects.particles.FlameParticle;
+import com.zrp200.rkpd2.effects.particles.LeafParticle;
+import com.zrp200.rkpd2.effects.particles.PoisonParticle;
+import com.zrp200.rkpd2.effects.particles.PurpleParticle;
+import com.zrp200.rkpd2.effects.particles.RainbowParticle;
+import com.zrp200.rkpd2.effects.particles.ShadowParticle;
+import com.zrp200.rkpd2.effects.particles.SparkParticle;
+import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Visual;
@@ -77,6 +89,7 @@ public class MagicMissile extends Emitter {
 	public static final int INVISI          = 22;
 	public static final int ABYSS           = 23;
 	public static final int RANDOM          = 24;
+	public static final int POISON          = 16;
 
 	public static final int MAGIC_MISS_CONE = 100;
 	public static final int FROST_CONE      = 101;
@@ -176,7 +189,6 @@ public class MagicMissile extends Emitter {
 				size( 4 );
 				pour( WardParticle.FACTORY, 0.01f );
 				break;
-
 			case SHAMAN_RED:
 				size( 2 );
 				pour( ShamanParticle.RED, 0.01f );
@@ -196,6 +208,10 @@ public class MagicMissile extends Emitter {
 			case ELMO:
 				size( 5 );
 				pour( ElmoParticle.FACTORY, 0.01f );
+				break;
+			case POISON:
+				size( 3 );
+				pour( PoisonParticle.MISSILE, 0.01f );
 				break;
 			case FROGGIT:
 				size( 5 );

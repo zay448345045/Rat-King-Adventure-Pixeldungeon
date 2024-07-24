@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,16 @@ import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Amok;
+import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
+import com.zrp200.rkpd2.actors.buffs.Dread;
+import com.zrp200.rkpd2.actors.buffs.Paralysis;
+import com.zrp200.rkpd2.actors.buffs.Sleep;
+import com.zrp200.rkpd2.actors.buffs.Terror;
+import com.zrp200.rkpd2.actors.buffs.Vertigo;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
+import com.zrp200.rkpd2.journal.Notes;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.SpawnerSprite;
@@ -60,7 +67,7 @@ public class DemonSpawner extends Mob {
 
 	@Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 12);
+		return super.drRoll() + Random.NormalIntRange(0, 12);
 	}
 
 	@Override
@@ -84,8 +91,22 @@ public class DemonSpawner extends Mob {
 			spawnRecorded = true;
 		}
 
+		if (Dungeon.level.visited[pos]){
+			Notes.add( Notes.Landmark.DEMON_SPAWNER );
+		}
+
+		if (Dungeon.hero.buff(AscensionChallenge.class) != null && spawnCooldown > 20){
+			spawnCooldown = 20;
+		}
+
 		spawnCooldown--;
 		if (spawnCooldown <= 0){
+
+			//we don't want spawners to store multiple ripper demons
+			if (spawnCooldown < -20){
+				spawnCooldown = -20;
+			}
+
 			ArrayList<Integer> candidates = new ArrayList<>();
 			for (int n : PathFinder.NEIGHBOURS8) {
 				if (Dungeon.level.passable[pos+n] && Actor.findChar( pos+n ) == null) {
@@ -103,7 +124,7 @@ public class DemonSpawner extends Mob {
 				Dungeon.level.occupyCell(spawn);
 
 				if (sprite.visible) {
-					Actor.addDelayed(new Pushing(spawn, pos, spawn.pos), -1);
+					Actor.add(new Pushing(spawn, pos, spawn.pos));
 				}
 
 				spawnCooldown += 60;
@@ -132,6 +153,7 @@ public class DemonSpawner extends Mob {
 	public void die(Object cause) {
 		if (spawnRecorded){
 			Statistics.spawnersAlive--;
+			Notes.remove(Notes.Landmark.DEMON_SPAWNER);
 		}
 		GLog.h(Messages.get(this, "on_death"));
 		super.die(cause);

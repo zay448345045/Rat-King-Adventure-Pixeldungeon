@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,24 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.RegenerationBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Earthroot;
 import com.zrp200.rkpd2.scenes.GameScene;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -54,7 +60,11 @@ public class ChaliceOfBlood extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && level() < levelCap && !cursed && !hero.isInvulnerable(getClass()))
+		if (isEquipped( hero )
+				&& level() < levelCap
+				&& !cursed
+				&& !hero.isInvulnerable(getClass())
+				&& hero.buff(MagicImmune.class) == null)
 			actions.add(AC_PRICK);
 		return actions;
 	}
@@ -65,7 +75,7 @@ public class ChaliceOfBlood extends Artifact {
 
 		if (action.equals(AC_PRICK)){
 
-			int damage = 3*(level()*level());
+			int damage = 5 + 3*(level()*level());
 
 			if (damage > hero.HP*0.75) {
 
@@ -90,7 +100,7 @@ public class ChaliceOfBlood extends Artifact {
 	}
 
 	private void prick(Hero hero){
-		int damage = 3*(level()*level());
+		int damage = 5 + 3*(level()*level());
 
 		Earthroot.Armor armor = hero.buff(Earthroot.Armor.class);
 		if (armor != null) {
@@ -119,7 +129,7 @@ public class ChaliceOfBlood extends Artifact {
 
 		if (!hero.isAlive()) {
 			Badges.validateDeathFromFriendlyMagic();
-			Dungeon.fail( getClass() );
+			Dungeon.fail( this );
 			GLog.n( Messages.get(this, "ondeath") );
 		} else {
 			upgrade();
@@ -149,11 +159,26 @@ public class ChaliceOfBlood extends Artifact {
 	
 	@Override
 	public void charge(Hero target, float amount) {
-		//grants 5 turns of healing up-front
-		float healDelay = 10f - level()*0.9f;
+		if (cursed || target.buff(MagicImmune.class) != null) return;
+
+		//grants 5 turns of healing up-front, if hero isn't starving
+		if (target.isStarving()) return;
+
+		float healDelay = 10f - (1.33f + level()*0.667f);
 		healDelay /= amount;
-		//effectively 1HP at lvl 0-5, 2HP lvl 6-8, 3HP lvl 9, and 5HP lvl 10.
-		target.HP = Math.min( target.HT, target.HP + (int)Math.ceil(5/healDelay));
+		float heal = 5f/healDelay;
+		//effectively 0.5/1/1.5/2/2.5 HP per turn at +0/+6/+8/+9/+10
+		if (Random.Float() < heal%1){
+			heal++;
+		}
+		if (heal >= 1f && target.HP < target.HT) {
+			target.HP = Math.min(target.HT, target.HP + (int)heal);
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString((int)heal), FloatingText.HEALING);
+
+			if (target.HP == target.HT && target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
+		}
 	}
 	
 	@Override

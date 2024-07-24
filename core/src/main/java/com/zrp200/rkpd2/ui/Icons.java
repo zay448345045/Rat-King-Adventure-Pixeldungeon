@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ public enum Icons {
 	MAGE,
 	ROGUE,
 	HUNTRESS,
+	DUELIST,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -80,8 +81,11 @@ public enum Icons {
 	BACKPACK_LRG,
 	TALENT,
 	MAGNIFY,
+	SNAKE,
 	BUFFS,
 	ENERGY,
+	COPY,
+	PASTE,
 	COIN_SML,
 	ENERGY_SML,
 	BACKPACK,
@@ -171,6 +175,9 @@ public enum Icons {
 			case HUNTRESS:
 				icon.frame( icon.texture.uvRectBySize( 64, 16, 16, 16 ) );
 				break;
+			case DUELIST:
+				icon.frame( icon.texture.uvRectBySize( 80, 16, 13, 14 ) );
+				break;
 
 			case EXIT:
 				icon.frame( icon.texture.uvRectBySize( 0, 32, 15, 11 ) );
@@ -221,10 +228,10 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 208, 32, 15, 10 ) );
 				break;
 			case LEFTARROW:
-				icon.frame( icon.texture.uvRectBySize( 224, 32, 14, 8 ) );
+				icon.frame( icon.texture.uvRectBySize( 224, 32, 14, 9 ) );
 				break;
 			case RIGHTARROW:
-				icon.frame( icon.texture.uvRectBySize( 240, 32, 14, 8 ) );
+				icon.frame( icon.texture.uvRectBySize( 240, 32, 14, 9 ) );
 				break;
 			case CALENDAR:
 				icon.frame( icon.texture.uvRectBySize( 240, 16, 15, 12 ) );
@@ -260,32 +267,41 @@ public enum Icons {
 			case MAGNIFY:
 				icon.frame( icon.texture.uvRectBySize( 144, 48, 14, 14 ) );
 				break;
+			case SNAKE:
+				icon.frame( icon.texture.uvRectBySize( 160, 48,  9, 13 ) );
+				break;
 			case BUFFS:
-				icon.frame( icon.texture.uvRectBySize( 160, 48, 16, 15 ) );
+				icon.frame( icon.texture.uvRectBySize( 176, 48, 16, 15 ) );
 				break;
 			case ENERGY:
-				icon.frame( icon.texture.uvRectBySize( 176, 48, 16, 16 ) );
+				icon.frame( icon.texture.uvRectBySize( 192, 48, 16, 16 ) );
+				break;
+			case COPY:
+				icon.frame( icon.texture.uvRectBySize( 224, 48, 13, 13 ) );
+				break;
+			case PASTE:
+				icon.frame( icon.texture.uvRectBySize( 208, 48, 13, 13 ) );
 				break;
 			case COIN_SML:
-				icon.frame( icon.texture.uvRectBySize( 192, 48, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 192, 64, 7, 7 ) );
 				break;
 			case ENERGY_SML:
-				icon.frame( icon.texture.uvRectBySize( 192, 56, 8, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 192, 72, 8, 7 ) );
 				break;
 			case BACKPACK:
-				icon.frame( icon.texture.uvRectBySize( 201, 48, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 201, 64, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
-				icon.frame( icon.texture.uvRectBySize( 211, 48, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 211, 64, 10, 10 ) );
 				break;
 			case SEED_POUCH:
-				icon.frame( icon.texture.uvRectBySize( 221, 48, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 221, 64, 10, 10 ) );
 				break;
 			case WAND_HOLSTER:
-				icon.frame( icon.texture.uvRectBySize( 231, 48, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 231, 64, 10, 10 ) );
 				break;
 			case POTION_BANDOLIER:
-				icon.frame( icon.texture.uvRectBySize( 241, 48, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 241, 64, 10, 10 ) );
 				break;
 
 			case TARGET:
@@ -310,36 +326,28 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 40, 72, 8, 8 ) );
 				break;
 			case DEPTH:
-				int ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 48, 64 + ofs, 6, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 48, 64 + runTypeOfs(), 6, 7 ) );
 				break;
 			case DEPTH_CHASM:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 56, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 56, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_WATER:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 64, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 64, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_GRASS:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 72, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 72, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_DARK:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 80, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 80, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_LARGE:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 88, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 88, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_TRAPS:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 96, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 96, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case DEPTH_SECRETS:
-				ofs = Dungeon.daily ? 16 : (!Dungeon.customSeedText.isEmpty() ? 8 : 0);
-				icon.frame( icon.texture.uvRectBySize( 104, 64 + ofs, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 104, 64 + runTypeOfs(), 7, 7 ) );
 				break;
 			case CHAL_COUNT:
 				icon.frame( icon.texture.uvRectBySize( 112, 64, 7, 7 ) );
@@ -380,18 +388,35 @@ public enum Icons {
 		}
 		return icon;
 	}
+
+	private static int runTypeOfs(){
+		if (Dungeon.daily){
+			if (Dungeon.dailyReplay){
+				return 24;
+			} else {
+				return 16;
+			}
+		} else if (!Dungeon.customSeedText.isEmpty()){
+			return 8;
+		} else {
+			return 0;
+		}
+	}
 	
 	public static Image get( HeroClass cl ) {
 		switch (cl) {
-		case WARRIOR: default:
-			return get( WARRIOR );
-		case MAGE:
-			return get( MAGE );
-		case ROGUE:
-			return get( ROGUE );
-		case HUNTRESS:
-			return get( HUNTRESS );
-		case RAT_KING: return new ItemSprite(ItemSpriteSheet.ARMOR_RAT_KING);
+			case WARRIOR:
+				return get( WARRIOR );
+			case MAGE:
+				return get( Icons.MAGE );
+			case ROGUE:
+				return get( Icons.ROGUE );
+			case HUNTRESS:
+				return get( Icons.HUNTRESS );
+			case DUELIST:
+				return get( Icons.DUELIST );
+			case RAT_KING: return new ItemSprite(ItemSpriteSheet.ARMOR_RAT_KING);
+			default: return null;
 		}
 	}
 

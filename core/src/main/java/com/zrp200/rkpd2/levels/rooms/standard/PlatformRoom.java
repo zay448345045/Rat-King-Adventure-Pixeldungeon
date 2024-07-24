@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.levels.rooms.standard;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
+import com.zrp200.rkpd2.levels.rooms.Room;
 import com.watabou.utils.Random;
 import com.watabou.utils.Rect;
 
@@ -46,6 +47,17 @@ public class PlatformRoom extends StandardRoom {
 		return new float[]{6, 3, 1};
 	}
 	
+	@Override
+	public void merge(Level l, Room other, Rect merge, int mergeTerrain) {
+		if (mergeTerrain != Terrain.CHASM
+				&& (other instanceof PlatformRoom || other instanceof ChasmRoom)){
+			super.merge(l, other, merge, Terrain.CHASM);
+			Painter.set(l, connected.get(other), Terrain.EMPTY_SP);
+		} else {
+			super.merge(l, other, merge, mergeTerrain);
+		}
+	}
+
 	@Override
 	public void paint(Level level) {
 		

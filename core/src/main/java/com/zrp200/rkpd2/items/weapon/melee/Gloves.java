@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +29,13 @@ import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class Gloves extends MeleeWeapon {
+public class Gloves extends Sai {
 
 	{
 		image = ItemSpriteSheet.GLOVES;
 		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 1.3f;
 
 		tier = 1;
-		DLY = 0.5f; //2x speed
 		
 		bones = false;
 	}

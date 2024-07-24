@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,9 @@ package com.zrp200.rkpd2.items.scrolls;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.actors.buffs.*;
+import com.zrp200.rkpd2.actors.buffs.Blindness;
+import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Generator;
@@ -35,7 +36,19 @@ import com.zrp200.rkpd2.items.Recipe;
 import com.zrp200.rkpd2.items.artifacts.UnstableSpellbook;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfAntiMagic;
-import com.zrp200.rkpd2.items.stones.*;
+import com.zrp200.rkpd2.items.stones.Runestone;
+import com.zrp200.rkpd2.items.stones.StoneOfAggression;
+import com.zrp200.rkpd2.items.stones.StoneOfAugmentation;
+import com.zrp200.rkpd2.items.stones.StoneOfBlast;
+import com.zrp200.rkpd2.items.stones.StoneOfBlink;
+import com.zrp200.rkpd2.items.stones.StoneOfClairvoyance;
+import com.zrp200.rkpd2.items.stones.StoneOfDeepSleep;
+import com.zrp200.rkpd2.items.stones.StoneOfDisarming;
+import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
+import com.zrp200.rkpd2.items.stones.StoneOfFear;
+import com.zrp200.rkpd2.items.stones.StoneOfFlock;
+import com.zrp200.rkpd2.items.stones.StoneOfIntuition;
+import com.zrp200.rkpd2.items.stones.StoneOfShock;
 import com.zrp200.rkpd2.journal.Catalog;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
@@ -74,7 +87,10 @@ public abstract class Scroll extends Item {
 	protected static ItemStatusHandler<Scroll> handler;
 	
 	protected String rune;
-	
+
+	//affects how strongly on-scroll talents trigger from this scroll
+	protected float talentFactor = 1;
+
 	{
 		stackable = true;
 		defaultAction = AC_READ;
@@ -157,8 +173,6 @@ public abstract class Scroll extends Item {
 					&& !(this instanceof ScrollOfRemoveCurse || this instanceof ScrollOfAntiMagic)){
 				GLog.n( Messages.get(this, "cursed") );
 			} else {
-				curUser = hero;
-				curItem = detach( hero.belongings.backpack );
 				doRead();
 			}
 			
@@ -173,9 +187,8 @@ public abstract class Scroll extends Item {
 		curUser.busy();
 		((HeroSprite)curUser.sprite).read();
 
-		if (curUser.hasTalent(Talent.EMPOWERING_SCROLLS,Talent.RK_BATTLEMAGE)){
-			Buff.affect(curUser, ScrollEmpower.class).reset();
-			updateQuickslot();
+		if (!anonymous) {
+			Talent.onScrollUsed(curUser, curUser.pos, talentFactor);
 		}
 
 	}

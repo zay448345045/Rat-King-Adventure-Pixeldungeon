@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,22 @@ package com.zrp200.rkpd2.levels.rooms.special;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Shopkeeper;
-import com.zrp200.rkpd2.items.*;
-import com.zrp200.rkpd2.items.armor.*;
+import com.zrp200.rkpd2.items.Ankh;
+import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.Honeypot;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.Stylus;
+import com.zrp200.rkpd2.items.Torch;
+import com.zrp200.rkpd2.items.armor.Armor;
+import com.zrp200.rkpd2.items.armor.LeatherArmor;
+import com.zrp200.rkpd2.items.armor.MailArmor;
+import com.zrp200.rkpd2.items.armor.PlateArmor;
+import com.zrp200.rkpd2.items.armor.ScaleArmor;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.bags.*;
 import com.zrp200.rkpd2.items.bombs.Bomb;
@@ -52,7 +63,7 @@ import java.util.HashMap;
 
 public class ShopRoom extends SpecialRoom {
 
-	private ArrayList<Item> itemsToSpawn;
+	protected ArrayList<Item> itemsToSpawn;
 	
 	@Override
 	public int minWidth() {
@@ -100,38 +111,88 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn = generateItems();
 		}
 
-		Point itemPlacement = new Point(entrance());
-		if (itemPlacement.y == top){
-			itemPlacement.y++;
-		} else if (itemPlacement.y == bottom) {
-			itemPlacement.y--;
-		} else if (itemPlacement.x == left){
-			itemPlacement.x++;
+		Point entryInset = new Point(entrance());
+		if (entryInset.y == top){
+			entryInset.y++;
+		} else if (entryInset.y == bottom) {
+			entryInset.y--;
+		} else if (entryInset.x == left){
+			entryInset.x++;
 		} else {
-			itemPlacement.x--;
+			entryInset.x--;
 		}
 
-		for (Item item : itemsToSpawn) {
+		Point curItemPlace = entryInset.clone();
 
-			if (itemPlacement.x == left+1 && itemPlacement.y != top+1){
-				itemPlacement.y--;
-			} else if (itemPlacement.y == top+1 && itemPlacement.x != right-1){
-				itemPlacement.x++;
-			} else if (itemPlacement.x == right-1 && itemPlacement.y != bottom-1){
-				itemPlacement.y++;
+		int inset = 1;
+
+		for (Item item : itemsToSpawn.toArray(new Item[0])) {
+
+			//place items in a clockwise pattern
+			if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+				curItemPlace.y--;
+			} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+				curItemPlace.x++;
+			} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+				curItemPlace.y++;
 			} else {
-				itemPlacement.x--;
+				curItemPlace.x--;
 			}
 
-			int cell = level.pointToCell(itemPlacement);
+			//once we get to the inset from the entrance again, move another cell inward and loop
+			if (curItemPlace.equals(entryInset)){
 
-			if (level.heaps.get( cell ) != null) {
-				do {
-					cell = level.pointToCell(random());
-				} while (level.heaps.get( cell ) != null || level.findMob( cell ) != null);
+				if (entryInset.y == top+inset){
+					entryInset.y++;
+				} else if (entryInset.y == bottom-inset){
+					entryInset.y--;
+				}
+				if (entryInset.x == left+inset){
+					entryInset.x++;
+				} else if (entryInset.x == right-inset){
+					entryInset.x--;
+				}
+				inset++;
+
+				if (inset > (Math.min(width(), height())-3)/2){
+					break; //out of space!
+				}
+
+				curItemPlace = entryInset.clone();
+
+				//make sure to step forward again
+				if (curItemPlace.x == left+inset && curItemPlace.y != top+inset){
+					curItemPlace.y--;
+				} else if (curItemPlace.y == top+inset && curItemPlace.x != right-inset){
+					curItemPlace.x++;
+				} else if (curItemPlace.x == right-inset && curItemPlace.y != bottom-inset){
+					curItemPlace.y++;
+				} else {
+					curItemPlace.x--;
+				}
 			}
 
+			int cell = level.pointToCell(curItemPlace);
 			level.drop( item, cell ).type = Heap.Type.FOR_SALE;
+			itemsToSpawn.remove(item);
+		}
+
+		//we didn't have enough space to place everything neatly, so now just fill in anything left
+		if (!itemsToSpawn.isEmpty()){
+			for (Point p : getPoints()){
+				int cell = level.pointToCell(p);
+				if ((level.map[cell] == Terrain.EMPTY_SP || level.map[cell] == Terrain.EMPTY)
+						&& level.heaps.get(cell) == null && level.findMob(cell) == null){
+					level.drop( itemsToSpawn.remove(0), level.pointToCell(p) ).type = Heap.Type.FOR_SALE;
+				}
+				if (itemsToSpawn.isEmpty()){
+					break;
+				}
+			}
+		}
+
+		if (!itemsToSpawn.isEmpty()){
+			ShatteredPixelDungeon.reportException(new RuntimeException("failed to place all items in a shop!"));
 		}
 
 	}
@@ -190,8 +251,10 @@ public class ShopRoom extends SpecialRoom {
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
 		itemsToSpawn.add( new FlexTape().quantity(Random.IntRange(1, 3)));
 
-		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
-
+		Bag bag = ChooseBag(Dungeon.hero.belongings);
+		if (bag != null) {
+			itemsToSpawn.add(bag);
+}
 		itemsToSpawn.add( new PotionOfHealing() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
@@ -268,11 +331,6 @@ public class ShopRoom extends SpecialRoom {
 		rare.levelKnown = true;
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
-
-		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
-		if (itemsToSpawn.size() > 63) {
-			throw new RuntimeException("Shop attempted to carry more than 63 items!");
-		}
 
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time

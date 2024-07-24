@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,9 @@ package com.zrp200.rkpd2.items.scrolls.exotic;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
+import static com.zrp200.rkpd2.actors.hero.Talent.*;
+
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -55,6 +58,8 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	
 	{
 		icon = ItemSpriteSheet.Icons.SCROLL_METAMORPH;
+
+		talentFactor = 2f;
 	}
 
 	protected static boolean identifiedByUse = false;
@@ -63,6 +68,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 	public void doRead() {
 		if (!isKnown()) {
 			identify();
+			curItem = detach(curUser.belongings.backpack);
 			identifiedByUse = true;
 		} else {
 			identifiedByUse = false;
@@ -177,7 +183,6 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 				((ScrollOfMetamorphosis)curItem).confirmCancelation(this);
 			} else {
 				super.onBackPressed();
-				curItem.collect();
 			}
 		}
 
@@ -187,25 +192,15 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			pane.setPos(pane.left(), pane.top()); //triggers layout
 		}
 	}
-	//talents that can only be used by one hero class
-	public static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
-	static {
 
-		// rework made metamorph effect unreasonable.
-		restrictedTalents.put(IRON_WILL, WARRIOR);
+	public static class WndMetamorphReplace extends Window {
 
-		restrictedTalents.put(Talent.RUNIC_TRANSFERENCE, HeroClass.WARRIOR);
-		restrictedTalents.put(Talent.WAND_PRESERVATION, HeroClass.MAGE);
-		restrictedTalents.put(Talent.NATURES_AID, HeroClass.HUNTRESS);
-		restrictedTalents.put(RESTORED_NATURE, HeroClass.HUNTRESS);
-		restrictedTalents.put(SEER_SHOT, HeroClass.HUNTRESS);
-		restrictedTalents.put(BIG_RUSH, WARRIOR);
-		restrictedTalents.put(EFFICIENT_SHADOWS, ROGUE);
-		restrictedTalents.put(NATURE_AID_2, HUNTRESS);
-
-		// rat king talents that contain restricted talents are removed.
-		restrictedTalents.put(POWER_WITHIN, RAT_KING);
-	}
+		//talents that can only be used by one hero class
+		private static final HashMap<Talent, HeroClass> restrictedTalents = new HashMap<>();
+		static {
+			// rework made metamorph effect unreasonable.
+			restrictedTalents.put(IRON_WILL, WARRIOR);
+		}
 
 	public static class WndMetamorphReplace extends Window {
 
@@ -233,6 +228,11 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 		public WndMetamorphReplace(Talent replacing, int tier){
 			super();
 
+			if (!identifiedByUse) {
+				curItem.detach(curUser.belongings.backpack);
+			}
+			identifiedByUse = false;
+
 			INSTANCE = this;
 
 			this.replacing = replacing;
@@ -240,30 +240,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 
 			LinkedHashMap<Talent, Integer> options = new LinkedHashMap<>();
 			Set<Talent> curTalentsAtTier = Dungeon.hero.talents.get(tier-1).keySet();
-
-			HeroClass[] classes = new HeroClass[ HeroClass.values().length-1 ];
-			if(tier == 3) {
-				// copy all the base classes, as rat king doesn't have any t3s to transfer.
-				System.arraycopy(HeroClass.values(), 0, classes, 0, classes.length);
-			} else {
-				// lower chance = more likely to be included.
-				HashMap<HeroClass, Float> chances = new HashMap<HeroClass, Float>(){{
-					for(HeroClass cls : HeroClass.values()) put(cls,
-							cls == RAT_KING
-									? 1f
-									: cls == Dungeon.hero.heroClass
-									? 2f
-									: 3f);
-				}};
-				// omit one class to closer simulate shattered. RKPD2 adds one class.
-				for(int i=0; i < classes.length; i++) {
-					chances.remove( classes[i] = Random.chances(chances) );
-				}
-			}
-			java.util.Arrays.sort(classes); // this retains some sort of order.
-
-			// limited to three choices.
-			for (HeroClass cls : classes){
+			for (HeroClass cls : HeroClass.values()){
 				ArrayList<LinkedHashMap<Talent, Integer>> clsTalents = new ArrayList<>();
 				initClassTalents(cls, clsTalents);
 
@@ -281,6 +258,7 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 								&& restrictedTalents.get(talent) != curUser.heroClass){
 							clsTalentsAtTier.remove(talent);
 						}
+
 					}
 				}
 				if (!replacingIsInSet && !clsTalentsAtTier.isEmpty()) {

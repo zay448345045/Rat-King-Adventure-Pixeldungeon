@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
+import com.zrp200.rkpd2.actors.Actor;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.actors.Char;
@@ -42,12 +43,9 @@ public class Kinetic extends Weapon.Enchantment {
 			conservedDamage = attacker.buff(ConservedDamage.class).damageBonus();
 			attacker.buff(ConservedDamage.class).detach();
 		}
-		
-		if (damage > (defender.HP + defender.shielding())){
-			int extraDamage = damage - (defender.HP + defender.shielding());
 
-			Buff.affect(attacker, ConservedDamage.class).setBonus(extraDamage);
-		}
+		//use a tracker so that we can know the true final damage
+		Buff.affect(attacker, KineticTracker.class).conservedDamage = conservedDamage;
 		
 		return damage + conservedDamage;
 	}
@@ -56,7 +54,22 @@ public class Kinetic extends Weapon.Enchantment {
 	public ItemSprite.Glowing glowing() {
 		return YELLOW;
 	}
-	
+
+	public static class KineticTracker extends Buff {
+
+		{
+			actPriority = Actor.VFX_PRIO;
+		}
+
+		public int conservedDamage;
+
+		@Override
+		public boolean act() {
+			detach();
+			return true;
+		}
+	};
+
 	public static class ConservedDamage extends Buff {
 
 		{
@@ -93,7 +106,7 @@ public class Kinetic extends Weapon.Enchantment {
 		public void addBonus(int bonus){
 			preservedDamage += bonus;
 		}
-		
+
 		public int damageBonus(){
 			return (int)Math.ceil(preservedDamage);
 		}
@@ -106,12 +119,7 @@ public class Kinetic extends Weapon.Enchantment {
 			spend(TICK);
 			return true;
 		}
-		
-		@Override
-		public String toString() {
-			return Messages.get(this, "name");
-		}
-		
+
 		@Override
 		public String desc() {
 			return Messages.get(this, "desc", damageBonus());

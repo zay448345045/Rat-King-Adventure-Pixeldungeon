@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ public class RingOfEvasion extends Ring {
 
 	@Override
 	protected float multiplier() {
-		return 1.15f;
+		return 1.125f;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class RingOfEvasion extends Ring {
 	}
 	
 	public static float evasionMultiplier( Char target ){
-		float eva = Math.min(2f, (float) Math.pow(1.15, getBuffedBonus(target, Evasion.class)));
+		float eva = Math.min(2f, (float) Math.pow(1.125, getBuffedBonus(target, Evasion.class)));
 		Hunger hunger = Dungeon.hero.buff(Hunger.class);
 		if (hunger != null && hunger.accumulatingDamage > 0){
 			eva *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);

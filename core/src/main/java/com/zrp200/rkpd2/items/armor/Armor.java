@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,16 +29,19 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.*;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.items.armor.curses.Corrosion;
 import com.zrp200.rkpd2.items.armor.curses.*;
 import com.zrp200.rkpd2.items.armor.glyphs.*;
+import com.zrp200.rkpd2.items.rings.RingOfArcana;
+import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
@@ -80,10 +83,11 @@ public class Armor extends EquipableItem {
 	public Augment augment = Augment.NONE;
 	
 	public Glyph glyph;
+	public boolean glyphHardened = false;
 	public boolean curseInfusionBonus = false;
 	public boolean masteryPotionBonus = false;
 
-	private BrokenSeal seal;
+	protected BrokenSeal seal;
 	
 	public int tier;
 	
@@ -98,6 +102,7 @@ public class Armor extends EquipableItem {
 	private static final String USES_LEFT_TO_ID = "uses_left_to_id";
 	private static final String AVAILABLE_USES  = "available_uses";
 	private static final String GLYPH			= "glyph";
+	private static final String GLYPH_HARDENED	= "glyph_hardened";
 	private static final String CURSE_INFUSION_BONUS = "curse_infusion_bonus";
 	private static final String MASTERY_POTION_BONUS = "mastery_potion_bonus";
 	private static final String SEAL            = "seal";
@@ -109,6 +114,7 @@ public class Armor extends EquipableItem {
 		bundle.put( USES_LEFT_TO_ID, usesLeftToID );
 		bundle.put( AVAILABLE_USES, availableUsesToID );
 		bundle.put( GLYPH, glyph );
+		bundle.put( GLYPH_HARDENED, glyphHardened );
 		bundle.put( CURSE_INFUSION_BONUS, curseInfusionBonus );
 		bundle.put( MASTERY_POTION_BONUS, masteryPotionBonus );
 		bundle.put( SEAL, seal);
@@ -121,6 +127,7 @@ public class Armor extends EquipableItem {
 		usesLeftToID = bundle.getInt( USES_LEFT_TO_ID );
 		availableUsesToID = bundle.getInt( AVAILABLE_USES );
 		inscribe((Glyph) bundle.get(GLYPH));
+		glyphHardened = bundle.getBoolean(GLYPH_HARDENED);
 		curseInfusionBonus = bundle.getBoolean( CURSE_INFUSION_BONUS );
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
@@ -154,33 +161,28 @@ public class Armor extends EquipableItem {
 			if (sealBuff != null) sealBuff.setArmor(null);
 
 			BrokenSeal detaching = seal;
-			degrade(seal.level());
-
-			if(seal.level() > 1) {
-				int excess = seal.level() - 1;
-				Item sous = new ScrollOfUpgrade().quantity(excess);
-				Dungeon.level.drop(sous, Dungeon.hero.pos);
-				seal.level(1);
-			}
 
 			seal = null;
 
-			if (detaching.getGlyph() != null){
-				if (hero.hasTalent(Talent.POWER_WITHIN)
-						&& (Arrays.asList(Glyph.common).contains(detaching.getGlyph().getClass())
-							|| Arrays.asList(Glyph.uncommon).contains(detaching.getGlyph().getClass()))){
-					inscribe(null);
-				} else if (hero.hasTalent(Talent.RUNIC_TRANSFERENCE) || hero.pointsInTalent(Talent.POWER_WITHIN) == 2){
-					inscribe(null);
-				} else {
-					detaching.setGlyph(null);
+			if (detaching.level() > 0){
+				degrade(detaching.level());
+				// legacy code, remove in the future
+				if (detaching.level() > 1) {
+					Dungeon.level.drop(new ScrollOfUpgrade().quantity(detaching.level()-1), hero.pos);
+					seal.level(1);
 				}
+			}
+			if (detaching.canTransferGlyph()){
+				inscribe(null);
+			} else {
+				detaching.setGlyph(null);
 			}
 			GLog.i( Messages.get(Armor.class, "detach_seal") );
 			hero.sprite.operate(hero.pos);
 			if (!detaching.collect()){
 				Dungeon.level.drop(detaching, hero.pos);
 			}
+			updateQuickslot();
 		}
 	}
 
@@ -343,15 +345,15 @@ public class Armor extends EquipableItem {
 					break;
 				}
 			}
-			if (!enemyNear) speed *= (1.2f + 0.04f * glyphEffectLevel(owner));
+			if (!enemyNear) speed *= (1.2f + 0.04f * glyphEffectLevel(owner)) * glyph.procChanceMultiplier(owner);
 		} else if (hasGlyph(Flow.class, owner) && Dungeon.level.water[owner.pos]){
-			speed *= (2f + 0.25f* glyphEffectLevel(owner));
+			speed *= (2f + 0.5f* glyphEffectLevel(owner)) * glyph.procChanceMultiplier(owner);
 		}
 
 		if (Dungeon.level.map[owner.pos] == Terrain.DOOR
 				|| Dungeon.level.map[owner.pos] == Terrain.OPEN_DOOR) {
 			if (hasGlyph(Bulk.class, owner)) {
-				speed /= 3f;
+				speed /= 3f * RingOfArcana.enchantPowerMultiplier(owner);
 			}
 			if (owner.buff(ChampionEnemy.Giant.class) != null){
 				speed /= 6f;
@@ -365,7 +367,7 @@ public class Armor extends EquipableItem {
 	public float stealthFactor( Char owner, float stealth ){
 		
 		if (hasGlyph(Obfuscation.class, owner)){
-			stealth += 1 +  glyphEffectLevel(owner)/3f;
+			stealth += (1 +  glyphEffectLevel(owner)/3f) * glyph.procChanceMultiplier(owner);
 		}
 		
 		return stealth;
@@ -374,21 +376,12 @@ public class Armor extends EquipableItem {
 	@Override
 	public int level() {
 		int level = super.level();
+		//TODO warrior's seal upgrade should probably be considered here too
+		// instead of being part of true level
 		if (curseInfusionBonus) level += 1 + level/6;
 		return level;
 	}
-	
-	/* moved to superclass
-	//other things can equip these, for now we assume only the hero can be affected by levelling debuffs
-	@Override
-	public int buffedLvl() {
-		if (isEquipped( Dungeon.hero ) || Dungeon.hero.belongings.contains( this )){
-			return super.buffedLvl();
-		} else {
-			return level();
-		}
-	}*/
-	
+
 	@Override
 	public Item upgrade() {
 		return upgrade( false );
@@ -400,11 +393,32 @@ public class Armor extends EquipableItem {
 			if (glyph == null){
 				inscribe( Glyph.random() );
 			}
-		} else {
-			if (hasCurseGlyph()){
+		} else if (glyph != null) {
+			//chance to lose harden buff is 10/20/40/80/100% when upgrading from +6/7/8/9/10
+			if (glyphHardened) {
+				if (level() >= 6 && Random.Float(10) < Math.pow(2, level()-6)){
+					glyphHardened = false;
+				}
+
+			//chance to remove curse is a static 33%
+			} else if (hasCurseGlyph()){
 				if (Random.Int(3) == 0) inscribe(null);
-			} else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
-				inscribe(null);
+
+			//otherwise chance to lose glyph is 10/20/40/80/100% when upgrading from +4/5/6/7/8
+			} else {
+
+				//the chance from +4/5, and then +6 can be set to 0% with metamorphed runic transference
+				int lossChanceStart = 4;
+				if (Dungeon.hero != null && !Dungeon.hero.heroClass.is(HeroClass.WARRIOR)){
+					int pointsRunic = Dungeon.hero.pointsInTalent(Talent.RUNIC_TRANSFERENCE);
+					int pointsPower = Dungeon.hero.pointsInTalent(Talent.POWER_WITHIN);
+					if(pointsRunic > 0) lossChanceStart += 2*(1+pointsRunic); // +4/+6
+					if(pointsPower > 0) lossChanceStart += 1+pointsPower; // +2/+4
+				}
+
+				if (level() >= lossChanceStart && Random.Float(10) < Math.pow(2, level()-4)) {
+					inscribe(null);
+				}
 			}
 		}
 
@@ -455,13 +469,14 @@ public class Armor extends EquipableItem {
 		String info = desc();
 		
 		if (levelKnown) {
-			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", DRMin(), DRMax(), STRReq());
+
+			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", tier, DRMin(), DRMax(), STRReq());
 			
 			if (STRReq() > Dungeon.hero.STR()) {
 				info += " " + Messages.get(Armor.class, "too_heavy");
 			}
 		} else {
-			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", DRMin(0), DRMax(0), STRReq(0));
+			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", tier, DRMin(0), DRMax(0), STRReq(0));
 
 			if (STRReq(0) > Dungeon.hero.STR()) {
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
@@ -479,8 +494,11 @@ public class Armor extends EquipableItem {
 		}
 		
 		if (glyph != null  && (cursedKnown || !glyph.curse())) {
-			info += "\n\n" +  Messages.get(Armor.class, "inscribed", glyph.name());
+			info += "\n\n" +  Messages.capitalize(Messages.get(Armor.class, "inscribed", glyph.name()));
+			if (glyphHardened) info += " " + Messages.get(Armor.class, "glyph_hardened");
 			info += " " + glyph.desc();
+		} else if (glyphHardened){
+			info += "\n\n" + Messages.get(Armor.class, "hardened_no_glyph");
 		}
 		
 		if (cursed && isEquipped( Dungeon.hero )) {
@@ -490,9 +508,13 @@ public class Armor extends EquipableItem {
 		} else if (seal != null) {
 			info += "\n\n" + Messages.get(Armor.class, "seal_attached", seal.maxShield(tier, level()));
 		} else if (!isIdentified() && cursedKnown){
-			info += "\n\n" + Messages.get(Armor.class, "not_cursed");
+			if (glyph != null && glyph.curse()) {
+				info += "\n\n" + Messages.get(Armor.class, "weak_cursed");
+			} else {
+				info += "\n\n" + Messages.get(Armor.class, "not_cursed");
+			}
 		}
-		
+
 		return info;
 	}
 
@@ -627,17 +649,17 @@ public class Armor extends EquipableItem {
 	
 	public static abstract class Glyph implements Bundlable {
 		
-		private static final Class<?>[] common = new Class<?>[]{
+		public static final Class<?>[] common = new Class<?>[]{
 				Obfuscation.class, Swiftness.class, Viscosity.class, Potential.class };
-		
-		private static final Class<?>[] uncommon = new Class<?>[]{
+
+		public static final Class<?>[] uncommon = new Class<?>[]{
 				Brimstone.class, Stone.class, Entanglement.class,
 				Repulsion.class, Camouflage.class, Flow.class };
-		
-		private static final Class<?>[] rare = new Class<?>[]{
+
+		public static final Class<?>[] rare = new Class<?>[]{
 				Affection.class, AntiMagic.class, Thorns.class };
-		
-		private static final float[] typeChances = new float[]{
+
+		public static final float[] typeChances = new float[]{
 				50, //12.5% each
 				40, //6.67% each
 				10  //3.33% each
@@ -652,12 +674,15 @@ public class Armor extends EquipableItem {
 
 		public abstract int proc( Armor armor, Char attacker, Char defender, int damage );
 
-		public static float procChanceModifier(Char defender){
-			float multi = 1f;
-			if (defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.HEROIC_ENDURANCE) == 4){
-				multi += 0.25f;
-			}
-			return multi;
+		protected float procChanceMultiplier( Char defender ){
+			return genericProcChanceMultiplier( defender );
+		}
+
+		public static float genericProcChanceMultiplier( Char defender ){
+			float mult = RingOfArcana.enchantPowerMultiplier(defender);
+			Berserk berserk = defender.buff(Berserk.class);
+			if(berserk != null) mult *= berserk.enchantFactor(mult, true);
+			return mult;
 		}
 
 		public String name() {

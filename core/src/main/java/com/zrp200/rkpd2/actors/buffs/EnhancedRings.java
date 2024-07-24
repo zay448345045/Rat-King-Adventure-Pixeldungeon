@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class EnhancedRings extends FlavourBuff{
+public class EnhancedRings extends FlavourBuff {
 
 	{
 		type = Buff.buffType.POSITIVE;
@@ -66,11 +66,6 @@ public class EnhancedRings extends FlavourBuff{
 	public float iconFadePercent() {
 		float max = 3* hero.pointsInTalent(Talent.ENHANCED_RINGS,Talent.RK_ASSASSIN);
 		return Math.max(0, (max-visualcooldown()) / max);
-	}
-
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
 	}
 
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ import com.zrp200.rkpd2.actors.hero.abilities.Ratmogrify;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -244,9 +247,12 @@ public class TalentsPane extends ScrollPane {
 					left = title.right() + 2;
 				}
 			}
-			int rows = ((buttons.size()-1)/7);
-			// this assumes that there's an even number of talents all around. THIS IS VERY BRITTLE
-			int buttonsPerRow = buttons.size() > 7 ? buttons.size() / 2 : buttons.size();
+			// Use as few rows as possible, but at least use them well. every 6 adds another row.
+			final int MAX_TALENTS_PER_ROW = 6;
+			int rows = 1+(buttons.size()-1)/MAX_TALENTS_PER_ROW;
+			int buttonsPerRow = buttons.size() / rows;
+			int extra = buttons.size() % rows;  // amount of rows that need an extra button to fit properly
+			if (extra > 0) buttonsPerRow++;
 			float gap = (width - buttonsPerRow*TalentButton.WIDTH)/(buttonsPerRow+1);
 			float bottom = title.bottom();
 			int placed = 0;
@@ -255,7 +261,12 @@ public class TalentsPane extends ScrollPane {
 				btn.setPos(left, bottom + 4);
 				PixelScene.align(btn);
 				left += btn.width() + gap;
-				if(++placed == buttonsPerRow && rows-- >= 0) {
+				if(++placed == buttonsPerRow && --rows >= 0) {
+					if (--extra == 0) {
+						buttonsPerRow--;
+						// copy-pasted from above
+						gap = (width - buttonsPerRow*TalentButton.WIDTH)/(buttonsPerRow+1);
+					}
 					left = x + gap;
 					bottom = btn.bottom();
 					placed = 0;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2022 Evan Debenham
+ * Copyright (C) 2014-2024 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,10 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class WellFed extends Buff {
@@ -43,9 +46,17 @@ public class WellFed extends Buff {
 		final int regenSpeed = target instanceof Hero ? 18 : 3;
 		if (left < 0){
 			detach();
+			if (target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
 			return true;
-		} else if (left % regenSpeed == 0){
-			target.HP = Math.min(target.HT, target.HP + 1);
+		} else if (left % regenSpeed == 0 && target.HP < target.HT){
+			target.HP += 1;
+			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
+
+			if (target.HP == target.HT && target instanceof Hero) {
+				((Hero) target).resting = false;
+			}
 		}
 		
 		spend(TICK);
@@ -79,12 +90,7 @@ public class WellFed extends Buff {
 	public String iconTextDisplay() {
 		return Integer.toString(left);
 	}
-	
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
-	
+
 	@Override
 	public String desc() {
 		return Messages.get(this, "desc", left + 1);
