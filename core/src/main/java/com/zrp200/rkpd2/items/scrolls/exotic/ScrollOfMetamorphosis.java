@@ -199,8 +199,6 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 			restrictedTalents.put(IRON_WILL, WARRIOR);
 		}
 
-	public static class WndMetamorphReplace extends Window {
-
 		public static WndMetamorphReplace INSTANCE;
 
 		public Talent replacing;
