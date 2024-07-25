@@ -1644,19 +1644,20 @@ public enum Talent {
 		removedTalents.add("EMPOWERING_SCROLLS");
 	}
 	private static final HashMap<String, String> renamedTalents = new HashMap();
+	//TODO: make this list not proc (?) if we want to have both RKA and RKPD2 second t2 talents accessible
 	static {
-		//v2.2.0
-		renamedTalents.put("RESTORED_WILLPOWER",        "LIQUID_WILLPOWER");
-		renamedTalents.put("ENERGIZING_UPGRADE",        "INSCRIBED_POWER");
-		renamedTalents.put("MYSTICAL_UPGRADE",          "INSCRIBED_STEALTH");
-		renamedTalents.put("RESTORED_NATURE",           "LIQUID_NATURE");
-		renamedTalents.put("RESTORED_AGILITY",          "LIQUID_AGILITY");
-		//v2.1.0
-		renamedTalents.put("LIGHTWEIGHT_CHARGE",        "PRECISE_ASSAULT");
-		//v2.0.0 BETA
-		renamedTalents.put("LIGHTLY_ARMED",             "UNENCUMBERED_SPIRIT");
-		//v2.0.0
+		//RKA v2.0.0
+		renamedTalents.put("RESTORED_WILLPOWER",        "WILLPOWER_OF_INJURED");
+		renamedTalents.put("ENERGIZING_UPGRADE",        "ENERGIZING_UPGRADE");
+		renamedTalents.put("MYSTICAL_UPGRADE",          "DUAL_WIELDING");
+		renamedTalents.put("RESTORED_NATURE",           "IVYLASH");
+		renamedTalents.put("NATURES_AID",               "SCOUTS_BARRIER");
 		renamedTalents.put("ARMSMASTERS_INTUITION",     "VETERANS_INTUITION");
+		renamedTalents.put("ENHANCED_LETHALITY",        "BLOODBATH");
+		renamedTalents.put("ASSASSINS_REACH",           "THINKING_WITH_PORTALS");
+		renamedTalents.put("BOUNTY_HUNTER",             "ADAPT_AND_OVERCOME");
+		renamedTalents.put("ROGUES_FORESIGHT",          "PROTEIN_INFUSION");
+		renamedTalents.put("SEER_SHOT",                 "LIKE_A_BULLET");
 	};
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){
