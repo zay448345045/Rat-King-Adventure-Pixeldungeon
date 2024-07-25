@@ -29,7 +29,6 @@ import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
-import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.SafeCast;
@@ -86,7 +85,13 @@ public class Invisibility extends FlavourBuff {
 	}
 
 	public static void dispel() {
-		if (Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER) == 3){
+		if (Dungeon.hero == null) return;
+
+		dispel(Dungeon.hero);
+	}
+
+	public static void dispel(Char ch) {
+		if (Dungeon.hero.pointsInTalent(Talent.ADAPT_AND_OVERCOME) == 3){
 			if (Dungeon.hero.buff(DispelDelayer.class) == null && Dungeon.hero.invisible > 0){
 				Buff.affect(Dungeon.hero, DispelDelayer.class, 1f);
 				Preparation preparation = Dungeon.hero.buff(Preparation.class);
@@ -100,19 +105,15 @@ public class Invisibility extends FlavourBuff {
 					}
 				}
 			} else {
-				actualDispel();
+				actualDispel(ch);
 			}
 		}
 		else {
-			actualDispel();
+			actualDispel(ch);
 		}
 	}
 
-		dispel(Dungeon.hero);
-	}
-
-	public static void dispel(Char ch){
-
+	public static void actualDispel(Char ch) {
 		for ( Buff invis : ch.buffs( Invisibility.class )){
 			invis.detach();
 		}
@@ -120,12 +121,12 @@ public class Invisibility extends FlavourBuff {
 		if (cloakBuff != null) {
 			cloakBuff.dispel();
 		}
-KromerCloak.cloakStealth kromerBuff = Dungeon.hero.buff(KromerCloak.cloakStealth.class );
+		KromerCloak.cloakStealth kromerBuff = ch.buff(KromerCloak.cloakStealth.class );
 		if (kromerBuff != null) {
 			kromerBuff.dispel();
 		}
 
-		//these aren't forms of invisibility, but do dispel at the same time as it.
+		//these aren't forms of invisibilty, but do dispel at the same time as it.
 		TimekeepersHourglass.TimeFreezing timeFreeze = ch.buff( TimekeepersHourglass.TimeFreezing.class );
 		if (timeFreeze != null) {
 			timeFreeze.detach();
@@ -135,10 +136,25 @@ KromerCloak.cloakStealth kromerBuff = Dungeon.hero.buff(KromerCloak.cloakStealth
 		if (prep != null){
 			prep.detach();
 		}
+	}
 
-		Swiftthistle.TimeBubble bubble =  ch.buff( Swiftthistle.TimeBubble.class );
-		if (bubble != null){
-			bubble.detach();
+	public static class DispelDelayer extends FlavourBuff {
+
+		{
+			actPriority = BUFF_PRIO + 1;
+		}
+
+		@Override
+		public boolean act() {
+			actualDispel();
+			detach();
+			return true;
+		}
+
+		@Override
+		public void fx(boolean on) {
+			if (on) target.sprite.add(CharSprite.State.SPIRIT);
+			else target.sprite.remove(CharSprite.State.SPIRIT);
 		}
 	}
 }
