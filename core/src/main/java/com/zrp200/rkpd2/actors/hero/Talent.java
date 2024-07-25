@@ -1393,28 +1393,47 @@ public enum Talent {
 			case 1: default:
 				switch (cl){
 					case WARRIOR: default:
-						return new Talent[]{HEARTY_MEAL, ARMSMASTERS_INTUITION, TEST_SUBJECT, IRON_WILL, WEAPON_MASTERY};
+						return new Talent[]{HEARTY_MEAL, VETERANS_INTUITION, TEST_SUBJECT, IRON_WILL, WEAPON_MASTERY};
 					case MAGE:
 						return new Talent[]{ENERGIZING_MEAL_I, SCHOLARS_INTUITION, TESTED_HYPOTHESIS, BACKUP_BARRIER, ARCANE_BOOST};
 					case ROGUE:
 						return new Talent[]{CACHED_RATIONS, THIEFS_INTUITION, SUCKER_PUNCH, MENDING_SHADOWS, FARADAY_CAGE};
 					case HUNTRESS:
-						return new Talent[]{NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, NATURES_AID, NATURE_AID_2};
+						return new Talent[]{NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, SCOUTS_BARRIER, NATURE_AID_2};
+					case DUELIST:
+						return new Talent[]{STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER};
 					case RAT_KING:
 						return new Talent[]{ROYAL_PRIVILEGE, ROYAL_INTUITION, KINGS_WISDOM, NOBLE_CAUSE};
 				}
 			case 2:
 				switch (cl){
 					case WARRIOR: default:
-						return new Talent[]{IRON_STOMACH, RESTORED_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES, BIG_RUSH};
+						return new Talent[]{IRON_STOMACH, WILLPOWER_OF_INJURED, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES, BIG_RUSH};
 					case MAGE:
 						return new Talent[]{ENERGIZING_MEAL_II, ENERGIZING_UPGRADE, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY, PYROMANIAC};
 					case ROGUE:
-						return new Talent[]{MYSTICAL_MEAL, MYSTICAL_UPGRADE, WIDE_SEARCH, SILENT_STEPS, ROGUES_FORESIGHT, EFFICIENT_SHADOWS};
+						return new Talent[]{MYSTICAL_MEAL, DUAL_WIELDING, WIDE_SEARCH, SILENT_STEPS, ROGUES_FORESIGHT, EFFICIENT_SHADOWS};
 					case HUNTRESS:
-						return new Talent[]{INVIGORATING_MEAL, RESTORED_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, SCOURGING_THE_UNIVERSE};
+						return new Talent[]{INVIGORATING_MEAL, IVYLASH, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, SCOURGING_THE_UNIVERSE};
+					case DUELIST:
+						return new Talent[]{FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP};
 					case RAT_KING:
 						return new Talent[]{ROYAL_MEAL, RESTORATION, POWER_WITHIN, KINGS_VISION, PURSUIT};
+				}
+			case 3:
+				switch (cl){
+					case WARRIOR: default:
+						return new Talent[]{HOLD_FAST, STRONGMAN, BEAR_PAW};
+					case MAGE:
+						return new Talent[]{DESPERATE_POWER, ALLY_WARP, CRYONIC_SPELL};
+					case ROGUE:
+						return new Talent[]{ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY};
+					case HUNTRESS:
+						return new Talent[]{POINT_BLANK, SEER_SHOT, AUTO_RELOAD};
+					case DUELIST:
+						return new Talent[]{PRECISE_ASSAULT, DEADLY_FOLLOWUP};
+					case RAT_KING:
+						return new Talent[]{};
 				}
 		}
 	}
@@ -1457,49 +1476,19 @@ public enum Talent {
 		tierTalents.clear();
 
 		//tier 3
-		switch (cls){
-			case WARRIOR: default:
-				Collections.addAll(tierTalents, HEARTY_MEAL, VETERANS_INTUITION, TEST_SUBJECT, IRON_WILL);
-				break;
-			case MAGE:
-				Collections.addAll(tierTalents, EMPOWERING_SCROLLS, ALLY_WARP, CRYONIC_SPELL);
-				break;
-			case ROGUE:
-				Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY);
-				break;
-			case HUNTRESS:
-				Collections.addAll(tierTalents, POINT_BLANK, SEER_SHOT, AUTO_RELOAD);
-				break;
-			case DUELIST:
-				Collections.addAll(tierTalents, STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER);
-				break;
-			case RAT_KING: break; // no unique talents... :(
-		}
+		Collections.addAll(tierTalents, talentList(cls, 3));
 		for (Talent talent : tierTalents){
-			if (replacements.containsKey(talent)) talent = replacements.get(talent);
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
 			talents.get(2).put(talent, 0);
 		}
 		tierTalents.clear();
+	}
 
-		//tier 2
-		switch (cls){
-			case WARRIOR: default:
-				Collections.addAll(tierTalents, IRON_STOMACH, LIQUID_WILLPOWER, RUNIC_TRANSFERENCE, LETHAL_MOMENTUM, IMPROVISED_PROJECTILES);
-				break;
-			case MAGE:
-				Collections.addAll(tierTalents, ENERGIZING_MEAL_II, INSCRIBED_POWER, WAND_PRESERVATION, ARCANE_VISION, SHIELD_BATTERY);
-				break;
-			case ROGUE:
-				Collections.addAll(tierTalents, MYSTICAL_MEAL, INSCRIBED_STEALTH, WIDE_SEARCH, SILENT_STEPS, ROGUES_FORESIGHT);
-				break;
-			case HUNTRESS:
-				Collections.addAll(tierTalents, INVIGORATING_MEAL, LIQUID_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES);
-				break;
-			case DUELIST:
-				Collections.addAll(tierTalents, FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP);
-				break;
-			case RAT_KING:
-				Collections.addAll(tierTalents, ROYAL_MEAL, RESTORATION, POWER_WITHIN, KINGS_VISION, PURSUIT);
+	public static void initSecondClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements){
+		while (talents.size() < MAX_TALENT_TIERS){
+			talents.add(new LinkedHashMap<>());
 		}
 
 		ArrayList<Talent> tierTalents = new ArrayList<>();
@@ -1510,7 +1499,7 @@ public enum Talent {
 			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);
 			}
-			talents.get(2).put(talent, 0);
+			talents.get(0).put(talent, 0);
 		}
 		tierTalents.clear();
 
@@ -1520,39 +1509,18 @@ public enum Talent {
 			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);
 			}
-			talents.get(2).put(talent, 0);
+			talents.get(1).put(talent, 0);
 		}
 		tierTalents.clear();
 
 		//tier 3
-		HeroClass lol = !trolling ? null : hero.heroClass;
-		if (lol != null) {
-			switch (lol){
-				case WARRIOR: default:
-					Collections.addAll(tierTalents, HOLD_FAST, STRONGMAN, BEAR_PAW);
-					break;
-				case MAGE:
-					Collections.addAll(tierTalents, DESPERATE_POWER, ALLY_WARP, CRYONIC_SPELL);
-					break;
-				case ROGUE:
-					Collections.addAll(tierTalents, ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY);
-					break;
-				case HUNTRESS:
-					Collections.addAll(tierTalents, POINT_BLANK, SEER_SHOT, AUTO_RELOAD);
-				break;
-			case DUELIST:
-				Collections.addAll(tierTalents, PRECISE_ASSAULT, DEADLY_FOLLOWUP);
-					break;
-				case RAT_KING: break; // no unique talents... :(
-			}
-			for (Talent talent : tierTalents){
-				if (replacements.containsKey(talent)){
+		Collections.addAll(tierTalents, talentList(!trolling ? null : hero.heroClass, 3));
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);
 			}
-				talents.get(2).put(talent, 0);
-			}
+			talents.get(2).put(talent, 0);
 		}
-
 		tierTalents.clear();
 	}
 
