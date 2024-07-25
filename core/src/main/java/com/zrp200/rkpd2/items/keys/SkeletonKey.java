@@ -21,16 +21,8 @@
 
 package com.zrp200.rkpd2.items.keys;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.SPDSettings;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.windows.WndSupportPrompt;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Callback;
-
-import java.io.IOException;
 
 public class SkeletonKey extends Key {
 	

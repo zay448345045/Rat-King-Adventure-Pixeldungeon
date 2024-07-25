@@ -37,7 +37,6 @@ import java.util.HashSet;
 import java.util.IllegalFormatException;
 import java.util.Locale;
 
-// for class specific messages
 import static com.zrp200.rkpd2.Dungeon.hero;
 import static com.zrp200.rkpd2.GamesInProgress.selectedClass;
 

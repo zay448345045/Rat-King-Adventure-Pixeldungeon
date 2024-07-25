@@ -33,7 +33,16 @@ import com.zrp200.rkpd2.items.potions.PotionOfLevitation;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
-import com.zrp200.rkpd2.levels.traps.*;
+import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
+import com.zrp200.rkpd2.levels.traps.ExplosiveTrap;
+import com.zrp200.rkpd2.levels.traps.FlashingTrap;
+import com.zrp200.rkpd2.levels.traps.FlockTrap;
+import com.zrp200.rkpd2.levels.traps.GrimTrap;
+import com.zrp200.rkpd2.levels.traps.GrippingTrap;
+import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
+import com.zrp200.rkpd2.levels.traps.TeleportationTrap;
+import com.zrp200.rkpd2.levels.traps.Trap;
+import com.zrp200.rkpd2.levels.traps.WarpingTrap;
 
 public class TrapsRoom extends SpecialRoom {
 

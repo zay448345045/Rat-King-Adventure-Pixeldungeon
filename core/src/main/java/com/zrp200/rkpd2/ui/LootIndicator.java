@@ -26,7 +26,6 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
-import com.watabou.input.GameAction;
 
 public class LootIndicator extends Tag {
 	

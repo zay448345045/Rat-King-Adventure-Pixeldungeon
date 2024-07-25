@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
@@ -28,7 +29,6 @@ import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.sprites.SlimeSprite;
-import com.watabou.utils.Random;
 
 public class Slime extends Mob {
 	

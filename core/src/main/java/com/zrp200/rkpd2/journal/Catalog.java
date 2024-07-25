@@ -25,9 +25,12 @@ import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
-import com.watabou.utils.Bundle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public enum Catalog {
 	

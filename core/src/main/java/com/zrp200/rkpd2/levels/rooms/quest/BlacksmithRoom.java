@@ -21,9 +21,9 @@
 
 package com.zrp200.rkpd2.levels.rooms.quest;
 
+import com.watabou.noosa.Tilemap;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
@@ -37,7 +37,6 @@ import com.zrp200.rkpd2.levels.rooms.standard.StandardRoom;
 import com.zrp200.rkpd2.levels.traps.BurningTrap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
-import com.watabou.noosa.Tilemap;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
 public class BlacksmithRoom extends StandardRoom {

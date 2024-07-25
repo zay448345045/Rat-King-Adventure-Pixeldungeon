@@ -21,9 +21,12 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Halo;
+import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
@@ -35,17 +38,22 @@ import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.painters.PrisonPainter;
 import com.zrp200.rkpd2.levels.rooms.Room;
-import com.zrp200.rkpd2.levels.traps.*;
+import com.zrp200.rkpd2.levels.traps.AlarmTrap;
+import com.zrp200.rkpd2.levels.traps.BurningTrap;
+import com.zrp200.rkpd2.levels.traps.ChillingTrap;
+import com.zrp200.rkpd2.levels.traps.ConfusionTrap;
+import com.zrp200.rkpd2.levels.traps.FlockTrap;
+import com.zrp200.rkpd2.levels.traps.GatewayTrap;
+import com.zrp200.rkpd2.levels.traps.GeyserTrap;
+import com.zrp200.rkpd2.levels.traps.GrippingTrap;
+import com.zrp200.rkpd2.levels.traps.OozeTrap;
+import com.zrp200.rkpd2.levels.traps.PoisonDartTrap;
+import com.zrp200.rkpd2.levels.traps.ShockingTrap;
+import com.zrp200.rkpd2.levels.traps.SummoningTrap;
+import com.zrp200.rkpd2.levels.traps.TeleportationTrap;
+import com.zrp200.rkpd2.levels.traps.ToxicTrap;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Halo;
-import com.watabou.noosa.audio.Music;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Callback;
-import com.watabou.utils.PointF;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 

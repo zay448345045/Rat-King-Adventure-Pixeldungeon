@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -30,9 +33,6 @@ import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.particles.EarthParticle;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.particles.Emitter;
-import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;

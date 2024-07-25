@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels.features;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
@@ -28,7 +29,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 
 public class Door {
 

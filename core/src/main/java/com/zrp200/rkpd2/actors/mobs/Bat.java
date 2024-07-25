@@ -29,7 +29,6 @@ import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.potions.PotionOfHealing;
 import com.zrp200.rkpd2.sprites.BatSprite;
 import com.zrp200.rkpd2.sprites.CharSprite;
-import com.watabou.utils.Random;
 
 public class Bat extends Mob {
 

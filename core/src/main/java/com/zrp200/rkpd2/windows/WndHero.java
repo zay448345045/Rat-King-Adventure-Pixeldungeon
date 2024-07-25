@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
@@ -45,12 +46,6 @@ import com.zrp200.rkpd2.ui.TalentButton;
 import com.zrp200.rkpd2.ui.TalentsPane;
 import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.gltextures.SmartTexture;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.Gizmo;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 import java.util.Locale;

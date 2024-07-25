@@ -23,7 +23,6 @@ package com.zrp200.rkpd2;
 
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
-import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.messages.Messages;

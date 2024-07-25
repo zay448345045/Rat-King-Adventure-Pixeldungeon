@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.potions.brews;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
@@ -33,7 +34,6 @@ import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.potions.PotionOfToxicGas;
 import com.zrp200.rkpd2.items.quest.GooBlob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.BArray;
 
 public class CausticBrew extends Brew {
 	

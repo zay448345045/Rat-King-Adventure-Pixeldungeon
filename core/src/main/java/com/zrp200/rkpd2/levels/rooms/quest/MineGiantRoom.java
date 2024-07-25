@@ -21,6 +21,10 @@
 
 package com.zrp200.rkpd2.levels.rooms.quest;
 
+import com.watabou.utils.GameMath;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.CrystalSpire;
 import com.zrp200.rkpd2.actors.mobs.FungalCore;
@@ -32,10 +36,6 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.secret.SecretRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.CaveRoom;
-import com.watabou.utils.GameMath;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 import java.util.ArrayList;
 

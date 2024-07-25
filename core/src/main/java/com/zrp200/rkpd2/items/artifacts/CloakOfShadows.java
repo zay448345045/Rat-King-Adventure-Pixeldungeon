@@ -51,6 +51,7 @@ import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.utils.SafeCast;
+
 import java.util.ArrayList;
 
 public class CloakOfShadows extends Artifact {

@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.noosa.Group;
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.actors.Actor;
@@ -37,9 +40,6 @@ import com.zrp200.rkpd2.levels.rooms.standard.EntranceRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.ExitRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.ImpShopRoom;
 import com.zrp200.rkpd2.messages.Messages;
-import com.watabou.noosa.Group;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 

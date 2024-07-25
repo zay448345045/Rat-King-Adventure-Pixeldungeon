@@ -21,10 +21,22 @@
 
 package com.zrp200.rkpd2.items.potions.exotic;
 
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.Recipe;
-import com.zrp200.rkpd2.items.potions.*;
-import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.items.potions.Potion;
+import com.zrp200.rkpd2.items.potions.PotionOfExperience;
+import com.zrp200.rkpd2.items.potions.PotionOfFrost;
+import com.zrp200.rkpd2.items.potions.PotionOfHaste;
+import com.zrp200.rkpd2.items.potions.PotionOfHealing;
+import com.zrp200.rkpd2.items.potions.PotionOfInvisibility;
+import com.zrp200.rkpd2.items.potions.PotionOfLevitation;
+import com.zrp200.rkpd2.items.potions.PotionOfLiquidFlame;
+import com.zrp200.rkpd2.items.potions.PotionOfMindVision;
+import com.zrp200.rkpd2.items.potions.PotionOfParalyticGas;
+import com.zrp200.rkpd2.items.potions.PotionOfPurity;
+import com.zrp200.rkpd2.items.potions.PotionOfStrength;
+import com.zrp200.rkpd2.items.potions.PotionOfToxicGas;
 
 import java.util.ArrayList;
 import java.util.HashMap;

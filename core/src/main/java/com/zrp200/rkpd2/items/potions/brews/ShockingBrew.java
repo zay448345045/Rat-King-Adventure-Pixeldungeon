@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.potions.brews;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
@@ -32,7 +33,6 @@ import com.zrp200.rkpd2.items.potions.AlchemicalCatalyst;
 import com.zrp200.rkpd2.items.potions.PotionOfParalyticGas;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.utils.BArray;
 
 public class ShockingBrew extends Brew {
 	

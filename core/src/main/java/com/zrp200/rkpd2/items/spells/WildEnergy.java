@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.spells;
 
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -33,8 +35,6 @@ import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfMysticalEnergy;
 import com.zrp200.rkpd2.items.wands.CursedWand;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class WildEnergy extends TargetedSpell {
 	

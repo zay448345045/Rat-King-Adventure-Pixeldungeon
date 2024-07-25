@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.levels.rooms.standard;
 
+import com.watabou.utils.Point;
+import com.watabou.utils.Random;
+import com.watabou.utils.Rect;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -28,9 +31,6 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.plants.Firebloom;
 import com.zrp200.rkpd2.plants.Plant;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.watabou.utils.Rect;
 
 public class PlantsRoom extends StandardRoom {
 	

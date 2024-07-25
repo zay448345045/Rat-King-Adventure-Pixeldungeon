@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.items.rings;
 
 
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.items.Item;

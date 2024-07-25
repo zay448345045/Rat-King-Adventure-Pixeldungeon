@@ -40,7 +40,10 @@ import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.Statue;
 import com.zrp200.rkpd2.actors.mobs.npcs.Ghost;
-import com.zrp200.rkpd2.items.*;
+import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
+import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.items.Stylus;
 import com.zrp200.rkpd2.items.Torch;
 import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.DriedRose;
@@ -80,14 +83,11 @@ import com.zrp200.rkpd2.levels.traps.FrostTrap;
 import com.zrp200.rkpd2.levels.traps.PitfallTrap;
 import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.levels.traps.WornDartTrap;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
-import com.zrp200.rkpd2.levels.traps.*;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 

@@ -21,13 +21,17 @@
 
 package com.zrp200.rkpd2.ui;
 
-import com.zrp200.rkpd2.SPDSettings;
-import com.watabou.input.*;
+import com.watabou.input.ControllerHandler;
+import com.watabou.input.GameAction;
+import com.watabou.input.KeyBindings;
+import com.watabou.input.KeyEvent;
+import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.PointerArea;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Signal;
+import com.zrp200.rkpd2.SPDSettings;
 
 public class Button extends Component {
 

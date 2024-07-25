@@ -21,11 +21,6 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.CharSprite;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Visual;
@@ -34,6 +29,7 @@ import com.watabou.utils.PointF;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 
 public class Pushing extends Actor {

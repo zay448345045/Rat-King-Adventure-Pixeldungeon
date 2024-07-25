@@ -22,16 +22,6 @@
 package com.zrp200.rkpd2.scenes;
 
 import com.badlogic.gdx.Input;
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.SPDSettings;
-import com.zrp200.rkpd2.effects.BadgeBanner;
-import com.zrp200.rkpd2.messages.Languages;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Tooltip;
-import com.zrp200.rkpd2.ui.Window;
-import com.zrp200.rkpd2.utils.Holiday;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.ControllerHandler;
@@ -54,6 +44,16 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Reflection;
 import com.watabou.utils.Signal;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.SPDSettings;
+import com.zrp200.rkpd2.effects.BadgeBanner;
+import com.zrp200.rkpd2.messages.Languages;
+import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Tooltip;
+import com.zrp200.rkpd2.ui.Window;
+import com.zrp200.rkpd2.utils.Holiday;
 
 import java.util.ArrayList;
 

@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.levels.features.Chasm;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.BruteSprite;
+import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class Brute extends Mob {

@@ -30,7 +30,11 @@ import com.watabou.noosa.Visual;
 import com.watabou.utils.RectF;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.items.keys.*;
+import com.zrp200.rkpd2.items.keys.CrystalKey;
+import com.zrp200.rkpd2.items.keys.GoldenKey;
+import com.zrp200.rkpd2.items.keys.IronKey;
+import com.zrp200.rkpd2.items.keys.Key;
+import com.zrp200.rkpd2.items.keys.SkeletonKey;
 import com.zrp200.rkpd2.journal.Notes;
 
 import java.nio.Buffer;

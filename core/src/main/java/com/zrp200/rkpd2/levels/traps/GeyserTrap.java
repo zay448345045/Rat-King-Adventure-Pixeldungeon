@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.levels.traps;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
@@ -34,7 +35,6 @@ import com.zrp200.rkpd2.effects.Splash;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.utils.BArray;
 
 import java.util.ArrayList;
 

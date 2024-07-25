@@ -21,18 +21,6 @@
 
 package com.zrp200.rkpd2.effects;
 
-import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.effects.particles.BloodParticle;
-import com.zrp200.rkpd2.effects.particles.CorrosionParticle;
-import com.zrp200.rkpd2.effects.particles.ElmoParticle;
-import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.LeafParticle;
-import com.zrp200.rkpd2.effects.particles.PoisonParticle;
-import com.zrp200.rkpd2.effects.particles.PurpleParticle;
-import com.zrp200.rkpd2.effects.particles.RainbowParticle;
-import com.zrp200.rkpd2.effects.particles.ShadowParticle;
-import com.zrp200.rkpd2.effects.particles.SparkParticle;
-import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.Visual;
@@ -44,7 +32,18 @@ import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
-import com.zrp200.rkpd2.effects.particles.*;
+import com.zrp200.rkpd2.effects.particles.BloodParticle;
+import com.zrp200.rkpd2.effects.particles.CorrosionParticle;
+import com.zrp200.rkpd2.effects.particles.ElmoParticle;
+import com.zrp200.rkpd2.effects.particles.FlameParticle;
+import com.zrp200.rkpd2.effects.particles.FrostfireParticle;
+import com.zrp200.rkpd2.effects.particles.KromerParticle;
+import com.zrp200.rkpd2.effects.particles.LeafParticle;
+import com.zrp200.rkpd2.effects.particles.PoisonParticle;
+import com.zrp200.rkpd2.effects.particles.PurpleParticle;
+import com.zrp200.rkpd2.effects.particles.RainbowParticle;
+import com.zrp200.rkpd2.effects.particles.ShadowParticle;
+import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.mechanics.ConeAOE;
 import com.zrp200.rkpd2.sprites.CharSprite;

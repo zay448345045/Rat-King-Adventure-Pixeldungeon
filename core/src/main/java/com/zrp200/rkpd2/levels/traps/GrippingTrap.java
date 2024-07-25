@@ -21,7 +21,6 @@
 
 package com.zrp200.rkpd2.levels.traps;
 
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Bleeding;

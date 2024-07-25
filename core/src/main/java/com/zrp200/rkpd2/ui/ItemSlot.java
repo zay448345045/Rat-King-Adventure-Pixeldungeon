@@ -21,11 +21,12 @@
 
 package com.zrp200.rkpd2.ui;
 
-import static com.zrp200.rkpd2.Dungeon.hero;
-
+import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
+import com.watabou.utils.Rect;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.OmniAbility;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.armor.ClassArmor;
@@ -37,12 +38,11 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Rect;
 import com.zrp200.rkpd2.utils.SafeCast;
 
 import java.util.Collections;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class ItemSlot extends Button {
 

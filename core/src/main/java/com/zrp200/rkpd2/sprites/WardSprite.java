@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.sprites;
 
+import com.watabou.noosa.Game;
+import com.watabou.noosa.tweeners.AlphaTweener;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
@@ -28,8 +30,6 @@ import com.zrp200.rkpd2.effects.Beam;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.items.wands.WandOfWarding;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.tweeners.AlphaTweener;
 
 public class WardSprite extends MobSprite {
 

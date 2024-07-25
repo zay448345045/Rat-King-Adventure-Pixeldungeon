@@ -36,9 +36,9 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.YogDzewa;
@@ -57,13 +57,13 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.ui.BossHealthBar;
-import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.utils.DungeonSeed;
+import com.zrp200.rkpd2.windows.WndOptions;
+
+import java.util.ArrayList;
 
 import static com.zrp200.rkpd2.Assets.Environment.TILES_SEWERS;
 import static com.zrp200.rkpd2.Assets.Environment.WATER_SEWERS;
-
-import java.util.ArrayList;
 
 public class HallsBossLevel extends Level {
 

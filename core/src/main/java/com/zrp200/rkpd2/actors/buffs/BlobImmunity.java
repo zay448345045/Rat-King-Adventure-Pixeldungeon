@@ -21,7 +21,20 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
-import com.zrp200.rkpd2.actors.blobs.*;
+import com.zrp200.rkpd2.actors.blobs.Blizzard;
+import com.zrp200.rkpd2.actors.blobs.ConfusionGas;
+import com.zrp200.rkpd2.actors.blobs.CorrosiveGas;
+import com.zrp200.rkpd2.actors.blobs.Electricity;
+import com.zrp200.rkpd2.actors.blobs.Fire;
+import com.zrp200.rkpd2.actors.blobs.Freezing;
+import com.zrp200.rkpd2.actors.blobs.Inferno;
+import com.zrp200.rkpd2.actors.blobs.ParalyticGas;
+import com.zrp200.rkpd2.actors.blobs.Regrowth;
+import com.zrp200.rkpd2.actors.blobs.SmokeScreen;
+import com.zrp200.rkpd2.actors.blobs.StenchGas;
+import com.zrp200.rkpd2.actors.blobs.StormCloud;
+import com.zrp200.rkpd2.actors.blobs.ToxicGas;
+import com.zrp200.rkpd2.actors.blobs.Web;
 import com.zrp200.rkpd2.actors.mobs.Tengu;
 import com.zrp200.rkpd2.levels.rooms.special.MagicalFireRoom;
 import com.zrp200.rkpd2.ui.BuffIndicator;

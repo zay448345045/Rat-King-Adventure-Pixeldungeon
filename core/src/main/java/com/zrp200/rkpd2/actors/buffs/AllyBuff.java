@@ -22,7 +22,6 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.Badges;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -30,8 +29,8 @@ import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.mobs.DwarfKing;
 import com.zrp200.rkpd2.actors.mobs.Mimic;
 import com.zrp200.rkpd2.actors.mobs.Mob;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.effects.FloatingText;
+import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 
 //generic class for buffs which convert an enemy into an ally

@@ -21,6 +21,15 @@
 
 package com.zrp200.rkpd2.windows;
 
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
+import com.watabou.noosa.ColorBlock;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.ui.Component;
+import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Challenges;
@@ -48,22 +57,6 @@ import com.zrp200.rkpd2.ui.RenderedTextBlock;
 import com.zrp200.rkpd2.ui.TalentButton;
 import com.zrp200.rkpd2.ui.TalentsPane;
 import com.zrp200.rkpd2.ui.Window;
-import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
-import com.zrp200.rkpd2.*;
-import com.zrp200.rkpd2.actors.hero.Belongings;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
-import com.zrp200.rkpd2.items.Item;
-import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.*;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.text.NumberFormat;

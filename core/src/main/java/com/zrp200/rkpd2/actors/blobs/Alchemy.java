@@ -21,8 +21,6 @@
 
 package com.zrp200.rkpd2.actors.blobs;
 
-import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.effects.BlobEmitter;
 import com.zrp200.rkpd2.effects.Speck;

@@ -21,8 +21,7 @@
 
 package com.zrp200.rkpd2.levels.features;
 
-import static com.zrp200.rkpd2.utils.SafeCast.cast;
-
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;

@@ -32,10 +32,10 @@ package com.zrp200.rkpd2.actors.mobs.npcs;
     import com.zrp200.rkpd2.actors.hero.Hero;
     import com.zrp200.rkpd2.actors.hero.Talent;
     import com.zrp200.rkpd2.actors.mobs.Mob;
-    import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
     import com.zrp200.rkpd2.items.rings.RingOfAccuracy;
-import com.zrp200.rkpd2.items.rings.RingOfEvasion;
-import com.zrp200.rkpd2.sprites.CharSprite;
+    import com.zrp200.rkpd2.items.rings.RingOfEvasion;
+    import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
+    import com.zrp200.rkpd2.sprites.CharSprite;
     import com.zrp200.rkpd2.sprites.MirrorSprite;
 
     public abstract class AbstractMirrorImage extends NPC {

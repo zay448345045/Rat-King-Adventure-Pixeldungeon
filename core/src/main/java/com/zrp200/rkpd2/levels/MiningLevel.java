@@ -21,8 +21,13 @@
 
 package com.zrp200.rkpd2.levels;
 
-import static com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith.Quest.MAX_GOLD;
-
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
+import com.watabou.noosa.Tilemap;
+import com.watabou.noosa.audio.Music;
+import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Challenges;
@@ -58,16 +63,11 @@ import com.zrp200.rkpd2.sprites.BlacksmithSprite;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndTitledMessage;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.Group;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.Tilemap;
-import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Callback;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith.Quest.MAX_GOLD;
 
 public class MiningLevel extends CavesLevel {
 

@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.scrolls;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.buffs.Blindness;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;

@@ -23,7 +23,12 @@ package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
-import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;

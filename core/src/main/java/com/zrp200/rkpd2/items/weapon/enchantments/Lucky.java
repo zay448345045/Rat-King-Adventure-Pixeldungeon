@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
+import com.watabou.noosa.Visual;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.Item;
@@ -28,8 +30,6 @@ import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite.Glowing;
-import com.watabou.noosa.Visual;
-import com.watabou.utils.Random;
 
 public class Lucky extends Weapon.Enchantment {
 

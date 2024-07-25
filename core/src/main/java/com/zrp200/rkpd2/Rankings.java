@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2;
 
+import com.watabou.noosa.Game;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -43,10 +44,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.Toolbar;
 import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.noosa.Game;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
-import com.watabou.utils.FileUtils;
 
 import java.io.IOException;
 import java.text.DateFormat;

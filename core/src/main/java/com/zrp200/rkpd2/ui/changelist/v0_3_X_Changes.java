@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.ui.changelist;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.ChangesScene;
@@ -28,7 +29,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 

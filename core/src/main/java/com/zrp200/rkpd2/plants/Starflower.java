@@ -26,8 +26,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Bless;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Recharging;
-import com.zrp200.rkpd2.actors.hero.Hero;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;

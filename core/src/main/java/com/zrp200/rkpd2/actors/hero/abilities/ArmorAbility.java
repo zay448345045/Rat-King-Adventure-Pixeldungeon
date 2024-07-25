@@ -21,9 +21,9 @@
 
 package com.zrp200.rkpd2.actors.hero.abilities;
 
-import com.zrp200.rkpd2.actors.Char;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.rat_king.LegacyWrath;

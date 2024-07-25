@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.ui.changelist;
 
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -38,7 +39,6 @@ import com.zrp200.rkpd2.sprites.WandmakerSprite;
 import com.zrp200.rkpd2.ui.Icons;
 import com.zrp200.rkpd2.ui.TalentIcon;
 import com.zrp200.rkpd2.ui.Window;
-import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 

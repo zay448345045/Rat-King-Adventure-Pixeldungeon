@@ -21,13 +21,6 @@
 
 package com.zrp200.rkpd2.windows;
 
-import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Chrome;
-import com.zrp200.rkpd2.SPDAction;
-import com.zrp200.rkpd2.scenes.PixelScene;
-import com.zrp200.rkpd2.ui.Button;
-import com.zrp200.rkpd2.ui.RenderedTextBlock;
-import com.zrp200.rkpd2.ui.Window;
 import com.watabou.input.KeyBindings;
 import com.watabou.input.KeyEvent;
 import com.watabou.noosa.Game;
@@ -36,6 +29,13 @@ import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.RectF;
 import com.watabou.utils.Signal;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Chrome;
+import com.zrp200.rkpd2.SPDAction;
+import com.zrp200.rkpd2.scenes.PixelScene;
+import com.zrp200.rkpd2.ui.Button;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Window;
 
 import java.util.ArrayList;
 

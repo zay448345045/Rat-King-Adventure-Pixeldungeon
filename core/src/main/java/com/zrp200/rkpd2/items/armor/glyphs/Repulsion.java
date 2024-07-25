@@ -21,8 +21,8 @@
 
 package com.zrp200.rkpd2.items.armor.glyphs;
 
-import com.zrp200.rkpd2.Dungeon;
 import com.watabou.utils.Random;
+import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;

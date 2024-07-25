@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.hero.abilities.rogue;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.Tweener;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
@@ -55,7 +56,6 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.MissileSprite;
 import com.zrp200.rkpd2.sprites.MobSprite;
 import com.zrp200.rkpd2.ui.HeroIcon;
-import com.watabou.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.util.ArrayList;

@@ -21,8 +21,8 @@
 
 package com.zrp200.rkpd2.actors.buffs;
 
-import com.zrp200.rkpd2.actors.Char;
 import com.watabou.utils.Bundle;
+import com.zrp200.rkpd2.actors.Char;
 
 public abstract class ShieldBuff extends Buff {
 	

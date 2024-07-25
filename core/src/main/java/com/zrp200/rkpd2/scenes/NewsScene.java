@@ -26,7 +26,6 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.ui.Component;
-import com.watabou.utils.DeviceCompat;
 import com.zrp200.rkpd2.Chrome;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
@@ -35,13 +34,14 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.services.news.News;
 import com.zrp200.rkpd2.services.news.NewsArticle;
 import com.zrp200.rkpd2.sprites.CharSprite;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.Archs;
+import com.zrp200.rkpd2.ui.ExitButton;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RedButton;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.StyledButton;
+import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.windows.WndTitledMessage;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.Game;
-import com.watabou.noosa.NinePatch;
-import com.watabou.noosa.ui.Component;
 
 import java.util.ArrayList;
 

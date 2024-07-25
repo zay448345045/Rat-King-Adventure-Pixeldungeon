@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.items.scrolls.exotic;
 
 import com.watabou.noosa.Game;
 import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.messages.Messages;

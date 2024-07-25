@@ -21,11 +21,22 @@
 
 package com.zrp200.rkpd2.items.scrolls.exotic;
 
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.Recipe;
-import com.zrp200.rkpd2.items.scrolls.*;
-import com.zrp200.rkpd2.items.stones.Runestone;
-import com.watabou.utils.Reflection;
+import com.zrp200.rkpd2.items.scrolls.Scroll;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfLullaby;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfMirrorImage;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRage;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTerror;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfTransmutation;
+import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 
 import java.util.ArrayList;
 import java.util.HashMap;

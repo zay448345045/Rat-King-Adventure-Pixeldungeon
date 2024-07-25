@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.bombs;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
@@ -33,7 +34,6 @@ import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
-import com.watabou.utils.BArray;
 
 import java.util.ArrayList;
 

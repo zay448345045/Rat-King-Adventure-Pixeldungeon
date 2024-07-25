@@ -21,12 +21,10 @@
 
 package com.zrp200.rkpd2.items.food;
 
+import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
-import com.zrp200.rkpd2.Dungeon;
-import com.zrp200.rkpd2.ShatteredPixelDungeon;
-import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.FloatingText;
@@ -35,10 +33,6 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.Holiday;
-import com.watabou.noosa.audio.Sample;
-import com.zrp200.rkpd2.utils.DungeonSeed;
-
-import java.util.Calendar;
 
 public class Pasty extends Food {
 

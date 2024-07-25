@@ -1,6 +1,5 @@
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
-import com.watabou.utils.Random;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.weapon.Weapon;

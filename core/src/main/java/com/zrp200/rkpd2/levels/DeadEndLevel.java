@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.levels;
 
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Bones;
 import com.zrp200.rkpd2.Dungeon;
@@ -30,7 +31,6 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.levels.features.LevelTransition;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 

@@ -23,9 +23,6 @@ package com.zrp200.rkpd2.items.scrolls.exotic;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
-import static com.zrp200.rkpd2.actors.hero.Talent.*;
-
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
@@ -51,7 +48,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 
 public class ScrollOfMetamorphosis extends ExoticScroll {

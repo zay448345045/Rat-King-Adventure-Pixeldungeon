@@ -23,7 +23,6 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class Adrenaline extends FlavourBuff {

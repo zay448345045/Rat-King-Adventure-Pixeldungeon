@@ -21,8 +21,6 @@
 
 package com.zrp200.rkpd2;
 
-import static com.watabou.utils.Bundle.addAlias;
-
 import com.badlogic.gdx.utils.StringBuilder;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
@@ -34,6 +32,8 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.scenes.TitleScene;
 import com.zrp200.rkpd2.scenes.WelcomeScene;
+
+import static com.watabou.utils.Bundle.addAlias;
 
 @SuppressWarnings("unused")
 public class ShatteredPixelDungeon extends Game {

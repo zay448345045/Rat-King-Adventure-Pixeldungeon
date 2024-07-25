@@ -25,7 +25,6 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Levitation;
 import com.zrp200.rkpd2.actors.buffs.Vertigo;
-import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class Stormvine extends Plant {

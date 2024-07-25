@@ -23,11 +23,11 @@ package com.zrp200.rkpd2.services.news;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.watabou.noosa.Image;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.Icons;
-import com.watabou.noosa.Image;
 
 import java.util.ArrayList;
 import java.util.Calendar;

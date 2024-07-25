@@ -22,7 +22,6 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
 public class Haste extends FlavourBuff {

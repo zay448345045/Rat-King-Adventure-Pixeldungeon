@@ -21,6 +21,9 @@
 
 package com.zrp200.rkpd2.levels.rooms.quest;
 
+import com.watabou.noosa.Image;
+import com.watabou.noosa.Tilemap;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.mobs.Skeleton;
 import com.zrp200.rkpd2.items.Generator;
@@ -37,9 +40,6 @@ import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 import com.zrp200.rkpd2.levels.rooms.standard.EntranceRoom;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.tiles.CustomTilemap;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.Tilemap;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 

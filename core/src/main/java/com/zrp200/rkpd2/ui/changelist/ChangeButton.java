@@ -37,8 +37,6 @@ import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.ui.BuffIcon;
 import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.ui.TalentIcon;
-import com.watabou.noosa.Image;
-import com.watabou.noosa.ui.Component;
 
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
 

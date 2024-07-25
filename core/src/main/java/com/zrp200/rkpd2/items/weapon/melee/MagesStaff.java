@@ -21,8 +21,11 @@
 
 package com.zrp200.rkpd2.items.weapon.melee;
 
-import static com.zrp200.rkpd2.Dungeon.*;
-
+import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.particles.PixelParticle;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
@@ -30,20 +33,23 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
 import com.zrp200.rkpd2.actors.buffs.Buff;
-import com.zrp200.rkpd2.actors.buffs.PowerfulDegrade;
 import com.zrp200.rkpd2.actors.buffs.Warp;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
-import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.items.ArcaneResin;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
-import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
-import com.zrp200.rkpd2.items.wands.*;
+import com.zrp200.rkpd2.items.wands.Wand;
+import com.zrp200.rkpd2.items.wands.WandOfCorrosion;
+import com.zrp200.rkpd2.items.wands.WandOfCorruption;
+import com.zrp200.rkpd2.items.wands.WandOfDisintegration;
+import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
+import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
+import com.zrp200.rkpd2.items.wands.WandOfUnstable2;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -56,6 +62,8 @@ import com.zrp200.rkpd2.windows.WndOptions;
 import com.zrp200.rkpd2.windows.WndUseItem;
 
 import java.util.ArrayList;
+
+import static com.zrp200.rkpd2.Dungeon.*;
 
 public class MagesStaff extends MeleeWeapon {
 
@@ -553,7 +561,7 @@ public class MagesStaff extends MeleeWeapon {
 	};
 
 	//determines particle effects to use based on wand the staff owns.
-	public class StaffParticle extends PixelParticle{
+	public class StaffParticle extends PixelParticle {
 
 		private float minSize;
 		private float maxSize;

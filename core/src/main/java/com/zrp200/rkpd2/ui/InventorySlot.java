@@ -32,9 +32,6 @@ import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.wands.Wand;
-import com.watabou.gltextures.TextureCache;
-import com.watabou.noosa.ColorBlock;
-import com.watabou.noosa.audio.Sample;
 
 public class InventorySlot extends ItemSlot {
 

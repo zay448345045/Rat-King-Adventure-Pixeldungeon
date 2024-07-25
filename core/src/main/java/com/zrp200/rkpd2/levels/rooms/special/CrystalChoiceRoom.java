@@ -35,8 +35,6 @@ import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.Room;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
 import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.utils.Point;
-import com.watabou.utils.Random;
 
 public class CrystalChoiceRoom extends SpecialRoom {
 

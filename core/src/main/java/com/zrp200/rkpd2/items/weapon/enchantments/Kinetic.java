@@ -21,9 +21,9 @@
 
 package com.zrp200.rkpd2.items.weapon.enchantments;
 
-import com.zrp200.rkpd2.actors.Actor;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
+import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.items.weapon.Weapon;

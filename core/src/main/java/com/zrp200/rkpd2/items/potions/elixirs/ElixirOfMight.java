@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.items.potions.elixirs;
 
+import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.buffs.Buff;
@@ -33,8 +35,6 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 import com.zrp200.rkpd2.utils.GLog;
-import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
 public class ElixirOfMight extends Elixir {
 

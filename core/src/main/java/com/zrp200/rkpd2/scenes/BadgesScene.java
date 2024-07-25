@@ -27,7 +27,11 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Badges;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.Archs;
+import com.zrp200.rkpd2.ui.BadgesGrid;
+import com.zrp200.rkpd2.ui.ExitButton;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Window;
 
 public class BadgesScene extends PixelScene {
 

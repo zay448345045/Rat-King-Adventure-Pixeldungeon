@@ -33,9 +33,12 @@ import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.scenes.StartScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
-import com.zrp200.rkpd2.ui.*;
+import com.zrp200.rkpd2.ui.ActionIndicator;
+import com.zrp200.rkpd2.ui.Icons;
+import com.zrp200.rkpd2.ui.RedButton;
+import com.zrp200.rkpd2.ui.RenderedTextBlock;
+import com.zrp200.rkpd2.ui.Window;
 import com.zrp200.rkpd2.utils.DungeonSeed;
-import com.watabou.noosa.Game;
 
 import java.util.Locale;
 

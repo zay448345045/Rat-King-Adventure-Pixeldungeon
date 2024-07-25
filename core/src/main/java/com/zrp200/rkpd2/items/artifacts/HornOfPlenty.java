@@ -23,7 +23,11 @@ package com.zrp200.rkpd2.items.artifacts;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.zrp200.rkpd2.*;
+import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.Badges;
+import com.zrp200.rkpd2.Challenges;
+import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
