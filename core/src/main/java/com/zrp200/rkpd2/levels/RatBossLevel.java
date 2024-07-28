@@ -52,6 +52,8 @@ import com.zrp200.rkpd2.tiles.CustomTilemap;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
 import com.zrp200.rkpd2.utils.DungeonSeed;
 
+import java.util.ArrayList;
+
 import static com.zrp200.rkpd2.Assets.Environment.TILES_HALLS;
 import static com.zrp200.rkpd2.Assets.Environment.WATER_HALLS;
 
@@ -200,14 +202,18 @@ public class RatBossLevel extends Level {
 
 	@Override
 	protected void createItems() {
-		Item item = Bones.get();
-		if (item != null) {
+		Random.pushGenerator(Random.Long());
+		ArrayList<Item> bonesItems = Bones.get();
+		if (bonesItems != null) {
 			int pos;
 			do {
 				pos = randomRespawnCell(null);
 			} while (pos == entrance());
-			drop( item, pos ).setHauntedIfCursed().type = Heap.Type.REMAINS;
+			for (Item i : bonesItems) {
+				drop(i, pos).setHauntedIfCursed().type = Heap.Type.REMAINS;
+			}
 		}
+		Random.popGenerator();
 	}
 
 	@Override

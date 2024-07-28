@@ -149,16 +149,6 @@ public class RingOfForce extends Ring {
 		return enchantment != null && (cursedKnown || !enchantment.curse()) ? enchantment.glowing() : null;
 	}
 
-	@Override
-	public String info() {
-		String info = super.info();
-		if (enchantment != null && (cursedKnown || !enchantment.curse())){
-			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
-			info += " " + Messages.get(enchantment, "desc");
-		}
-		return info;
-	}
-
 	//same as equivalent tier weapon
 	private static int min(int lvl, float tier){
 		if (lvl <= 0) tier = 1; //tier is forced to 1 if cursed
@@ -315,6 +305,11 @@ public class RingOfForce extends Ring {
 		if (Dungeon.hero.heroClass == HeroClass.DUELIST
 			&& (anonymous || isIdentified() || isEquipped(Dungeon.hero))){
 			info += "\n\n" + Messages.get(this, "ability_desc");
+		}
+
+		if (enchantment != null && (cursedKnown || !enchantment.curse())){
+			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+			info += " " + Messages.get(enchantment, "desc");
 		}
 
 		return info;

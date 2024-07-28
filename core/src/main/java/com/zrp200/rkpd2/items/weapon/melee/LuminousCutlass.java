@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.weapon.melee;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
@@ -33,7 +34,6 @@ import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
-import com.zrp200.rkpd2.utils.BArray;
 
 import java.util.ArrayList;
 

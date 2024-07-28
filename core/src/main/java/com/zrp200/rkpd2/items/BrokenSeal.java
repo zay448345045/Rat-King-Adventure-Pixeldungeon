@@ -223,7 +223,7 @@ public class BrokenSeal extends Item {
 
 		public float getRechargeRate() {
 			return 1f/(RECHARGE_RATE * (1 - ((Hero) target).shiftedPoints(Talent.IRON_WILL) / (float) maxShield()))
-					* (1f + 0.6f * ((Hero) target).pointsInTalent(Talent.RESTORED_WILLPOWER) * (Math.max(1f,
+					* (1f + 0.6f * ((Hero) target).pointsInTalent(Talent.WILLPOWER_OF_INJURED) * (Math.max(1f,
 					1f - (target.HP * 1f / target.HT) + 0.1f)));
 		}
 

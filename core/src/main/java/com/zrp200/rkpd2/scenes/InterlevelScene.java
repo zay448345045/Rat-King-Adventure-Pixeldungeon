@@ -352,10 +352,6 @@ public class InterlevelScene extends PixelScene {
 		if (Dungeon.hero == null) {
 			Mob.clearHeldAllies();
 			Dungeon.init();
-			if (noStory) {
-				Dungeon.chapters.add( WndStory.ID_SEWERS );
-				noStory = false;
-			}
 			GameLog.wipe();
 		} else {
 			Mob.holdAllies( Dungeon.level );

@@ -251,7 +251,11 @@ abstract public class KindOfWeapon extends EquipableItem {
 	}
 
 	public boolean canReach( Char owner, int target){
-		int reach = reachFactor(owner);
+		return canReach(owner, target, reachFactor(owner));
+	}
+
+	public static boolean canReach( Char owner, int target, int reachFactor){
+		int reach = reachFactor;
 		if (Dungeon.level.distance( owner.pos, target ) > reach){
 			return false;
 		} else {

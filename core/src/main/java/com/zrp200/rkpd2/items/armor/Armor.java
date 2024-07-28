@@ -48,6 +48,7 @@ import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.curses.AntiEntropy;
 import com.zrp200.rkpd2.items.armor.curses.Bulk;
+import com.zrp200.rkpd2.items.armor.curses.Corrosion;
 import com.zrp200.rkpd2.items.armor.curses.Displacement;
 import com.zrp200.rkpd2.items.armor.curses.Metabolism;
 import com.zrp200.rkpd2.items.armor.curses.Multiplicity;

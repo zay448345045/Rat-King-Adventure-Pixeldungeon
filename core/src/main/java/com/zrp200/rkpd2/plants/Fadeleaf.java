@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
+import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -41,8 +42,9 @@ public class Fadeleaf extends Plant {
 	}
 
 	@Override
-	public void affectHero(Char ch, boolean isWarden) {
-		if (isWarden){
+	public void activate( final Char ch ) {
+
+		if (ch instanceof Hero) {
 			Hero hero = (Hero)ch;
 			hero.curAction = null;
 
@@ -58,13 +60,13 @@ public class Fadeleaf extends Plant {
 			} else {
 				ScrollOfTeleportation.teleportChar(ch, Fadeleaf.class);
 			}
-		} else {
-			ScrollOfTeleportation.teleportChar((Hero) ch, Fadeleaf.class);
-		}
-	}
 
-	@Override
-	public void activateMisc(Char ch) {
+		} else if (ch instanceof Mob && !ch.properties().contains(Char.Property.IMMOVABLE)) {
+
+			ScrollOfTeleportation.teleportChar(ch, Fadeleaf.class);
+
+		}
+
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
 		}

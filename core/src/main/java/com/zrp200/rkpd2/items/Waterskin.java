@@ -106,7 +106,6 @@ public class Waterskin extends Item {
 
 				if (Dewdrop.consumeDew(dropsNeeded, hero, true)){
 					volume -= dropsNeeded;
-					Talent.onHealingPotionUsed(hero);
 
 					hero.spend(TIME_TO_DRINK);
 					hero.busy();

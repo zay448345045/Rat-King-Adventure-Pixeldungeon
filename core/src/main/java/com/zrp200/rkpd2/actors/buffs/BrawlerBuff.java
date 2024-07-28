@@ -2,7 +2,6 @@ package com.zrp200.rkpd2.actors.buffs;
 
 import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
-import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -15,7 +14,6 @@ import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
@@ -62,18 +60,18 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         return true;
     }
 
-    @Override
-    public Image actionIcon() {
-        Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
-        actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.RING_FORCE));
-        actionIco.scale.set(2f);
-        float r,g,b;
-        r = 1;
-        g = 0.54f * (1 - Math.max(0, count()/maxCharge() - 0.4f));
-        b = 0.70f * (1 - count()/maxCharge()*1.2f);
+//    @Override
+//    public Image actionIcon() {
+//        Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
+//        actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.RING_FORCE));
+//        actionIco.scale.set(2f);
+//
+//        return actionIco;
+//    }
 
-        actionIco.hardlight(r, g, b);
-        return actionIco;
+    @Override
+    public int indicatorColor() {
+        return 0xff8ab3;
     }
 
     @Override

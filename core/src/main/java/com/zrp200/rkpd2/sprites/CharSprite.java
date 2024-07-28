@@ -294,7 +294,7 @@ protected void copyAnimations(CharSprite other) {
 		play( attack );
 	}
 
-	public final synchronized void attack( int cell, Callback callback ) {
+	public synchronized void attack( int cell, Callback callback ) {
 		doAfterAnim(callback,true);
 		attack(cell);
 	}

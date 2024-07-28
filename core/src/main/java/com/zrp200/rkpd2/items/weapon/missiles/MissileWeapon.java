@@ -112,11 +112,14 @@ abstract public class MissileWeapon extends Weapon {
 
 	//use the parent item if this has been thrown from a parent
 	public int buffedLvl(){
+		int lvl;
 		if (parent != null) {
-			return parent.buffedLvl();
+			lvl = parent.buffedLvl();
 		} else {
-			return super.buffedLvl();
+			lvl = super.buffedLvl();
 		}
+		return lvl +
+				(Dungeon.hero.buff(Talent.AutoReloadBuff.class) != null && !(this instanceof SpiritBow.SpiritArrow) ? 1 : 0);
 	}
 
 	@Override
@@ -166,12 +169,6 @@ abstract public class MissileWeapon extends Weapon {
 	public boolean collect(Bag container) {
 		if (container instanceof MagicalHolster) holster = true;
 		return super.collect(container);
-	}
-
-	@Override
-	public int buffedLvl() {
-		return super.buffedLvl() +
-				(Dungeon.hero.buff(Talent.AutoReloadBuff.class) != null && !(this instanceof SpiritBow.SpiritArrow) ? 1 : 0);
 	}
 
 	@Override
@@ -342,7 +339,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public float castDelay(Char user, int dst) {
-		if (Dungeon.hero.pointsInTalent(Talent.MYSTICAL_UPGRADE) > 1){
+		if (Dungeon.hero.pointsInTalent(Talent.DUAL_WIELDING) > 1){
 			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeWandTracker.class, 1f);
 		}
 		if(user.buff(Talent.MysticalUpgradeMissileTracker.class) != null) {

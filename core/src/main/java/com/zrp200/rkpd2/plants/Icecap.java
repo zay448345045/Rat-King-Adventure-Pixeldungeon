@@ -43,12 +43,8 @@ public class Icecap extends Plant {
 		if (isWarden(ch)){
 			Buff.affect(ch, FrostImbue.class, FrostImbue.DURATION*0.3f);
 		}
-	}
 
-	@Override
-	public void activateMisc(Char ch) {
 		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.losBlocking, null ), 1 );
-
 
 		for (int i=0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {

@@ -50,16 +50,9 @@ public class Rotberry extends Plant {
 	}
 
 	@Override
-	public void affectHero(Char ch, boolean isWarden) {
-		if (isWarden){
-			Buff.affect(ch, AdrenalineSurge.class).reset(1, 200f);
-		}
-	}
-
-	@Override
 	public void wither() {
 		Dungeon.level.uproot( pos );
-		
+
 		if (Dungeon.level.heroFOV[pos]) {
 			CellEmitter.get( pos ).burst( LeafParticle.GENERAL, 6 );
 		}

@@ -146,7 +146,7 @@ public class Invisibility extends FlavourBuff {
 
 		@Override
 		public boolean act() {
-			actualDispel();
+			actualDispel(target);
 			detach();
 			return true;
 		}

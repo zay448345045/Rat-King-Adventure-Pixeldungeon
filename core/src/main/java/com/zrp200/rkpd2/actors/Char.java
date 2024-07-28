@@ -1213,7 +1213,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 	}
 
 	@Override
-	protected void spendConstant(float time) {
+	public void spendConstant(float time) {
 		TimekeepersHourglass.timeFreeze freeze = buff(TimekeepersHourglass.timeFreeze.class);
 		if (freeze != null) {
 			freeze.processTime(time);

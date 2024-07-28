@@ -87,8 +87,6 @@ abstract public class Weapon extends KindOfWeapon {
 	public int      RCH = 1;    // Reach modifier (only applies to melee hits)
     public int tier;
 
-    public int tier;
-
 	@Override
 	public void hitSound(float pitch) {
 		super.hitSound(pitch);
@@ -547,12 +545,12 @@ abstract public class Weapon extends KindOfWeapon {
 			return false;
 		}
 
-		protected float procChance(Char attacker, int level, float numerator, float denominator) {
-			return procChanceMultiplier(attacker) * (numerator+level)/(denominator+level);
+		protected static float procChance(Char attacker, int level, float numerator, float denominator) {
+			return genericProcChanceMultiplier(attacker) * (numerator+level)/(denominator+level);
 		}
 		// just a faster way to get proc chances resolved while factoring in enchant modifiers.
 		// results in (N+L)/(D+L) * modifier chance of returning true.
-		public boolean proc(Char attacker, int level, float numerator, float denominator) {
+		public static boolean proc(Char attacker, int level, float numerator, float denominator) {
 			return Random.Float() < procChance(attacker, level, numerator, denominator);
 		}
 

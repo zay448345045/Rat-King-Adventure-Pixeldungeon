@@ -39,8 +39,6 @@ public class Metabolism extends Glyph {
 	
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
-		float procChance = 1/6f * procChanceModifier(defender);
-
 		float procChance = 1/6f * procChanceMultiplier(defender);
 		if ( Random.Float() < procChance && defender instanceof Hero) {
 

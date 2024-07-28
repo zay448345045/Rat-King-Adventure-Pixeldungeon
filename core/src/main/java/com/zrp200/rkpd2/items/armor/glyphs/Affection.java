@@ -39,8 +39,6 @@ public class Affection extends Glyph {
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
 
 		int level = Math.max(0, armor.glyphEffectLevel(defender));
-		float procChance = (level+3f)/(level+20f) * procChanceModifier(defender);
-		
 		// lvl 0 - 15%
 		// lvl 1 ~ 19%
 		// lvl 2 ~ 23%

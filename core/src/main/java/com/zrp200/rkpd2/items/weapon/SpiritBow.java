@@ -251,11 +251,11 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 
 		@Override
 		public int proc(Char attacker, Char defender, int damage) {
-			if (Dungeon.hero.hasTalent(Talent.RESTORED_NATURE)){
-				Buff.affect(defender, Roots.class, Dungeon.hero.pointsInTalent(Talent.RESTORED_NATURE) + baseDelay(attacker));
+			if (Dungeon.hero.hasTalent(Talent.IVYLASH)){
+				Buff.affect(defender, Roots.class, Dungeon.hero.pointsInTalent(Talent.IVYLASH) + baseDelay(attacker));
 			}
-			if (Dungeon.hero.hasTalent(Talent.NATURES_AID)){
-				Buff.affect(attacker, Barrier.class).incShield(2 + Dungeon.hero.pointsInTalent(Talent.NATURES_AID)*2);
+			if (Dungeon.hero.hasTalent(Talent.SCOUTS_BARRIER)){
+				Buff.affect(attacker, Barrier.class).incShield(2 + Dungeon.hero.pointsInTalent(Talent.SCOUTS_BARRIER)*2);
 			}
 			// TODO: make god slayer inferno an enchantment
 //			if (Dungeon.hero.hasTalent(Talent.SCOURGING_THE_UNIVERSE)

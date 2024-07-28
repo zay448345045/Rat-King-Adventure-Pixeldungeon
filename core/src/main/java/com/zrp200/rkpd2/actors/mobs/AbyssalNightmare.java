@@ -24,6 +24,7 @@
 
 package com.zrp200.rkpd2.actors.mobs;
 
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -100,7 +101,6 @@ import com.zrp200.rkpd2.levels.traps.DisintegrationTrap;
 import com.zrp200.rkpd2.levels.traps.GrimTrap;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.AbyssalSprite;
-import com.zrp200.rkpd2.utils.BArray;
 
 import java.util.ArrayList;
 

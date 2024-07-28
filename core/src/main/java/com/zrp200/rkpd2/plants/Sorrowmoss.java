@@ -42,10 +42,7 @@ public class Sorrowmoss extends Plant {
 		if (isWarden( ch )){
 			Buff.affect(ch, ToxicImbue.class).set(ToxicImbue.DURATION*0.3f);
 		}
-	}
 
-	@Override
-	public void activateMisc(Char ch) {
 		if (ch != null) {
 			Buff.affect( ch, Poison.class ).set( 5 + Math.round(2*Dungeon.scalingDepth() / 3f) );
 		}

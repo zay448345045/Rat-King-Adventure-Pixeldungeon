@@ -43,8 +43,6 @@ public class AntiEntropy extends Glyph {
 
 	@Override
 	public int proc( Armor armor, Char attacker, Char defender, int damage) {
-		float procChance = 1/8f * procChanceModifier(defender);
-
 		float procChance = 1/8f * procChanceMultiplier(defender);
 		if ( Random.Float() < procChance ) {
 

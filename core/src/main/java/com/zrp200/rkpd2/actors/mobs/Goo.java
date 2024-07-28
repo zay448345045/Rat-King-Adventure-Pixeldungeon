@@ -193,7 +193,7 @@ public class Goo extends Mob {
 	protected void zap() {
 		spend( 1f );
 
-		if (hit( this, enemy, 3 )) {
+		if (hit( this, enemy, 3.0f, true )) {
 			new OozeTrap().set(enemy.pos).activate();
 
 			int dmg = damageRoll()*2;

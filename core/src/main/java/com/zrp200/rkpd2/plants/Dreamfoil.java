@@ -40,15 +40,7 @@ public class Dreamfoil extends Plant {
 	}
 
 	@Override
-	public void affectMob(Mob mob) {
-		Buff.affect(mob, MagicalSleep.class);
-	}
-
-	@Override
-	public void affectHero(Char ch, boolean isWarden) {
-		if (isWarden){
-			Buff.affect(ch, BlobImmunity.class, BlobImmunity.DURATION/2f);
-		}
+	public void activate( Char ch ) {
 
 		if (ch != null) {
 			if (ch instanceof Mob) {

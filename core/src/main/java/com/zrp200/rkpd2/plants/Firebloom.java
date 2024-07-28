@@ -45,10 +45,7 @@ public class Firebloom extends Plant {
 		if (isWarden( ch )){
 			Buff.affect(ch, FireImbue.class).set( FireImbue.DURATION*0.3f );
 		}
-	}
 
-	@Override
-	public void activateMisc(Char ch) {
 		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
 
 		if (Dungeon.level.heroFOV[pos]) {

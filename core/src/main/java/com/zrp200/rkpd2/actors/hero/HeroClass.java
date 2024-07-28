@@ -114,7 +114,7 @@ public enum HeroClass {
 			return item instanceof MissileWeapon && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS) ? 1 : 0;
 		}
 	},
-	DUELIST(CHAMPION, MONK),
+	DUELIST(HeroSubClass.CHAMPION, HeroSubClass.MONK),
 	RAT_KING (HeroSubClass.KING);
 
 	private ArrayList<HeroSubClass> subClasses;

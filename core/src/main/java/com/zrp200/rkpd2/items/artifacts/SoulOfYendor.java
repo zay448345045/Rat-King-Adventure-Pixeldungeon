@@ -57,6 +57,7 @@ import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Shopkeeper;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Chains;
+import com.zrp200.rkpd2.effects.Effects;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.Pushing;
 import com.zrp200.rkpd2.effects.SpellSprite;
@@ -719,7 +720,7 @@ public class SoulOfYendor extends Artifact implements AlchemyScene.ToolkitLike {
         }
 
         hero.busy();
-        hero.sprite.parent.add(new Chains(hero.sprite.center(), enemy.sprite.center(), new Callback() {
+        hero.sprite.parent.add(new Chains(hero.sprite.center(), enemy.sprite.center(), Effects.Type.ETHEREAL_CHAIN,  new Callback() {
             public void call() {
                 Actor.add(new Pushing(enemy, enemy.pos, pulledPos, new Callback() {
                     public void call() {
@@ -774,7 +775,7 @@ public class SoulOfYendor extends Artifact implements AlchemyScene.ToolkitLike {
         }
 
         hero.busy();
-        hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(newHeroPos), new Callback() {
+        hero.sprite.parent.add(new Chains(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(newHeroPos), Effects.Type.ETHEREAL_CHAIN, new Callback() {
             public void call() {
                 Actor.add(new Pushing(hero, hero.pos, newHeroPos, new Callback() {
                     public void call() {

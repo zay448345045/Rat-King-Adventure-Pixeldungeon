@@ -38,7 +38,7 @@ public class Starflower extends Plant {
 	}
 
 	@Override
-	public void activateMisc(Char ch) {
+	public void activate(Char ch) {
 		if (ch != null) {
 			Buff.prolong(ch, Bless.class, Bless.DURATION);
 			if (Dungeon.level.heroFOV[ch.pos]){
