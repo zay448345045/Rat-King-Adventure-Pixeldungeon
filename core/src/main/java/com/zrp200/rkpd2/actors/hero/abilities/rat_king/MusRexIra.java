@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.actors.hero.abilities.rat_king;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
@@ -34,7 +35,6 @@ import com.zrp200.rkpd2.plants.Swiftthistle;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.InterlevelScene;
 import com.zrp200.rkpd2.ui.HeroIcon;
-import com.zrp200.rkpd2.utils.BArray;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.windows.WndOptions;
 
@@ -120,7 +120,7 @@ public class MusRexIra extends ArmorAbility {
             }
                 if (armor.charge >= chargeUse(hero)*3) {
                     //endure
-                    Buff.prolong(hero, Endure.EndureTracker.class, 13f).setup(hero);
+                    Buff.prolong(hero, Endure.EndureTracker.class, 13f);
 
                     Combo combo = hero.buff(Combo.class);
                     if (combo != null) {

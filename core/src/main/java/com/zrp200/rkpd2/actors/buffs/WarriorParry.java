@@ -12,9 +12,9 @@ import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.messages.Messages;
-import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.ui.HeroIcon;
 
 import java.text.DecimalFormat;
 
@@ -57,12 +57,13 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
     }
 
     @Override
-    public Image actionIcon() {
-        Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
-        actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.POTION_SHIELDING));
-        actionIco.scale.set(2f);
-        actionIco.hardlight(2, 2, 2);
-        return actionIco;
+    public int actionIcon() {
+        return HeroIcon.BLOCKING;
+    }
+
+    @Override
+    public int indicatorColor() {
+        return 0x47A6FF;
     }
 
     public static class BlockTrock extends Buff{

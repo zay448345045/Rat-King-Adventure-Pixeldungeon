@@ -378,10 +378,10 @@ public class ItemSpriteSheet {
 	public static final int HOLY_DART       = DARTS+10;
 	public static final int DISPLACING_DART = DARTS+11;
 	public static final int BLINDING_DART   = DARTS+12;
-	public static final int STEEL_AXE       = TIPPED_DARTS+12;
-	public static final int HOMING_BOOMERANG= TIPPED_DARTS+13;
-	public static final int PHANTOM_SPEAR   = TIPPED_DARTS+14;
-	public static final int RED_KUNAI       = TIPPED_DARTS+15;
+	public static final int STEEL_AXE       = DARTS+12;
+	public static final int HOMING_BOOMERANG= DARTS+13;
+	public static final int PHANTOM_SPEAR   = DARTS+14;
+	public static final int RED_KUNAI       = DARTS+15;
 	static {
 		for (int i = DARTS; i < DARTS+16; i++)
 			assignItemRect(i, 15, 15);

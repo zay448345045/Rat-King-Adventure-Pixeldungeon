@@ -23,6 +23,7 @@ package com.zrp200.rkpd2.items.artifacts;
 
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
@@ -48,7 +49,7 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
-import com.zrp200.rkpd2.utils.BArray;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
 import com.zrp200.rkpd2.utils.SafeCast;
 
@@ -338,7 +339,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 
 			updateQuickslot();
 			if ((int) (charge * getChargeEfficiency()) >= 1
-					&& Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH)){
+					&& Dungeon.hero.hasTalent(Talent.THINKING_WITH_PORTALS)){
 				ActionIndicator.setAction(this);
 			} else {
 				ActionIndicator.clearAction(this);
@@ -350,12 +351,13 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		}
 
 		@Override
-		public Image actionIcon() {
-			Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
-			actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.SCROLL_TELEPORT));
-			actionIco.scale.set(2f);
-			actionIco.hardlight(0xc44dd6);
-			return actionIco;
+		public int actionIcon() {
+			return HeroIcon.CLOAK_TELEPORT;
+		}
+
+		@Override
+		public int indicatorColor() {
+			return 0x4F4F4F;
 		}
 
 		@Override
@@ -371,7 +373,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 		@Override
 		public boolean usable() {
 			return (int) (charge * getChargeEfficiency()) >= 1
-					&& Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH);
+					&& Dungeon.hero.hasTalent(Talent.THINKING_WITH_PORTALS);
 		}
 
 	}

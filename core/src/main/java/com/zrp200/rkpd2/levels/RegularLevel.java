@@ -631,35 +631,30 @@ public abstract class RegularLevel extends Level {
 
 		//guide pages
 		Random.pushGenerator( Random.Long() );
-			Collection<String> allPages = Document.ADVENTURERS_GUIDE.pageNames();
-			ArrayList<String> missingPages = new ArrayList<>();
-			for ( String page : allPages){
-				if (!Document.ADVENTURERS_GUIDE.isPageFound(page)){
-					missingPages.add(page);
-				}
+		Collection<String> allPages = Document.ADVENTURERS_GUIDE.pageNames();
+		ArrayList<String> missingPages = new ArrayList<>();
+		for ( String page : allPages){
+			if (!Document.ADVENTURERS_GUIDE.isPageFound(page)){
+				missingPages.add(page);
 			}
+		}
 
-			//a total of 6 pages drop randomly, the rest are specially dropped or are given at the start
-			missingPages.remove(Document.GUIDE_SEARCHING);
+		//a total of 6 pages drop randomly, the rest are specially dropped or are given at the start
+		missingPages.remove(Document.GUIDE_SEARCHING);
 
-			//chance to find a page is 0/25/50/75/100% for floors 1/2/3/4/5+
-			float dropChance = 0.25f*(Dungeon.getDepth()-1);
-			if (!missingPages.isEmpty() && Random.Float() < dropChance){
-				GuidePage p = new GuidePage();
-				p.page(missingPages.get(0));
-				int cell = randomDropCell();
-				Heap.Type type = Heap.Type.HEAP;
-			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
-				type = Heap.Type.CHEST;
+		//chance to find a page is 0/25/50/75/100% for floors 1/2/3/4/5+
+		float dropChance = 0.25f*(Dungeon.depth-1);
+		if (!missingPages.isEmpty() && Random.Float() < dropChance){
+			GuidePage p = new GuidePage();
+			p.page(missingPages.get(0));
+			int cell = randomDropCell();
 			if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
 			}
-			Heap drop = drop(item, cell);
-			drop.type = type;
-			if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.DUNGEONEER) && Random.Int(3) == 0)
-				drop.items.add(Generator.random());
-		}Random.popGenerator();
+			drop( p, cell );
+		}
+		Random.popGenerator();
 
 		//lore pages
 		//TODO a fair bit going on here, I might want to refactor/externalize this in the future

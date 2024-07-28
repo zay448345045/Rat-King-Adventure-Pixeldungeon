@@ -21,11 +21,16 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image actionIcon() {
+    public Image primaryVisual() {
         if (target != null && target.buff(RobotTransform.class) != null)
             return HeroSprite.avatar(HeroClass.ROGUE, 7);
         else
             return HeroSprite.avatar(HeroClass.ROGUE, 8);
+    }
+
+    @Override
+    public int indicatorColor() {
+        return 0x5A0088;
     }
 
     public static float damageModifier(){
@@ -43,7 +48,7 @@ public class RobotBuff extends Buff implements ActionIndicator.Action {
         target.sprite.bottomEmitter().burst(Speck.factory(Speck.WOOL), 12);
         Sample.INSTANCE.play(Assets.Sounds.MASTERY, 1f, 0.8f);
         target.sprite.operate(target.pos, target.sprite::idle);
-        ActionIndicator.updateIcon();
+        ActionIndicator.setAction(this);
         Dungeon.level.occupyCell(target);
         if (Dungeon.hero.hasTalent(Talent.VOID_WRATH)){
             Buff.affect(Dungeon.hero, ResistanceTracker.class, Dungeon.hero.cooldown());

@@ -36,7 +36,6 @@ import com.zrp200.rkpd2.effects.particles.BloodParticle;
 import com.zrp200.rkpd2.effects.particles.CorrosionParticle;
 import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
-import com.zrp200.rkpd2.effects.particles.FrostfireParticle;
 import com.zrp200.rkpd2.effects.particles.KromerParticle;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.effects.particles.PoisonParticle;
@@ -77,7 +76,7 @@ public class MagicMissile extends Emitter {
 	public static final int STENCH = 12;
 	public static final int SPINNER = 13;
 	public static final int CRYSTAL = 14;
-	public static final int CRYSTAL_SHARDS = 15;
+
 	public static final int STAR = 16;
 
 	public static final int SHAMAN_RED      = 17;
@@ -154,10 +153,6 @@ public class MagicMissile extends Emitter {
 				size( 4 );
 				pour( FlameParticle.FACTORY, 0.01f );
 				break;
-			case STAR:
-				size( 4 );
-				pour( FrostfireParticle.FACTORY, 0.01f );
-				break;
 			case CORROSION:
 				size( 3 );
 				pour( CorrosionParticle.MISSILE, 0.01f );
@@ -215,14 +210,6 @@ public class MagicMissile extends Emitter {
 			case FROGGIT:
 				size( 5 );
 				pour( WhiteParticle.FACTORY, 0.005f );
-				break;
-			case CRYSTAL:
-				size (9);
-				pour(CrystalParticle.FACTORY, 0.01f);
-				break;
-			case CRYSTAL_SHARDS:
-				size (6);
-				pour(CrystalParticle.SHARD, 0.01f);
 				break;
 
 			case MAGIC_MISS_CONE:

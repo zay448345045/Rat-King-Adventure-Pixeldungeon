@@ -147,9 +147,9 @@ public class WildMagic extends ArmorAbility {
 		}
 	};
 
-	Actor wildMagicActor = null;
+	static Actor wildMagicActor = null;
 
-	private void zapWand( ArrayList<Wand> wands, Hero hero, int cell){
+	public static void zapWand( ArrayList<Wand> wands, Hero hero, int cell){
 		Wand cur = wands.remove(0);
 
 		Ballistica aim = new Ballistica(hero.pos, cell, cur.collisionProperties(cell));

@@ -48,20 +48,20 @@ import com.zrp200.rkpd2.ui.Icons;
 import java.util.ArrayList;
 
 import static com.zrp200.rkpd2.Assets.Interfaces.TALENT_ICONS;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.HUNTRESS;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.MAGE;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.RAT_KING;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.ROGUE;
-import static com.zrp200.rkpd2.actors.hero.HeroClass.WARRIOR;
+import static com.zrp200.rkpd2.actors.hero.HeroClass.*;
 import static com.zrp200.rkpd2.actors.hero.HeroSubClass.*;
 import static com.zrp200.rkpd2.actors.hero.Talent.*;
 import static com.zrp200.rkpd2.messages.Messages.get;
-import static com.zrp200.rkpd2.sprites.CharSprite.WARNING;
 import static com.zrp200.rkpd2.sprites.CharSprite.*;
 import static com.zrp200.rkpd2.sprites.HeroSprite.avatar;
 import static com.zrp200.rkpd2.sprites.ItemSpriteSheet.*;
-import static com.zrp200.rkpd2.ui.Icons.DUELIST;
-import static com.zrp200.rkpd2.ui.Icons.*;
+import static com.zrp200.rkpd2.ui.Icons.DEPTH;
+import static com.zrp200.rkpd2.ui.Icons.DISPLAY_LAND;
+import static com.zrp200.rkpd2.ui.Icons.INFO;
+import static com.zrp200.rkpd2.ui.Icons.PREFS;
+import static com.zrp200.rkpd2.ui.Icons.TALENT;
+import static com.zrp200.rkpd2.ui.Icons.TARGET;
+import static com.zrp200.rkpd2.ui.Icons.get;
 import static com.zrp200.rkpd2.ui.Window.SHPX_COLOR;
 import static com.zrp200.rkpd2.ui.Window.TITLE_COLOR;
 import static java.util.Arrays.asList;
@@ -732,7 +732,7 @@ public enum RKPD2Changes {
                                             "_-_ Added _Empowered Strike II_ to Elemental Blast: doubles the damage and effects of ability for 2x charge cost.\n" +
                                             "_-_ Added _Eldritch Blessing_ to Wild Magic: makes all zaps cursed, cursed effects are safer and stronger while using the ability.\n" +
                                             "_-_ Added _Chrono Screw_ to Remote Beacon: gives time bubble after successful teleportation."),
-                            new ChangeButton(MYSTICAL_UPGRADE, "Rogue",
+                            new ChangeButton(DUAL_WIELDING, "Rogue",
                                     "_-_ Changed Lethal Momentum and Marathon Runner to have unique sprite.\n" +
                                             "_-_ Added _Faraday Cage_ talent as 5th T1: protects hero from electricity.\n"+
                                             "_-_ Replaced _Rogue's Foresight_ with _Protein Infusion_: gives bonus speed and evasion depending on satiety.\n" +

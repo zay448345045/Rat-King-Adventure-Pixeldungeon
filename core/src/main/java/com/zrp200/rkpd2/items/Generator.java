@@ -372,7 +372,7 @@ public class Generator {
 					WandOfRegrowth.class,
 					WandOfFirebolt.class,
 					WandOfUnstable.class};
-			WAND.probs = new float[]{ 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 1 };
+			WAND.defaultProbs = new float[]{ 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 1 };
             WAND.probs = WAND.defaultProbs.clone();
 
 			//see generator.randomWeapon

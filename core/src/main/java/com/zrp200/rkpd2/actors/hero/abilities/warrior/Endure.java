@@ -107,9 +107,9 @@ public class Endure extends ArmorAbility {
 			if (enduring) {
 				damageBonus += damage/2;
 				float damageMulti = 0.5f;
-				if (Dungeon.hero.hasTalent(Talent.SHRUG_IT_OFF)){
+				if (Dungeon.hero.hasTalent(Talent.SHRUG_IT_OFF, Talent.BLOODFLARE_SKIN)){
 					//total damage reduction is 60%/68%/74%/80%, based on points in talent
-					damageMulti *= Math.pow(0.8f, Dungeon.hero.pointsInTalent(Talent.SHRUG_IT_OFF));
+					damageMulti *= Math.pow(0.8f, Dungeon.hero.pointsInTalent(Talent.SHRUG_IT_OFF, Talent.BLOODFLARE_SKIN));
 				}
 				return damage*damageMulti;
 			}

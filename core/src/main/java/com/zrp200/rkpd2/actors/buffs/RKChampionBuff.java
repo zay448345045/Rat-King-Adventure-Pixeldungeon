@@ -94,8 +94,13 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image actionIcon() {
+    public Image primaryVisual() {
         return new RainbowRat();
+    }
+
+    @Override
+    public int indicatorColor() {
+        return 0xFFFFFF;
     }
 
     @Override
@@ -121,7 +126,6 @@ public class RKChampionBuff extends Buff implements ActionIndicator.Action {
             Dungeon.hero.sprite.resetColor();
             Talent.Cooldown.affectHero(ChampionCooldown.class);
             ActionIndicator.clearAction(this);
-            ActionIndicator.updateIcon();
             Dungeon.hero.spendAndNext(1f);
         });
     }

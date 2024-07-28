@@ -17,6 +17,7 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.ui.ActionIndicator;
 import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.ui.BuffIndicator;
+import com.zrp200.rkpd2.ui.HeroIcon;
 import com.zrp200.rkpd2.utils.GLog;
 
 import java.text.DecimalFormat;
@@ -60,14 +61,10 @@ public class BrawlerBuff extends CounterBuff implements ActionIndicator.Action {
         return true;
     }
 
-//    @Override
-//    public Image actionIcon() {
-//        Image actionIco = new Image(Assets.Sprites.ITEM_ICONS);
-//        actionIco.frame(ItemSpriteSheet.Icons.film.get(ItemSpriteSheet.Icons.RING_FORCE));
-//        actionIco.scale.set(2f);
-//
-//        return actionIco;
-//    }
+    @Override
+    public int actionIcon() {
+        return HeroIcon.BRAWLING;
+    }
 
     @Override
     public int indicatorColor() {

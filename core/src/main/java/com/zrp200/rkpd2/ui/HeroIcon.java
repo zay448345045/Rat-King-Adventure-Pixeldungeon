@@ -77,6 +77,20 @@ public class HeroIcon extends Image {
 	public static final int WEAPON_SWAP     = 37;
 	public static final int MONK_ABILITIES  = 38;
 
+	//RKA hero/ability icons
+	public static final int BRAWLER         = imageAt(0, 6);
+	public static final int SPIRITUALIST    = imageAt(1, 6);
+	public static final int DECEPTICON      = imageAt(2, 6);
+	public static final int CHAMP           = imageAt(5, 6);
+
+	public static final int LEGACYWRATH     = imageAt(6, 6);
+	public static final int MUS_REX         = imageAt(7, 6);
+
+	public static final int BRAWLING        = imageAt(0, 7);
+	public static final int CLOAK_TELEPORT  = imageAt(1, 7);
+	public static final int BLOCKING        = imageAt(2, 7);
+
+
 	public HeroIcon(HeroSubClass subCls){
 		super( Assets.Interfaces.HERO_ICONS );
 		if (film == null){
@@ -99,6 +113,10 @@ public class HeroIcon extends Image {
 			film = new TextureFilm(texture, SIZE, SIZE);
 		}
 		frame(film.get(action.actionIcon()));
+	}
+
+	public static int imageAt(int x, int y){
+		return x + y*8;
 	}
 
 }

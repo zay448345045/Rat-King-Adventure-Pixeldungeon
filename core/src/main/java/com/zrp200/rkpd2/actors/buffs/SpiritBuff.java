@@ -75,8 +75,13 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
     }
 
     @Override
-    public Image actionIcon() {
+    public Image primaryVisual() {
         return new WraithSprite();
+    }
+
+    @Override
+    public int indicatorColor() {
+        return 0xB0B0B0;
     }
 
     @Override
