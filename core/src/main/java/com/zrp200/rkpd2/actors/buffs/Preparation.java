@@ -93,7 +93,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			if (Dungeon.hero.heroClass == HeroClass.ROGUE){
 				return KOThresholds[ordinal()][3];
 			}
-			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.RK_ASSASSIN)];
+			return KOThresholds[ordinal()][Dungeon.hero.pointsInTalent(Talent.ENHANCED_LETHALITY, Talent.RK_ASSASSIN)];
 		}
 
 		//1st index is prep level, 2nd is talent level, third is type.
@@ -141,7 +141,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 		}
 
 		public int getDamageRolls() {
-			return damageRolls + (Dungeon.hero.hasTalent(Talent.BOUNTY_HUNTER) ? 2 : 0);
+			return damageRolls + (Dungeon.hero.hasTalent(Talent.ADAPT_AND_OVERCOME) ? 2 : 0);
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 			enemy.sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Preparation.class, "assassinated"));
 		}
 		if (attacker instanceof Hero && assassinated) {
-			if (((Hero) attacker).hasTalent(Talent.ENHANCED_LETHALITY)) {
+			if (((Hero) attacker).hasTalent(Talent.BLOODBATH)) {
 				Preparation.bloodbathProc((Hero) attacker, enemy);
 			}
 			if (((Hero) attacker).hasTalent(Talent.DARKENING_STEPS)){
@@ -281,7 +281,7 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 	public static void bloodbathProc(Hero attacker, Char enemy){
 		WandOfBlastWave.BlastWave.blast(enemy.pos);
 		PathFinder.buildDistanceMap(enemy.pos, BArray.not(Dungeon.level.solid, null),
-				1 + attacker.pointsInTalent(Talent.ENHANCED_LETHALITY));
+				1 + attacker.pointsInTalent(Talent.BLOODBATH));
 		for (int i = 0; i < PathFinder.distance.length; i++) {
 			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
 				CellEmitter.bottom(i).burst(BloodParticle.BURST, 12);

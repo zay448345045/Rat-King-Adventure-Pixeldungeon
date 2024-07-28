@@ -87,7 +87,7 @@ public class CloakOfShadows extends Artifact {
 				&& (charge > 0 || activeBuff != null)) {
 			actions.add(AC_STEALTH);
 
-            if (hero.hasTalent(Talent.ASSASSINS_REACH)){
+            if (hero.hasTalent(Talent.THINKING_WITH_PORTALS)){
                 actions.add(AC_TELEPORT);
             }
 		}
@@ -379,7 +379,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 	}
 
 	public float getChargeEfficiency() {
-		switch (Dungeon.hero.pointsInTalent(Talent.ASSASSINS_REACH)){
+		switch (Dungeon.hero.pointsInTalent(Talent.THINKING_WITH_PORTALS)){
 			case 1: default:
 				return 0.75f;
 			case 2:

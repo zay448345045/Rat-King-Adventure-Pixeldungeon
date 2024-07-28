@@ -77,7 +77,7 @@ public class KromerCloak extends CloakOfShadows {
 
             updateQuickslot();
             if ((int) (charge * getChargeEfficiency()) >= 1
-                    && Dungeon.hero.hasTalent(Talent.ASSASSINS_REACH)){
+                    && Dungeon.hero.hasTalent(Talent.THINKING_WITH_PORTALS)){
                 ActionIndicator.setAction(this);
             } else {
                 ActionIndicator.clearAction(this);

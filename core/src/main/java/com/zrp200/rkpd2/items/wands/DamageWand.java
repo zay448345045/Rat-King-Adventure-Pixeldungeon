@@ -81,7 +81,7 @@ public abstract class DamageWand extends Wand{
 	}
 
 	public void procKO(Char enemy){
-		if (Dungeon.hero.pointsInTalent(Talent.BOUNTY_HUNTER) >= 2 &&
+		if (Dungeon.hero.pointsInTalent(Talent.ADAPT_AND_OVERCOME) >= 2 &&
 				Dungeon.hero.buff(Preparation.class) != null){
 			boolean result = Dungeon.hero.buff(Preparation.class).procKO(Dungeon.hero, enemy);
 			if (result) Dungeon.hero.buff(Preparation.class).detach();

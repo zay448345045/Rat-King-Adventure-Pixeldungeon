@@ -458,7 +458,7 @@ public abstract class Char extends Actor {
 			while(rolls-- > 0) {
 				if (prep != null) {
 					dmg = Math.max(dmg, prep.damageRoll(this));
-					if (this == hero && hero.hasTalent(Talent.RK_ASSASSIN)) {
+					if (this == hero && hero.hasTalent(Talent.BOUNTY_HUNTER, Talent.RK_ASSASSIN)) {
 						Buff.affect(hero, Talent.BountyHunterTracker.class, 0.0f);
 					}
 				} else {
@@ -641,7 +641,7 @@ public abstract class Char extends Actor {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name())) );
 				}
 
-				if (this instanceof Hero && ((Hero) this).hasTalent(Talent.ENHANCED_LETHALITY) &&
+				if (this instanceof Hero && ((Hero) this).hasTalent(Talent.BLOODBATH) &&
 						buff(Preparation.class) != null && Random.Float() < 0.4f){
 					Preparation.bloodbathProc((Hero) this, enemy);
 				}
