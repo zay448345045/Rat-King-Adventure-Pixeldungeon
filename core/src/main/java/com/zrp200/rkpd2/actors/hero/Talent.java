@@ -133,7 +133,7 @@ public enum Talent {
 	// yes, yes, I kept both talents and then swapped their icons... deal with it. Why does the one that protects you from death have a + next to it?
 	ENDLESS_RAGE(11, 3), DEATHLESS_FURY(29, 3), BERSERKING_STAMINA(12, 3), ENRAGED_CATALYST(13, 3), ONE_MAN_ARMY(30,3), BRAVERY(imageAt(7, 8), 3),
 	//Gladiator T3
-	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(140,3), EFFICIENT_TRAINING(imageAt(6, 8), 3),
+	CLEAVE(14, 3), LETHAL_DEFENSE(15, 3), ENHANCED_COMBO(16, 3), SKILL(31,3), EFFICIENT_TRAINING(imageAt(6, 8), 3),
 	//Brawler T3
 	POWER_STABILIZER(imageAt(8, 8), 3), ARCANITY_ENSUES(imageAt(9, 8), 3), IN_MY_MEMORIES(imageAt(10, 8), 3), HOLERIC_BURST(imageAt(11, 8), 3), PRIDE_OF_STEEL(imageAt(12, 8), 3),
 	//Heroic Leap T4
@@ -150,7 +150,7 @@ public enum Talent {
 	//Mage T3
 	DESPERATE_POWER(41, 3), ALLY_WARP(42, 3), CRYONIC_SPELL(imageAt(3, 9), 3),
 	//Battlemage T3
-	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(141,3), SPECTRE_ALLIES(imageAt(6, 9), 3),
+	EMPOWERED_STRIKE(43, 3), MYSTICAL_CHARGE(44, 3), EXCESS_CHARGE(45, 3), SORCERY(62,3), SPECTRE_ALLIES(imageAt(6, 9), 3),
 	//Warlock T3
 	SOUL_EATER(46, 3){
 		@Override
@@ -167,10 +167,10 @@ public enum Talent {
 		public int icon() {
 			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? imageAt(10, 11) : 48;
 		}
-	}, WARLOCKS_TOUCH (142, 3){
+	}, WARLOCKS_TOUCH (63, 3){
 		@Override
 		public int icon() {
-			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? imageAt(11, 11) : 142;
+			return (hero != null ? hero.heroClass : GamesInProgress.selectedClass) == HeroClass.HUNTRESS ? imageAt(11, 11) : 63;
 		}
 	}, BANISHED (208, 3){
 		@Override
@@ -194,9 +194,9 @@ public enum Talent {
 	//Rogue T3
 	ENHANCED_RINGS(73, 3), LIGHT_CLOAK(74, 3), TRAPPER_MASTERY(imageAt(3, 10), 3),
 	//Assassin T3
-	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(144,3), DARKENING_STEPS(imageAt(6, 10), 3),
+	ENHANCED_LETHALITY(75, 3), ASSASSINS_REACH(76, 3), BOUNTY_HUNTER(77, 3), LETHAL_MOMENTUM_2(94,3), DARKENING_STEPS(imageAt(6, 10), 3),
 	//Freerunner T3
-	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(143,3), OLYMPIC_STATS(imageAt(7, 10), 3),
+	EVASIVE_ARMOR(78, 3), PROJECTILE_MOMENTUM(79, 3), SPEEDY_STEALTH(80, 3), FAST_RECOVERY(95,3), OLYMPIC_STATS(imageAt(7, 10), 3),
 	//Shadowflare T3
 	ENERGON_FUSION(imageAt(8, 10), 3), LASER_PRECISION(imageAt(9, 10), 3), ERADICATING_CHARGE(imageAt(10, 10), 3), VOID_WRATH(imageAt(11, 10), 3), MECHANICAL_POWER(imageAt(12, 10), 3),
 	//Smoke Bomb T4
@@ -213,9 +213,9 @@ public enum Talent {
 	//Huntress T3
 	POINT_BLANK(105, 3), SEER_SHOT(106, 3), AUTO_RELOAD(imageAt(3, 11), 3),
 	//Sniper T3
-	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(137,3) {{aliases = new String[]{"RANGER"};}}, ARCHERY_MARK(imageAt(6, 11), 3),
+	FARSIGHT(107, 3), SHARED_ENCHANTMENT(108, 3), SHARED_UPGRADES(109, 3), MULTISHOT(126,3) {{aliases = new String[]{"RANGER"};}}, ARCHERY_MARK(imageAt(6, 11), 3),
 	//Warden T3
-	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3), NATURES_BETTER_AID(138,3), INDIRECT_BENEFITS(imageAt(7, 11), 3),
+	DURABLE_TIPS(110, 3), BARKSKIN(111, 3), SHIELDING_DEW(112, 3), NATURES_BETTER_AID(127,3), INDIRECT_BENEFITS(imageAt(7, 11), 3),
 	//Spectral Blades T4
 	FAN_OF_BLADES(113, 4), PROJECTING_BLADES(114, 4), SPIRIT_BLADES(115, 4), SPECTRAL_SHOT(imageAt(13, 11), 4),
 	//Natures Power T4
@@ -274,16 +274,16 @@ public enum Talent {
 	HEROIC_ENDURANCE(imageAt(4, 8), 4), HEROIC_WIZARDRY(imageAt(4, 9), 4), HEROIC_STAMINA(imageAt(4, 10), 4), HEROIC_ARCHERY(imageAt(4, 11), 4), HEROIC_RATINESS(imageAt(4, 14), 3),
 
 	//Ratmogrify T4
-	RATSISTANCE(124, 4), RATLOMACY(125, 4), RATFORCEMENTS(126, 4), DRRATEDON(imageAt(13, 14), 4),
-	ROYAL_PRIVILEGE(32), // food related talents
-	ROYAL_INTUITION(97), // intuition-related talents, uses survivalist's icon
-	KINGS_WISDOM(130), // on-id + combat talents
-	NOBLE_CAUSE(131), // other ones. uses iron will
-	ROYAL_MEAL(100), //// all on-eat talents for tier 2
-	RESTORATION(133), // all upgrade/potion of healing talents
-	POWER_WITHIN(134), // runic (3), wand preservation (3), rogue's foresight (5), rejuvenating steps (3)
-	KINGS_VISION(135), // improvised projectiles (4), arcane vision(4), wide search(3), heightened senses(4)
-	PURSUIT(136), // durable projectiles (5),silent steps(4),lethal momentum (3),shield battery(5)
+	RATSISTANCE(215, 4), RATLOMACY(216, 4), RATFORCEMENTS(217, 4), DRRATEDON(imageAt(13, 14), 4),
+	ROYAL_PRIVILEGE(224), // food related talents
+	ROYAL_INTUITION(225), // intuition-related talents, uses survivalist's icon
+	KINGS_WISDOM(226), // on-id + combat talents
+	NOBLE_CAUSE(227), // other ones. uses iron will
+	ROYAL_MEAL(228), //// all on-eat talents for tier 2
+	RESTORATION(229), // all upgrade/potion of healing talents
+	POWER_WITHIN(230), // runic (3), wand preservation (3), rogue's foresight (5), rejuvenating steps (3)
+	KINGS_VISION(231), // improvised projectiles (4), arcane vision(4), wide search(3), heightened senses(4)
+	PURSUIT(232), // durable projectiles (5),silent steps(4),lethal momentum (3),shield battery(5)
 	// Rat King T3
 	RK_BERSERKER(233,3), RK_GLADIATOR(234,3), RK_BATTLEMAGE(235,3),
 	RK_WARLOCK(236,3), RK_ASSASSIN(237,3), RK_FREERUNNER(238,3), RK_SNIPER(239,3), RK_WARDEN(240,3),
@@ -299,7 +299,7 @@ public enum Talent {
     BLOODFLARE_SKIN(imageAt(19, 14), 4), ASTRAL_CHARGE(imageAt(20, 14), 4), SHADOWSPEC_SLICE(imageAt(21, 14), 4), SILVA_RANGE(imageAt(22, 14), 4),
 
     // Wrath2
-	AFTERSHOCK(185,4), RAT_BLAST(186,4), SMOKE_AND_MIRRORS(187,4), SEA_OF_BLADES(188,4), FUN(imageAt(14, 14), 4),
+	AFTERSHOCK(RK_MONK.icon+10,4), RAT_BLAST(AFTERSHOCK.icon+1,4), SMOKE_AND_MIRRORS(AFTERSHOCK.icon+2,4), SEA_OF_BLADES(AFTERSHOCK.icon+3,4), FUN(imageAt(14, 14), 4),
 
 	// RKA replacements for consumable talents
 	WILLPOWER_OF_INJURED(imageAt(2, 8)), ENERGIZING_UPGRADE(imageAt(2, 9)), DUAL_WIELDING(imageAt(3, 10)), IVYLASH(imageAt(3, 11)),
