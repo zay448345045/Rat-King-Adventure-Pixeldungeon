@@ -63,6 +63,7 @@ public class Badges {
 		WON_WARLOCK,
 		WON_DECEPTICON,
 		WON_RK_CHAMPION,
+		WON_SECRET_DUELIST, //TODO: haven't decided what that should be
 
 		//bronze
 		UNLOCK_MAGE                 ( 1 ),
