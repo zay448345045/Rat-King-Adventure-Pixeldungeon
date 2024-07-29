@@ -113,7 +113,10 @@ public class WandOfFirebolt extends DamageWand {
                     }
                 }
                 if (Random.Float() < igniteChance) {
-                    Buff.affect(defender, Burning.class).reignite(defender);
+                    if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 2)
+                        Buff.affect(defender, FrostBurn.class).reignite(defender);
+                    else
+                        Buff.affect(defender, Burning.class).reignite(defender);
                 }
                 if (!defender.isImmune(WandOfFirebolt.this.getClass())) {
                     int bonusDamage = Random.Int(1, level + 2);
@@ -121,7 +124,10 @@ public class WandOfFirebolt extends DamageWand {
                     defender.damage(bonusDamage, WandOfFirebolt.this);
                 }
 
-                defender.sprite.emitter().burst(FlameParticle.FACTORY, level + 1);
+                if (curUser.pointsInTalent(Talent.CRYONIC_SPELL) > 2)
+                    defender.sprite.emitter().burst(FlameParticle.FACTORY, level + 1);
+                else
+                    defender.sprite.emitter().burst(FrostfireParticle.FACTORY, level + 1);
             }
             return damage;
         }

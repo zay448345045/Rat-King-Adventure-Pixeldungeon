@@ -187,8 +187,8 @@ public class WandOfFireblast extends DamageWand {
 
 			}
 		} else
-		//acts like blazing enchantment
-		new FireBlastOnHit().proc( staff, attacker, defender, damage);
+			//acts like blazing enchantment
+			new FireBlastOnHit().proc( staff, attacker, defender, damage);
 	}
 
 	private static class FireBlastOnHit extends Blazing {
