@@ -479,8 +479,8 @@ public class GameScene extends PixelScene {
 			case FALL:
 				if (Dungeon.depth == Statistics.deepestFloor){
 					switch (Dungeon.depth) {
-						case 1: case 6: case 11: case 16: case 21:
-							int region = (Dungeon.depth+4)/5;
+						case 1: case 6: case 11: case 16: case 21: case 27:
+							int region = Dungeon.depth == 27 ? 6 : (Dungeon.depth+4)/5;
 							if (!Document.INTROS.isPageRead(region)) {
 								add(new WndStory(Document.INTROS.pageBody(region)).setDelays(0.6f, 1.4f));
 								Document.INTROS.readPage(region);

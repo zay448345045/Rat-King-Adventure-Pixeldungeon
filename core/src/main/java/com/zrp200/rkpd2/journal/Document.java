@@ -268,6 +268,7 @@ public enum Document {
 		INTROS.pagesStates.put("Caves",                         debug ? READ : NOT_FOUND);
 		INTROS.pagesStates.put("City",                          debug ? READ : NOT_FOUND);
 		INTROS.pagesStates.put("Halls",                         debug ? READ : NOT_FOUND);
+		INTROS.pagesStates.put("Abyss",                         debug ? READ : NOT_FOUND);
 
 		SEWERS_GUARD.pagesStates.put("new_position",            debug ? READ : NOT_FOUND);
 		SEWERS_GUARD.pagesStates.put("dangerous",               debug ? READ : NOT_FOUND);
