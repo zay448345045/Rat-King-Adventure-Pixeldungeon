@@ -91,7 +91,7 @@ public class ItemSpriteSheet {
 	public static final int TENGU_BOMB      = UNCOLLECTIBLE+8;
 	public static final int TENGU_SHOCKER   = UNCOLLECTIBLE+9;
 	public static final int GEO_BOULDER     = UNCOLLECTIBLE+10;
-	public static final int BIRB            = UNCOLLECTIBLE+11;
+	public static final int BIRB            = UNCOLLECTIBLE+13;
 	static{
 		assignItemRect(GOLD,        15, 13);
 		assignItemRect(ENERGY,      16, 16);
@@ -284,17 +284,6 @@ public class ItemSpriteSheet {
 	public static final int GREATSHIELD     = WEP_TIER5+4;
 	public static final int GAUNTLETS       = WEP_TIER5+5;
 	public static final int WAR_SCYTHE      = WEP_TIER5+6;
-	public static final int ROYAL_SWORD     = WEP_TIER5+6;
-	public static final int NUCLEAR_HATCHET = WEP_TIER5+7;
-	public static final int ALUMINUM_SWORD  = WEP_TIER5+8;
-	public static final int RUNIC_BLADE_MK2 = WEP_TIER5+9;
-	public static final int CONSTRUCT_WAND  = WEP_TIER5+10;
-	public static final int MOLTEN_STRIFE   = WEP_TIER5+11;
-	public static final int LUMINOUS_CUTLASS= WEP_TIER5+12;
-	public static final int BLOOMING_PICK   = WEP_TIER5+13;
-	public static final int ELEMENTAL_DIRK  = WEP_TIER5+14;
-	public static final int EXO_KNIFE       = WEP_TIER5+15;
-	public static final int TERMINUS        = WEP_TIER4+6;
 	static{
 		assignItemRect(GREATSWORD,  16, 16);
 		assignItemRect(WAR_HAMMER,  16, 16);
@@ -303,6 +292,27 @@ public class ItemSpriteSheet {
 		assignItemRect(GREATSHIELD, 12, 16);
 		assignItemRect(GAUNTLETS,   13, 15);
 		assignItemRect(WAR_SCYTHE,  14, 15);
+	}
+
+	private static final int WEP_TIER6     =                                xy(1, 12);
+
+	public static final int ROYAL_SWORD     = WEP_TIER6+0;
+	public static final int NUCLEAR_HATCHET = WEP_TIER6+1;
+	public static final int ALUMINUM_SWORD  = WEP_TIER6+2;
+	public static final int RUNIC_BLADE_MK2 = WEP_TIER6+3;
+	public static final int CONSTRUCT_WAND  = WEP_TIER6+4;
+	public static final int MOLTEN_STRIFE   = WEP_TIER6+5;
+	public static final int LUMINOUS_CUTLASS= WEP_TIER6+6;
+	public static final int BLOOMING_PICK   = WEP_TIER6+7;
+	public static final int ELEMENTAL_DIRK  = WEP_TIER6+8;
+	public static final int EXO_KNIFE       = WEP_TIER6+9;
+	public static final int STEEL_AXE       = WEP_TIER6+10;
+	public static final int HOMING_BOOMERANG= WEP_TIER6+11;
+	public static final int PHANTOM_SPEAR   = WEP_TIER6+12;
+	public static final int RED_KUNAI       = WEP_TIER6+13;
+	public static final int TERMINUS        = WEP_TIER6+14;
+
+	static {
 		assignItemRect(ROYAL_SWORD, 14, 14);
 		assignItemRect(NUCLEAR_HATCHET,12, 15);
 		assignItemRect(ALUMINUM_SWORD,  16, 16);
@@ -313,6 +323,10 @@ public class ItemSpriteSheet {
 		assignItemRect(BLOOMING_PICK, 14, 14);
 		assignItemRect(ELEMENTAL_DIRK, 14, 15);
 		assignItemRect(EXO_KNIFE, 11, 12);
+		assignItemRect(STEEL_AXE, 16, 14);
+		assignItemRect(HOMING_BOOMERANG, 14, 14);
+		assignItemRect(PHANTOM_SPEAR, 16, 16);
+		assignItemRect(RED_KUNAI, 15, 15);
 		assignItemRect(TERMINUS, 15, 16);
 	}
 
@@ -378,17 +392,9 @@ public class ItemSpriteSheet {
 	public static final int HOLY_DART       = DARTS+10;
 	public static final int DISPLACING_DART = DARTS+11;
 	public static final int BLINDING_DART   = DARTS+12;
-	public static final int STEEL_AXE       = DARTS+12;
-	public static final int HOMING_BOOMERANG= DARTS+13;
-	public static final int PHANTOM_SPEAR   = DARTS+14;
-	public static final int RED_KUNAI       = DARTS+15;
 	static {
 		for (int i = DARTS; i < DARTS+16; i++)
 			assignItemRect(i, 15, 15);
-		assignItemRect(STEEL_AXE, 16, 14);
-		assignItemRect(HOMING_BOOMERANG, 14, 14);
-		assignItemRect(PHANTOM_SPEAR, 16, 16);
-		assignItemRect(RED_KUNAI, 15, 15);
 	}
 	
 	private static final int ARMOR          =                               xy(1, 12);  //16 slots
@@ -403,8 +409,8 @@ public class ItemSpriteSheet {
 	public static final int ARMOR_HUNTRESS  = ARMOR+8;
 	public static final int ARMOR_DUELIST   = ARMOR+9;
 	public static final int ARMOR_RAT_KING	= ARMOR+10;
-	public static final int ARMOR_SCOUT     = ARMOR+10;
-	public static final int SR_RANGED       = ARMOR+11;
+	public static final int ARMOR_SCOUT     = ARMOR+11;
+	public static final int SR_RANGED       = ARMOR+12;
 	static{
 		assignItemRect(ARMOR_CLOTH,     15, 12);
 		assignItemRect(ARMOR_LEATHER,   14, 13);
@@ -417,8 +423,8 @@ public class ItemSpriteSheet {
 		assignItemRect(ARMOR_HUNTRESS,  13, 15);
 		assignItemRect(ARMOR_DUELIST,   12, 13);
 		assignItemRect(ARMOR_RAT_KING,	12, 6);
-		assignItemRect(ARMOR_SCOUT,  13, 15);
-		assignItemRect(SR_RANGED, 12, 12);
+		assignItemRect(ARMOR_SCOUT,     13, 15);
+		assignItemRect(SR_RANGED,       12, 12);
 	}
 
 	                                                                                    //16 free slots
@@ -511,7 +517,7 @@ public class ItemSpriteSheet {
 		assignItemRect(ARTIFACT_ROSE1,      14, 14);
 		assignItemRect(ARTIFACT_ROSE2,      14, 14);
 		assignItemRect(ARTIFACT_ROSE3,      14, 14);
-		assignItemRect(ARTIFACT_OMNI,      14, 14);
+		assignItemRect(ARTIFACT_OMNI,       14, 14);
 	}
 
 	                                                                                    //16 free slots
@@ -754,19 +760,6 @@ public class ItemSpriteSheet {
 	public static final int TOKEN   = QUEST+6;
 	public static final int BLOB    = QUEST+7;
 	public static final int SHARD   = QUEST+8;
-	public static final int KROMER  = QUEST+9;
-	public static final int CHAOSSTONE = QUEST+10;
-	public static final int KROMER_BOW = QUEST+11;
-	public static final int KROMER_CLOAK = QUEST+12;
-	public static final int KROMER_STAFF = QUEST+13;
-	public static final int KROMER_SLINGSHOT = QUEST+14;
-	public static final int KROMER_CROWN = QUEST+15;
-	public static final int KROMER_MASK = QUEST+16;
-	public static final int NERF_GUN = QUEST+17;
-	public static final int NERF_AMMO_1 = QUEST+18;
-	public static final int NERF_AMMO_2 = QUEST+19;
-	public static final int NERF_AMMO_3 = QUEST+20;
-	public static final int FLEX_TAPE = QUEST+21;
 	static{
 		assignItemRect(SKULL,   16, 11);
 		assignItemRect(DUST,    12, 11);
@@ -777,6 +770,23 @@ public class ItemSpriteSheet {
 		assignItemRect(TOKEN,   12, 12);
 		assignItemRect(BLOB,    10,  9);
 		assignItemRect(SHARD,    8, 10);
+	}
+
+	private static final int KROMER_CAT      =                                    xy(1, 26);
+	public static final int KROMER           = KROMER_CAT+0;
+	public static final int CHAOSSTONE       = KROMER_CAT+1;
+	public static final int KROMER_BOW       = KROMER_CAT+2;
+	public static final int KROMER_CLOAK     = KROMER_CAT+3;
+	public static final int KROMER_STAFF     = KROMER_CAT+4;
+	public static final int KROMER_SLINGSHOT = KROMER_CAT+5;
+	public static final int KROMER_CROWN     = KROMER_CAT+6;
+	public static final int KROMER_MASK      = KROMER_CAT+7;
+	public static final int NERF_GUN         = KROMER_CAT+9;
+	public static final int NERF_AMMO_1      = KROMER_CAT+10;
+	public static final int NERF_AMMO_2      = KROMER_CAT+11;
+	public static final int NERF_AMMO_3      = KROMER_CAT+12;
+	public static final int FLEX_TAPE        = KROMER_CAT+13;
+	static {
 		assignItemRect(CHAOSSTONE, 10, 15);
 		assignItemRect(KROMER, 16, 16);
 		assignItemRect(KROMER_BOW, 16, 16);
@@ -791,6 +801,7 @@ public class ItemSpriteSheet {
 		assignItemRect(NERF_AMMO_3, 11, 11);
 		assignItemRect(FLEX_TAPE, 14, 14);
 	}
+
 
 	private static final int BAGS       =                                   xy(1, 31);  //16 slots
 	public static final int WATERSKIN   = BAGS+0;
