@@ -73,6 +73,9 @@ public abstract class Plant implements Bundlable {
 
 		wither();
 		activate( ch );
+		if (!(ch instanceof Hero) && Random.Int(6) < Dungeon.hero.pointsInTalent(Talent.INDIRECT_BENEFITS)){
+			activate(Dungeon.hero);
+		}
 	}
 	
 	public abstract void activate( Char ch );
