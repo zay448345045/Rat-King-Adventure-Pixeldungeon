@@ -340,6 +340,7 @@ public class WandOfWarding extends Wand {
 				MagesStaff staff = Dungeon.hero.belongings.getItem(MagesStaff.class);
 				Wand.wandProc(enemy, wandLevel, 1, true, dmg,
 						staff != null && staff.wandClass() == WandOfWarding.class && Dungeon.hero.belongings.getItem(WandOfWarding.class) == null); // damage was already done.
+				(new WandOfDisintegration()).procKO(enemy);
 			} if (enemy == Dungeon.hero) {
 				Badges.validateDeathFromFriendlyMagic();
 				GLog.n(Messages.capitalize(Messages.get( this, "kill", name() )));

@@ -84,6 +84,7 @@ public class WandOfLightning extends DamageWand {
 			}
 			int damage = Math.round(damageRoll() * multiplier * (ch != curUser?1:.5f));
 			wandProc(ch, chargesPerCast(), damage);
+			procKO(ch);
 			if (ch != curUser || ch.isAlive()) {
 				ch.damage(damage,this);
 				if (!curUser.isAlive()) {
