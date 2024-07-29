@@ -333,6 +333,8 @@ public class TimekeepersHourglass extends Artifact {
 		public void processTime(float time);
 
 		public void setDelayedPress(int cell);
+
+		public void disarmPresses();
 	}
 
 	public class timeFreeze extends ArtifactBuff implements TimeFreezing {

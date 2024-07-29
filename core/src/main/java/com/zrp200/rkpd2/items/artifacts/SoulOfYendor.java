@@ -75,9 +75,12 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfMagicMapping;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.exotic.ExoticScroll;
+import com.zrp200.rkpd2.levels.traps.Trap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.plants.Earthroot;
+import com.zrp200.rkpd2.plants.Plant;
+import com.zrp200.rkpd2.plants.Rotberry;
 import com.zrp200.rkpd2.scenes.AlchemyScene;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -594,9 +597,33 @@ public class SoulOfYendor extends Artifact implements AlchemyScene.ToolkitLike {
                 presses.add(cell);
         }
 
-        private void triggerPresses(){
-            for (int cell : presses)
-                Dungeon.level.pressCell(cell);
+        public void triggerPresses(){
+            for (int cell : presses){
+                Trap t = Dungeon.level.traps.get(cell);
+                if (t != null){
+                    t.trigger();
+                }
+                Plant p = Dungeon.level.plants.get(cell);
+                if (p != null){
+                    p.trigger();
+                }
+            }
+
+            presses = new ArrayList<>();
+        }
+
+        public void disarmPresses(){
+            for (int cell : presses){
+                Trap t = Dungeon.level.traps.get(cell);
+                if (t != null && t.disarmedByActivation) {
+                    t.disarm();
+                }
+
+                Plant p = Dungeon.level.plants.get(cell);
+                if (p != null && !(p instanceof Rotberry)) {
+                    Dungeon.level.uproot(cell);
+                }
+            }
 
             presses = new ArrayList<>();
         }

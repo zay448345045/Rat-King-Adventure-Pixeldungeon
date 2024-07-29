@@ -589,10 +589,9 @@ public abstract class Level implements Bundlable {
 	public static void beforeTransition(){
 
 		//time freeze effects need to resolve their pressed cells before transitioning
-		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
-		if (timeFreeze != null) timeFreeze.disarmPresses();
-		Swiftthistle.TimeBubble timeBubble = Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
-		if (timeBubble != null) timeBubble.disarmPresses();
+		for (TimekeepersHourglass.TimeFreezing timeFreeze: Dungeon.hero.buffs(TimekeepersHourglass.TimeFreezing.class, false)){
+			timeFreeze.disarmPresses();
+		}
 
 		//iron stomach does not persist through chasm falling
 		Talent.WarriorFoodImmunity foodImmune = Dungeon.hero.buff(Talent.WarriorFoodImmunity.class);
