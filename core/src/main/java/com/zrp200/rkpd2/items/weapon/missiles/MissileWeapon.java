@@ -206,7 +206,7 @@ abstract public class MissileWeapon extends Weapon {
 		int throwPos;
 		if (projecting
 				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst] || Actor.findChar(dst) != null)
-				&& Dungeon.level.distance(user.pos, dst) <= Math.round(4 * Enchantment.genericProcChanceMultiplier(user))){
+				&& Dungeon.level.distance(user.pos, dst) <= Math.round((4 + Dungeon.hero.pointsInTalent(Talent.RK_PROJECT)) * Enchantment.genericProcChanceMultiplier(user))){
 			throwPos = dst;
 		} else {
 			throwPos = super.throwPos(user, dst);
