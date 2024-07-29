@@ -126,7 +126,7 @@ public class Dragon extends AbyssalMob {
             return false;
         }
         if (rangedCooldown <= 0 && buff(Talent.AntiMagicBuff.class) == null) {
-            return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
+            return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos == enemy.pos;
         } else {
             return super.canAttack( enemy );
         }
@@ -134,7 +134,7 @@ public class Dragon extends AbyssalMob {
 
     protected boolean doAttack( Char enemy ) {
 
-        if (Dungeon.level.adjacent( pos, enemy.pos ) || buff(Talent.AntiMagicBuff.class) != null) {
+        if ((Dungeon.level.adjacent( pos, enemy.pos ) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT ).collisionPos != enemy.pos) || buff(Talent.AntiMagicBuff.class) != null) {
 
             return super.doAttack( enemy );
 

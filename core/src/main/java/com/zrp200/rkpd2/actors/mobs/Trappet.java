@@ -70,7 +70,7 @@ public class Trappet extends AbyssalMob implements Callback {
         if (buff(ChampionEnemy.Paladin.class) != null){
             return false;
         }
-        return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+        return (super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos);
     }
 
     protected boolean doAttack( Char enemy ) {

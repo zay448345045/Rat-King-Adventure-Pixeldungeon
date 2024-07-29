@@ -215,7 +215,7 @@ public class RatKingBoss extends Mob {
     @Override
     public boolean canAttack(Char enemy) {
         if (phase == BATTLEMAGE) return false;
-        if (phase == SNIPER) return new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
+        if (phase == SNIPER) return (super.canAttack(enemy) || new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos);
         if (phase == EMPEROR) return false;
         return super.canAttack(enemy);
     }

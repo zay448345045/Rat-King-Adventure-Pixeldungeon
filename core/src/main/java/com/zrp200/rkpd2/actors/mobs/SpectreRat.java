@@ -95,7 +95,7 @@ public class SpectreRat extends AbyssalMob implements Callback {
 		if (buff(Talent.AntiMagicBuff.class) != null){
 			return super.canAttack(enemy);
 		}
-		return new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+		return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 
 	protected boolean doAttack( Char enemy ) {

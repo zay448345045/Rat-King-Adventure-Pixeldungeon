@@ -101,8 +101,7 @@ public class Ech extends DirectableAlly {
     @Override
     public boolean canAttack(Char enemy) {
         if (Dungeon.hero.isClassed(HeroClass.MAGE)){
-            Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-            return attack.collisionPos == enemy.pos;
+            return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
         }
         else return super.canAttack(enemy);
     }

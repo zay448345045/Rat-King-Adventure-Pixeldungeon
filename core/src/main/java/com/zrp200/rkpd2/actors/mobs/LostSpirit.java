@@ -44,7 +44,7 @@ public class LostSpirit extends AbyssalMob implements Callback {
         if (buff(Talent.AntiMagicBuff.class) != null){
             return super.canAttack(enemy);
         }
-        return new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET).collisionPos == enemy.pos;
+        return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.STOP_TARGET).collisionPos == enemy.pos;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class LostSpirit extends AbyssalMob implements Callback {
 
     protected boolean doAttack(Char enemy ) {
 
-        if (Dungeon.level.adjacent( pos, enemy.pos ) && enemy == Dungeon.hero) {
+        if ((Dungeon.level.adjacent( pos, enemy.pos ) || new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos != enemy.pos) && enemy == Dungeon.hero) {
 
             if (HP > HT/10) {
                 //do nothing
