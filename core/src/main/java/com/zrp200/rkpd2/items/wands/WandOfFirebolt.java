@@ -120,6 +120,7 @@ public class WandOfFirebolt extends DamageWand {
                 }
                 if (!defender.isImmune(WandOfFirebolt.this.getClass())) {
                     int bonusDamage = Random.Int(1, level + 2);
+                    bonusDamage *= (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.085f);
                     if(effectBoost > 0) bonusDamage = Random.round(bonusDamage * effectBoost);
                     defender.damage(bonusDamage, WandOfFirebolt.this);
                 }

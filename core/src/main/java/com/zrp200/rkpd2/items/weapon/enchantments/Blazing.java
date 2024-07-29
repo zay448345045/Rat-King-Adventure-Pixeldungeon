@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Burning;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.sprites.ItemSprite;
@@ -55,6 +56,7 @@ public class Blazing extends Weapon.Enchantment {
 			if (powerMulti > 0){
 				int burnDamage = Random.NormalIntRange( 1, 3 + Dungeon.scalingDepth()/4 );
 				burnDamage = Math.round(burnDamage * 0.67f * powerMulti);
+				burnDamage *= (1 + Dungeon.hero.pointsInTalent(Talent.PYROMANIAC)*0.125f);
 				if (burnDamage > 0) {
 					defender.damage(burnDamage, this);
 				}
