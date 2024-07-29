@@ -1396,8 +1396,24 @@ public enum Talent {
 					case RAT_KING:
 						return new Talent[]{};
 				}
+			case 4:
+				switch (cl){
+					case WARRIOR:
+						return new Talent[]{HEROIC_ENDURANCE};
+					case MAGE:
+						return new Talent[]{HEROIC_WIZARDRY};
+					case ROGUE:
+						return new Talent[]{HEROIC_STAMINA};
+					case HUNTRESS:
+						return new Talent[]{HEROIC_ARCHERY};
+					case DUELIST:
+						return new Talent[]{};
+					case RAT_KING:
+						return new Talent[]{HEROIC_RATINESS};
+				}
 		}
-	}
+        return new Talent[0];
+    }
 
 	public static boolean trolling;
 
@@ -1445,6 +1461,16 @@ public enum Talent {
 			talents.get(2).put(talent, 0);
 		}
 		tierTalents.clear();
+
+		//tier 4
+		Collections.addAll(tierTalents, talentList(cls, 4));
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
+			talents.get(3).put(talent, 0);
+		}
+		tierTalents.clear();
 	}
 
 	public static void initSecondClassTalents( HeroClass cls, ArrayList<LinkedHashMap<Talent, Integer>> talents, LinkedHashMap<Talent, Talent> replacements){
@@ -1481,6 +1507,16 @@ public enum Talent {
 				talent = replacements.get(talent);
 			}
 			talents.get(2).put(talent, 0);
+		}
+		tierTalents.clear();
+
+		//tier 4
+		Collections.addAll(tierTalents, talentList(cls, 4));
+		for (Talent talent : tierTalents){
+			if (replacements.containsKey(talent)){
+				talent = replacements.get(talent);
+			}
+			talents.get(3).put(talent, 0);
 		}
 		tierTalents.clear();
 	}
