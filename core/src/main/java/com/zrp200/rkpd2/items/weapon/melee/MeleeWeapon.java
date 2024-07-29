@@ -417,7 +417,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 
 	@Override
 	public String getDefaultAction() {
-		if (Dungeon.hero.isSubclassed(HeroSubClass.BRAWLER) && Dungeon.hero.belongings.weapon != this)
+		if (Dungeon.hero.subClass.is(HeroSubClass.BRAWLER) && Dungeon.hero.belongings.weapon != this)
 			return AC_EQUIP;
 		return super.getDefaultAction();
 	}
@@ -511,7 +511,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 			info += "\n\n" + Messages.get(Weapon.class, "hardened_no_enchant");
 		}
 
-		if ((Dungeon.hero.isSubclassed(HeroSubClass.BRAWLER)) && !Messages.get(this, "warrior_spec").equals("")) info += "\n\n" + Messages.get(MeleeWeapon.class, "warrior") + Messages.get(this, "warrior_spec");
+		if ((Dungeon.hero.subClass.is(HeroSubClass.BRAWLER)) && !Messages.get(this, "warrior_spec").equals("")) info += "\n\n" + Messages.get(MeleeWeapon.class, "warrior") + Messages.get(this, "warrior_spec");
 
 
 		if (cursed && isEquipped( hero )) {

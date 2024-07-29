@@ -25,7 +25,6 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
-import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -75,10 +74,7 @@ public class RevealedArea extends FlavourBuff{
 		return 5*hero.pointsInTalent(Talent.SEER_SHOT, Talent.RK_WARDEN); }
 	@Override
 	public float iconFadePercent() {
-		float max = 5;
-		if (hero.isSubclassed(HeroSubClass.KING))
-			max = 5* hero.pointsInTalent(Talent.RK_WARDEN);
-		return Math.max(0, (max-visualcooldown()) / max);
+		return Math.max(0, (duration()-visualcooldown()) / duration());
 	}
 
 	@Override

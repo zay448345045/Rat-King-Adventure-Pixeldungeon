@@ -224,7 +224,7 @@ public class Tengu extends Mob {
 	@Override
 	public void die( Object cause ) {
 		
-		if (Dungeon.hero.isSubclassed(HeroSubClass.NONE)) {
+		if (Dungeon.hero.subClass.is(HeroSubClass.NONE)) {
 			Dungeon.level.drop( new TengusMask(), pos ).sprite.drop();
 		}
 		

@@ -326,7 +326,7 @@ public abstract class Char extends Actor {
 		c.spend( 1 / c.speed() );
 
 		if (c == hero){
-			if (hero.isSubclassed(HeroSubClass.FREERUNNER)){
+			if (hero.subClass.is(HeroSubClass.FREERUNNER)){
 				Buff.affect(hero, Momentum.class).gainStack();
 			}
 

@@ -232,10 +232,50 @@ public class Hero extends Char {
 			return true;
 		} else {
 			if (subClass2 == HeroSubClass.NONE) {
+				return matchSubclass(subClass, sub);
+			} else {
+				return matchSubclass(subClass, sub) || matchSubclass(subClass2, sub);
+			}
+		}
+	}
+
+	public boolean isSubclassedExact(HeroSubClass sub){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & subClass != HeroSubClass.NONE){
+			return true;
+		} else {
+			if (subClass2 == HeroSubClass.NONE) {
 				return subClass == sub;
 			} else {
 				return subClass == sub || subClass2 == sub;
 			}
+		}
+	}
+
+	public boolean matchSubclass(HeroSubClass sub1, HeroSubClass sub2){
+		if (sub1 == HeroSubClass.KING){
+			switch (sub2){
+				default: return false;
+				case KING:
+					return true;
+				case BERSERKER:
+					return hasTalent(Talent.RK_BERSERKER);
+				case GLADIATOR:
+					return hasTalent(Talent.RK_GLADIATOR);
+				case BATTLEMAGE:
+					return hasTalent(Talent.RK_BATTLEMAGE);
+				case WARLOCK:
+					return hasTalent(Talent.RK_WARLOCK);
+				case ASSASSIN:
+					return hasTalent(Talent.RK_ASSASSIN);
+				case FREERUNNER:
+					return hasTalent(Talent.RK_FREERUNNER);
+				case SNIPER:
+					return hasTalent(Talent.RK_SNIPER);
+				case WARDEN:
+					return hasTalent(Talent.RK_WARDEN);
+			}
+		} else {
+			return sub1 == sub2;
 		}
 	}
 
@@ -678,7 +718,7 @@ public class Hero extends Char {
 		
 		float accuracy = 1;
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
-		if(isSubclassed(HeroSubClass.SNIPER)) accuracy *= 4/3d; // sniper innate boost
+		if(subClass.isExact(HeroSubClass.SNIPER)) accuracy *= 4/3d; // sniper innate boost
 
 		if (wep instanceof MissileWeapon){
 			if (Dungeon.level.adjacent( pos, target.pos )) {
@@ -1108,17 +1148,17 @@ public class Hero extends Char {
 		if (belongings.weapon instanceof NuclearHatchet){
 			Buff.affect(this, NuclearHatchet.Effect.class).set(1.1f);
 		}
-		if (isSubclassed(HeroSubClass.BRAWLER) && buff(BrawlerBuff.class) == null){
+		if (subClass.is(HeroSubClass.BRAWLER) && buff(BrawlerBuff.class) == null){
 			Buff.affect(this, BrawlerBuff.class);
 		}
-		if (isSubclassed(HeroSubClass.SPIRITUALIST) && buff(SpiritBuff.class) == null){
+		if (subClass.is(HeroSubClass.SPIRITUALIST) && buff(SpiritBuff.class) == null){
 			Buff.affect(this, SpiritBuff.class);
 		}
-		if (isSubclassed(HeroSubClass.DECEPTICON) && buff(RobotBuff.class) == null){
+		if (subClass.is(HeroSubClass.DECEPTICON) && buff(RobotBuff.class) == null){
 			Buff.affect(this, RobotBuff.class);
 			((HeroSprite)sprite).updateArmor();
 		}
-		if (isSubclassed(HeroSubClass.RK_CHAMPION) && buff(RKChampionBuff.class) == null){
+		if (subClass.is(HeroSubClass.RK_CHAMPION) && buff(RKChampionBuff.class) == null){
 			Buff.affect(this, RKChampionBuff.class);
 		}
 
@@ -1685,7 +1725,7 @@ public class Hero extends Char {
 		}
 
 		// subclass logic here
-        if (isSubclassed(HeroSubClass.BATTLEMAGE) || hasTalent(Talent.RK_BATTLEMAGE)) {
+        if (subClass.is(HeroSubClass.BATTLEMAGE)) {
             MagesStaff staff = belongings.getItem(MagesStaff.class);
             if (staff != null && (staff == wep || hasTalent(Talent.SORCERY))&& (mult == 1 || Random.Float() < mult)){
 					if(staff == wep || Random.Int(5) < pointsInTalent(Talent.SORCERY)) {
@@ -1758,7 +1798,7 @@ public class Hero extends Char {
 			damage += conservedDamage;
 		}
 
-        if (isSubclassed(HeroSubClass.SNIPER) || hasTalent(Talent.RK_SNIPER)) {
+        if (subClass.is(HeroSubClass.SNIPER)) {
             if (wep instanceof MissileWeapon && !(wep instanceof SpiritBow.SpiritArrow) && enemy != this) {
                 Actor.add(new Actor() {
 
@@ -1876,7 +1916,7 @@ public class Hero extends Char {
 		// berserker gets rage from all sources. all hail viscosity!
 		// TODO change for 0.9.2?
 		if (!(src instanceof Char)) {
-			if (isSubclassed(HeroSubClass.BERSERKER) && hasTalent(Talent.ENDLESS_RAGE)) {
+			if (subClass.isExact(HeroSubClass.BERSERKER) && hasTalent(Talent.ENDLESS_RAGE)) {
 				Buff.affect(this, Berserk.class).damage(Math.round(dmg * 0.2f * pointsInTalent(Talent.ENDLESS_RAGE)));
 			}
 		}

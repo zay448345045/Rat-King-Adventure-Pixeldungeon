@@ -115,7 +115,12 @@ public enum HeroSubClass {
 
 	/** useful for sharing attributes with KING subclass **/
 	public boolean is(HeroSubClass sub) {
-		return this == sub || this == KING && sub != CHAMPION && sub != MONK;
+		return Dungeon.hero.isSubclassed(sub);
+//		return this == sub || this == KING && sub != CHAMPION && sub != MONK;
+	}
+
+	public boolean isExact(HeroSubClass sub) {
+		return Dungeon.hero.isSubclassedExact(sub);
 	}
 
 	public final int icon;

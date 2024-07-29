@@ -231,12 +231,12 @@ public class SpectralBlades extends ArmorAbility {
 					);
 				}
 				if(hero.attack( ch, dmgMulti, dmgBonus, accMulti )
-						&& hero.isSubclassed(HeroSubClass.KING)
+						&& hero.subClass.is(HeroSubClass.KING)
 						&& Random.Float() < Talent.SpiritBladesTracker.getProcModifier()) {
 					// this isn't going to be added otherwise.
 					Buff.affect(hero, Combo.class).hit(ch);
 					if (hero.hasTalent(Talent.SPECTRAL_SHOT)) {
-						if (hero.isSubclassed(HeroSubClass.SNIPER)) {
+						if (hero.subClass.is(HeroSubClass.SNIPER)) {
 							Actor.add(new Actor() {
 
 								{
@@ -261,7 +261,7 @@ public class SpectralBlades extends ArmorAbility {
 						if (bow == null && Dungeon.hero.belongings.weapon instanceof SpiritBow){
 							bow = (SpiritBow) Dungeon.hero.belongings.weapon;
 						}
-						if (bow != null && hero.isSubclassed(HeroSubClass.SNIPER)){
+						if (bow != null && hero.subClass.is(HeroSubClass.SNIPER)){
 							SpiritBow.SpiritArrow spiritArrow = bow.knockArrow();
 							if (hero.pointsInTalent(Talent.SPECTRAL_SHOT) > 3) spiritArrow.sniperSpecial = true;
 							spiritArrow.forceSkipDelay = true;
