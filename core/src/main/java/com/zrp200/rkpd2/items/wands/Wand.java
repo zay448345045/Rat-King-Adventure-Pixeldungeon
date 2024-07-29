@@ -532,7 +532,7 @@ public abstract class Wand extends Item {
 		}
 
 		if (Dungeon.hero.pointsInTalent(Talent.DUAL_WIELDING) > 0){
-			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeMissileTracker.class, 1f);
+			Buff.affect(Dungeon.hero, Talent.DualWieldingMissileTracker.class, 1f);
 		}
 
 		//If hero owns wand but it isn't in belongings it must be in the staff
@@ -544,11 +544,11 @@ public abstract class Wand extends Item {
 		Invisibility.dispel();
 		updateQuickslot();
 
-		if (curUser.buff(Talent.MysticalUpgradeWandTracker.class) == null)
+		if (curUser.buff(Talent.DualWieldingWandTracker.class) == null)
 			curUser.spendAndNext( TIME_TO_ZAP );
 		else {
-			Buff.detach(curUser, Talent.MysticalUpgradeWandTracker.class);
-			Buff.detach(curUser, Talent.MysticalUpgradeMissileTracker.class);
+			Buff.detach(curUser, Talent.DualWieldingWandTracker.class);
+			Buff.detach(curUser, Talent.DualWieldingMissileTracker.class);
 			curUser.ready();
 		}
 	}

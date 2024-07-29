@@ -340,11 +340,11 @@ abstract public class MissileWeapon extends Weapon {
 	@Override
 	public float castDelay(Char user, int dst) {
 		if (Dungeon.hero.pointsInTalent(Talent.DUAL_WIELDING) > 1){
-			Buff.affect(Dungeon.hero, Talent.MysticalUpgradeWandTracker.class, 1f);
+			Buff.affect(Dungeon.hero, Talent.DualWieldingWandTracker.class, 1f);
 		}
-		if(user.buff(Talent.MysticalUpgradeMissileTracker.class) != null) {
-			Buff.detach(user, Talent.MysticalUpgradeWandTracker.class);
-			Buff.detach(user, Talent.MysticalUpgradeMissileTracker.class);
+		if(user.buff(Talent.DualWieldingMissileTracker.class) != null) {
+			Buff.detach(user, Talent.DualWieldingWandTracker.class);
+			Buff.detach(user, Talent.DualWieldingMissileTracker.class);
 			return 0;
 		}
 		if(Talent.LethalMomentumTracker.apply(user)) return 0;

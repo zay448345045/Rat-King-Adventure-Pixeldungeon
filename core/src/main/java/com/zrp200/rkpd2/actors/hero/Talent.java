@@ -530,8 +530,8 @@ public enum Talent {
 		}
 	}
 	public static class BountyHunterTracker extends FlavourBuff{};
-	public static class MysticalUpgradeWandTracker extends FlavourBuff{};
-	public static class MysticalUpgradeMissileTracker extends FlavourBuff{};
+	public static class DualWieldingWandTracker extends FlavourBuff{};
+	public static class DualWieldingMissileTracker extends FlavourBuff{};
 	public static class RejuvenatingStepsCooldown extends Cooldown{
 		{ revivePersists = true; }
 		@Override public float duration() {
@@ -547,19 +547,6 @@ public enum Talent {
 		public float duration() { return 65 - Dungeon.hero.pointsInTalent(ENERGIZING_UPGRADE)*15; }
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0xf1f028); }
-	};
-	public static class EnergizingUpgradeTracker extends FlavourBuff{
-
-		@Override
-		public void detach() {
-			super.detach();
-			Talent.Cooldown.affectHero(EnergizingUpgradeCooldown.class);
-		}
-		@Override
-		public void fx(boolean on) {
-			if (on) target.sprite.add(CharSprite.State.SPIRIT);
-			else target.sprite.remove(CharSprite.State.SPIRIT);
-		}
 	};
 	public static class RejuvenatingStepsFurrow extends CounterBuff{
 		{revivePersists = true;}
