@@ -102,7 +102,6 @@ public class BuffIndicator extends Component {
 	public static final int MOMENTUM    = 51;
 	public static final int ANKH        = 52;
 	public static final int NOINV       = 53;
-	public static final int SCAM        = 63;
 	public static final int TARGETED    = 54;
 	public static final int IMBUE       = 55;
 	public static final int ENDURE      = 56;
@@ -123,11 +122,12 @@ public class BuffIndicator extends Component {
 
 	public static final int SIZE_SMALL  = 7;
 	public static final int SIZE_LARGE  = 16;
-	public static final int FROSTBURN = 60;
-	public static final int ERADICATION = 61;
-	public static final int LASTSTAND = 62;
 
-	public static final int WARP = 64;
+	public static final int FROSTBURN   = 1_07;
+	public static final int ERADICATION = 2_07;
+	public static final int LASTSTAND   = 3_07;
+	public static final int SCAM        = 4_07;
+	public static final int WARP        = 5_07;
 
     private static BuffIndicator heroInstance;
 	private static BuffIndicator bossInstance;
