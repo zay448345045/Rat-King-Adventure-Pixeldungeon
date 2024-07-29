@@ -204,7 +204,9 @@ public abstract class ChampionEnemy extends Buff {
 				}
 				else Buff.affect(enemy, Burning.class).reignite(enemy, doubleFire ? 11 : 7);
 			}
-			else Buff.affect(enemy, Burning.class).reignite(enemy);
+			else if (!Dungeon.level.water[enemy.pos]) {
+				Buff.affect(enemy, Burning.class).reignite(enemy);
+			}
 		}
 
 		@Override
