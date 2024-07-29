@@ -708,6 +708,9 @@ public class Armor extends EquipableItem {
 			float mult = RingOfArcana.enchantPowerMultiplier(defender);
 			Berserk berserk = defender.buff(Berserk.class);
 			if(berserk != null) mult *= berserk.enchantFactor(mult, true);
+			if (defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.HEROIC_ENDURANCE) >= 4){
+				mult *= 1.25f;
+			}
 			return mult;
 		}
 
