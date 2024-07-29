@@ -113,11 +113,8 @@ public class SoulOfYendor extends Artifact implements AlchemyScene.ToolkitLike {
 
         unique = true;
         bones = false;
-    }
 
-    @Override
-    public String getDefaultAction() {
-        return AC_USEAGAIN;
+        defaultAction = AC_USEAGAIN;
     }
 
     @Override
