@@ -37,7 +37,7 @@ public class RevealedArea extends FlavourBuff{
 
 	public static int distance() {
 		// 3x3 normally, Seer Shot however gets 3x3/5x5/7x7
-		return 1;
+		return Math.max(1, hero.pointsInTalent(Talent.SEER_SHOT));
 	}
 
 	{
@@ -72,7 +72,7 @@ public class RevealedArea extends FlavourBuff{
 
 	public static int duration() {
 		if (hero.isClassed(HeroClass.HUNTRESS)) return 5;
-		return 5*hero.pointsInTalent(Talent.RK_WARDEN); }
+		return 5*hero.pointsInTalent(Talent.SEER_SHOT, Talent.RK_WARDEN); }
 	@Override
 	public float iconFadePercent() {
 		float max = 5;

@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.buffs.Terror;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.hero.abilities.huntress.SpiritHawk;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
@@ -985,7 +986,7 @@ public class Dungeon {
 
 		for (RevealedArea a : hero.buffs(RevealedArea.class)){
 			if (Dungeon.depth != a.depth || Dungeon.branch != a.branch) continue;
-			reveal(a.pos, 2);
+			reveal(a.pos, Dungeon.hero.hasTalent(Talent.SEER_SHOT) ? 3 : 2);
 		}
 
 		for (Char ch : Actor.chars()){

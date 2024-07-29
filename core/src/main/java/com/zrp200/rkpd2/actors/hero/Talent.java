@@ -1390,7 +1390,7 @@ public enum Talent {
 					case ROGUE:
 						return new Talent[]{ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY};
 					case HUNTRESS:
-						return new Talent[]{POINT_BLANK, SEER_SHOT, AUTO_RELOAD};
+						return new Talent[]{POINT_BLANK, LIKE_A_BULLET, AUTO_RELOAD};
 					case DUELIST:
 						return new Talent[]{PRECISE_ASSAULT, DEADLY_FOLLOWUP};
 					case RAT_KING:

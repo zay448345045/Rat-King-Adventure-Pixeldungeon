@@ -631,7 +631,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 						});
 			} else {
 
-				if ((user.hasTalent(Talent.RK_WARDEN) || user.isClassed(HeroClass.HUNTRESS))
+				if ((user.hasTalent(Talent.SEER_SHOT, Talent.RK_WARDEN) || user.isClassed(HeroClass.HUNTRESS))
 						&& user.buff(Talent.SeerShotCooldown.class) == null){
 					int shotPos = throwPos(user, dst);
 					if (Actor.findChar(shotPos) == null) {

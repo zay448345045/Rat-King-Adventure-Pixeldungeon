@@ -562,7 +562,7 @@ public enum RKPD2Changes {
                                 "_-_ Warden's seed effects"),
                         new ChangeButton(SOUL_SIPHON, "_-_ Added unique icons for Huntress's secret subclass."),
                         new ChangeButton(HEROIC_WIZARDRY, "_-_ Changed Heroic Wizardry to properly act as additional max charges for every possible occasion."),
-                        new ChangeButton(SEER_SHOT, "Previously was Seer Shot.\n\n" +
+                        new ChangeButton(LIKE_A_BULLET, "Previously was Seer Shot.\n\n" +
                                 "_-_ Removed and replaced by _Like a Bullet_. Point Blank's Super-shot buffs were moved here, with very mild nerf.\n" +
                                 "_-_ Seer Shot is now Huntress's innate ability.\n" +
                                 "_-_ Natural Dominance still has Seer Shot part."),
