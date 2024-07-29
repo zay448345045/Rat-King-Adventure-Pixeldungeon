@@ -294,7 +294,7 @@ public class ItemSpriteSheet {
 		assignItemRect(WAR_SCYTHE,  14, 15);
 	}
 
-	private static final int WEP_TIER6     =                                xy(1, 12);
+	private static final int WEP_TIER6     =                                xy(1, 13);
 
 	public static final int ROYAL_SWORD     = WEP_TIER6+0;
 	public static final int NUCLEAR_HATCHET = WEP_TIER6+1;
