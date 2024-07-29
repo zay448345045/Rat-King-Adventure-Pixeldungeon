@@ -23,9 +23,7 @@ package com.zrp200.rkpd2.items.scrolls.exotic;
 
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.hero.Belongings;
-import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Enchanting;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
@@ -143,7 +141,6 @@ public class ScrollOfEnchantment extends ExoticScroll {
 
 					Sample.INSTANCE.play( Assets.Sounds.READ );
 					Enchanting.show(curUser, weapon);
-					Talent.onUpgradeScrollUsed( Dungeon.hero );
 				}
 			}
 

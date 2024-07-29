@@ -98,7 +98,6 @@ import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.Gloves;
-import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.levels.Level;
@@ -1124,31 +1123,6 @@ public enum Talent {
 			}
 			Buff.affect(hero, Invisibility.class, factor * (1 + 2*points));
 			Sample.INSTANCE.play( Assets.Sounds.MELD );
-		}
-	}
-
-	public static void onUpgradeScrollUsed( Hero hero ){
-		// fixme it's probably going to look like someone threw up spellsprites
-		if (hero.hasTalent(INSCRIBED_POWER, RESTORATION)){
-			int charge = 2+2*hero.pointsInTalent(INSCRIBED_POWER);
-			MagesStaff staff = hero.belongings.getItem(MagesStaff.class);
-			int pointDiff = hero.pointsInTalent(RESTORATION) - hero.pointsInTalent(INSCRIBED_POWER);
-			boolean charged = false;
-			if(hero.hasTalent(INSCRIBED_POWER)) {
-				hero.belongings.charge(charge, true);
-			}
-			if (staff != null && pointDiff > 0) {
-				staff.gainCharge( charge + 2*pointDiff, true);
-				charged = true;
-			}
-			if(staff == null && hero.hasTalent(RESTORATION)) {
-				Buff.affect(hero, Recharging.class, 4 + 8 * hero.pointsInTalent(RESTORATION));
-				charged = true;
-			}
-			if(charged) {
-				ScrollOfRecharging.charge(hero);
-				SpellSprite.show( hero, SpellSprite.CHARGE );
-			}
 		}
 	}
 
