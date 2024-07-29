@@ -65,8 +65,8 @@ public class GnollTrickster extends Gnoll {
 	@Override
 	public int damageRoll() {
 		if (alignment == Alignment.ALLY){
-			return Random.NormalIntRange( 8 + Math.max(0, (Dungeon.getDepth() -25)*2/5),
-					16 + Math.max(0, (Dungeon.getDepth() -25)*5/5) );
+			return Random.NormalIntRange( 8 + Math.max(0, (Dungeon.scalingDepth() -25)*2/5),
+					16 + Math.max(0, (Dungeon.scalingDepth() -25)*5/5) );
 		}
 		return super.damageRoll();
 	}

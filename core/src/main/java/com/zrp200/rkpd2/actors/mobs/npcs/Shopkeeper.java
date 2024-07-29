@@ -185,7 +185,7 @@ public class Shopkeeper extends NPC {
 	// TODO really what should have been done is define a "base value" method so I don't have to duplicate things over and over.
 	public static int sellPrice(Item item){
 		int basePrice = Reflection.newInstance(item.getClass()).quantity(item.quantity()).value();
-		int price = (int) Math.ceil((basePrice * 2 + item.value()) / 3f * 5 * (Dungeon.getDepth() / 5 + 1));
+		int price = (int) Math.ceil((basePrice * 2 + item.value()) / 3f * 5 * (Dungeon.scalingDepth() / 5 + 1));
 		if (Dungeon.hero.buff(Scam.class) != null){
 			price = Random.Int(1, (int) (price*1.25f));
 		}

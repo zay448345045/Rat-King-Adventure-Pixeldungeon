@@ -223,7 +223,7 @@ public class DungeonTileSheet {
 
 	public static boolean wallStitcheable(int tile){
 		for (int i : wallStitcheable)
-			if (tile == i && !(i == Terrain.LOCKED_EXIT && Dungeon.getDepth() == 15))
+			if (tile == i && !(i == Terrain.LOCKED_EXIT && Dungeon.depth == 15))
 				return true;
 		return false;
 	}

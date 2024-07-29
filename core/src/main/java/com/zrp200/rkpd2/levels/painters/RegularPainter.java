@@ -127,7 +127,7 @@ public abstract class RegularPainter extends Painter {
 		
 		for (Room r : rooms.toArray(new Room[0])) {
 			if (r.connected.isEmpty()){
-				Game.reportException( new RuntimeException("Painting a room with no connections! Room:" + r.getClass().getSimpleName() + " Seed:" + Dungeon.seed + " Depth:" + Dungeon.getDepth()));
+				Game.reportException( new RuntimeException("Painting a room with no connections! Room:" + r.getClass().getSimpleName() + " Seed:" + Dungeon.seed + " Depth:" + Dungeon.depth));
 				if (r instanceof SpecialRoom) return false;
 			}
 			placeDoors( r );
@@ -184,9 +184,9 @@ public abstract class RegularPainter extends Painter {
 	protected void paintDoors( Level l, ArrayList<Room> rooms ) {
 
 		float hiddenDoorChance = 0;
-		if (Dungeon.getDepth() > 1){
+		if (Dungeon.scalingDepth() > 1){
 			//chance for a hidden door scales from 2/20 on floor 2 to 20/20 on floor 20
-			hiddenDoorChance = Math.min(1f, Dungeon.getDepth() / 20f);
+			hiddenDoorChance = Math.min(1f, Dungeon.scalingDepth() / 20f);
 		}
 		if (l.feeling == Level.Feeling.SECRETS){
 			//pull the value of extra secret doors toward 50% on secrets level feel
@@ -259,7 +259,7 @@ public abstract class RegularPainter extends Painter {
 					//entrance doors on floor 1 are hidden during tutorial
 					//entrance doors on floor 2 are hidden if the player hasn't picked up 2nd guidebook page
 					if (r instanceof EntranceRoom || n instanceof EntranceRoom){
-						if ((Dungeon.getDepth() == 1 && SPDSettings.intro())
+						if ((Dungeon.depth == 1 && SPDSettings.intro())
 							|| (Dungeon.depth == 2 && !Document.ADVENTURERS_GUIDE.isPageFound(Document.GUIDE_SEARCHING))) {
 							d.type = Room.Door.Type.HIDDEN;
 						}

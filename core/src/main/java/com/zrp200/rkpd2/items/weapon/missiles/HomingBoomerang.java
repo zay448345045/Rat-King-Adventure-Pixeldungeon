@@ -77,7 +77,7 @@ public class HomingBoomerang extends MissileWeapon {
 				targetPos = Dungeon.hero.pos;
 				hitCounter = 0;
 			}
-			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, targetPos, Dungeon.getDepth());
+			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, targetPos, Dungeon.depth);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class HomingBoomerang extends MissileWeapon {
 		if (targetPos == Integer.MAX_VALUE-1){
 			targetPos = Dungeon.hero.pos;
 		}
-		Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, targetPos, Dungeon.getDepth());
+		Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, targetPos, Dungeon.depth);
 	}
 	
 	public static class CircleBack extends Buff {
@@ -128,7 +128,7 @@ public class HomingBoomerang extends MissileWeapon {
 		
 		@Override
 		public boolean act() {
-			if (returnDepth == Dungeon.getDepth()){
+			if (returnDepth == Dungeon.depth){
 				left--;
 				if (left <= 0){
 					final Char returnTarget = Actor.findChar(returnPos);

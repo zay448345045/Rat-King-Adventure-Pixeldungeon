@@ -95,7 +95,7 @@ public class SpiritBuff extends CounterBuff implements ActionIndicator.Action {
         if ((!Dungeon.level.solid[pos] || Dungeon.level.passable[pos]) && Actor.findChar( pos ) == null) {
 
             Wraith w = new Wraith();
-            w.adjustStats(Dungeon.getDepth());
+            w.adjustStats(Dungeon.scalingDepth());
             w.pos = pos;
             w.state = w.HUNTING;
             GameScene.add( w, 1f);

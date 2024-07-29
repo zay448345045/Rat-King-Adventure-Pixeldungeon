@@ -77,7 +77,7 @@ public class ScrollOfMirrorImage extends Scroll {
 			int index = Random.index( respawnPoints );
 			
 			MirrorImage mob = new MirrorImage();
-			if (Dungeon.hero.pointsInTalent(Talent.SPECTRE_ALLIES) > 2) mob.HP = mob.HT = Dungeon.getDepth()*2;
+			if (Dungeon.hero.pointsInTalent(Talent.SPECTRE_ALLIES) > 2) mob.HP = mob.HT = Dungeon.scalingDepth()*2;
 			mob.duplicate( hero );
 			GameScene.add( mob );
 			ScrollOfTeleportation.appear( mob, respawnPoints.get( index ) );

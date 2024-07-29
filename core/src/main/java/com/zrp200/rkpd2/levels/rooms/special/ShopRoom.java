@@ -208,7 +208,7 @@ public class ShopRoom extends SpecialRoom {
 
 		MeleeWeapon w;
 		Armor a;
-		switch (Dungeon.getDepth()) {
+		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[1]).quantity(2).identify(false) );
@@ -236,7 +236,7 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add( new Torch() );
 			break;
 		}
-		if (Dungeon.getDepth() > 26){
+		if (Dungeon.scalingDepth() > 26){
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[5]);
 			itemsToSpawn.add( Generator.random(Generator.misTiers[5]).quantity(2).identify() );
 			a = ClassArmor.upgrade(Dungeon.hero, new PlateArmor());
@@ -298,7 +298,7 @@ public class ShopRoom extends SpecialRoom {
 			int bags = 0;
 			//creates the given float percent of the remaining bags to be dropped.
 			//this way players who get the hourglass late can still max it, usually.
-			switch (Dungeon.getDepth()) {
+			switch (Dungeon.depth) {
 				case 6:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.20f ); break;
 				case 11:
@@ -308,7 +308,7 @@ public class ShopRoom extends SpecialRoom {
 				case 20: case 21:
 					bags = (int)Math.ceil(( 5-hourglass.sandBags) * 0.80f ); break;
 			}
-			if (Dungeon.getDepth() > 26){
+			if (Dungeon.scalingDepth() > 26){
 				bags = (int)Math.ceil(( 5-hourglass.sandBags) * 1f );
 			}
 

@@ -132,7 +132,7 @@ public abstract class SpecialRoom extends Room {
 		floorSpecials = (ArrayList<Class<?extends Room>>) runSpecials.clone();
 		
 		//laboratory rooms spawn at set intervals every chapter
-		if (Dungeon.getDepth() %5 == (Dungeon.seed%3 + 2)){
+		if (Dungeon.depth %5 == (Dungeon.seed%3 + 2)){
 			floorSpecials.add(0, LaboratoryRoom.class);
 		}
 	}
@@ -155,7 +155,7 @@ public abstract class SpecialRoom extends Room {
 	}
 	
 	public static SpecialRoom createRoom(){
-		if (Dungeon.getDepth() == pitNeededDepth){
+		if (Dungeon.depth == pitNeededDepth){
 			pitNeededDepth = -1;
 			
 			useType( PitRoom.class );
@@ -168,7 +168,7 @@ public abstract class SpecialRoom extends Room {
 		
 		} else {
 			
-			if (Dungeon.bossLevel(Dungeon.getDepth() + 1)){
+			if (Dungeon.bossLevel(Dungeon.depth + 1)){
 				floorSpecials.remove(WeakFloorRoom.class);
 			}
 
@@ -179,7 +179,7 @@ public abstract class SpecialRoom extends Room {
 			Room r = Reflection.newInstance(floorSpecials.get( index ));
 
 			if (r instanceof WeakFloorRoom){
-				pitNeededDepth = Dungeon.getDepth() + 1;
+				pitNeededDepth = Dungeon.depth + 1;
 			}
 			
 			useType( r.getClass() );

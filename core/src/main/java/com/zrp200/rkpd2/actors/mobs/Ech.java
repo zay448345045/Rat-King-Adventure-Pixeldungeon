@@ -45,7 +45,7 @@ public class Ech extends DirectableAlly {
                 (Dungeon.hero.isClassed(HeroClass.ROGUE) ? 1.5f : 1));
     }
 
-    private static double getModifier() { return Math.max(1, Dungeon.getDepth()/4d); }
+    private static double getModifier() { return Math.max(1, Dungeon.scalingDepth()/4d); }
 
     @Override
     public float spawningWeight() {

@@ -483,7 +483,7 @@ public abstract class ChampionEnemy extends Buff {
 		public void detach() {
 			ArrayList<Class<?extends Mob>> mobsToSpawn;
 
-			mobsToSpawn = Bestiary.getMobRotation(Dungeon.getDepth());
+			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
 
 			Mob clone = Reflection.newInstance(mobsToSpawn.remove(0));
 			ChampionEnemy.rollForChampion(clone);

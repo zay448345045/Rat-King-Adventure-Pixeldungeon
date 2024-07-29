@@ -64,7 +64,7 @@ public class SecretLarderRoom extends SecretRoom {
 		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
 			type = Heap.Type.CHEST;
 		
-		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.getDepth() / 5);
+		int extraFood = (int)(Hunger.STARVING - Hunger.HUNGRY) * (1 + Dungeon.scalingDepth() / 5);
 		
 		while (extraFood > 0){
 			Food food;

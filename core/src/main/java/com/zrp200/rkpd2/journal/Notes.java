@@ -196,9 +196,9 @@ public class Notes {
 	}
 	
 	public static boolean add( Landmark landmark ) {
-		LandmarkRecord l = new LandmarkRecord( landmark, Dungeon.getDepth());
+		LandmarkRecord l = new LandmarkRecord( landmark, Dungeon.depth);
 		if (!records.contains(l)) {
-			boolean result = records.add(new LandmarkRecord(landmark, Dungeon.getDepth()));
+			boolean result = records.add(new LandmarkRecord(landmark, Dungeon.depth));
 			Collections.sort(records);
 			return result;
 		}
@@ -206,7 +206,7 @@ public class Notes {
 	}
 	
 	public static boolean remove( Landmark landmark ) {
-		return records.remove( new LandmarkRecord(landmark, Dungeon.getDepth()) );
+		return records.remove( new LandmarkRecord(landmark, Dungeon.depth) );
 	}
 	
 	public static boolean add( Key key ){

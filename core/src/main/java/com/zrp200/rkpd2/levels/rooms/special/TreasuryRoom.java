@@ -51,7 +51,7 @@ public class TreasuryRoom extends SpecialRoom {
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY || level.heaps.get( pos ) != null || level.findMob(pos) != null);
-			if (heapType == Heap.Type.CHEST && Dungeon.getDepth() > 1 && Random.Int( 5 ) == 0){
+			if (heapType == Heap.Type.CHEST && Dungeon.scalingDepth() > 1 && Random.Int( 5 ) == 0){
 				level.mobs.add(Mimic.spawnAt(pos, new Gold().random()));
 			} else {
 				level.drop( new Gold().random(), pos ).type = heapType;
@@ -69,6 +69,6 @@ public class TreasuryRoom extends SpecialRoom {
 		}
 		
 		entrance().set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey(Dungeon.getDepth()) );
+		level.addItemToSpawn( new IronKey(Dungeon.depth) );
 	}
 }

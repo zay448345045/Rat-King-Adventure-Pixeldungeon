@@ -48,7 +48,7 @@ public abstract class ConnectionRoom extends Room {
 	@Override
 	public boolean canPlaceTrap(Point p) {
 		//traps cannot appear in connection rooms on floor 1
-		return super.canPlaceTrap(p) && Dungeon.getDepth() > 1;
+		return super.canPlaceTrap(p) && Dungeon.scalingDepth() > 1;
 	}
 
 	//FIXME this is a very messy way of handing variable connection rooms
@@ -86,10 +86,10 @@ public abstract class ConnectionRoom extends Room {
 	}
 	
 	public static ConnectionRoom createRoom(){
-		if (Dungeon.getDepth() >= 25){
+		if (Dungeon.scalingDepth() >= 25){
 			float[] chance = new float[]{1, 1, 1, 1, 1, 1};
 			return Reflection.newInstance(rooms.get(Random.chances(chance)));
 		}
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.getDepth()])));
+		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 }

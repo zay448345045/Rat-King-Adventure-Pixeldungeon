@@ -70,7 +70,7 @@ public class GodSlayerBurning extends Burning {
 		
 		if (target.isAlive() && !target.isImmune(getClass())) {
 			
-			int damage = Random.NormalIntRange( 2, 4 + Dungeon.getDepth() /4 );
+			int damage = Random.NormalIntRange( 2, 4 + Dungeon.scalingDepth() /4 );
 
 			Buff.detach( target, Chill.class);
 

@@ -70,7 +70,7 @@ public class ArmoryRoom extends SpecialRoom {
 		}
 		
 		entrance.set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey(Dungeon.getDepth()) );
+		level.addItemToSpawn( new IronKey(Dungeon.depth) );
 	}
 
 	//only a max of 1 prize from each category can be dropped at a time

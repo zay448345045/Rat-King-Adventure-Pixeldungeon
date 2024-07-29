@@ -128,9 +128,9 @@ public class DemonSpawner extends Mob {
 				}
 
 				spawnCooldown += 60;
-				if (Dungeon.getDepth() > 21){
+				if (Dungeon.scalingDepth() > 21){
 					//60/53.33/46.67/40 turns to spawn on floor 21/22/23/24
-					spawnCooldown -= Math.min(20, (Dungeon.getDepth() -21)*6.67);
+					spawnCooldown -= Math.min(20, (Dungeon.scalingDepth() -21)*6.67);
 				}
 			}
 		}

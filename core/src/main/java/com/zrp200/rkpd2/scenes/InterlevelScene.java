@@ -106,7 +106,7 @@ public class InterlevelScene extends PixelScene {
 		fadeTime = NORM_FADE;
 		switch (mode){
 			default:
-				loadingDepth = Dungeon.getDepth();
+				loadingDepth = Dungeon.depth;
 				scrollSpeed = 0;
 				break;
 			case CONTINUE:
@@ -119,7 +119,7 @@ public class InterlevelScene extends PixelScene {
 					fadeTime = SLOW_FADE;
 				} else {
 					if (curTransition != null)  loadingDepth = curTransition.destDepth;
-					else                        loadingDepth = Dungeon.getDepth() +1;
+					else                        loadingDepth = Dungeon.depth +1;
 					if (Statistics.deepestFloor >= loadingDepth) {
 						fadeTime = FAST_FADE;
 					} else if (loadingDepth == 6 || loadingDepth == 11
@@ -135,18 +135,18 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 5;
 				break;
 			case FALL:
-				loadingDepth = Dungeon.getDepth() +1;
+				loadingDepth = Dungeon.depth +1;
 				scrollSpeed = 50;
 				break;
 			case ASCEND:
 				fadeTime = FAST_FADE;
 				if (curTransition != null)  loadingDepth = curTransition.destDepth;
-				else                        loadingDepth = Dungeon.getDepth() -1;
+				else                        loadingDepth = Dungeon.depth -1;
 				scrollSpeed = -5;
 				break;
 			case RETURN:
 				loadingDepth = returnDepth;
-				scrollSpeed = returnDepth > Dungeon.getDepth() ? 15 : -15;
+				scrollSpeed = returnDepth > Dungeon.depth ? 15 : -15;
 				break;
 		}
 
@@ -318,7 +318,7 @@ public class InterlevelScene extends PixelScene {
 						error.getMessage().equals("old save")) errorMsg = Messages.get(this, "io_error");
 
 				else throw new RuntimeException("fatal error occurred while moving between floors. " +
-							"Seed:" + Dungeon.seed + " depth:" + Dungeon.getDepth(), error);
+							"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth, error);
 
 				add( new WndError( errorMsg ) {
 					public void onBackPressed() {
@@ -339,7 +339,7 @@ public class InterlevelScene extends PixelScene {
 				if (!s.contains("FileUtils.bundleToFile")){
 					ShatteredPixelDungeon.reportException(
 							new RuntimeException("waited more than 10 seconds on levelgen. " +
-									"Seed:" + Dungeon.seed + " depth:" + Dungeon.getDepth() + " trace:" +
+									"Seed:" + Dungeon.seed + " depth:" + Dungeon.depth + " trace:" +
 									s));
 				}
 			}

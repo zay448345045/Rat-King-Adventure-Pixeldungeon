@@ -96,12 +96,6 @@ import java.util.TimeZone;
 
 public class Dungeon {
 
-	public static int getDepth() {
-		if (depth == 0)
-			return ASCENSION_DEPTH;
-		return Dungeon.scalingDepth();
-	}
-
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
 	public static enum LimitedDrops {
@@ -447,11 +441,11 @@ public class Dungeon {
 	}
 	
 	public static boolean shopOnLevel() {
-		return getDepth() == 6 || getDepth() == 11 || getDepth() == 16 || ((getDepth() - 1) % 5 == 0 && getDepth() != 1 && getDepth() != 21);
+		return depth == 6 || depth == 11 || depth == 16 || ((depth - 1) % 5 == 0 && depth != 1 && depth != 21);
 	}
 	
 	public static boolean bossLevel() {
-		return bossLevel(getDepth());
+		return bossLevel(depth);
 	}
 	
 	public static boolean bossLevel( int depth ) {
@@ -462,6 +456,8 @@ public class Dungeon {
 	//is usually the dungeon depth, but can be set to 26 when ascending
 	static final int ASCENSION_DEPTH = 26;
 	public static int scalingDepth(){
+		if (depth == 0)
+			return ASCENSION_DEPTH;
 		if (Dungeon.hero != null && (Dungeon.hero.buff(AscensionChallenge.class) != null || Dungeon.depth == 0) && depth < ASCENSION_DEPTH){
 			return ASCENSION_DEPTH;
 		} else {
@@ -546,10 +542,10 @@ public class Dungeon {
 
 	public static boolean posNeeded() {
 		//2 POS each floor set
-		int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (getDepth() / 5) * 2);
+		int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (depth / 5) * 2);
 		if (posLeftThisSet <= 0) return false;
 
-		int floorThisSet = (getDepth() % 5);
+		int floorThisSet = (depth % 5);
 
 		//pos drops every two floors, (numbers 1-2, and 3-4) with a 50% chance for the earlier one each time.
 		int targetPOSLeft = 2 - floorThisSet/2;
@@ -566,17 +562,17 @@ public class Dungeon {
 		souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
 		if (souLeftThisSet <= 0) return false;
 
-		int floorThisSet = (getDepth() % 5);
+		int floorThisSet = (depth % 5);
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < souLeftThisSet;
 	}
 	
 	public static boolean asNeeded() {
 		//1 AS each floor set
-		int asLeftThisSet = 1 - (LimitedDrops.ARCANE_STYLI.count - (getDepth() / 5));
+		int asLeftThisSet = 1 - (LimitedDrops.ARCANE_STYLI.count - (depth / 5));
 		if (asLeftThisSet <= 0) return false;
 
-		int floorThisSet = (getDepth() % 5);
+		int floorThisSet = (depth % 5);
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < asLeftThisSet;
 	}

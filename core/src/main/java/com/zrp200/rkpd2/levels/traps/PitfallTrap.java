@@ -48,13 +48,13 @@ public class PitfallTrap extends Trap {
 	@Override
 	public void activate() {
 		
-		if( Dungeon.bossLevel() || Dungeon.getDepth() > 25 || Dungeon.branch != 0){
+		if( Dungeon.bossLevel() || Dungeon.depth > 25 || Dungeon.branch != 0){
 			GLog.w(Messages.get(this, "no_pit"));
 			return;
 		}
 
 		DelayedPit p = Buff.append(Dungeon.hero, DelayedPit.class, 1);
-		p.depth = Dungeon.getDepth();
+		p.depth = Dungeon.depth;
 		p.branch = Dungeon.branch;
 		p.pos = pos;
 

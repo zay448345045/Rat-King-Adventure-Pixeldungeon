@@ -178,11 +178,11 @@ public abstract class StandardRoom extends Room {
 	
 	
 	public static StandardRoom createRoom(){
-		if (Dungeon.getDepth() >= 25){
+		if (Dungeon.scalingDepth() >= 25){
 			float[] chance = new float[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			return Reflection.newInstance(rooms.get(Random.chances(chance)));
 		}
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.getDepth()])));
+		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 	
 }

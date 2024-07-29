@@ -100,7 +100,7 @@ public class Pickaxe extends MeleeWeapon {
 		
 		if (action.equals(AC_MINE)) {
 			
-			if (Dungeon.getDepth() < 11 || Dungeon.getDepth() > 15) {
+			if (Dungeon.depth < 11 || Dungeon.depth > 15) {
 				GLog.w( Messages.get(this, "no_vein") );
 				return;
 			}

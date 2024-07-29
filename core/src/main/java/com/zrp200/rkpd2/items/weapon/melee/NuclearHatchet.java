@@ -53,7 +53,7 @@ public class NuclearHatchet extends MeleeWeapon {
 
 	@Override
 	public int warriorAttack(int damage, Char enemy) {
-		GameScene.add( Blob.seed( enemy.pos, 700, CorrosiveGas.class ).setStrength((int) (2 + Dungeon.getDepth() /2.5f)));
+		GameScene.add( Blob.seed( enemy.pos, 700, CorrosiveGas.class ).setStrength((int) (2 + Dungeon.scalingDepth() /2.5f)));
 		return super.warriorAttack(damage, enemy);
 	}
 

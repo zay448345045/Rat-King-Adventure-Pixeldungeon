@@ -205,7 +205,7 @@ public class Imp extends NPC {
 		}
 		
 		public static void spawn( CityLevel level ) {
-			if (!spawned && Dungeon.getDepth() > 16 && Random.Int( 20 - Dungeon.getDepth()) == 0) {
+			if (!spawned && Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth) == 0) {
 				
 				Imp npc = new Imp();
 				do {
@@ -223,7 +223,7 @@ public class Imp extends NPC {
 				spawned = true;
 
 				//always assigns monks on floor 17, golems on floor 19, and 50/50 between either on 18
-				switch (Dungeon.getDepth()){
+				switch (Dungeon.depth){
 					case 17: default:
 						alternative = true;
 						break;

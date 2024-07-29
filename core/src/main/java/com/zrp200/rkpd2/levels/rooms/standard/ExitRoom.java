@@ -52,7 +52,7 @@ public class ExitRoom extends StandardRoom {
 			door.set( Room.Door.Type.REGULAR );
 		}
 
-		if (Dungeon.getDepth() > 25) {
+		if (Dungeon.scalingDepth() > 25) {
 			for (int i = 0; i < Random.IntRange(1, 5); i++) {
 				FinalFroggit npc = new FinalFroggit();
 				do {

@@ -96,7 +96,7 @@ public class BeaconOfReturning extends Spell {
 	}
 	
 	private void setBeacon(Hero hero ){
-		returnDepth = Dungeon.getDepth();
+		returnDepth = Dungeon.depth;
 		returnBranch = Dungeon.branch;
 		returnPos = hero.pos;
 		

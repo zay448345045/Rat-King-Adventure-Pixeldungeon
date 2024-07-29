@@ -745,7 +745,7 @@ public class Tengu extends Mob {
 
 							Char ch = Actor.findChar(cell);
 							if (ch != null && !(ch instanceof Tengu)){
-								int dmg = Random.NormalIntRange(5 + Dungeon.getDepth(), 10 + Dungeon.getDepth() *2);
+								int dmg = Random.NormalIntRange(5 + Dungeon.scalingDepth(), 10 + Dungeon.scalingDepth() *2);
 								dmg -= ch.drRoll();
 
 								if (dmg > 0) {
