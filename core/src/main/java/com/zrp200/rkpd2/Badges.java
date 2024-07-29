@@ -211,15 +211,15 @@ public class Badges {
 		CHAMPION_3                  ( 124 ),
 
 		//neutronium
-		DEFEATED_RK					(112),
-		CHAMPION_4                  (125),
-		CHAMPION_5                  (126),
-		CHAMPION_6                  (127),
-		CHAMPION_7                  (128),
-		CHAMPION_8                  (129),
-		CHAMPION_9                  (130),
-		CHAMPION_10                  (131),
-		CHAMPION_11                  (132);
+		DEFEATED_RK					(136),
+		CHAMPION_4                  (137),
+		CHAMPION_5                  (138),
+		CHAMPION_6                  (139),
+		CHAMPION_7                  (140),
+		CHAMPION_8                  (141),
+		CHAMPION_9                  (142),
+		CHAMPION_10                  (143),
+		CHAMPION_11                  (144);
 
 		public boolean meta;
 
