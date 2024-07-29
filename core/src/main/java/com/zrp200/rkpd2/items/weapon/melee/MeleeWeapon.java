@@ -82,6 +82,8 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	protected boolean hasAbility() {
 		return hero != null && hero.heroClass.is(HeroClass.DUELIST);
 	} @Override public String defaultAction() {
+		if (Dungeon.hero.subClass.is(HeroSubClass.BRAWLER) && Dungeon.hero.belongings.weapon != this)
+			return AC_EQUIP;
 		if (hasAbility() || hero.hasTalent(Talent.SWIFT_EQUIP)){
 			return AC_ABILITY;
 		} else {
@@ -413,13 +415,6 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		if (trollers)
 			return super.max()*2;
 		return super.max();
-	}
-
-	@Override
-	public String getDefaultAction() {
-		if (Dungeon.hero.subClass.is(HeroSubClass.BRAWLER) && Dungeon.hero.belongings.weapon != this)
-			return AC_EQUIP;
-		return super.getDefaultAction();
 	}
 
 	public int STRReq(int lvl){
