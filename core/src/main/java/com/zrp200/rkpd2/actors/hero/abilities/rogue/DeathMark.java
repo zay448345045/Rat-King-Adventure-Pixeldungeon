@@ -99,7 +99,8 @@ public class DeathMark extends ArmorAbility {
 			return;
 		}
 
-		Buff.affect(ch, DeathMarkTracker.class, DeathMarkTracker.DURATION).setInitialHP(ch.HP);
+		Buff.affect(ch, DeathMarkTracker.class, DeathMarkTracker.DURATION +
+				(hero.hasTalent(Talent.CATACLYSMIC_ENERGY) ? 1 + hero.pointsInTalent(Talent.CATACLYSMIC_ENERGY) : 0)).setInitialHP(ch.HP);
 
 		armor.useCharge(hero, this);
 		hero.sprite.zap(target);
