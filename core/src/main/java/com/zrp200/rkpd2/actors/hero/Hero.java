@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.Delayer;
@@ -2144,6 +2145,22 @@ public class Hero extends Char {
 
 			if (subClass.is(HeroSubClass.FREERUNNER)){
 				Buff.affect(this, Momentum.class).gainStack();
+			}
+			if (hasTalent(Talent.BIG_RUSH)){
+				for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
+					if (mob.alignment == Char.Alignment.ENEMY && Dungeon.level.heroFOV[mob.pos]
+							&& mob.pos == step) {
+						Buff.affect(this, Talent.BigRushTracker.class, 0f);
+						enemy = mob;
+						if (enemy.isAlive() && canAttack( enemy ) && !isCharmedBy( enemy )) {
+							CellEmitter.center(pos).burst(Speck.factory(Speck.DUST), 10);
+							Camera.main.shake(2, 0.5f);
+							sprite.attack( enemy.pos );
+//								spend(attackDelay());
+							return false;
+						}
+					}
+				}
 			}
 
 			sprite.move(pos, step);
