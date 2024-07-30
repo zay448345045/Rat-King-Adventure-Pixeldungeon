@@ -892,9 +892,13 @@ public class Hero extends Char {
 
 		if (dmg < 0) dmg = 0;
 		if (buff(Talent.BigRushTracker.class) != null){
-			BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
-			if (shield != null && shield.maxShield() > 0){
-				dmg += Random.IntRange(0, Math.round(pointsInTalent(Talent.BIG_RUSH)*0.75f*shield.maxShield()));
+			if (heroClass.is(HeroClass.WARRIOR)) {
+				BrokenSeal.WarriorShield shield = buff(BrokenSeal.WarriorShield.class);
+				if (shield != null && shield.maxShield() > 0) {
+					dmg += Random.IntRange(0, Math.round(pointsInTalent(Talent.BIG_RUSH) * 0.75f * shield.maxShield()));
+				}
+			} else {
+				dmg += Random.IntRange(0, Math.round(HT * (0.04f + Math.round(pointsInTalent(Talent.BIG_RUSH) * 0.035f))));
 			}
 		}
 		if (buff(ChampionEnemy.Projecting.class) != null && wep instanceof MeleeWeapon){
