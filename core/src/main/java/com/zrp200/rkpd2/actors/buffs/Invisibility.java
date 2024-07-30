@@ -24,8 +24,10 @@ package com.zrp200.rkpd2.actors.buffs;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.items.artifacts.Artifact;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.artifacts.KromerCloak;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
@@ -91,7 +93,22 @@ public class Invisibility extends FlavourBuff {
 	}
 
 	public static void dispel(Char ch) {
-		if (Dungeon.hero.pointsInTalent(Talent.ADAPT_AND_OVERCOME) == 3){
+		if (!Dungeon.hero.heroClass.is(HeroClass.ROGUE) && Dungeon.hero.hasTalent(Talent.EFFICIENT_SHADOWS)){
+			if (Dungeon.hero.buff(DispelDelayer.class) == null && Dungeon.hero.invisible > 0){
+				Buff.affect(Dungeon.hero, DispelDelayer.class, 1f);
+			} else {
+				actualDispel(ch);
+				if (Dungeon.hero.pointsInTalent(Talent.EFFICIENT_SHADOWS) > 1){
+					for (Buff b : Dungeon.hero.buffs()) {
+						if (b instanceof Artifact.ArtifactBuff) {
+							if (!((Artifact.ArtifactBuff) b).isCursed()) {
+								((Artifact.ArtifactBuff) b).charge(Dungeon.hero, 4);
+							}
+						}
+					}
+				}
+			}
+		} else if (Dungeon.hero.pointsInTalent(Talent.ADAPT_AND_OVERCOME) == 3){
 			if (Dungeon.hero.buff(DispelDelayer.class) == null && Dungeon.hero.invisible > 0){
 				Buff.affect(Dungeon.hero, DispelDelayer.class, 1f);
 				Preparation preparation = Dungeon.hero.buff(Preparation.class);
