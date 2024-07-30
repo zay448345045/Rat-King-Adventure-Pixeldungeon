@@ -307,7 +307,7 @@ public enum Talent {
 	BLOODBATH(imageAt(16, 10), 3), THINKING_WITH_PORTALS(imageAt(17, 10), 3), ADAPT_AND_OVERCOME(imageAt(18, 10), 3),
 
 	// RKA other replacements
-	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11));
+	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11)), INDISCRIMINATE_RAGE(imageAt(16, 8), 3);
 
 	protected String[] aliases = new String[0];
 
@@ -1541,7 +1541,7 @@ public enum Talent {
 		//tier 3
 		switch (cls){
 			case BERSERKER: default:
-				Collections.addAll(tierTalents, ENDLESS_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BERSERKING_STAMINA, ONE_MAN_ARMY, BRAVERY);
+				Collections.addAll(tierTalents, INDISCRIMINATE_RAGE, DEATHLESS_FURY, ENRAGED_CATALYST, BERSERKING_STAMINA, ONE_MAN_ARMY, BRAVERY);
 				break;
 			case BRAWLER:
 				Collections.addAll(tierTalents, POWER_STABILIZER, ARCANITY_ENSUES, IN_MY_MEMORIES, HOLERIC_BURST, PRIDE_OF_STEEL);
@@ -1655,6 +1655,7 @@ public enum Talent {
 		renamedTalents.put("BOUNTY_HUNTER",             "ADAPT_AND_OVERCOME");
 		renamedTalents.put("ROGUES_FORESIGHT",          "PROTEIN_INFUSION");
 		renamedTalents.put("SEER_SHOT",                 "LIKE_A_BULLET");
+		renamedTalents.put("ENDLESS_RAGE",              "INDISCRIMINATE_RAGE");
 	};
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){
