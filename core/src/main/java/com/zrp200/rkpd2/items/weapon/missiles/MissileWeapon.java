@@ -312,7 +312,7 @@ abstract public class MissileWeapon extends Weapon {
 			if (Dungeon.hero.hasTalent(Talent.LIKE_A_BULLET)){
 				int distance = Dungeon.level.distance(attacker.pos, defender.pos) - 1;
 				float multiplier = Math.min(3f, 1.2f * (float) Math.pow(1.125f, distance)) *
-						0.5f * Dungeon.hero.pointsInTalent(Talent.LIKE_A_BULLET);
+						(0.5f + 0.5f * Dungeon.hero.pointsInTalent(Talent.LIKE_A_BULLET));
 				damage = Math.round(damage * multiplier);
 				super_shot_talent = true;
 			}
