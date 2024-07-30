@@ -222,9 +222,12 @@ public class BrokenSeal extends Item {
 		private static final float RECHARGE_RATE = 30;
 
 		public float getRechargeRate() {
-			return 1f/(RECHARGE_RATE * (1 - ((Hero) target).shiftedPoints(Talent.IRON_WILL) / (float) maxShield()))
-					* (1f + 0.6f * ((Hero) target).pointsInTalent(Talent.WILLPOWER_OF_INJURED) * (Math.max(1f,
-					1f - (target.HP * 1f / target.HT) + 0.1f)));
+			float baseSpeed = (RECHARGE_RATE * (1 - ((Hero) target).shiftedPoints(Talent.IRON_WILL) / (float) maxShield()));
+			if (((Hero)target).hasTalent(Talent.WILLPOWER_OF_INJURED)){
+				float boost = 0.5f * ((Hero) target).pointsInTalent(Talent.WILLPOWER_OF_INJURED);
+				baseSpeed /= 1f + boost * Math.max(1f, ((float) (target.HT - target.HP) / target.HT)*1.1f);
+			}
+			return 1f/baseSpeed;
 		}
 
 		@Override
