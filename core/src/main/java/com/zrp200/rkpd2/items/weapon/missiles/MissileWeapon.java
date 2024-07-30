@@ -28,17 +28,20 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Adrenaline;
+import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.Momentum;
 import com.zrp200.rkpd2.actors.buffs.PinCushion;
 import com.zrp200.rkpd2.actors.buffs.RevealedArea;
+import com.zrp200.rkpd2.actors.buffs.Roots;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.LiquidMetal;
+import com.zrp200.rkpd2.items.armor.ScoutArmor;
 import com.zrp200.rkpd2.items.artifacts.CloakOfShadows;
 import com.zrp200.rkpd2.items.bags.Bag;
 import com.zrp200.rkpd2.items.bags.MagicalHolster;
@@ -294,6 +297,27 @@ abstract public class MissileWeapon extends Weapon {
 			Ballistica trajectory = new Ballistica(attacker.pos, defender.pos, Ballistica.STOP_TARGET);
 			trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size()-1), Ballistica.PROJECTILE);
 			WandOfBlastWave.throwChar(defender, trajectory, 2, false, true, getClass());
+		}
+		if (!Dungeon.hero.heroClass.is(HeroClass.HUNTRESS)
+				&& Dungeon.hero.buff(ScoutArmor.ScoutCooldown.class) == null){
+			boolean super_shot_talent = false;
+			if (Dungeon.hero.hasTalent(Talent.SCOUTS_BARRIER)){
+				Buff.affect(attacker, Barrier.class).incShield(2 + Dungeon.hero.pointsInTalent(Talent.SCOUTS_BARRIER)*2);
+				super_shot_talent = true;
+			}
+			if (Dungeon.hero.hasTalent(Talent.IVYLASH)){
+				Buff.affect(defender, Roots.class, Dungeon.hero.pointsInTalent(Talent.IVYLASH) + baseDelay(attacker));
+				super_shot_talent = true;
+			}
+			if (Dungeon.hero.hasTalent(Talent.LIKE_A_BULLET)){
+				int distance = Dungeon.level.distance(attacker.pos, defender.pos) - 1;
+				float multiplier = Math.min(3f, 1.2f * (float) Math.pow(1.125f, distance)) *
+						0.5f * Dungeon.hero.pointsInTalent(Talent.LIKE_A_BULLET);
+				damage = Math.round(damage * multiplier);
+				super_shot_talent = true;
+			}
+			if (super_shot_talent)
+				Buff.affect(attacker, ScoutArmor.ScoutCooldown.class, ScoutArmor.ScoutCooldown.DURATION*1.33f);
 		}
 		if (tracker != null) tracker.attachTo(Dungeon.hero); // reapply it
 

@@ -45,6 +45,8 @@ public class ScoutArmor extends Armor {
     }
 
     public static class ScoutCooldown extends FlavourBuff {
+
+        public static final float DURATION = 25f;
         public int icon() { return BuffIndicator.TIME; }
         public void tintIcon(Image icon) { icon.hardlight(0x360235); }
         public float iconFadePercent() { return Math.max(0, 1 - (visualcooldown() / 25)); }
@@ -119,7 +121,7 @@ public class ScoutArmor extends Armor {
             if (target != null && bow != null) {
                 SpiritBow.superShot = true;
                 bow.knockArrow().cast(curUser, target);
-                Buff.affect(curUser, ScoutCooldown.class, 25f);
+                Buff.affect(curUser, ScoutCooldown.class, ScoutCooldown.DURATION);
             }
         }
         @Override
