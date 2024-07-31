@@ -360,8 +360,8 @@ public abstract class YogFist extends Mob {
 			if (hit( this, enemy, true )) {
 				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
 					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+					SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+					enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 				} else {
 					Buff.affect(enemy, Roots.class, 3f);
 				}
@@ -529,9 +529,9 @@ public abstract class YogFist extends Mob {
 				ChampionEnemy.AntiMagic.effect(enemy, this);
 				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
 					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-					Buff.affect(enemy, Barrier.class).setShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
-					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+					SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).incShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
+					enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 				} else {
 					enemy.damage(Random.NormalIntRange(10, 20), new LightBeam());
 					Buff.prolong(enemy, Blindness.class, Blindness.DURATION / 2f);
@@ -602,9 +602,9 @@ public abstract class YogFist extends Mob {
 				ChampionEnemy.AntiMagic.effect(enemy, this);
 				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
 					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-					Buff.affect(enemy, Barrier.class).setShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
-					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+					SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).incShield(Math.round(Random.NormalIntRange(7, 15)*1.25f));
+					enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 				} else {
 					enemy.damage(Random.NormalIntRange(10, 20), new DarkBolt());
 

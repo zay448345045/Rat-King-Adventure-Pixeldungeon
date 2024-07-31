@@ -8,6 +8,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Item;
@@ -27,17 +28,17 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
     public float maxCharge(){
         BrokenSeal.WarriorShield buff = target.buff(BrokenSeal.WarriorShield.class);
         if (buff != null){
-            return buff.maxShield();
+            return buff.maxShield()/2f;
         }
-        return BrokenSeal.maxShieldFromTalents(false);
+        return BrokenSeal.maxShieldFromTalents(false)/2f;
     }
 
     public float getInc() {
         BrokenSeal.WarriorShield shield = Dungeon.hero.buff(BrokenSeal.WarriorShield.class);
         if (shield != null){
-            return shield.getRechargeRate() * 0.5f;
+            return shield.getRechargeRate() * 0.25f;
         }
-        return 1f / (30f / 0.5f);
+        return 1f / (30f * 0.25f);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
 
     @Override
     public int indicatorColor() {
-        return 0x47A6FF;
+        return 0xD39F7B;
     }
 
     public static class BlockTrock extends Buff{
@@ -74,6 +75,7 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
         }
 
         private int pos;
+        public boolean triggered = false;
 
         @Override
         public boolean attachTo( Char target ) {
@@ -89,8 +91,10 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
 
         @Override
         public boolean act() {
-            if (target.pos != pos) {
+            if (target.pos != pos || triggered) {
                 detach();
+                if (triggered)
+                    Buff.affect(target, Talent.WarriorLethalMomentumTracker.Chain.class, 3f);
             }
             spend( TICK );
             return true;
@@ -102,23 +106,27 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
         }
 
         private static final String POS		= "pos";
+        private static final String TRIGGERED		= "triggered";
 
         @Override
         public void storeInBundle( Bundle bundle ) {
             super.storeInBundle( bundle );
             bundle.put( POS, pos );
+            bundle.put( TRIGGERED, triggered );
         }
 
         @Override
         public void restoreFromBundle( Bundle bundle ) {
             super.restoreFromBundle( bundle );
             pos = bundle.getInt( POS );
+            if (bundle.contains(TRIGGERED))
+                triggered = bundle.getBoolean(TRIGGERED);
         }
     }
 
     @Override
     public void doAction() {
-        SpellSprite.show(target, SpellSprite.MAP, (count()/maxCharge())*2, (count()/maxCharge())*2, (count()/maxCharge())*2);
+        SpellSprite.show(target, SpellSprite.BLOCK, (count()/maxCharge())*2, (count()/maxCharge())*2, (count()/maxCharge())*2);
         Sample.INSTANCE.play(Assets.Sounds.MISS, 1f, 1f);
         countDown(1f);
         BuffIndicator.refreshHero();
@@ -127,6 +135,7 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
             Buff.affect(target, BlockTrock.class);
             ((Hero)target).spendAndNext(Actor.TICK);
             Item.updateQuickslot();
+            target.sprite.idle();
         });
     }
 
@@ -158,7 +167,7 @@ public class WarriorParry extends CounterBuff implements ActionIndicator.Action 
     @Override
     public void tintIcon(Image icon) {
         float r,g,b;
-        r = g = b = count()/maxCharge()*2f;
+        r = g = b = 0.5f + count()/maxCharge()*1.75f;
         icon.hardlight(r,g,b);
     }
 }

@@ -41,6 +41,7 @@ public class SpellSprite extends Image {
 	public static final int HASTE       = 5;
 	public static final int VISION      = 6;
 	public static final int PURITY      = 7;
+	public static final int BLOCK       = 8;
 	
 	private static final int SIZE	= 16;
 	
@@ -66,7 +67,7 @@ public class SpellSprite extends Image {
 		super( Assets.Effects.SPELL_ICONS );
 		
 		if (film == null) {
-			film = new TextureFilm( texture, SIZE );
+			film = new TextureFilm( texture, SIZE, SIZE );
 		}
 	}
 	

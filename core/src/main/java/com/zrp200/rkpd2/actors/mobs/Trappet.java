@@ -5,7 +5,6 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.actors.buffs.WarriorParry;
@@ -95,8 +94,8 @@ public class Trappet extends AbyssalMob implements Callback {
         if (hit( this, enemy, true )) {
             if (enemy.buff(WarriorParry.BlockTrock.class) != null){
                 enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-                SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-                Buff.detach(enemy, WarriorParry.BlockTrock.class);
+                SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+                enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
             } else {
                 ArrayList<Integer> points = Level.getSpawningPoints(enemy.pos);
                 if (!points.isEmpty()) {

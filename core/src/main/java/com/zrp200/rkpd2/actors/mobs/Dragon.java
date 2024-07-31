@@ -257,7 +257,7 @@ public class Dragon extends AbyssalMob {
             }
 
             enemy.damage(effectiveDamage, this);
-            Buff.detach(enemy, WarriorParry.BlockTrock.class);
+            enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 
             enemy.sprite.bloodBurstA(sprite.center(), effectiveDamage);
             enemy.sprite.flash();
@@ -285,8 +285,8 @@ public class Dragon extends AbyssalMob {
     protected void rangedProc( Char enemy ) {
         if (enemy.buff(WarriorParry.BlockTrock.class) != null){
             enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-            SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-            Buff.detach(enemy, WarriorParry.BlockTrock.class);
+            SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+            enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
         } else {
             if (!enemy.isWet()) {
                 Buff.affect(enemy, FrostBurn.class).reignite(enemy, 8f);

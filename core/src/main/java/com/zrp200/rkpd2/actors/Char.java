@@ -43,6 +43,7 @@ import com.zrp200.rkpd2.actors.buffs.ArcaneArmor;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
 import com.zrp200.rkpd2.actors.buffs.Barkskin;
+import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.Berserk;
 import com.zrp200.rkpd2.actors.buffs.Bleeding;
 import com.zrp200.rkpd2.actors.buffs.Bless;
@@ -113,6 +114,7 @@ import com.zrp200.rkpd2.actors.mobs.npcs.MirrorImage;
 import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Speck;
+import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.armor.glyphs.AntiMagic;
@@ -532,11 +534,8 @@ public abstract class Char extends Actor {
 
 }
 			if (visibleFight) {
-				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
+				if ((effectiveDamage > 0 && enemy.buff(WarriorParry.BlockTrock.class) == null) || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
 					hitSound(Random.Float(0.87f, 1.15f));
-				}
-				if (effectiveDamage <= 0){
-					Buff.detach(enemy, WarriorParry.BlockTrock.class);
 				}
 			}
 			if (buff(BrawlerBuff.BrawlingTracker.class) != null && this instanceof Hero){
@@ -570,7 +569,15 @@ public abstract class Char extends Actor {
 						defRoll(this, enemy, enemy.defenseSkill(this), accMulti), 1.25f);
 			}
 
-			enemy.damage( effectiveDamage, this );
+			if (enemy.buff(WarriorParry.BlockTrock.class) != null && effectiveDamage >= 0){
+				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
+				SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+				Buff.affect(enemy, Barrier.class).setShield(Math.round(effectiveDamage*1.25f));
+				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(Math.round(effectiveDamage*1.25f)), FloatingText.SHIELDING );
+				enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
+			} else {
+				enemy.damage(effectiveDamage, this);
+			}
 			if (this instanceof Hero && buff(ChampionEnemy.Giant.class) != null){
 				if (Random.Int(15) < hero.pointsInTalent(Talent.RK_GIANT)){
 					Buff.affect(enemy, Paralysis.class, 5);

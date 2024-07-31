@@ -35,6 +35,7 @@ import com.zrp200.rkpd2.actors.buffs.Shrink;
 import com.zrp200.rkpd2.actors.buffs.TimedShrink;
 import com.zrp200.rkpd2.actors.buffs.WarriorParry;
 import com.zrp200.rkpd2.actors.hero.Talent;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -45,6 +46,8 @@ import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.DM100Sprite;
 import com.zrp200.rkpd2.utils.GLog;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class DM100 extends Mob implements Callback {
 
@@ -116,9 +119,10 @@ public class DM100 extends Mob implements Callback {
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 				if (enemy.buff(WarriorParry.BlockTrock.class) != null){
 					enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-					SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-					Buff.affect(enemy, Barrier.class).setShield(Math.round(dmg*1.25f));
-					Buff.detach(enemy, WarriorParry.BlockTrock.class);
+					SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+					Buff.affect(enemy, Barrier.class).incShield(Math.round(dmg*1.25f));
+					hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(Math.round(dmg*1.25f)), FloatingText.SHIELDING );
+					enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 				} else {
 					enemy.damage(dmg, new LightningBolt());
 

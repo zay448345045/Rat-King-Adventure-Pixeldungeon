@@ -170,8 +170,8 @@ public abstract class Elemental extends Mob {
 		if (hit( this, enemy, true )) {
 			if (enemy.buff(WarriorParry.BlockTrock.class) != null){
 				enemy.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-				SpellSprite.show(enemy, SpellSprite.MAP, 2f, 2f, 2f);
-				Buff.detach(enemy, WarriorParry.BlockTrock.class);
+				SpellSprite.show(enemy, SpellSprite.BLOCK, 2f, 2f, 2f);
+				enemy.buff(WarriorParry.BlockTrock.class).triggered = true;
 			} else {
 				ChampionEnemy.AntiMagic.effect(enemy, this);
 				rangedProc(enemy);

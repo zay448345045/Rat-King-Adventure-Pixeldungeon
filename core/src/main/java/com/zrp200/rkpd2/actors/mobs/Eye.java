@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.actors.buffs.Light;
 import com.zrp200.rkpd2.actors.buffs.WarriorParry;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.CellEmitter;
+import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
 import com.zrp200.rkpd2.effects.particles.PurpleParticle;
@@ -51,6 +52,8 @@ import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.EyeSprite;
 import com.zrp200.rkpd2.utils.GLog;
+
+import static com.zrp200.rkpd2.Dungeon.hero;
 
 public class Eye extends Mob {
 	
@@ -200,8 +203,9 @@ public class Eye extends Mob {
 				dmg = Math.round(dmg * AscensionChallenge.statModifier(this));
 				if (ch.buff(WarriorParry.BlockTrock.class) != null){
 					ch.sprite.emitter().burst( Speck.factory( Speck.FORGE ), 15 );
-					SpellSprite.show(ch, SpellSprite.MAP, 2f, 2f, 2f);
-					Buff.affect(ch, Barrier.class).setShield(Math.round(dmg*1.25f));
+					SpellSprite.show(ch, SpellSprite.BLOCK, 2f, 2f, 2f);
+					Buff.affect(ch, Barrier.class).incShield(Math.round(dmg*1.25f));
+					hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(Math.round(dmg*1.25f)), FloatingText.SHIELDING );
 					Buff.detach(ch, WarriorParry.BlockTrock.class);
 				} else {
 					ch.damage(dmg, new DeathGaze());
