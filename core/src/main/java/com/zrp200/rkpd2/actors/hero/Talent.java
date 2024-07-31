@@ -307,7 +307,7 @@ public enum Talent {
 	BLOODBATH(imageAt(16, 10), 3), THINKING_WITH_PORTALS(imageAt(17, 10), 3), ADAPT_AND_OVERCOME(imageAt(18, 10), 3),
 
 	// RKA other replacements
-	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11), 3), INDISCRIMINATE_RAGE(imageAt(16, 8), 3);
+	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11), 3), INDISCRIMINATE_RAGE(imageAt(16, 8), 3), BATTLE_TENDENCY(imageAt(17, 8), 3);
 
 	protected String[] aliases = new String[0];
 
@@ -1547,7 +1547,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, POWER_STABILIZER, ARCANITY_ENSUES, IN_MY_MEMORIES, HOLERIC_BURST, PRIDE_OF_STEEL);
 				break;
 			case GLADIATOR:
-				Collections.addAll(tierTalents, CLEAVE, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL, EFFICIENT_TRAINING);
+				Collections.addAll(tierTalents, BATTLE_TENDENCY, LETHAL_DEFENSE, ENHANCED_COMBO, SKILL, EFFICIENT_TRAINING);
 				break;
 			case BATTLEMAGE:
 				Collections.addAll(tierTalents, EMPOWERED_STRIKE, MYSTICAL_CHARGE, EXCESS_CHARGE, SORCERY, SPECTRE_ALLIES);
@@ -1656,6 +1656,7 @@ public enum Talent {
 		renamedTalents.put("ROGUES_FORESIGHT",          "PROTEIN_INFUSION");
 		renamedTalents.put("SEER_SHOT",                 "LIKE_A_BULLET");
 		renamedTalents.put("ENDLESS_RAGE",              "INDISCRIMINATE_RAGE");
+		renamedTalents.put("CLEAVE",                    "BATTLE_TENDENCY");
 	};
 
 	public static void restoreTalentsFromBundle( Bundle bundle, Hero hero ){

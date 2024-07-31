@@ -148,8 +148,8 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		comboTime-=TICK;
 		spend(TICK);
 		if (comboTime <= 0) {
-			if (Dungeon.hero.hasTalent(Talent.CLEAVE)){
-				comboTime = (float) Math.pow(2, Dungeon.hero.pointsInTalent(Talent.CLEAVE)-2);
+			if (Dungeon.hero.hasTalent(Talent.BATTLE_TENDENCY)){
+				comboTime = (float) Math.pow(2, Dungeon.hero.pointsInTalent(Talent.BATTLE_TENDENCY)-2);
 				count--;
 				if (count <= 0)
 					detach();
