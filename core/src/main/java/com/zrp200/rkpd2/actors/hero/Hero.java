@@ -721,18 +721,6 @@ public class Hero extends Char {
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 		if(subClass.isExact(HeroSubClass.SNIPER)) accuracy *= 4/3d; // sniper innate boost
 
-		if (wep instanceof MissileWeapon){
-			if (Dungeon.level.adjacent( pos, target.pos )) {
-				// -50% / -30% / -10% / +10%
-				int points = pointsInTalent(Talent.POINT_BLANK,Talent.RK_SNIPER);
-				accuracy *= (0.5f + 0.2f*points);
-			} else {
-				if (!Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS)) {
-					// +50% / +70% / +90% / +110%
-					accuracy *= 1.5f + 0.2f * pointsInTalent(Talent.POINT_BLANK);
-				}
-			}
-		}
 		if (wep == null && buff(RingOfForce.Force.class) != null){
 			accuracy *= buff(RingOfForce.Force.class).accuracyFactor();
 		}

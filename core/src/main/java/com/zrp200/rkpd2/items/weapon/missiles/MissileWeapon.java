@@ -249,7 +249,7 @@ abstract public class MissileWeapon extends Weapon {
 			}
 			return factor;
 		} else {
-			return rangedAccFactor(owner);
+			return !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS) ? rangedAccFactor(owner) : 1f;
 		}
 	}
 

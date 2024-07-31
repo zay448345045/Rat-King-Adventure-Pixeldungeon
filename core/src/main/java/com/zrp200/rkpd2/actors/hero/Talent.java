@@ -307,7 +307,8 @@ public enum Talent {
 	BLOODBATH(imageAt(16, 10), 3), THINKING_WITH_PORTALS(imageAt(17, 10), 3), ADAPT_AND_OVERCOME(imageAt(18, 10), 3),
 
 	// RKA other replacements
-	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11), 3), INDISCRIMINATE_RAGE(imageAt(16, 8), 3), BATTLE_TENDENCY(imageAt(17, 8), 3);
+	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11), 3), POINTY_BLACK(imageAt(17, 11), 3),
+	INDISCRIMINATE_RAGE(imageAt(16, 8), 3), BATTLE_TENDENCY(imageAt(17, 8), 3);
 
 	protected String[] aliases = new String[0];
 
@@ -1390,7 +1391,7 @@ public enum Talent {
 					case ROGUE:
 						return new Talent[]{ENHANCED_RINGS, LIGHT_CLOAK, TRAPPER_MASTERY};
 					case HUNTRESS:
-						return new Talent[]{POINT_BLANK, LIKE_A_BULLET, AUTO_RELOAD};
+						return new Talent[]{POINTY_BLACK, LIKE_A_BULLET, AUTO_RELOAD};
 					case DUELIST:
 						return new Talent[]{PRECISE_ASSAULT, DEADLY_FOLLOWUP};
 					case RAT_KING:
@@ -1654,6 +1655,7 @@ public enum Talent {
 		renamedTalents.put("ASSASSINS_REACH",           "THINKING_WITH_PORTALS");
 		renamedTalents.put("BOUNTY_HUNTER",             "ADAPT_AND_OVERCOME");
 		renamedTalents.put("ROGUES_FORESIGHT",          "PROTEIN_INFUSION");
+		renamedTalents.put("POINT_BLANK",               "POINTY_BLACK");
 		renamedTalents.put("SEER_SHOT",                 "LIKE_A_BULLET");
 		renamedTalents.put("ENDLESS_RAGE",              "INDISCRIMINATE_RAGE");
 		renamedTalents.put("CLEAVE",                    "BATTLE_TENDENCY");
