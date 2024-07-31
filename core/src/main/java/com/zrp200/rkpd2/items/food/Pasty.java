@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.items.food;
 import com.watabou.noosa.audio.Sample;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.hero.Hero;
@@ -32,6 +33,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.utils.Holiday;
 
 public class Pasty extends Food {
@@ -109,20 +111,25 @@ public class Pasty extends Food {
 
 	@Override
 	public String name() {
+		String name = super.name();
 		switch(Holiday.getCurrentHoliday()){
 			case NONE: default:
 				return super.name();
 			case LUNAR_NEW_YEAR:
-				return Messages.get(this, "fish_name");
+				name = Messages.get(this, "fish_name");
 			case APRIL_FOOLS:
-				return Messages.get(this, "amulet_name");
+				name = Messages.get(this, "amulet_name");
 			case EASTER:
-				return Messages.get(this, "egg_name");
+				name = Messages.get(this, "egg_name");
 			case HALLOWEEN:
-				return Messages.get(this, "pie_name");
+				name = Messages.get(this, "pie_name");
 			case WINTER_HOLIDAYS:
-				return Messages.get(this, "cane_name");
+				name = Messages.get(this, "cane_name");
 		}
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.RLETTER)) {
+			return ShatteredPixelDungeon.turnIntoRrrr(name);
+		}
+		return name;
 	}
 
 	@Override
