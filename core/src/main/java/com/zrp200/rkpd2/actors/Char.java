@@ -125,6 +125,7 @@ import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.food.Food;
 import com.zrp200.rkpd2.items.potions.exotic.PotionOfCleansing;
+import com.zrp200.rkpd2.items.quest.NerfGun;
 import com.zrp200.rkpd2.items.quest.Pickaxe;
 import com.zrp200.rkpd2.items.quest.nerfEnchants.Dreamful;
 import com.zrp200.rkpd2.items.rings.RingOfElements;
@@ -140,6 +141,7 @@ import com.zrp200.rkpd2.items.wands.WandOfFirebolt;
 import com.zrp200.rkpd2.items.wands.WandOfFrost;
 import com.zrp200.rkpd2.items.wands.WandOfLightning;
 import com.zrp200.rkpd2.items.wands.WandOfLivingEarth;
+import com.zrp200.rkpd2.items.weapon.Slingshot;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.enchantments.Blazing;
@@ -444,6 +446,13 @@ public abstract class Char extends Actor {
 				} else if (h.subClass == HeroSubClass.MONK) {
 					//3 turns with standard attack delay
 					Buff.prolong(h, MonkEnergy.MonkAbility.JustHitTracker.class, 4f);
+				}
+
+				if (hero.belongings.weapon() instanceof Slingshot.Stone){
+					dr = Random.Int(0, dr);
+				}
+				if (hero.belongings.weapon() instanceof NerfGun.NerfAmmo){
+					dr = 0;
 				}
 			}
 			if (this instanceof RatKingBoss && ((RatKingBoss) this).phase == 4){
