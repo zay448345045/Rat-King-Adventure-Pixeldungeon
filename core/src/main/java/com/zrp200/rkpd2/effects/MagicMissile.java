@@ -73,11 +73,6 @@ public class MagicMissile extends Emitter {
 	public static final int EARTH           = 9;
 	public static final int WARD            = 10;
 	public static final int FROGGIT = 11;
-	public static final int STENCH = 12;
-	public static final int SPINNER = 13;
-	public static final int CRYSTAL = 14;
-
-	public static final int STAR = 16;
 
 	public static final int SHAMAN_RED      = 17;
 	public static final int SHAMAN_BLUE     = 18;
@@ -751,65 +746,6 @@ public class MagicMissile extends Emitter {
 			super.update();
 
 			am = 1 - left / lifespan;
-		}
-	}
-
-	public static class CrystalParticle extends PixelParticle.Shrinking {
-
-		public static final Emitter.Factory FACTORY = new Factory() {
-			@Override
-			public void emit( Emitter emitter, int index, float x, float y ) {
-				((WardParticle)emitter.recycle( WardParticle.class )).reset( x, y );
-			}
-			@Override
-			public boolean lightMode() {
-				return true;
-			}
-		};
-
-		static Integer[] colors = {0xFFe380e3, 0xFF9485c9};
-
-		public static final Emitter.Factory SHARD = new Factory() {
-			@Override
-			public void emit( Emitter emitter, int index, float x, float y ) {
-				((WardParticle)emitter.recycle( WardParticle.class )).resetUp( x, y );
-			}
-			@Override
-			public boolean lightMode() {
-				return true;
-			}
-		};
-
-		public CrystalParticle() {
-			super();
-
-			lifespan = 0.6f;
-
-			color( Random.element(colors) );
-		}
-
-		public void reset( float x, float y ) {
-			revive();
-
-			this.x = x;
-			this.y = y;
-			color( Random.element(colors) );
-
-			left = lifespan;
-			size = 12;
-		}
-
-		public void resetUp( float x, float y){
-			reset(x, y);
-
-			size = 8;
-		}
-
-		@Override
-		public void update() {
-			super.update();
-
-			am = Random.Float();
 		}
 	}
 
