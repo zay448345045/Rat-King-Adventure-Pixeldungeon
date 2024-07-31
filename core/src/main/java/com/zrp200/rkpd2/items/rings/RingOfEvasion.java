@@ -39,7 +39,7 @@ public class RingOfEvasion extends Ring {
 
 	@Override
 	protected float cap() {
-		return 2.75f;
+		return 1.5f;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class RingOfEvasion extends Ring {
 	}
 	
 	public static float evasionMultiplier( Char target ){
-		float eva = Math.min(2f, (float) Math.pow(1.125, getBuffedBonus(target, Evasion.class)));
+		float eva = Math.min(2.5f, (float) Math.pow(1.125, getBuffedBonus(target, Evasion.class)));
 		Hunger hunger = Dungeon.hero.buff(Hunger.class);
 		if (hunger != null && hunger.accumulatingDamage > 0){
 			eva *= Math.max(0.5f, 1f - (float)hunger.accumulatingDamage/target.HT/2);

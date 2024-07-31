@@ -50,7 +50,7 @@ public class RingOfElements extends Ring {
 
 	@Override
 	protected float cap() {
-		return 0.33f;
+		return 0.66f;
 	}
 
 	@Override

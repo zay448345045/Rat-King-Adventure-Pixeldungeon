@@ -40,6 +40,11 @@ public class RingOfEnergy extends Ring {
 	}
 
 	@Override
+	protected float cap() {
+		return 2f;
+	}
+
+	@Override
 	protected RingBuff buff( ) {
 		return new Energy();
 	}
@@ -49,7 +54,7 @@ public class RingOfEnergy extends Ring {
 	}
 
 	public static float artifactChargeMultiplier( Char target ){
-		float bonus = Math.min(3f, (float)Math.pow(1.20, getBuffedBonus(target, Energy.class)));
+		float bonus = Math.min(3f, (float)Math.pow(1.15, getBuffedBonus(target, Energy.class)));
 
 		Hero hero = SafeCast.cast(target, Hero.class);
 		if (hero != null && hero.heroClass != HeroClass.ROGUE && hero.hasTalent(Talent.LIGHT_CLOAK)){
@@ -60,7 +65,7 @@ public class RingOfEnergy extends Ring {
 	}
 
 	public static float armorChargeMultiplier( Char target ){
-		return (float)Math.pow(1.15, getBuffedBonus(target, Energy.class));
+		return Math.min(3f, (float)Math.pow(1.15, getBuffedBonus(target, Energy.class)));
 	}
 
 	public class Energy extends RingBuff {

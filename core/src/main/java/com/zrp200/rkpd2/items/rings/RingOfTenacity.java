@@ -39,7 +39,7 @@ public class RingOfTenacity extends Ring {
 
 	@Override
 	protected float cap() {
-		return 0.33f;
+		return 0.66f;
 	}
 
 	@Override

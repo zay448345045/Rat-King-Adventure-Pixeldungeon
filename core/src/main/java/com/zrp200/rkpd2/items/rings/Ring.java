@@ -197,7 +197,7 @@ public class Ring extends KindofMisc {
 	protected String formatBonus(int buffedBonus) {
 		double bonus = Math.pow(multiplier(), buffedBonus);
 		bonus = multiplier() < 1 ? 1-bonus : bonus-1;
-		return Messages.decimalFormat("#.##", 100f * bonus);
+		return Messages.decimalFormat("#.##", 100f * Math.min(cap(), bonus));
 	}
 
 	protected String statsInfo(){
@@ -217,7 +217,7 @@ public class Ring extends KindofMisc {
 	protected float multiplier() {
 		return 0;
 	}
-	protected float cap() { return 0; }
+	protected float cap() { return Float.MAX_VALUE; }
 
 	@Override
 	public Item upgrade() {

@@ -21,9 +21,7 @@
 
 package com.zrp200.rkpd2.items.rings;
 
-import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Char;
-import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 public class RingOfArcana extends Ring {
@@ -32,18 +30,14 @@ public class RingOfArcana extends Ring {
 		icon = ItemSpriteSheet.Icons.RING_ARCANA;
 	}
 
-	public String statsInfo() {
-		if (isIdentified()){
-			String info = Messages.get(this, "stats",
-					Messages.decimalFormat("#.##", 100f * (Math.pow(1.175f, soloBuffedBonus()) - 1f)));
-			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
-				info += "\n\n" + Messages.get(this, "combined_stats",
-						Messages.decimalFormat("#.##", 100f * (Math.pow(1.175f, combinedBuffedBonus(Dungeon.hero)) - 1f)));
-			}
-			return info;
-		} else {
-			return Messages.get(this, "typical_stats", Messages.decimalFormat("#.##", 17.5f));
-		}
+	@Override
+	protected float multiplier() {
+		return 1.175f;
+	}
+
+	@Override
+	protected float cap() {
+		return 2f;
 	}
 
 	@Override
@@ -52,7 +46,7 @@ public class RingOfArcana extends Ring {
 	}
 
 	public static float enchantPowerMultiplier(Char target ){
-		return (float)Math.pow(1.175f, getBuffedBonus(target, Arcana.class));
+		return Math.min(3f, (float)Math.pow(1.175f, getBuffedBonus(target, Arcana.class)));
 	}
 
 	public class Arcana extends RingBuff {
