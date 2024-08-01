@@ -37,6 +37,7 @@ import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.buffs.Shrink;
 import com.zrp200.rkpd2.actors.buffs.TimedShrink;
 import com.zrp200.rkpd2.actors.buffs.WarriorParry;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
@@ -89,6 +90,9 @@ public class Warlock extends Mob implements Callback {
 	public boolean canAttack(Char enemy) {
 		if (buff(ChampionEnemy.Paladin.class) != null){
 			return false;
+		}
+		if (buff(Talent.AntiMagicBuff.class) != null){
+			return super.canAttack(enemy);
 		}
 		return super.canAttack(enemy)
 				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
