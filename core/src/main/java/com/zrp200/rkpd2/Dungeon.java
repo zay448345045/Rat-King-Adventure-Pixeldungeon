@@ -398,7 +398,8 @@ public class Dungeon {
 			level = new DeadEndLevel();
 		}
 
-		level = processReversedLevel(level);
+		if (specialSeeds.contains(DungeonSeed.SpecialSeed.REVERSE))
+			level = processReversedLevel(level);
 
 		//dead end levels get cleared, don't count as generated
 		if (!(level instanceof DeadEndLevel)){
