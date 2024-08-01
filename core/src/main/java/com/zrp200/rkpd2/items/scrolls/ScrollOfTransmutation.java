@@ -45,6 +45,7 @@ import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.items.weapon.melee.TerminusBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.TippedDart;
@@ -69,7 +70,7 @@ public class ScrollOfTransmutation extends InventoryScroll {
 	protected boolean usableOnItem(Item item) {
 		//all melee weapons, except pickaxe when in a mining level
 		if (item instanceof MeleeWeapon){
-			return !(item instanceof Pickaxe && Dungeon.level instanceof MiningLevel);
+			return !((item instanceof Pickaxe && Dungeon.level instanceof MiningLevel) || item instanceof TerminusBlade);
 
 		//all missile weapons except untipped darts
 		} else if (item instanceof MissileWeapon){
