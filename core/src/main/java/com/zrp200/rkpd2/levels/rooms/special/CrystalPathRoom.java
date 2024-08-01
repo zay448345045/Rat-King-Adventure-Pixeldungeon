@@ -25,6 +25,7 @@ import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.keys.CrystalKey;
 import com.zrp200.rkpd2.items.potions.PotionOfExperience;
@@ -33,6 +34,7 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.rooms.standard.EmptyRoom;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -204,17 +206,25 @@ public class CrystalPathRoom extends SpecialRoom {
 			}
 		});
 
+		Heap.Type type = Heap.Type.HEAP;
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.CHESTS))
+			type = Heap.Type.CHEST;
+
 		//least valuable items go into rooms 2&3, then rooms 0&1, and finally 4&5
 		int shuffle = Random.Int(2);
-		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 2 : 3].center()));
-		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 3 : 2].center()));
+		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 2 : 3].center())).type = type;;
+		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 3 : 2].center())).type = type;;
 
-		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 0 : 1].center()));
-		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 1 : 0].center()));
+		level.drop(potions.remove(0), level.pointToCell(rooms[shuffle == 1 ? 0 : 1].center())).type = type;;
+		level.drop(scrolls.remove(0), level.pointToCell(rooms[shuffle == 1 ? 1 : 0].center())).type = type;;
 
 		//player can only see these if they unlock the previous doors, so don't count them for exploration
-		level.drop(potions.remove(0), shuffle == 1 ? prize1 : prize2).autoExplored = true;
-		level.drop(scrolls.remove(0), shuffle == 1 ? prize2 : prize1).autoExplored = true;
+		Heap drop1 = level.drop(potions.remove(0), shuffle == 1 ? prize1 : prize2);
+		drop1.autoExplored = true;
+		drop1.type = type;
+		Heap drop2 = level.drop(scrolls.remove(0), shuffle == 1 ? prize2 : prize1);
+		drop2.autoExplored = true;
+		drop2.type = type;
 
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
 		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
