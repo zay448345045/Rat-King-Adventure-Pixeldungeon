@@ -301,7 +301,7 @@ public enum Talent {
 	AFTERSHOCK(RK_MONK.icon+10,4), RAT_BLAST(AFTERSHOCK.icon+1,4), SMOKE_AND_MIRRORS(AFTERSHOCK.icon+2,4), SEA_OF_BLADES(AFTERSHOCK.icon+3,4), FUN(imageAt(14, 14), 4),
 
 	// RKA replacements for consumable talents
-	WILLPOWER_OF_INJURED(imageAt(2, 8)), ENERGIZING_UPGRADE(imageAt(2, 9)), DUAL_WIELDING(imageAt(3, 10)), IVYLASH(imageAt(3, 11)),
+	WILLPOWER_OF_INJURED(imageAt(2, 8)), ENERGIZING_UPGRADE(imageAt(2, 9)), DUAL_WIELDING(imageAt(2, 10)), IVYLASH(imageAt(2, 11)),
 
 	// RKA assassin rework talents
 	BLOODBATH(imageAt(16, 10), 3), THINKING_WITH_PORTALS(imageAt(17, 10), 3), ADAPT_AND_OVERCOME(imageAt(18, 10), 3),
