@@ -113,6 +113,8 @@ public class Waterskin extends Item {
 					Sample.INSTANCE.play(Assets.Sounds.DRINK);
 					hero.sprite.operate(hero.pos);
 
+					Talent.onPotionUsed(curUser, curUser.pos, dropsNeeded / 10f);
+
 					updateQuickslot();
 				}
 
