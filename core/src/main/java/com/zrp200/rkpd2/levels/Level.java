@@ -82,6 +82,7 @@ import com.zrp200.rkpd2.items.artifacts.TalismanOfForesight;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.food.MysteryMeat;
 import com.zrp200.rkpd2.items.potions.PotionOfStrength;
+import com.zrp200.rkpd2.items.quest.Kromer;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRecharging;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
@@ -250,6 +251,10 @@ public abstract class Level implements Bundlable {
 			
 			if ( Dungeon.depth == ((Dungeon.seed % 3) + 1)){
 				addItemToSpawn( new StoneOfIntuition() );
+			}
+
+			if (Dungeon.isChallenged(Challenges.KROMER)){
+				addItemToSpawn( new Kromer() );
 			}
 			
 			if (Dungeon.depth > 1) {
