@@ -30,7 +30,6 @@ import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.quest.MetalShard;
-import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfRemoveCurse;
 import com.zrp200.rkpd2.items.wands.Wand;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -86,13 +85,6 @@ public class CurseInfusion extends InventorySpell {
 		} else if (item instanceof Wand){
 			((Wand) item).curseInfusionBonus = true;
 			((Wand) item).updateLevel();
-		} else if (item instanceof RingOfForce) {
-			RingOfForce w = (RingOfForce) item;
-			if (w.enchantment != null) {
-				w.enchant(Weapon.Enchantment.randomCurse(w.enchantment.getClass()));
-			} else {
-				w.enchant(Weapon.Enchantment.randomCurse());
-			}
 		}
 		Badges.validateItemLevelAquired(item);
 		updateQuickslot();

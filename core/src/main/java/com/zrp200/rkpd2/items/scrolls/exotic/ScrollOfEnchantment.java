@@ -28,7 +28,6 @@ import com.zrp200.rkpd2.effects.Enchanting;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
 import com.zrp200.rkpd2.items.bags.Bag;
-import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.scrolls.InventoryScroll;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.stones.StoneOfEnchantment;
@@ -70,7 +69,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 	}
 
 	public static boolean enchantable( Item item ){
-		return (item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor || item instanceof RingOfForce);
+		return (item instanceof MeleeWeapon || item instanceof SpiritBow || item instanceof Armor);
 	}
 
 	private void confirmCancelation() {
@@ -112,58 +111,6 @@ public class ScrollOfEnchantment extends ExoticScroll {
 		GameScene.show(new WndEnchantSelect(weapon, enchants[0], enchants[1], enchants[2]));
 	}
 
-	@SuppressWarnings("unchecked")
-	public void enchantRing(RingOfForce weapon) {
-		final Weapon.Enchantment enchants[] = new Weapon.Enchantment[3];
-
-		Class<? extends Weapon.Enchantment> existing = weapon.enchantment != null ? weapon.enchantment.getClass() : null;
-		enchants[0] = Weapon.Enchantment.randomCommon(existing);
-		enchants[1] = Weapon.Enchantment.randomUncommon(existing);
-		Class[] toIgnore = {existing, enchants[0].getClass(), enchants[1].getClass()};
-		enchants[2] = Weapon.Enchantment.random(toIgnore);
-
-		GameScene.show(new WndOptions(new ItemSprite(ScrollOfEnchantment.this),
-				Messages.titleCase(ScrollOfEnchantment.this.name()),
-				Messages.get(ScrollOfEnchantment.class, "weapon") +
-						"\n\n" +
-						Messages.get(ScrollOfEnchantment.class, "cancel_warn"),
-				enchants[0].name(),
-				enchants[1].name(),
-				enchants[2].name(),
-				Messages.get(ScrollOfEnchantment.class, "cancel")){
-
-			@Override
-			protected void onSelect(int index) {
-				if (index < 3) {
-					weapon.enchant(enchants[index]);
-					GLog.p(Messages.get(StoneOfEnchantment.class, "weapon"));
-					readAnimation();
-
-					Sample.INSTANCE.play( Assets.Sounds.READ );
-					Enchanting.show(curUser, weapon);
-				}
-			}
-
-			@Override
-			protected boolean hasInfo(int index) {
-				return index < 3;
-			}
-
-			@Override
-			protected void onInfo( int index ) {
-				GameScene.show(new WndTitledMessage(
-						Icons.get(Icons.INFO),
-						Messages.titleCase(enchants[index].name()),
-						enchants[index].desc()));
-			}
-
-			@Override
-			public void onBackPressed() {
-				//do nothing, reader has to cancel
-			}
-		});
-	}
-
 	protected WndBag.ItemSelector itemSelector = new WndBag.ItemSelector() {
 
 		@Override
@@ -192,9 +139,7 @@ public class ScrollOfEnchantment extends ExoticScroll {
 				
 				enchantWeapon((Weapon)item);
 
-			} else if (item instanceof RingOfForce){
-				enchantRing((RingOfForce) item);
-			} else if (item instanceof Armor) {
+			} if (item instanceof Armor) {
 				if (!identifiedByUse) {
 					curItem.detach(curUser.belongings.backpack);
 				}

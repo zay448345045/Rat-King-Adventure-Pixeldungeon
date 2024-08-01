@@ -26,7 +26,6 @@ import com.zrp200.rkpd2.effects.Enchanting;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.armor.Armor;
-import com.zrp200.rkpd2.items.rings.RingOfForce;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfEnchantment;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.messages.Messages;
@@ -55,8 +54,6 @@ public class StoneOfEnchantment extends InventoryStone {
 			
 			((Weapon)item).enchant();
 			
-		} else if (item instanceof RingOfForce){
-			((RingOfForce) item).enchant();
 		} else {
 			
 			((Armor)item).inscribe();

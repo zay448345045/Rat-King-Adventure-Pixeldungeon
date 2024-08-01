@@ -721,9 +721,6 @@ public class Hero extends Char {
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 		if(subClass.isExact(HeroSubClass.SNIPER)) accuracy *= 4/3d; // sniper innate boost
 
-		if (wep == null && buff(RingOfForce.Force.class) != null){
-			accuracy *= buff(RingOfForce.Force.class).accuracyFactor();
-		}
 		if(buff(Talent.WarriorLethalMomentumTracker.Chain.class) != null) accuracy *= 2;
 
 		if (buff(Scimitar.SwordDance.class) != null){
@@ -956,20 +953,6 @@ public class Hero extends Char {
 
 		if (wep != null){
 			return wep.canReach(this, enemy.pos);
-		} else if (wep == null && buff(RingOfForce.Force.class) != null){
-			RingOfForce.Force forceBuff = buff(RingOfForce.Force.class);
-			if (Dungeon.level.distance( pos, enemy.pos ) > forceBuff.reachFactor()){
-				return false;
-			} else {
-				boolean[] passable = BArray.not(Dungeon.level.solid, null);
-				for (Char ch : Actor.chars()) {
-					if (ch != this) passable[ch.pos] = false;
-				}
-
-				PathFinder.buildDistanceMap(enemy.pos, passable, forceBuff.reachFactor());
-
-				return PathFinder.distance[pos] <= forceBuff.reachFactor();
-			}
 		}
 		else {
 			MagesStaff staff = belongings.getItem(MagesStaff.class);
@@ -1751,9 +1734,6 @@ public class Hero extends Char {
 		if (forceBuff != null && !(wep instanceof MissileWeapon)) {
 			if (wep != null){
 				damage += RingOfForce.armedDamageBonus(this);
-			}
-			if (forceBuff.getEnchant() != null ) {
-				damage = forceBuff.getEnchant().proc(forceBuff, this, enemy, damage);
 			}
 		}
 
