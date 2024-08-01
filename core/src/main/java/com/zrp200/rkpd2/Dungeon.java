@@ -310,6 +310,20 @@ public class Dungeon {
 		return generatedLevels.contains(depth + 1000*branch);
 	}
 
+	public static Level processReversedLevel(Level lvl){
+		if (lvl instanceof SewerLevel){
+			return new HallsLevel();
+		} else if (lvl instanceof PrisonLevel){
+			return new CityLevel();
+		} else if (lvl instanceof CityLevel){
+			return new PrisonLevel();
+		} else if (lvl instanceof HallsLevel){
+			return new SewerLevel();
+		} else {
+			return lvl;
+		}
+	};
+
 	public static Level newLevel() {
 		
 		Dungeon.level = null;
@@ -383,6 +397,8 @@ public class Dungeon {
 		} else {
 			level = new DeadEndLevel();
 		}
+
+		level = processReversedLevel(level);
 
 		//dead end levels get cleared, don't count as generated
 		if (!(level instanceof DeadEndLevel)){

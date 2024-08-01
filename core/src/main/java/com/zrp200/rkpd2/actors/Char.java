@@ -435,7 +435,7 @@ public abstract class Char extends Actor {
 
 			if (this instanceof Hero){
 				Hero h = (Hero)this;
-				if (h.belongings.attackingWeapon() instanceof MissileWeapon
+				if ((h.belongings.attackingWeapon() instanceof MissileWeapon && !Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.HUNTRESS))
 						&& h.subClass.is(HeroSubClass.SNIPER)
 						&& !Dungeon.level.adjacent(h.pos, enemy.pos)){
 					dr = 0;

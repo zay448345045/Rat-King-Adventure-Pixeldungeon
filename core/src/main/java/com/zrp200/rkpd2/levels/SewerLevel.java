@@ -42,6 +42,8 @@ import com.zrp200.rkpd2.items.Amulet;
 import com.zrp200.rkpd2.levels.features.LevelTransition;
 import com.zrp200.rkpd2.levels.painters.Painter;
 import com.zrp200.rkpd2.levels.painters.SewerPainter;
+import com.zrp200.rkpd2.levels.rooms.Room;
+import com.zrp200.rkpd2.levels.rooms.special.DemonSpawnerRoom;
 import com.zrp200.rkpd2.levels.traps.AlarmTrap;
 import com.zrp200.rkpd2.levels.traps.ChillingTrap;
 import com.zrp200.rkpd2.levels.traps.ConfusionTrap;
@@ -57,7 +59,10 @@ import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.SurfaceScene;
 import com.zrp200.rkpd2.tiles.DungeonTilemap;
+import com.zrp200.rkpd2.utils.DungeonSeed;
 import com.zrp200.rkpd2.windows.WndMessage;
+
+import java.util.ArrayList;
 
 public class SewerLevel extends RegularLevel {
 
@@ -139,6 +144,16 @@ public class SewerLevel extends RegularLevel {
 	protected void createMobs() {
 		Ghost.Quest.spawn( this, roomExit );
 		super.createMobs();
+	}
+
+	@Override
+	protected ArrayList<Room> initRooms() {
+		ArrayList<Room> rooms = super.initRooms();
+
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.REVERSE))
+			rooms.add(new DemonSpawnerRoom());
+
+		return rooms;
 	}
 
 	@Override
