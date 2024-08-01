@@ -41,7 +41,9 @@ public class WndInfoTalent extends WndTitledMessage {
 					hero != null && (hero.metamorphedTalents.containsValue(talent)
 							|| hero.heroClass == HeroClass.RAT_KING
 								// Rat King currently doesn't have duelist implemented
-								&& !talent.isClassTalent(HeroClass.DUELIST))),
+								// and metamorph effects of his classes do not apply to hit
+								&& !talent.isClassTalent(HeroClass.DUELIST)
+								&& !talent.isClassTalent(HeroClass.RAT_KING))),
             WIDTH_MIN );
 
 		if (buttonCallback != null) {
