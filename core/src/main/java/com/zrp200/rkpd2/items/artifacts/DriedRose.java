@@ -59,6 +59,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfRetribution;
 import com.zrp200.rkpd2.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.AlchemyScene;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -784,6 +785,10 @@ public class DriedRose extends Artifact {
 				//only some lines are said on the first floor of a depth
 				int variant = Dungeon.depth % 5 == 1 ? Random.IntRange(1, 3) : Random.IntRange(1, 6);
 
+				if (Dungeon.branch == AbyssLevel.BRANCH){
+					depth = 10;
+				}
+
 				switch (depth) {
 					case 0:
 						yell(Messages.get(this, "dialogue_sewers_" + variant));
@@ -798,8 +803,11 @@ public class DriedRose extends Artifact {
 						yell(Messages.get(this, "dialogue_city_" + variant));
 						break;
 					case 4:
-					default:
 						yell(Messages.get(this, "dialogue_halls_" + variant));
+						break;
+					case 10:
+					default:
+						yell(Messages.get(this, "dialogue_abyss_" + variant));
 						break;
 				}
 			}

@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.GamesInProgress;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.journal.Journal;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.HeroSprite;
 import com.zrp200.rkpd2.ui.Archs;
@@ -181,6 +182,8 @@ public class StartScene extends PixelScene {
 					add(hero);
 					
 					steps = new Image(Icons.get(Icons.STAIRS));
+					if (info.branch == AbyssLevel.BRANCH)
+						steps.tint(2f, 2f, 2f, 0.5f);
 					add(steps);
 					depth = new BitmapText(PixelScene.pixelFont);
 					add(depth);
@@ -194,8 +197,11 @@ public class StartScene extends PixelScene {
 
 					classIcon.copy(Icons.get(info.heroClass));
 				}
-				
-				depth.text(Integer.toString(info.depth));
+
+				if (info.branch == AbyssLevel.BRANCH)
+					depth.text( "A" + info.depth);
+				else
+					depth.text( Integer.toString(info.depth) );
 				depth.measure();
 				
 				level.text(Integer.toString(info.level));

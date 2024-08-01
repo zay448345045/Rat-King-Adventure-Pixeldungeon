@@ -121,8 +121,8 @@ public class AmuletScene extends PixelScene {
 		StyledButton btnMastery = new StyledButton(Chrome.Type.GREY_BUTTON_TR,  Messages.get(this, "mastery") ) {
 			@Override
 			protected void onClick() {
-					InterlevelScene.mode = InterlevelScene.Mode.ABYSS;
-					Game.switchScene(InterlevelScene.class);
+				InterlevelScene.mode = InterlevelScene.Mode.ABYSS;
+				Game.switchScene(InterlevelScene.class);
 			}
 		};
 		btnMastery.icon(Icons.CHALLENGE_ON.get());

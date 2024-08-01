@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.Statistics;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.items.Item;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.PixelScene;
 import com.zrp200.rkpd2.sprites.HeroSprite;
@@ -232,7 +233,10 @@ public class WndRanking extends WndTabbed {
 					pos = statSlot(this, Messages.get(this, "str"), Integer.toString(Dungeon.hero.STR), pos);
 				pos = statSlot(this, Messages.get(this, "duration"), num.format((int) Statistics.duration), pos);
 				if (Statistics.highestAscent == 0) {
-					pos = statSlot(this, Messages.get(this, "depth"), num.format(Statistics.deepestFloor), pos);
+					pos = statSlot(this, Messages.get(this, "depth"),
+							Dungeon.branch == AbyssLevel.BRANCH ?
+									Messages.get(this, "abyss", Statistics.deepestFloor) :
+									num.format(Statistics.deepestFloor), pos);
 				} else {
 					pos = statSlot(this, Messages.get(this, "ascent"), num.format(Statistics.highestAscent), pos);
 				}

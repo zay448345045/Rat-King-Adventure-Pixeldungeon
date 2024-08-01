@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.LostBackpack;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.Chasm;
@@ -130,7 +131,7 @@ public class InterlevelScene extends PixelScene {
 				scrollSpeed = 5;
 				break;
 			case ABYSS:
-				loadingDepth = 26;
+				loadingDepth = 1;
 				fadeTime = SLOW_FADE;
 				scrollSpeed = 5;
 				break;
@@ -358,14 +359,11 @@ public class InterlevelScene extends PixelScene {
 			Dungeon.saveAll();
 		}
 
-		Level level;
-		Dungeon.depth = 27;
-		if (Dungeon.depth >= Statistics.deepestFloor) {
-			level = Dungeon.newLevel();
-		} else {
-			Dungeon.depth = Dungeon.depth + 1;
-			level = Dungeon.loadLevel( GamesInProgress.curSlot );
-		}
+		Dungeon.depth = 1;
+		Dungeon.branch = AbyssLevel.BRANCH;
+		Statistics.deepestFloor = 0;
+		Statistics.floorsExplored.clear();
+		Level level = Dungeon.newLevel();
 		Dungeon.switchLevel( level, level.entrance );
 	}
 

@@ -44,12 +44,15 @@ public class AbyssLevel extends RegularLevel {
         viewDistance = 2;
     }
 
+    public static final int BRANCH = 10;
+
     @Override
     public void playLevelMusic() {
         Music.INSTANCE.playTracks(
-                new String[]{Assets.Music.HALLS_1, Assets.Music.HALLS_2, Assets.Music.HALLS_2},
-                new float[]{1, 1, 0.5f},
-                false);
+                new String[]{Assets.Music.ABYSS_1, Assets.Music.ABYSS_2, Assets.Music.ABYSS_3,
+                        Assets.Music.ABYSS_4, Assets.Music.ABYSS_5},
+                new float[]{1, 1, 1, 1, 0.25f},
+                true);
     }
 
     @Override
@@ -76,7 +79,7 @@ public class AbyssLevel extends RegularLevel {
     @Override
     protected int standardRooms(boolean forceMax) {
         if (forceMax) return 18;
-        return Math.max(30, 14 + Dungeon.depth/3)+Random.chances(new float[]{3, 2, 1, 1, 1});
+        return Math.max(30, 23 + Dungeon.depth/3)+Random.chances(new float[]{3, 2, 1, 1, 1});
     }
 
     @Override

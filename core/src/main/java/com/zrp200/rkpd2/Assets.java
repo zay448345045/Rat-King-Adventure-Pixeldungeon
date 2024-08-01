@@ -158,6 +158,12 @@ public class Assets {
 		public static final String HALLS_TENSE          = "music/halls_tense.ogg";
 		public static final String HALLS_BOSS           = "music/halls_boss.ogg";
 		public static final String HALLS_BOSS_FINALE    = "music/halls_boss_finale.ogg";
+
+		public static final String ABYSS_1               = "music/abyss_1.ogg";
+		public static final String ABYSS_2               = "music/abyss_2.ogg";
+		public static final String ABYSS_3               = "music/abyss_3.ogg";
+		public static final String ABYSS_4               = "music/abyss_4.ogg";
+		public static final String ABYSS_5               = "music/abyss_5.ogg";
 	}
 
 	public static class Sounds {

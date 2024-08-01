@@ -24,6 +24,7 @@ package com.zrp200.rkpd2.actors.mobs;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Challenges;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +41,11 @@ public class Bestiary {
 	
 	//returns a rotation of standard mobs, unshuffled.
 	private static ArrayList<Class<? extends Mob>> standardMobRotation( int depth ){
+		if (Dungeon.branch == AbyssLevel.BRANCH){
+			return new ArrayList<>(Arrays.asList(
+					SpectreRat.class, DarkestElf.class, GhostChicken.class, Phantom.class, BlinkingMan.class, Trappet.class
+			));
+		}
 		switch(depth){
 			
 			// Sewers
@@ -187,9 +193,7 @@ public class Bestiary {
 						Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class, Scorpio.class));
 			default:
-				return new ArrayList<>(Arrays.asList(
-						SpectreRat.class, DarkestElf.class, GhostChicken.class, Phantom.class, BlinkingMan.class, Trappet.class
-				));
+				return new ArrayList<>();
 		}
 		
 	}

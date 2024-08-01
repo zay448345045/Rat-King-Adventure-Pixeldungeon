@@ -245,9 +245,14 @@ public class RankingsScene extends PixelScene {
 				level.hardlight( TEXT_LOSE[odd] );
 
 				if (rec.depth != 0){
-					depth.text( Integer.toString(rec.depth) );
+					if (rec.abyssal)
+						depth.text( "A" + rec.depth);
+					else
+						depth.text( Integer.toString(rec.depth) );
 					depth.measure();
 					steps.copy(Icons.STAIRS.get());
+					if (rec.abyssal)
+						steps.tint(2f, 2f, 2f, 0.5f);
 
 					add(steps);
 					add(depth);

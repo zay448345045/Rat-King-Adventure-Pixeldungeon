@@ -60,6 +60,7 @@ import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.items.wands.WandOfRegrowth;
 import com.zrp200.rkpd2.items.wands.WandOfWarding;
 import com.zrp200.rkpd2.journal.Notes;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.CavesBossLevel;
 import com.zrp200.rkpd2.levels.CavesLevel;
 import com.zrp200.rkpd2.levels.CityBossLevel;
@@ -394,6 +395,8 @@ public class Dungeon {
 				default:
 					level = new DeadEndLevel();
 			}
+		} else if (branch == AbyssLevel.BRANCH) {
+			level = new AbyssLevel();
 		} else {
 			level = new DeadEndLevel();
 		}
@@ -409,7 +412,7 @@ public class Dungeon {
 				generatedLevels.add(depth + 1000 * branch);
 			}
 
-			if (depth > Statistics.deepestFloor && branch == 0) {
+			if (depth > Statistics.deepestFloor && (branch == 0 || branch == AbyssLevel.BRANCH)) {
 				Statistics.deepestFloor = depth;
 
 				if (Statistics.qualifiedForNoKilling) {
@@ -473,6 +476,9 @@ public class Dungeon {
 	//is usually the dungeon depth, but can be set to 26 when ascending
 	static final int ASCENSION_DEPTH = 26;
 	public static int scalingDepth(){
+		if (branch == AbyssLevel.BRANCH){
+			return ASCENSION_DEPTH + depth;
+		}
 		if (depth == 0)
 			return ASCENSION_DEPTH;
 		if (Dungeon.hero != null && (Dungeon.hero.buff(AscensionChallenge.class) != null || Dungeon.depth == 0) && depth < ASCENSION_DEPTH){
@@ -559,10 +565,10 @@ public class Dungeon {
 
 	public static boolean posNeeded() {
 		//2 POS each floor set
-		int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (depth / 5) * 2);
+		int posLeftThisSet = 2 - (LimitedDrops.STRENGTH_POTIONS.count - (scalingDepth() / 5) * 2);
 		if (posLeftThisSet <= 0 || Dungeon.isChallenged(Challenges.NO_STR)) return false;
 
-		int floorThisSet = (depth % 5);
+		int floorThisSet = (scalingDepth() % 5);
 
 		//pos drops every two floors, (numbers 1-2, and 3-4) with a 50% chance for the earlier one each time.
 		int targetPOSLeft = 2 - floorThisSet/2;
@@ -576,20 +582,20 @@ public class Dungeon {
 	public static boolean souNeeded() {
 		int souLeftThisSet;
 		//3 SOU each floor set
-		souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (depth / 5) * 3);
+		souLeftThisSet = 3 - (LimitedDrops.UPGRADE_SCROLLS.count - (scalingDepth() / 5) * 3);
 		if (souLeftThisSet <= 0) return false;
 
-		int floorThisSet = (depth % 5);
+		int floorThisSet = (scalingDepth() % 5);
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < souLeftThisSet;
 	}
 	
 	public static boolean asNeeded() {
 		//1 AS each floor set
-		int asLeftThisSet = 1 - (LimitedDrops.ARCANE_STYLI.count - (depth / 5));
+		int asLeftThisSet = 1 - (LimitedDrops.ARCANE_STYLI.count - (scalingDepth() / 5));
 		if (asLeftThisSet <= 0) return false;
 
-		int floorThisSet = (depth % 5);
+		int floorThisSet = (scalingDepth() % 5);
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < asLeftThisSet;
 	}
@@ -894,6 +900,7 @@ public class Dungeon {
 		info.customSeed = bundle.getString( CUSTOM_SEED );
 		info.daily = bundle.getBoolean( DAILY );
 		info.dailyReplay = bundle.getBoolean( DAILY_REPLAY );
+		info.branch = bundle.getInt( BRANCH );
 
 		Hero.preview( info, bundle.getBundle( HERO ) );
 		Statistics.preview( info, bundle );

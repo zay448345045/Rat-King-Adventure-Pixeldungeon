@@ -34,6 +34,7 @@ import com.zrp200.rkpd2.SPDAction;
 import com.zrp200.rkpd2.SPDSettings;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.journal.Document;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
@@ -74,12 +75,19 @@ public class MenuPane extends Component {
 		add(bg);
 
 		depthIcon = Icons.get(Dungeon.level.feeling);
+		if (Dungeon.branch == AbyssLevel.BRANCH){
+			depthIcon.tint(2f, 2f, 2f, 1f);
+		}
 		add(depthIcon);
 
-		depthText = new BitmapText( Integer.toString( Dungeon.depth ), PixelScene.pixelFont);
-		depthText.hardlight( 0xCACFC2 );
-		depthText.measure();
-		add( depthText );
+		String depthText = Integer.toString(Dungeon.depth);
+		if (Dungeon.branch == AbyssLevel.BRANCH){
+			depthText = Messages.format("A%s", depthText);
+		}
+		this.depthText = new BitmapText(depthText, PixelScene.pixelFont);
+		this.depthText.hardlight( 0xCACFC2 );
+		this.depthText.measure();
+		add(this.depthText);
 
 		depthButton = new Button(){
 			@Override

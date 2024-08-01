@@ -42,6 +42,7 @@ import com.zrp200.rkpd2.actors.mobs.npcs.Blacksmith;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.MiningLevel;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -100,7 +101,7 @@ public class Pickaxe extends MeleeWeapon {
 		
 		if (action.equals(AC_MINE)) {
 			
-			if (Dungeon.depth < 11 || Dungeon.depth > 15) {
+			if (Dungeon.depth < 11 || Dungeon.depth > 15 || Dungeon.branch == AbyssLevel.BRANCH) {
 				GLog.w( Messages.get(this, "no_vein") );
 				return;
 			}

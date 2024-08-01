@@ -40,6 +40,7 @@ import com.zrp200.rkpd2.items.quest.CorpseDust;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.scrolls.Scroll;
 import com.zrp200.rkpd2.journal.Notes;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.ui.QuickSlotButton;
 import com.zrp200.rkpd2.ui.Toolbar;
@@ -109,6 +110,7 @@ public enum Rankings {
 			rec.depth = Statistics.highestAscent;
 			rec.ascending = true;
 		}
+		rec.abyssal     = Dungeon.branch == AbyssLevel.BRANCH;
 		rec.score       = calculateScore();
 		rec.customSeed  = Dungeon.customSeedText;
 		rec.daily       = Dungeon.daily;
@@ -173,8 +175,13 @@ public enum Rankings {
 	public int calculateScore(){
 
 		if (Dungeon.initialVersion > ShatteredPixelDungeon.v1_2_3){
-			Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
-			Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
+			if (Dungeon.branch == AbyssLevel.BRANCH){
+				Statistics.progressScore = Dungeon.hero.lvl * (Statistics.deepestFloor + 26) * 65;
+				Statistics.progressScore = Math.min(Statistics.progressScore, 100_000);
+			} else {
+				Statistics.progressScore = Dungeon.hero.lvl * Statistics.deepestFloor * 65;
+				Statistics.progressScore = Math.min(Statistics.progressScore, 50_000);
+			}
 
 			if (Statistics.heldItemValue == 0) {
 				for (Item i : Dungeon.hero.belongings) {
@@ -186,10 +193,11 @@ public enum Rankings {
 				}
 			}
 			Statistics.treasureScore = Statistics.goldCollected + Statistics.heldItemValue;
-			Statistics.treasureScore = Math.min(Statistics.treasureScore, 20_000);
+			Statistics.treasureScore = Math.min(Statistics.treasureScore,
+					Dungeon.branch == AbyssLevel.BRANCH ? 60_000 : 20_000);
 
 			Statistics.exploreScore = 0;
-			int scorePerFloor = Statistics.floorsExplored.size * 50;
+			int scorePerFloor = Statistics.floorsExplored.size * (Dungeon.branch == AbyssLevel.BRANCH ? 150 : 50);
 			for (Boolean b : Statistics.floorsExplored.valueList()){
 				if (b) Statistics.exploreScore += scorePerFloor;
 			}
@@ -350,6 +358,9 @@ public enum Rankings {
 
 		Dungeon.initialVersion = data.getInt(GAME_VERSION);
 
+		if (rec.abyssal)
+			Dungeon.branch = AbyssLevel.BRANCH;
+
 		if (Dungeon.initialVersion <= ShatteredPixelDungeon.v1_2_3){
 			Statistics.gameWon = rec.win;
 		}
@@ -465,6 +476,7 @@ public enum Rankings {
 		private static final String LEVEL	= "level";
 		private static final String DEPTH	= "depth";
 		private static final String ASCEND	= "ascending";
+		private static final String ABYSS	= "abyssal";
 		private static final String DATA	= "gameData";
 		private static final String ID      = "gameID";
 		private static final String SEED    = "custom_seed";
@@ -483,6 +495,7 @@ public enum Rankings {
 		public int chaosstones;
 
 		public boolean ascending;
+		public boolean abyssal;
 
 		public Bundle gameData;
 		public String gameID;
@@ -543,6 +556,11 @@ public enum Rankings {
 			herolevel   = bundle.getInt( LEVEL );
 			depth       = bundle.getInt( DEPTH );
 			ascending   = bundle.getBoolean( ASCEND );
+			if (bundle.contains(ABYSS))
+				abyssal  = bundle.getBoolean( ABYSS );
+			else {
+				abyssal = depth > 26;
+			}
 
 			if (bundle.contains( DATE )){
 				date = bundle.getString( DATE );
@@ -573,6 +591,7 @@ public enum Rankings {
 			bundle.put( LEVEL, herolevel );
 			bundle.put( DEPTH, depth );
 			bundle.put( ASCEND, ascending );
+			bundle.put( ABYSS, abyssal );
 
 			bundle.put( DATE, date );
 			bundle.put( VERSION, version );

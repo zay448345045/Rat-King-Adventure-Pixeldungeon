@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.items.journal.GuidePage;
 import com.zrp200.rkpd2.items.journal.Guidebook;
 import com.zrp200.rkpd2.items.spells.AquaBlast;
 import com.zrp200.rkpd2.journal.Document;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.LevelTransition;
@@ -79,7 +80,7 @@ public class EntranceRoom extends StandardRoom {
 		} while (level.findMob(entrance) != null);
 		Painter.set( level, entrance, Terrain.ENTRANCE );
 
-		if (Dungeon.depth == 1){
+		if (Dungeon.depth == 1 && Dungeon.branch != AbyssLevel.BRANCH){
 			level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.SURFACE));
 		} else {
 			level.transitions.add(new LevelTransition(level, entrance, LevelTransition.Type.REGULAR_ENTRANCE));

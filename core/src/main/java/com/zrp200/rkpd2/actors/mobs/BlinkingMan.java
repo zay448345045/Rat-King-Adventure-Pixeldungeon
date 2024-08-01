@@ -41,6 +41,7 @@ import com.zrp200.rkpd2.items.scrolls.ScrollOfIdentify;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfUpgrade;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class BlinkingMan extends AbyssalMob {
 
 		HP = HT = 80;
 		defenseSkill = 60;
-		if (Dungeon.scalingDepth() < 26)
+		if (Dungeon.branch != AbyssLevel.BRANCH)
 			defenseSkill = 20;
 		viewDistance = Light.DISTANCE;
 		baseSpeed = 0.75f;
@@ -71,7 +72,7 @@ public class BlinkingMan extends AbyssalMob {
 
 	@Override
 	public int damageRoll() {
-		if (Dungeon.scalingDepth() < 26)
+		if (Dungeon.branch != AbyssLevel.BRANCH)
 			return Random.NormalIntRange( 1, 7 );
 		return Random.NormalIntRange( 5 + abyssLevel()*2, 16 + abyssLevel()*7 );
 	}
@@ -169,14 +170,14 @@ public class BlinkingMan extends AbyssalMob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		if (Dungeon.scalingDepth() < 26)
+		if (Dungeon.branch != AbyssLevel.BRANCH)
 			return 20;
 		return 45 + abyssLevel()*3;
 	}
 
 	@Override
 	public int drRoll() {
-		if (Dungeon.scalingDepth() < 26)
+		if (Dungeon.branch != AbyssLevel.BRANCH)
 			return Random.NormalIntRange(0, 4);
 		return Random.NormalIntRange(0 + abyssLevel()*4, 9 + abyssLevel()*6);
 	}

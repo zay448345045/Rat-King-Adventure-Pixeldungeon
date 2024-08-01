@@ -230,7 +230,7 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
-		if (Dungeon.bossLevel() && Dungeon.scalingDepth() > 25){
+		if (Dungeon.bossLevel() && Dungeon.branch == AbyssLevel.BRANCH){
 			mobs *= 3;
 		}
 		return mobs;
@@ -563,7 +563,7 @@ public abstract class RegularLevel extends Level {
 			DriedRose rose = Dungeon.hero.belongings.getItem( DriedRose.class );
 			if (rose != null && rose.isIdentified() && !rose.cursed && Ghost.Quest.completed()){
 				//aim to drop 1 petal every 2 floors
-				int petalsNeeded = (int) Math.ceil((float)((Dungeon.depth / 2) - rose.droppedPetals) / 3);
+				int petalsNeeded = (int) Math.ceil((float)((Dungeon.scalingDepth() / 2) - rose.droppedPetals) / 3);
 
 				for (int i=1; i <= petalsNeeded; i++) {
 					//the player may miss a single petal and still max their rose.

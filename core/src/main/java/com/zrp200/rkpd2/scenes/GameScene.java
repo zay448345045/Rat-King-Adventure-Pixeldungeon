@@ -83,6 +83,7 @@ import com.zrp200.rkpd2.items.potions.Potion;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
 import com.zrp200.rkpd2.journal.Document;
 import com.zrp200.rkpd2.journal.Journal;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.RegularLevel;
 import com.zrp200.rkpd2.levels.Terrain;
@@ -477,10 +478,11 @@ public class GameScene extends PixelScene {
 				break;
 			case DESCEND:
 			case FALL:
+			case ABYSS:
 				if (Dungeon.depth == Statistics.deepestFloor){
 					switch (Dungeon.depth) {
 						case 1: case 6: case 11: case 16: case 21: case 27:
-							int region = Dungeon.depth == 27 ? 6 : (Dungeon.depth+4)/5;
+							int region = Dungeon.branch == AbyssLevel.BRANCH ? 6 : (Dungeon.depth+4)/5;
 							if (!Document.INTROS.isPageRead(region)) {
 								add(new WndStory(Document.INTROS.pageBody(region)).setDelays(0.6f, 1.4f));
 								Document.INTROS.readPage(region);

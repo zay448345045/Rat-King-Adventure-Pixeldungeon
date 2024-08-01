@@ -26,6 +26,7 @@ import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
+import com.zrp200.rkpd2.levels.AbyssLevel;
 import com.zrp200.rkpd2.levels.rooms.special.SpecialRoom;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public abstract class SecretRoom extends SpecialRoom {
 		if (floorsLeft == 0) {
 			secrets = regionSecretsThisRun[region];
 		} else {
-			if (Dungeon.scalingDepth() >= 25){
+			if (Dungeon.branch == AbyssLevel.BRANCH){
 				secrets = 1;
 			}
 			else secrets = regionSecretsThisRun[region] / (float)floorsLeft;
@@ -88,7 +89,7 @@ public abstract class SecretRoom extends SpecialRoom {
 				secrets = (float)Math.floor(secrets);
 			}
 		}
-		if (Dungeon.scalingDepth() < 25)
+		if (Dungeon.branch != AbyssLevel.BRANCH)
 			regionSecretsThisRun[region] -= (int)secrets;
 		return (int)secrets;
 	}
