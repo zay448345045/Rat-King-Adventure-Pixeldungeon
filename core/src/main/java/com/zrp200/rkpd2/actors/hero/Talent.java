@@ -1636,6 +1636,21 @@ public enum Talent {
 		bundle.put("replacements", replacementsBundle);
 	}
 
+	public static final HashMap<Integer, Talent[]> bonusTalents = new HashMap<>();
+	static {
+		bonusTalents.put(1, new Talent[]{
+				NATURES_AID
+		});
+		bonusTalents.put(2, new Talent[]{
+				LIQUID_WILLPOWER, LIQUID_NATURE,
+				INSCRIBED_POWER, INSCRIBED_STEALTH,
+				ROGUES_FORESIGHT
+		});
+		bonusTalents.put(3, new Talent[]{
+				POINT_BLANK
+		});
+	};
+
 	private static final HashSet<String> removedTalents = new HashSet<>();
 	static{
 		//v2.2.0
@@ -1666,8 +1681,11 @@ public enum Talent {
 			Bundle replacements = bundle.getBundle("replacements");
 			for (String key : replacements.getKeys()){
 				String value = replacements.getString(key);
-				if (renamedTalents.containsKey(key)) key = renamedTalents.get(key);
-				if (renamedTalents.containsKey(value)) value = renamedTalents.get(value);
+				//only process if we are porting to 2.0
+				if (Dungeon.initialVersion < ShatteredPixelDungeon.RKA_2_0) {
+					if (renamedTalents.containsKey(key)) key = renamedTalents.get(key);
+					if (renamedTalents.containsKey(value)) value = renamedTalents.get(value);
+				}
                 if (!removedTalents.contains(key) && !removedTalents.contains(value)) {
                     try {
                         hero.metamorphedTalents.put(Talent.valueOf(key), Talent.valueOf(value));

@@ -260,6 +260,21 @@ public class ScrollOfMetamorphosis extends ExoticScroll {
 					options.put(Random.element(clsTalentsAtTier), Dungeon.hero.pointsInTalent(replacing));
 				}
 			}
+			//fail-safe if hero has all bonus talents
+			int amountOfBonuses = 0;
+			for (Talent t : bonusTalents.get(tier)){
+				if (Dungeon.hero.canHaveTalent(t)) amountOfBonuses++;
+			}
+
+			if (amountOfBonuses < bonusTalents.get(tier).length){
+				Talent bonusMetaTalent = null;
+				do {
+					Talent bonusCandidate = Random.element(bonusTalents.get(tier));
+					if (replacing != bonusCandidate && !Dungeon.hero.hasTalent(bonusCandidate))
+						bonusMetaTalent = bonusCandidate;
+				} while (bonusMetaTalent == null);
+                options.put(bonusMetaTalent, Dungeon.hero.pointsInTalent(replacing));
+			}
 
 			replaceOptions = options;
 			setup(replacing, tier, options);
