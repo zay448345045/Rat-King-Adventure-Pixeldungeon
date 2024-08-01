@@ -767,7 +767,7 @@ public abstract class RegularLevel extends Level {
 						&& pos != exit()
 						&& heaps.get(pos) == null
 						&& room.canPlaceItem(cellToPoint(pos), this)
-						&& findMob(pos) == null) {
+						&& (Dungeon.isChallenged(Challenges.TOO_MANY_MOBS) || findMob(pos) == null)) {
 					
 					Trap t = traps.get(pos);
 					
