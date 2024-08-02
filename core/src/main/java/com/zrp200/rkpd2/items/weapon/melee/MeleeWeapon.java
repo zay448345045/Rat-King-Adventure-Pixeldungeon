@@ -44,10 +44,14 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.FloatingText;
+import com.zrp200.rkpd2.items.DuelistGrass;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KindOfWeapon;
 import com.zrp200.rkpd2.items.weapon.Weapon;
 import com.zrp200.rkpd2.items.weapon.missiles.MissileWeapon;
+import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.Terrain;
+import com.zrp200.rkpd2.levels.features.HighGrass;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
 import com.zrp200.rkpd2.scenes.GameScene;
@@ -149,7 +153,37 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 							@Override
 							public void onSelect(Integer cell) {
 								if (cell != null) {
-									duelistAbility(hero, cell);
+									if (Dungeon.level.map[cell] == Terrain.HIGH_GRASS && KindOfWeapon.canReach(hero, cell, reachFactor(hero))){
+											hero.sprite.attack(cell, () -> {
+												Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH, 1.2f, 0.75f);
+												Level.set(cell, Terrain.GRASS);
+												GameScene.updateMap(cell);
+
+												HighGrass.playVFX(cell);
+												if (Dungeon.level.heroFOV[cell]) Dungeon.observe();
+
+												Item grass = new DuelistGrass();
+												if (MeleeWeapon.this instanceof Sickle || MeleeWeapon.this instanceof WarScythe)
+													grass.quantity(Random.Int(1, 2 + level()/3));
+
+												if (grass.doPickUp(hero, cell)) {
+													hero.spend(-Item.TIME_TO_PICK_UP); //casting the spell already takes a turn
+													GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", grass.name())) );
+
+												} else {
+													GLog.w(Messages.get(this, "cant_grab"));
+													Dungeon.level.drop(grass, cell).sprite.drop();
+													return;
+												}
+
+												beforeAbilityUsed(hero, null);
+												afterAbilityUsed(hero);
+												Invisibility.dispel();
+												hero.spendAndNext(hero.attackDelay());
+											});
+									} else {
+										duelistAbility(hero, cell);
+									}
 									updateQuickslot();
 								}
 							}
@@ -230,7 +264,6 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 				return false;
 			}
 
-			hero.belongings.abilityWeapon = this.abilityWeapon = wep;
 			if (!canAttack(hero, enemy)){
 				hero.belongings.abilityWeapon = null;
 				MissileWeapon thrown = SafeCast.cast(hero.belongings.thirdWep(), MissileWeapon.class);
