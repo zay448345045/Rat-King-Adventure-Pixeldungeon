@@ -273,6 +273,8 @@ abstract public class MissileWeapon extends Weapon {
 					new RevealedArea(cell, Dungeon.depth).attachTo(curUser);
 				}
 			}
+
+			super.onThrow( cell );
 		} else curUser.shoot(enemy, this);
 	}
 
