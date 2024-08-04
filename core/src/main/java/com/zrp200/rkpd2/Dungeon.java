@@ -73,6 +73,7 @@ import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.MiningLevel;
 import com.zrp200.rkpd2.levels.PrisonBossLevel;
 import com.zrp200.rkpd2.levels.PrisonLevel;
+import com.zrp200.rkpd2.levels.RatBossLevel;
 import com.zrp200.rkpd2.levels.RegularLevel;
 import com.zrp200.rkpd2.levels.SewerBossLevel;
 import com.zrp200.rkpd2.levels.SewerLevel;
@@ -333,6 +334,9 @@ public class Dungeon {
 		Level level;
 		if (branch == 0) {
 			switch (depth) {
+				case 0:
+					level = new RatBossLevel();
+					break;
 				case 1:
 				case 2:
 				case 3:
