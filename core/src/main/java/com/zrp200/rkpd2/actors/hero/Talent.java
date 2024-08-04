@@ -1502,7 +1502,7 @@ public enum Talent {
 		tierTalents.clear();
 
 		//tier 3
-		Collections.addAll(tierTalents, talentList(!trolling ? null : hero.heroClass, 3));
+		Collections.addAll(tierTalents, talentList(cls, 3));
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
 				talent = replacements.get(talent);

@@ -60,7 +60,7 @@ public class WndChooseClass extends Window {
 		float pos = message.bottom() + 3*GAP;
 
 		for (HeroClass cls: classes) {
-			RedButton btnCls = new RedButton(cls.unlockMsg(), 6) {
+			RedButton btnCls = new RedButton(cls.shortDesc(), 6) {
 				private void resolve() {
 					WndChooseClass.this.hide();
 					tome.choose(cls);
