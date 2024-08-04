@@ -608,7 +608,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		@Override
 		public boolean act() {
 			if (Regeneration.regenOn()) for (int i = 0; i < nSlots(); i++) {
-				gainCharge(chargeMultiplier(i) / (40f - (chargeCap(i) - charges[i])), i); // 40 to 30 turns per charge
+				gainCharge(chargeMultiplier(i) / (getBaseRecharge(i) - (chargeCap(i) - charges[i])), i); // 40 to 30 turns per charge
 				// secondary: 80 to 60 turns per charge without talent
 				// up to 53.333 to 40 turns per charge at max talent level
 			}
@@ -627,6 +627,15 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 
 			spend(TICK);
 			return true;
+		}
+
+		private float getBaseRecharge(int slot) {
+			Hero hero = SafeCast.cast(target, Hero.class);
+			if (hero.hasTalent(Talent.ADVENTUROUS_SNOOZING) && hero.resting){
+				float boostMod = hero.heroClass == HeroClass.DUELIST ? 2f : 1f;
+				return 40f * (1f - ((hero.pointsInTalent(Talent.ADVENTUROUS_SNOOZING))*boostMod / (float) chargeCap(slot)));
+			}
+			return 40f;
 		}
 
 		@Override

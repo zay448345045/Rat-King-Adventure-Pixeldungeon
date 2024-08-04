@@ -1166,6 +1166,11 @@ public class Hero extends Char {
 		}
 		curAction = null;
 		GameScene.resetKeyHold();
+		if (resting && hasTalent(Talent.ADVENTUROUS_SNOOZING) && !heroClass.is(HeroClass.DUELIST) && buff(Talent.AdventurousSnoozingAntiAbuse.class) == null){
+			HP = Math.min(HT, HP + 1 + 2 * pointsInTalent(Talent.ADVENTUROUS_SNOOZING));
+
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + 2 * pointsInTalent(Talent.ADVENTUROUS_SNOOZING)), FloatingText.HEALING);
+		}
 		resting = false;
 	}
 	
@@ -1663,6 +1668,10 @@ public class Hero extends Char {
 		if (!fullRest) {
 			if (sprite != null) {
 				sprite.showStatus(CharSprite.DEFAULT, Messages.get(this, "wait"));
+			}
+		} else {
+			if (hasTalent(Talent.ADVENTUROUS_SNOOZING) && !heroClass.is(HeroClass.DUELIST)){
+				Buff.affect(this, Talent.AdventurousSnoozingAntiAbuse.class, 2f);
 			}
 		}
 		resting = fullRest;

@@ -223,7 +223,7 @@ public enum Talent {
 	EAGLE_EYE(119, 4), GO_FOR_THE_EYES(120, 4), SWIFT_SPIRIT(121, 4),  BEAK_OF_POWER(imageAt(15, 11), 4),
 
 	//Duelist T1
-	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131),
+	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131), ADVENTUROUS_SNOOZING(imageAt(0, 12)),
 	//Duelist T2
 	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),
 	//Duelist T3
@@ -995,6 +995,8 @@ public enum Talent {
 		{ actPriority = HERO_PRIO+1; }
 	}
 
+	public static class AdventurousSnoozingAntiAbuse extends FlavourBuff{}
+
 	// royal intuition is additive, separate talents are multiplictive, however.
 	public static float itemIDSpeedFactor( Hero hero, Item item ){
 		float factor = 1f;
@@ -1363,7 +1365,7 @@ public enum Talent {
 					case HUNTRESS:
 						return new Talent[]{NATURES_BOUNTY, SURVIVALISTS_INTUITION, FOLLOWUP_STRIKE, SCOUTS_BARRIER, NATURE_AID_2};
 					case DUELIST:
-						return new Talent[]{STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER};
+						return new Talent[]{STRENGTHENING_MEAL, ADVENTURERS_INTUITION, PATIENT_STRIKE, AGGRESSIVE_BARRIER, ADVENTUROUS_SNOOZING};
 					case RAT_KING:
 						return new Talent[]{ROYAL_PRIVILEGE, ROYAL_INTUITION, KINGS_WISDOM, NOBLE_CAUSE};
 				}
