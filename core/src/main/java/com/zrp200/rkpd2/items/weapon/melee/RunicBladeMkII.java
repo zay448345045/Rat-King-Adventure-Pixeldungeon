@@ -61,7 +61,7 @@ import com.zrp200.rkpd2.utils.GLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class RunicBladeMkII extends MeleeWeapon {
+public class RunicBladeMkII extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
     private static final String AC_ZAP = "ZAP";
 

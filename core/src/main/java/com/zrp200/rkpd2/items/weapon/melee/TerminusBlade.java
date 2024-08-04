@@ -21,7 +21,7 @@ import com.zrp200.rkpd2.sprites.CharSprite;
 import com.zrp200.rkpd2.sprites.ItemSprite;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class TerminusBlade extends MeleeWeapon {
+public class TerminusBlade extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
     {
         image = ItemSpriteSheet.TERMINUS;

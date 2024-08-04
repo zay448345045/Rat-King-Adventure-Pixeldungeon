@@ -25,6 +25,7 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
@@ -35,6 +36,7 @@ import com.zrp200.rkpd2.actors.buffs.Barrier;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
+import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.MonkEnergy;
 import com.zrp200.rkpd2.actors.buffs.Recharging;
 import com.zrp200.rkpd2.actors.buffs.Regeneration;
@@ -497,7 +499,66 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		if (trollers)
 			Warp.inflict(10f, 4f);
 
-		return super.proc(attacker, defender, damage);
+		int dmg = super.proc(attacker, defender, damage);
+		if (attacker.alignment == Char.Alignment.ALLY && hero.hasTalent(Talent.SPELLBLADE_FORGERY) && this instanceof Talent.SpellbladeForgeryWeapon){
+			int[] targets = new int[2];
+			int direction = -1;
+			int direction1 = -1, direction2 = -1;
+			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++){
+				if (Actor.findChar(attacker.pos + PathFinder.NEIGHBOURS8[i]) == defender){
+					direction = i;
+				}
+			}
+			if (direction != -1) {
+				switch (direction) {
+					case 0:
+						direction1 = 4;
+						direction2 = 6;
+						break;
+					case 1:
+					case 6:
+						direction1 = 3;
+						direction2 = 4;
+						break;
+					case 2:
+						direction1 = 3;
+						direction2 = 6;
+						break;
+					case 3:
+					case 4:
+						direction1 = 1;
+						direction2 = 6;
+						break;
+					case 5:
+						direction1 = 1;
+						direction2 = 4;
+						break;
+					case 7:
+						direction1 = 1;
+						direction2 = 3;
+						break;
+				}
+				targets[0] = defender.pos + PathFinder.NEIGHBOURS8[direction1];
+				targets[1] = defender.pos + PathFinder.NEIGHBOURS8[direction2];
+				Talent.SpellbladeForgeryWound.hit(defender.pos, 315, 0xCC33FF);
+				for (int pos: targets){
+					Talent.SpellbladeForgeryWound.hit(pos, 45, 0xCC33FF);
+					if (Actor.findChar(pos) != null){
+						Char ch = Actor.findChar(pos);
+						if (ch.alignment != attacker.alignment){
+							int spellDamage = Math.round(dmg*0.2f*(1+hero.pointsInTalent(Talent.SPELLBLADE_FORGERY)));
+							Sample.INSTANCE.play(Assets.Sounds.HIT_STAB, 1f, 0.75f);
+							Sample.INSTANCE.play(Assets.Sounds.HIT_ARROW, 0.8f, 1.25f);
+							if (enchantment != null && attacker.buff(MagicImmune.class) == null) {
+								spellDamage = enchantment.proc( this, attacker, defender, damage );
+							}
+							ch.damage(spellDamage, this);
+						}
+					}
+				}
+			}
+		}
+		return dmg;
 	}
 
 	@Override

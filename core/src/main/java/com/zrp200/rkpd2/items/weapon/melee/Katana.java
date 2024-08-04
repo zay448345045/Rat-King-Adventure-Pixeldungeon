@@ -24,10 +24,11 @@ package com.zrp200.rkpd2.items.weapon.melee;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class Katana extends MeleeWeapon {
+public class Katana extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
 	{
 		image = ItemSpriteSheet.KATANA;

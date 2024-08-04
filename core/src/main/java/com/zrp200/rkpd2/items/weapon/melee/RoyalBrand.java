@@ -18,6 +18,7 @@ import com.zrp200.rkpd2.actors.buffs.Paralysis;
 import com.zrp200.rkpd2.actors.buffs.Vertigo;
 import com.zrp200.rkpd2.actors.buffs.Vulnerable;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.effects.CellEmitter;
 import com.zrp200.rkpd2.effects.Speck;
@@ -32,7 +33,7 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
 
-public class RoyalBrand extends Crossbow {
+public class RoyalBrand extends Crossbow implements Talent.SpellbladeForgeryWeapon {
     {
         image = ItemSpriteSheet.ROYAL_SWORD;
         hitSound = Assets.Sounds.HIT_STRONG;

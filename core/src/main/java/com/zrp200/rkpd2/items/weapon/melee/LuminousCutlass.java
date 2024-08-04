@@ -29,6 +29,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.BrawlerBuff;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.Lightning;
 import com.zrp200.rkpd2.effects.MagicMissile;
 import com.zrp200.rkpd2.effects.particles.SparkParticle;
@@ -37,7 +38,7 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
 
-public class LuminousCutlass extends MeleeWeapon {
+public class LuminousCutlass extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
 	{
 		image = ItemSpriteSheet.LUMINOUS_CUTLASS;

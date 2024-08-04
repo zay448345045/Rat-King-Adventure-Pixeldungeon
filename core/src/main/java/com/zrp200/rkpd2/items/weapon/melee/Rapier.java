@@ -31,6 +31,7 @@ import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.Door;
 import com.zrp200.rkpd2.messages.Messages;
@@ -39,7 +40,7 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.AttackIndicator;
 import com.zrp200.rkpd2.utils.GLog;
 
-public class Rapier extends MeleeWeapon {
+public class Rapier extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
 	{
 		image = ItemSpriteSheet.RAPIER;

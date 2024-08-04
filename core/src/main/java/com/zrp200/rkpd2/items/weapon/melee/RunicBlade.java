@@ -25,10 +25,11 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
-public class RunicBlade extends MeleeWeapon {
+public class RunicBlade extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;

@@ -21,6 +21,7 @@
 
 package com.zrp200.rkpd2.actors.hero;
 
+import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -80,6 +81,7 @@ import com.zrp200.rkpd2.actors.mobs.YogFist;
 import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.Wound;
 import com.zrp200.rkpd2.effects.particles.ExoParticle;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
 import com.zrp200.rkpd2.items.BrokenSeal;
@@ -225,7 +227,7 @@ public enum Talent {
 	//Duelist T1
 	STRENGTHENING_MEAL(128), ADVENTURERS_INTUITION(129), PATIENT_STRIKE(130), AGGRESSIVE_BARRIER(131), ADVENTUROUS_SNOOZING(imageAt(0, 12)),
 	//Duelist T2
-	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136),
+	FOCUSED_MEAL(132), LIQUID_AGILITY(133), WEAPON_RECHARGING(134), LETHAL_HASTE(135), SWIFT_EQUIP(136), SPELLBLADE_FORGERY(imageAt(1, 12)),
 	//Duelist T3
 	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3),
 	//Champion T3
@@ -1350,6 +1352,28 @@ public enum Talent {
 	};
 	public static class AntiMagicBuff extends FlavourBuff{};
 
+	public interface SpellbladeForgeryWeapon {};
+
+	public static class SpellbladeForgeryWound extends Wound {
+		int color;
+
+		@Override
+		public void update() {
+			super.update();
+
+			hardlight(color);
+		}
+
+		public static void hit(int pos, float angle, int color ) {
+			Group parent = Dungeon.hero.sprite.parent;
+			SpellbladeForgeryWound w = parent.recycle( SpellbladeForgeryWound.class );
+			parent.bringToFront( w );
+			w.reset( pos );
+			w.angle = angle;
+			w.color = color;
+		}
+	}
+
 	public static final int MAX_TALENT_TIERS = 4;
 
 	public static Talent[] talentList(HeroClass cl, int tier){
@@ -1380,7 +1404,7 @@ public enum Talent {
 					case HUNTRESS:
 						return new Talent[]{INVIGORATING_MEAL, IVYLASH, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, SCOURGING_THE_UNIVERSE};
 					case DUELIST:
-						return new Talent[]{FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP};
+						return new Talent[]{FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP, SPELLBLADE_FORGERY};
 					case RAT_KING:
 						return new Talent[]{ROYAL_MEAL, RESTORATION, POWER_WITHIN, KINGS_VISION, PURSUIT};
 				}

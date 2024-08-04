@@ -3,6 +3,7 @@ package com.zrp200.rkpd2.items.weapon.melee;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.items.bombs.Bomb;
 import com.zrp200.rkpd2.items.bombs.ShrapnelBomb;
 import com.zrp200.rkpd2.messages.Messages;
@@ -10,7 +11,7 @@ import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.text.DecimalFormat;
 
-public class MoltenStrife extends MeleeWeapon {
+public class MoltenStrife extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
     {
         image = ItemSpriteSheet.MOLTEN_STRIFE;
         hitSound = Assets.Sounds.HIT_SLASH;

@@ -28,11 +28,12 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.FlavourBuff;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.ui.BuffIndicator;
 
-public class Sword extends MeleeWeapon {
+public class Sword extends MeleeWeapon implements Talent.SpellbladeForgeryWeapon {
 	
 	{
 		image = ItemSpriteSheet.SWORD;
