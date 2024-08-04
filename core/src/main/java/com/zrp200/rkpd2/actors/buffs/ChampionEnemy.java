@@ -571,7 +571,6 @@ public abstract class ChampionEnemy extends Buff {
 		@Override
 		public boolean attachTo(Char target) {
 			Buff.affect(target, Shrink.class);
-			Buff.affect(target, Adrenaline.class, 1000);
 			return super.attachTo(target);
 		}
 	}

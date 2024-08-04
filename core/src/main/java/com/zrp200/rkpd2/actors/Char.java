@@ -897,6 +897,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 				speed *= momentum.speedMultiplier();
 			}
 		}
+		if ( buff( ChampionEnemy.Swiftness.class ) != null) speed *= 2f;
 
 		return speed;
 	}
@@ -905,6 +906,7 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 		float delay = TICK;
 		if(buff(Adrenaline.class) != null) delay /= 1.5f;
 		if (Ratmogrify.drratedonEffect(this) > 1) delay /= 1.33f;
+		if ( buff( ChampionEnemy.Swiftness.class ) != null) delay /= 1.5f;
 		return delay;
 	}
 
