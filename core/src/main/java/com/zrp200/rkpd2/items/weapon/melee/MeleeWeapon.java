@@ -264,6 +264,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 				return false;
 			}
 
+			hero.belongings.abilityWeapon = this.abilityWeapon = wep;
 			if (!canAttack(hero, enemy)){
 				hero.belongings.abilityWeapon = null;
 				MissileWeapon thrown = SafeCast.cast(hero.belongings.thirdWep(), MissileWeapon.class);
