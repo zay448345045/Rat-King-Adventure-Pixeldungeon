@@ -884,7 +884,7 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	public Emitter emitter() {
 		if (grass <= 0) return null;
 		Emitter emitter = new Emitter();
-		emitter.pos(8f, 8f);
+		emitter.pos(6f, 6f);
 		emitter.fillTarget = false;
 		emitter.pour(StaffParticleFactory, 0.033f);
 		return emitter;
