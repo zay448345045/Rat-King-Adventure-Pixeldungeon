@@ -24,7 +24,10 @@ package com.zrp200.rkpd2.items.weapon.melee;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.ColorMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.zrp200.rkpd2.Assets;
@@ -46,6 +49,7 @@ import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.HeroSubClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.effects.FloatingText;
+import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.items.DuelistGrass;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KindOfWeapon;
@@ -74,6 +78,7 @@ import static com.zrp200.rkpd2.Dungeon.hero;
 public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 
 	public boolean trollers = false;
+	public int grass = 0;
 
     public static String AC_ABILITY = "ABILITY";
 
@@ -358,14 +363,17 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	protected void beforeAbilityUsed(Hero hero, Char target){
 		hero.belongings.abilityWeapon = this;
 		Charger charger = Buff.affect(hero, Charger.class);
+		float charge = -abilityChargeUse(hero, target);
 		charger.gainCharge(
-				-abilityChargeUse(hero,target),
+				charge,
 				hero.belongings.findWeapon(this)
 		);
 		if (activeAbility != null) {
 			// use charge from thrown weapon as well
-			charger.gainCharge(-abilityChargeUse(hero,target), 2);
+			charger.gainCharge(charge, 2);
 		}
+		if (charge == 0)
+			grass -= DuelistGrass.getAbilityGrassCost();
 
 		if (hero.heroClass == HeroClass.DUELIST
 				&& hero.hasTalent(Talent.AGGRESSIVE_BARRIER)
@@ -424,6 +432,8 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		if (hero.buff(Talent.CounterAbilityTacker.class) != null){
 			chargeUse = Math.max(0, chargeUse-0.5f*hero.pointsInTalent(Talent.COUNTER_ABILITY));
 		}
+		if (grass > DuelistGrass.getAbilityGrassCost())
+			chargeUse = 0;
 		return chargeUse;
 	}
 
@@ -558,6 +568,25 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 				}
 			}
 		}
+
+		if (grass > 0){
+			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			Sample.INSTANCE.play(Assets.Sounds.PLANT, 2f, 1f);
+			defender.sprite.emitter().burst(LeafParticle.LEVEL_SPECIFIC, 10);
+			Talent.SpellbladeForgeryWound.hit(defender.pos, 315, ColorMath.random( Dungeon.level.color1, Dungeon.level.color2 ));
+			dmg += Random.NormalIntRange(min() / (8 - hero.pointsInTalent(Talent.GRASSY_OFFENSE)*2), max() / (8 - hero.pointsInTalent(Talent.GRASSY_OFFENSE)*2));
+			if (hero.pointsInTalent(Talent.GRASSY_OFFENSE) > 2){
+				int heal = Math.min(2, attacker.HT-attacker.HP);
+				if(heal > 0) {
+					attacker.HP += heal;
+					if (attacker.sprite != null) {
+						attacker.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(heal), FloatingText.HEALING);
+					}
+				}
+			}
+			grass -= 1;
+		}
+
 		return dmg;
 	}
 
@@ -623,6 +652,10 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 		//the mage's staff has no ability as it can only be gained by the mage
 		if (hero.heroClass == HeroClass.DUELIST && !(this instanceof MagesStaff)){
 			info += "\n\n" + Messages.get(this, "ability_desc");
+		}
+
+		if (grass > 0){
+			info += "\n\n" + Messages.get(MeleeWeapon.class, "grass_desc", grass, DuelistGrass.getAbilityGrassCost());
 		}
 
 		return info;
@@ -826,21 +859,101 @@ public class MeleeWeapon extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	}
 
 	private static final String KROMER	        = "pipisfusion";
+	private static final String GRASS	        = "grasscharge";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(KROMER, trollers);
+		bundle.put(GRASS, grass);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		trollers = bundle.getBoolean(KROMER);
+		if (bundle.contains(GRASS))
+			grass = bundle.getInt(GRASS);
 	}
 
 	public float warriorMod(){
 		return 1f;
+	}
+
+	@Override
+	public Emitter emitter() {
+		if (grass <= 0) return null;
+		Emitter emitter = new Emitter();
+		emitter.pos(8f, 8f);
+		emitter.fillTarget = false;
+		emitter.pour(StaffParticleFactory, 0.033f);
+		return emitter;
+	}
+
+	public final Emitter.Factory StaffParticleFactory = new Emitter.Factory() {
+		@Override
+		//reimplementing this is needed as instance creation of new staff particles must be within this class.
+		public void emit(Emitter emitter, int index, float x, float y ) {
+			StaffParticle c = emitter.getFirstAvailable(StaffParticle.class);
+			if (c == null) {
+				c = new StaffParticle();
+				emitter.add(c);
+			}
+			c.reset(x, y);
+		}
+
+		@Override
+		//some particles need light mode, others don't
+		public boolean lightMode() {
+			return true;
+		}
+	};
+
+	//determines particle effects to use based on wand the staff owns.
+	public class StaffParticle extends PixelParticle {
+
+		private float minSize;
+		private float maxSize;
+		public float sizeJitter = 0;
+
+		public StaffParticle(){
+			super();
+		}
+
+		public void reset( float x, float y ) {
+			revive();
+
+			speed.set(0);
+
+			this.x = x;
+			this.y = y;
+
+			color( ColorMath.random(0x004400, 0x88CC44) );
+			am = 1f;
+			setLifespan(1.5f);
+			setSize( Random.Float(0.75f, 1.5f), Random.Float(1f, 2f));
+			shuffleXY(8f);
+		}
+
+		public void setSize( float minSize, float maxSize ){
+			this.minSize = minSize;
+			this.maxSize = maxSize;
+		}
+
+		public void setLifespan( float life ){
+			lifespan = left = life;
+		}
+
+		public void shuffleXY(float amt){
+			x += Random.Float(-amt, amt);
+			y += Random.Float(-amt, amt);
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			size(minSize + (left / lifespan)*(maxSize-minSize) + Random.Float(sizeJitter));
+		}
 	}
 
 }
