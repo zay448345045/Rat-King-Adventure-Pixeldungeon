@@ -30,6 +30,7 @@ import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.items.ArcaneResin;
+import com.zrp200.rkpd2.items.DuelistGrass;
 import com.zrp200.rkpd2.items.Generator;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.KingsCrown;
@@ -294,6 +295,9 @@ public class QuickRecipe extends Component {
 						return "";
 					}
 				}));
+				result.add(new QuickRecipe( new DuelistGrass.SeedDuplicationRecipe(), new ArrayList<>(Arrays.asList(
+						new Plant.Seed.PlaceHolder(), new DuelistGrass().quantity(5)
+				)), new Plant.Seed.PlaceHolder().quantity(2)));
 				return result;
 			case 1:
 				Recipe r = new Scroll.ScrollToStone();

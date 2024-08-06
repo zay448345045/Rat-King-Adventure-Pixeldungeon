@@ -1,8 +1,10 @@
 package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.hero.Belongings;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -13,6 +15,8 @@ import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.messages.Messages;
+import com.zrp200.rkpd2.plants.Plant;
+import com.zrp200.rkpd2.plants.Rotberry;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 import com.zrp200.rkpd2.utils.GLog;
@@ -151,5 +155,62 @@ public class DuelistGrass extends Item {
             }
         }
     };
+
+    public static class SeedDuplicationRecipe extends Recipe {
+
+        @Override
+        public boolean testIngredients(ArrayList<Item> ingredients) {
+            if (ingredients.size() != 2) return false;
+
+            int grassQuantity = 0;
+            boolean seedPresent = false;
+            for (Item item: ingredients){
+                if (item instanceof DuelistGrass) grassQuantity = item.quantity();
+                if (item instanceof Plant.Seed){
+                    seedPresent = !(item instanceof Rotberry.Seed);
+                }
+            }
+
+            return seedPresent && grassQuantity <= 5;
+        }
+
+        @Override
+        public int cost(ArrayList<Item> ingredients) {
+            return 3;
+        }
+
+        @Override
+        public Item brew(ArrayList<Item> ingredients) {
+            if (!testIngredients(ingredients)) return null;
+
+            Class<? extends Plant.Seed> plantClass = null;
+
+            for (Item item: ingredients){
+                if (item instanceof DuelistGrass) {
+                    item.quantity(item.quantity() - 5);
+                } else if (item instanceof Plant.Seed){
+                    item.quantity(0);
+                    plantClass = (Class<? extends Plant.Seed>) item.getClass();
+                }
+            }
+
+            return Reflection.newInstance(plantClass).quantity(2);
+        }
+
+        @Override
+        public Item sampleOutput(ArrayList<Item> ingredients) {
+            for (Item item : ingredients){
+                if (item instanceof Plant.Seed){
+                    try {
+                        return Reflection.newInstance(item.getClass());
+                    } catch (Exception e) {
+                        ShatteredPixelDungeon.reportException( e );
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
 }
