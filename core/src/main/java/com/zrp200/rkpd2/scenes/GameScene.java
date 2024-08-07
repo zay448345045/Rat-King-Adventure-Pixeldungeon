@@ -73,6 +73,7 @@ import com.zrp200.rkpd2.effects.Flare;
 import com.zrp200.rkpd2.effects.FloatingText;
 import com.zrp200.rkpd2.effects.Ripple;
 import com.zrp200.rkpd2.effects.SpellSprite;
+import com.zrp200.rkpd2.effects.TargetedCell;
 import com.zrp200.rkpd2.items.Ankh;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Honeypot;
@@ -1450,6 +1451,13 @@ public static boolean tagDisappeared = false;
 		cellSelector.enabled = Dungeon.hero.ready;
 		if (scene != null) {
 			scene.prompt(listener.prompt());
+		}
+		if (Dungeon.hero.hasTalent(Talent.SIXTH_SENSE) && cellSelector.listener != defaultCellListener){
+			for (Mob mob : Dungeon.level.mobs){
+				if (mob.surprisedBy(Dungeon.hero) && mob.alignment != Dungeon.hero.alignment && Dungeon.level.heroFOV[mob.pos]){
+					scene.add(new TargetedCell.SixthSense(mob.pos, 0xCC33FF));
+				}
+			}
 		}
 	}
 

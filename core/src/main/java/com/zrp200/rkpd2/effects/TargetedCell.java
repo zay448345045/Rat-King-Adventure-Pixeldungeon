@@ -28,7 +28,7 @@ import com.zrp200.rkpd2.ui.Icons;
 
 public class TargetedCell extends Image {
 
-	private float alpha;
+	protected float alpha;
 
 	public TargetedCell( int pos, int color ) {
 		super(Icons.get(Icons.TARGET));
@@ -44,10 +44,17 @@ public class TargetedCell extends Image {
 	@Override
 	public void update() {
 		if ((alpha -= Game.elapsed/2f) > 0) {
-			alpha( alpha );
-			scale.set( alpha );
+			alpha( Math.min(1f, alpha) );
+			scale.set( Math.min(1f, alpha) );
 		} else {
 			killAndErase();
+		}
+	}
+
+	public static class SixthSense extends TargetedCell {
+		public SixthSense(int pos, int color) {
+			super(pos, color);
+			alpha = 1.6f;
 		}
 	}
 }
