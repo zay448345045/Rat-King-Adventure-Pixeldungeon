@@ -49,7 +49,7 @@ public class KromerCloak extends CloakOfShadows {
                     float missing = (chargeCap - charge);
                     if (level() > 7) missing += 8*(level() - 7)/3f;
                     float turnsToCharge = (25 - missing);
-                    if(((Hero)target).isClassed(HeroClass.ROGUE)
+                    if(((Hero)target).heroClass.isExact(HeroClass.ROGUE)
                             && !((Hero) target).hasTalent(Talent.EFFICIENT_SHADOWS)) turnsToCharge /= ROGUE_BOOST;
                     turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
                     float chargeToGain = (1f / turnsToCharge);

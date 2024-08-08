@@ -449,7 +449,7 @@ abstract public class MissileWeapon extends Weapon {
 
 	protected final float durabilityPerUse( boolean rounded){
 		int level = level();
-		if(Dungeon.hero.isClassed(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) level++;
+		if(Dungeon.hero.heroClass.isExact(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) level++;
 		float usages = baseUses * (float)(Math.pow(3, level()));
 
 		final float[] u = {usages};

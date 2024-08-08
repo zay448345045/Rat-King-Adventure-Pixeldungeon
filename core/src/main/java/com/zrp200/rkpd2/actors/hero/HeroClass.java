@@ -121,7 +121,21 @@ public enum HeroClass {
 
 	/** useful for sharing attributes with Rat King **/
 	public boolean is(HeroClass cls) {
-		return this == cls || this == RAT_KING && cls != DUELIST;
+		return hero.isClassed(cls);
+//		return this == cls || this == RAT_KING && cls != DUELIST;
+	}
+
+	public boolean is(HeroClass cls, Hero hero){
+		return hero.isClassed(cls);
+	}
+
+	// TODO: this is used much more frequently than is(cls) due to heroes *not* sharing traits with rat king
+	public boolean isExact(HeroClass cls) {
+		return hero.isClassedExact(cls);
+	}
+
+	public boolean isExact(HeroClass cls, Hero hero){
+		return hero.isClassedExact(cls);
 	}
 
 	public static final int MAGE_WAND_BOOST = 2;

@@ -249,7 +249,7 @@ public enum Talent {
 			return Ratmogrify.useRatroicEnergy
 					|| GamesInProgress.selectedClass == HeroClass.RAT_KING
 					|| hero != null
-						&& (hero.isClassed(HeroClass.RAT_KING)
+						&& (hero.heroClass.is(HeroClass.RAT_KING)
 							|| hero.armorAbility instanceof Ratmogrify);
 		}
 		@Override public int icon() {

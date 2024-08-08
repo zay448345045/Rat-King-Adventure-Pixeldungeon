@@ -57,7 +57,7 @@ public class DeathMark extends ArmorAbility {
 
 	public static float damageMultiplier() {
 		if (hero.hasTalent(Talent.CATACLYSMIC_ENERGY)) return 1f;
-		return hero.isClassed(HeroClass.ROGUE) ? 5/3f : 1.25f;
+		return hero.heroClass.isExact(HeroClass.ROGUE) ? 5/3f : 1.25f;
 	}
 
 	@Override

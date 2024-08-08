@@ -72,7 +72,7 @@ public class ForceCube extends MissileWeapon {
 
 		rangedHit( null, cell );
 		Dungeon.level.pressCell(cell);
-		if(Dungeon.hero.isClassed(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) cloakBoost = true; // need to manually set this to get a consistent result. this is a flaw in my implementation of the boost mechanic.
+		if(Dungeon.hero.heroClass.isExact(HeroClass.ROGUE) && Dungeon.hero.buff(CloakOfShadows.cloakStealth.class, false) != null) cloakBoost = true; // need to manually set this to get a consistent result. this is a flaw in my implementation of the boost mechanic.
 		ArrayList<Char> targets = new ArrayList<>();
 		if (Actor.findChar(cell) != null) targets.add(Actor.findChar(cell));
 		

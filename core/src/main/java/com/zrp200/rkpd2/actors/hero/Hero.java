@@ -289,14 +289,42 @@ public class Hero extends Char {
 	}
 
 	public boolean isClassed(HeroClass sub){
+		return isClassed(this, sub);
+	}
+
+	public static boolean isClassed(Hero hero, HeroClass sub){
 		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
 			return true;
 		} else {
-			if (heroClass2 == null) {
-				return heroClass == sub;
+			if (hero.heroClass2 == null) {
+				return hero.matchClass(hero.heroClass, sub);
 			} else {
-				return heroClass == sub || heroClass2 == sub;
+				return hero.matchClass(hero.heroClass, sub) || hero.matchClass(hero.heroClass2, sub);
 			}
+		}
+	}
+
+	public boolean isClassedExact(HeroClass sub){
+		return isClassedExact(this, sub);
+	}
+
+	public boolean isClassedExact(Hero hero, HeroClass sub){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE)){
+			return true;
+		} else {
+			if (hero.heroClass2 == null) {
+				return hero.heroClass == sub;
+			} else {
+				return hero.heroClass == sub || hero.heroClass2 == sub;
+			}
+		}
+	}
+
+	public boolean matchClass(HeroClass class1, HeroClass class2){
+		if (class1 == HeroClass.RAT_KING){
+			return class2 != HeroClass.DUELIST;
+		} else {
+			return class1 == class2;
 		}
 	}
 

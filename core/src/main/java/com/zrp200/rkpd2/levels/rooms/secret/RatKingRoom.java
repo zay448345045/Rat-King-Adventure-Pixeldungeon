@@ -69,7 +69,7 @@ public class RatKingRoom extends SecretRoom {
 		}
 
 		int pos = level.pointToCell(random(2));
-		if(Dungeon.hero.isClassed(HeroClass.RAT_KING)) {
+		if(Dungeon.hero.heroClass.isExact(HeroClass.RAT_KING)) {
 			Painter.set(level,pos,Terrain.SIGN); // home sweet home sign, see hero#actMove
 		} else {
 			RatKing king = new RatKing();

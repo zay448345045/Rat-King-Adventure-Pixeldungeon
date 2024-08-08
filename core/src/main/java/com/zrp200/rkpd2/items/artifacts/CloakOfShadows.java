@@ -258,7 +258,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 			if (!isEquipped(target)) amount *= target.byTalent(
 					Talent.LIGHT_CLOAK, LC_FACTOR,
 					Talent.RK_FREERUNNER, LC_FACTOR_RK);
-			if(target.isClassed(HeroClass.ROGUE)) amount *= ROGUE_BOOST;
+			if(target.heroClass.is(HeroClass.ROGUE)) amount *= ROGUE_BOOST;
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
 				partialCharge--;
@@ -310,7 +310,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 					float missing = (chargeCap - charge);
 					if (level() > 7) missing += 5*(level() - 7)/3f;
 					float turnsToCharge = (45 - missing);
-					if(((Hero)target).isClassed(HeroClass.ROGUE)
+					if(((Hero)target).heroClass.isExact(HeroClass.ROGUE)
 						&& !((Hero) target).hasTalent(Talent.EFFICIENT_SHADOWS)) turnsToCharge /= ROGUE_BOOST;
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);

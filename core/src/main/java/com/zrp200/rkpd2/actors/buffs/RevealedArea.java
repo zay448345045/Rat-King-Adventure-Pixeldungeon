@@ -70,7 +70,7 @@ public class RevealedArea extends FlavourBuff{
 	}
 
 	public static int duration() {
-		if (hero.isClassed(HeroClass.HUNTRESS)) return 5;
+		if (hero.heroClass.isExact(HeroClass.HUNTRESS)) return 5;
 		return 5*hero.pointsInTalent(Talent.SEER_SHOT, Talent.RK_WARDEN); }
 	@Override
 	public float iconFadePercent() {

@@ -293,7 +293,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	private double internalLevel() {
 		double level = curseInfusionBonus ? 1 : 0;
 		if(Dungeon.hero == null) return level;
-		double rate = 30d/(Dungeon.hero.isClassed(HeroClass.HUNTRESS) ? 10 : 6);
+		double rate = 30d/(Dungeon.hero.heroClass.isExact(HeroClass.HUNTRESS) ? 10 : 6);
 		return level + Dungeon.hero.lvl / rate;
 	}
 
@@ -307,7 +307,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 	// huntress can enchant with scrolls of upgrade
 	@Override
 	public boolean isUpgradable() {
-		return Dungeon.hero != null && Dungeon.hero.isClassed(HeroClass.HUNTRESS);
+		return Dungeon.hero != null && Dungeon.hero.heroClass.isExact(HeroClass.HUNTRESS);
 	}
 	@Override
 	public Item upgrade(boolean enchant) {
@@ -631,7 +631,7 @@ public class SpiritBow extends Weapon implements BrawlerBuff.BrawlerWeapon {
 						});
 			} else {
 
-				if ((user.hasTalent(Talent.SEER_SHOT, Talent.RK_WARDEN) || user.isClassed(HeroClass.HUNTRESS))
+				if ((user.hasTalent(Talent.SEER_SHOT, Talent.RK_WARDEN) || user.heroClass.isExact(HeroClass.HUNTRESS))
 						&& user.buff(Talent.SeerShotCooldown.class) == null){
 					int shotPos = throwPos(user, dst);
 					if (Actor.findChar(shotPos) == null) {

@@ -1439,10 +1439,10 @@ public abstract class Level implements Bundlable {
 						heroMindFov[mob.pos + i] = true;
 					}
 				}
-			} else if (hero.hasTalent(Talent.HEIGHTENED_SENSES, Talent.KINGS_VISION) || hero.isClassed(HeroClass.HUNTRESS)) {
+			} else if (hero.hasTalent(Talent.HEIGHTENED_SENSES, Talent.KINGS_VISION) || hero.heroClass.isExact(HeroClass.HUNTRESS)) {
 				int points = hero.pointsInTalent(Talent.HEIGHTENED_SENSES,Talent.KINGS_VISION);
 				// todo should this transfer the innate?
-				if(hero.isClassed(HeroClass.HUNTRESS) || hero.hasTalent(Talent.HEIGHTENED_SENSES)) points++; // yup.
+				if(hero.heroClass.isExact(HeroClass.HUNTRESS) || hero.hasTalent(Talent.HEIGHTENED_SENSES)) points++; // yup.
 				for (Mob mob : mobs) {
 					int p = mob.pos;
 					if (!fieldOfView[p] && distance(c.pos, p) <= 1+points) {

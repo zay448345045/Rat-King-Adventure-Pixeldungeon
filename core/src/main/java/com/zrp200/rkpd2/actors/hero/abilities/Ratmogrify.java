@@ -91,7 +91,7 @@ public class Ratmogrify extends ArmorAbility {
 			GLog.w(Messages.get(this, "no_target"));
 			return;
 		} else if (ch == hero){
-			if (!(hero.hasTalent(Talent.RATFORCEMENTS) || hero.isClassed(HeroClass.RAT_KING))){
+			if (!(hero.hasTalent(Talent.RATFORCEMENTS) || hero.heroClass.is(HeroClass.RAT_KING))){
 				GLog.w(Messages.get(this, "self_target"));
 				return;
 			} else {
@@ -125,7 +125,7 @@ public class Ratmogrify extends ArmorAbility {
 			GLog.w(Messages.get(this, "cant_transform"));
 			return;
 		} else if (ch instanceof TransmogRat){
-			if (((TransmogRat) ch).allied || !(hero.hasTalent(Talent.RATLOMACY) || hero.isClassed(HeroClass.RAT_KING))){
+			if (((TransmogRat) ch).allied || !(hero.hasTalent(Talent.RATLOMACY) || hero.heroClass.is(HeroClass.RAT_KING))){
 				GLog.w(Messages.get(this, "cant_transform"));
 				return;
 			} else {
@@ -181,7 +181,7 @@ public class Ratmogrify extends ArmorAbility {
 	}
 
 	public static boolean drratedonActive(Char rat){
-		return (Dungeon.hero.pointsInTalent(Talent.DRRATEDON) > 0 || Dungeon.hero.isClassed(HeroClass.RAT_KING))
+		return (Dungeon.hero.pointsInTalent(Talent.DRRATEDON) > 0 || Dungeon.hero.heroClass.is(HeroClass.RAT_KING))
 				&& rat.alignment == Char.Alignment.ALLY
 				&& (rat instanceof Ratmogrify.TransmogRat || rat instanceof Rat);
 	}
@@ -305,7 +305,7 @@ public class Ratmogrify extends ArmorAbility {
 			int damage = original.damageRoll();
 			Berserk berserk = buff(Berserk.class);
 			if (berserk != null && drratedonEffect(this) > 2) damage = berserk.damageFactor(damage);
-			if (!allied && (Dungeon.hero.hasTalent(Talent.RATSISTANCE) || Dungeon.hero.isClassed(HeroClass.RAT_KING))){
+			if (!allied && (Dungeon.hero.hasTalent(Talent.RATSISTANCE) || Dungeon.hero.heroClass.is(HeroClass.RAT_KING))){
 				damage *= Math.pow(RESIST_FACTOR, Dungeon.hero.pointsInTalentWithInnate(HeroClass.RAT_KING,Talent.RATSISTANCE));
 			}
 			return damage;

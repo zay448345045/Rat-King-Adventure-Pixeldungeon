@@ -42,7 +42,7 @@ public class Ech extends DirectableAlly {
     public void update(){
         HT = (int) (8 * getModifier());
         defenseSkill = (int) ((int) (5 * getModifier())*
-                (Dungeon.hero.isClassed(HeroClass.ROGUE) ? 1.5f : 1));
+                (Dungeon.hero.heroClass.isExact(HeroClass.ROGUE) ? 1.5f : 1));
     }
 
     private static double getModifier() { return Math.max(1, Dungeon.scalingDepth()/4d); }
@@ -65,13 +65,13 @@ public class Ech extends DirectableAlly {
     @Override
     public int attackSkill( Char target ) {
         return Random.round((float) (8*getModifier())*
-                (Dungeon.hero.isClassed(HeroClass.ROGUE) ? 1.5f : 1));
+                (Dungeon.hero.heroClass.isExact(HeroClass.ROGUE) ? 1.5f : 1));
     }
 
     @Override
     public int drRoll() {
         return Random.round(Random.NormalIntRange(armorRange[0], armorRange[1])*
-                        (Dungeon.hero.isClassed(HeroClass.WARRIOR) ? 2 : 1));
+                        (Dungeon.hero.heroClass.isExact(HeroClass.WARRIOR) ? 2 : 1));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Ech extends DirectableAlly {
 
     @Override
     public boolean canAttack(Char enemy) {
-        if (Dungeon.hero.isClassed(HeroClass.MAGE)){
+        if (Dungeon.hero.heroClass.isExact(HeroClass.MAGE)){
             return super.canAttack(enemy) || new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
         }
         else return super.canAttack(enemy);
