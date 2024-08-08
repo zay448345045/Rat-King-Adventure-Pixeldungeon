@@ -39,6 +39,7 @@ import com.zrp200.rkpd2.actors.blobs.StormCloud;
 import com.zrp200.rkpd2.actors.blobs.ToxicGas;
 import com.zrp200.rkpd2.actors.buffs.Adrenaline;
 import com.zrp200.rkpd2.actors.buffs.AllyBuff;
+import com.zrp200.rkpd2.actors.buffs.Amok;
 import com.zrp200.rkpd2.actors.buffs.ArcaneArmor;
 import com.zrp200.rkpd2.actors.buffs.ArtifactRecharge;
 import com.zrp200.rkpd2.actors.buffs.AscensionChallenge;
@@ -1378,7 +1379,27 @@ acuRoll *= AscensionChallenge.statModifier(attacker);
 			buff.detach();
 		}
 	}
-	
+
+	public boolean cellIsPathable( int cell ){
+		if (!Dungeon.level.passable[cell]){
+			if (flying || buff(Amok.class) != null){
+				if (!Dungeon.level.avoid[cell]){
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		if (Char.hasProp(this, Property.LARGE) && !Dungeon.level.openSpace[cell]){
+			return false;
+		}
+		if (Actor.findChar(cell) != null){
+			return false;
+		}
+
+		return true;
+	}
+
 	public synchronized void updateSpriteState() {
 		for (Buff buff:buffs) {
 			buff.fx( true );

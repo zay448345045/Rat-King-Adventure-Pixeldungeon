@@ -516,26 +516,6 @@ public abstract class Mob extends Char {
 		return super.canAttack(enemy);
 	}
 
-	private boolean cellIsPathable( int cell ){
-		if (!Dungeon.level.passable[cell]){
-			if (flying || buff(Amok.class) != null){
-				if (!Dungeon.level.avoid[cell]){
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-		if (Char.hasProp(this, Char.Property.LARGE) && !Dungeon.level.openSpace[cell]){
-			return false;
-		}
-		if (Actor.findChar(cell) != null){
-			return false;
-		}
-
-		return true;
-	}
-
 	protected boolean getCloser( int target ) {
 		
 		if (rooted || target == pos || buff(StuckBuff.class) != null) {

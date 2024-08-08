@@ -727,6 +727,16 @@ public class Hero extends Char {
 			accuracy *= 1.25f;
 		}
 
+		if (hasTalent(Talent.HEROIC_ADAPTABILITY)){
+			float boost = 0f;
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Actor.findChar(target.pos + i) != null || !target.cellIsPathable(target.pos + i)){
+					boost += 0.03f + 0.035f * pointsInTalent(Talent.HEROIC_ADAPTABILITY);
+				}
+			}
+			accuracy *= 1f + boost;
+		}
+
 		if (!RingOfForce.fightingUnarmed(this)) {
 			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
@@ -778,6 +788,16 @@ public class Hero extends Char {
 		if (pointsInTalent(Talent.PROTEIN_INFUSION) > 0){
 			int hunger = buff(Hunger.class).hunger();
 			evasion *= 1f + 0.25f*pointsInTalent(Talent.PROTEIN_INFUSION)*((Hunger.STARVING - hunger)/Hunger.STARVING);
+		}
+
+		if (hasTalent(Talent.HEROIC_ADAPTABILITY)){
+			float boost = 0f;
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Actor.findChar(pos + i) == null && cellIsPathable(pos + i)){
+					boost += 0.02f + 0.03f * pointsInTalent(Talent.HEROIC_ADAPTABILITY);
+				}
+			}
+			evasion *= 1f + boost;
 		}
 
 		return Math.round(evasion);
