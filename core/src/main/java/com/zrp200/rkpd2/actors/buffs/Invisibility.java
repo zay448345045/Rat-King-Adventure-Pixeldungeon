@@ -50,7 +50,7 @@ public class Invisibility extends FlavourBuff {
 			target.invisible++;
 			Hero hero = SafeCast.cast(target, Hero.class);
 			if(hero != null) {
-				if(hero.subClass.is(HeroSubClass.ASSASSIN)) {
+				if(hero.subClass.is(HeroSubClass.ASSASSIN, hero)) {
 					Buff.affect(target, Preparation.class);
 				}
 				if(hero.hasTalent(Talent.MENDING_SHADOWS, Talent.NOBLE_CAUSE)) {

@@ -433,7 +433,7 @@ public static final float LC_FACTOR =.2f, LC_FACTOR_RK =0.75f/3f;
 			Hero hero = SafeCast.cast(target, Hero.class);
 			if (hero != null && super.attachTo(target)) {
 				target.invisible++;
-				if (hero.subClass.is(HeroSubClass.ASSASSIN)) {
+				if (hero.subClass.is(HeroSubClass.ASSASSIN, hero)) {
 					Buff.affect(target, Preparation.class);
 				}
 				if (hero.hasTalent(Talent.MENDING_SHADOWS,Talent.NOBLE_CAUSE)){

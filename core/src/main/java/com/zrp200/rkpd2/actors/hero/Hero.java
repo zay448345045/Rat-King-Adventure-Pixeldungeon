@@ -229,25 +229,33 @@ public class Hero extends Char {
 	public HeroSubClass subClass2 = HeroSubClass.NONE;
 
 	public boolean isSubclassed(HeroSubClass sub){
-		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & subClass != HeroSubClass.NONE){
+		return isSubclassed(this, sub);
+	}
+
+	public static boolean isSubclassed(Hero hero, HeroSubClass sub){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & hero.subClass != HeroSubClass.NONE){
 			return true;
 		} else {
-			if (subClass2 == HeroSubClass.NONE) {
-				return matchSubclass(subClass, sub);
+			if (hero.subClass2 == HeroSubClass.NONE) {
+				return hero.matchSubclass(hero.subClass, sub);
 			} else {
-				return matchSubclass(subClass, sub) || matchSubclass(subClass2, sub);
+				return hero.matchSubclass(hero.subClass, sub) || hero.matchSubclass(hero.subClass2, sub);
 			}
 		}
 	}
 
 	public boolean isSubclassedExact(HeroSubClass sub){
-		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & subClass != HeroSubClass.NONE){
+		return isSubclassedExact(this, sub);
+	}
+
+	public static boolean isSubclassedExact(Hero hero, HeroSubClass sub){
+		if (Dungeon.isSpecialSeedEnabled(DungeonSeed.SpecialSeed.BALANCE) & hero.subClass != HeroSubClass.NONE){
 			return true;
 		} else {
-			if (subClass2 == HeroSubClass.NONE) {
-				return subClass == sub;
+			if (hero.subClass2 == HeroSubClass.NONE) {
+				return hero.subClass == sub;
 			} else {
-				return subClass == sub || subClass2 == sub;
+				return hero.subClass == sub || hero.subClass2 == sub;
 			}
 		}
 	}
