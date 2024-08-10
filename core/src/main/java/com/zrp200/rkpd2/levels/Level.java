@@ -1254,8 +1254,8 @@ public abstract class Level implements Bundlable {
 			break;
 		}
 
-		TimekeepersHourglass.timeFreeze timeFreeze =
-				Dungeon.hero.buff(TimekeepersHourglass.timeFreeze.class);
+		TimekeepersHourglass.TimeFreezing timeFreeze =
+				Dungeon.hero.buff(TimekeepersHourglass.TimeFreezing.class);
 
 		Swiftthistle.TimeBubble bubble =
 				Dungeon.hero.buff(Swiftthistle.TimeBubble.class);
@@ -1264,9 +1264,13 @@ public abstract class Level implements Bundlable {
 			if (bubble != null){
 				Sample.INSTANCE.play(Assets.Sounds.TRAP);
 				discover(cell);
+				bubble.setDelayedPress(cell);
 
+			} else if (timeFreeze != null){
+				Sample.INSTANCE.play(Assets.Sounds.TRAP);
+				discover(cell);
 				timeFreeze.setDelayedPress(cell);
-				
+
 			} else {
 				if (Dungeon.hero.pos == cell) {
 					Dungeon.hero.interrupt();
