@@ -36,7 +36,7 @@ import com.zrp200.rkpd2.ui.QuickSlotButton;
 
 public abstract class TargetedSpell extends Spell {
 	
-	protected int collisionProperties = Ballistica.PROJECTILE;
+	protected int collisionProperties = Ballistica.FRIENDLY_PROJECTILE;
 	
 	@Override
 	protected void onCast(Hero hero) {

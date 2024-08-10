@@ -59,7 +59,18 @@ public class PrismaticImage extends AbstractMirrorImage {
 	protected boolean act() {
 		
 		if (!isAlive()){
-			deathTimer--;
+			if (hero != null && hero.pointsInTalent(Talent.HELPER_TO_HERO) > 2){
+				PrismaticGuard prismaticGuard = Buff.affect(hero, PrismaticGuard.class);
+				prismaticGuard.set( PrismaticGuard.maxHP(hero) / 2 );
+				destroy();
+				CellEmitter.get(pos).start( Speck.factory(Speck.LIGHT), 0.2f, 3 );
+				sprite.die();
+				Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
+				Talent.Cooldown.affectHero(Talent.HelperToHeroReviveCooldown.class);
+				return true;
+			}
+			if (hero != null && hero.pointsInTalent(Talent.HELPER_TO_HERO) < 2)
+				deathTimer--;
 			
 			if (deathTimer > 0) {
 				sprite.alpha((deathTimer + 3) / 8f);
@@ -124,6 +135,9 @@ public class PrismaticImage extends AbstractMirrorImage {
 			i = Random.NormalIntRange(2 + hero.lvl / 4, 4 + hero.lvl / 2);
 		} else {
 			i = Random.NormalIntRange(2, 4);
+			if (hero.pointsInTalent(Talent.HELPER_TO_HERO) > 1 && hero.belongings.secondWep() != null){
+				i += Math.round(hero.belongings.secondWep().damageRoll(hero) * (0.25f * hero.pointsInTalent(Talent.HELPER_TO_HERO)));
+			}
 		}
 		i *= 1f + 0.2f*hero.pointsInTalent(Talent.SPECTRE_ALLIES);
 		return i;
@@ -146,7 +160,11 @@ public class PrismaticImage extends AbstractMirrorImage {
 
 	@Override
 	public int attackProc(Char enemy, int damage) {
-		return super.attackProc(enemy, damage);
+		int dmg = super.attackProc(enemy, damage);
+		if (hero != null && hero.hasTalent(Talent.HELPER_TO_HERO) && hero.belongings.secondWep() != null){
+			dmg = hero.belongings.secondWep().proc(this, enemy, dmg);
+		}
+		return dmg;
 	}
 
 	@Override
@@ -166,6 +184,7 @@ public class PrismaticImage extends AbstractMirrorImage {
 			dmg -= AntiMagic.drRoll(hero, hero.belongings.armor(). glyphEffectLevel(hero));
 			dmg = Math.max(dmg, 0);
 		}
+
 		
 		super.damage(dmg, src);
 	}

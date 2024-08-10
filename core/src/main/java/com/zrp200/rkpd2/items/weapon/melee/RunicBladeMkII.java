@@ -174,7 +174,7 @@ public class RunicBladeMkII extends MeleeWeapon implements Talent.SpellbladeForg
                     return;
                 }
 
-                final Ballistica shot = new Ballistica( curUser.pos, target, Ballistica.PROJECTILE);
+                final Ballistica shot = new Ballistica( curUser.pos, target, Ballistica.FRIENDLY_PROJECTILE);
                 final int cell = shot.collisionPos;
 
                 if (target == curUser.pos || cell == curUser.pos) {

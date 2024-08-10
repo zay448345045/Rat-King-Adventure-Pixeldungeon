@@ -4,6 +4,7 @@ import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.npcs.AbstractMirrorImage;
+import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.levels.Level;
 
 import java.util.ArrayList;
@@ -26,11 +27,11 @@ class PreciseBallistica extends Ballistica {
     }
 
     @Override
-    protected void build(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid) {
-        cast(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid);
+    protected void build(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid, boolean ignorePrisGuard) {
+        cast(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid, ignorePrisGuard);
     }
 
-    protected void cast(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid) {
+    protected void cast(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid, boolean ignorePrisGuard) {
 
         int w = level.width();
 
@@ -64,12 +65,12 @@ class PreciseBallistica extends Ballistica {
 
         }
 
-        int cell = calc(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid, dA / 2);
+        int cell = calc(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid, ignorePrisGuard, dA / 2);
 
         if (!hit) {
             ArrayList<Integer> oldPath = new ArrayList<>(path);
             for (int err = 0; err <= dA; err++) {
-                int calc = calc(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid, err);
+                int calc = calc(from, to, stopTarget, stopChars, stopTerrain, ignoreSoftSolid, ignorePrisGuard, err);
                 if (hit) {
                     cell = calc;
                     break;
@@ -83,7 +84,7 @@ class PreciseBallistica extends Ballistica {
         collisionPos = cell;
     }
 
-    private int calc(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid, int err) {
+    private int calc(int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid, boolean ignorePrisGuard, int err) {
 
         hit = false;
         dist = 0;
@@ -125,6 +126,11 @@ class PreciseBallistica extends Ballistica {
                     if ((stopTerrain && level.solid[cell]) && !(ignoreSoftSolid && soft(cell))) {
                         collided = true;
                     } else if (cell != from && stopChars && Actor.findChar(cell) != null) {
+                        if (ignorePrisGuard && Actor.findChar(cell) instanceof PrismaticImage && Dungeon.hero.hasTalent(Talent.HELPER_TO_HERO)){
+                            if (cell == to && stopTarget) {
+                                collided = false;
+                            }
+                        }
                         if (!(Actor.findChar(cell) instanceof AbstractMirrorImage) || !Dungeon.hero.hasTalent(Talent.SPECTRE_ALLIES)) {
                             collided = true;
                         }

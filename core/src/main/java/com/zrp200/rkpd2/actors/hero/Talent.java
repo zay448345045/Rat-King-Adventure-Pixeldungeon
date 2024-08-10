@@ -231,7 +231,7 @@ public enum Talent {
 	//Duelist T3
 	PRECISE_ASSAULT(137, 3), DEADLY_FOLLOWUP(138, 3), GRASSY_OFFENSE(imageAt(3, 12), 3),
 	//Champion T3
-	SECONDARY_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), ELITE_DEXTERITY(158, 3),
+	SECONDARY_CHARGE(139, 3), TWIN_UPGRADES(140, 3), COMBINED_LETHALITY(141, 3), ELITE_DEXTERITY(158, 3), HELPER_TO_HERO(imageAt(6, 12), 3),
 	//Monk T3
 	UNENCUMBERED_SPIRIT(142, 3), MONASTIC_VIGOR(143, 3), COMBINED_ENERGY(144, 3), MONK_6TH_ABILITY(159),
 	//Challenge T4
@@ -535,6 +535,11 @@ public enum Talent {
 	public static class BountyHunterTracker extends FlavourBuff{};
 	public static class DualWieldingWandTracker extends FlavourBuff{};
 	public static class DualWieldingMissileTracker extends FlavourBuff{};
+	public static class HelperToHeroReviveCooldown extends Cooldown {
+		public float duration() { return 125; }
+		public int icon() { return BuffIndicator.TIME; }
+		public void tintIcon(Image icon) { icon.hardlight(0xBC7FFF); }
+	};
 	public static class RejuvenatingStepsCooldown extends Cooldown{
 		{ revivePersists = true; }
 		@Override public float duration() {
@@ -1602,7 +1607,7 @@ public enum Talent {
 						NATURES_BETTER_AID, INDIRECT_BENEFITS);
 				break;
 			case CHAMPION:
-				Collections.addAll(tierTalents, SECONDARY_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, ELITE_DEXTERITY);
+				Collections.addAll(tierTalents, SECONDARY_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, ELITE_DEXTERITY, HELPER_TO_HERO);
 				break;
 			case MONK:
 				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY/*, MONK_6TH_ABILITY*/);

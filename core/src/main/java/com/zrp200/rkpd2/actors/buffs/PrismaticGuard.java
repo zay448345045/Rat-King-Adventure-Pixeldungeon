@@ -27,6 +27,7 @@ import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Hero;
+import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.items.scrolls.ScrollOfTeleportation;
@@ -44,6 +45,11 @@ public class PrismaticGuard extends Buff {
 	
 	@Override
 	public boolean act() {
+
+		if (target.buff(Talent.HelperToHeroReviveCooldown.class) != null){
+			spend(TICK);
+			return true;
+		}
 		
 		Hero hero = (Hero)target;
 		
@@ -88,7 +94,14 @@ public class PrismaticGuard extends Buff {
 		
 		LockedFloor lock = target.buff(LockedFloor.class);
 		if (HP < maxHP() && Regeneration.regenOn()){
-			HP += 0.1f;
+			float regenAmount = 1f/10f;
+			if (target instanceof Hero && ((Hero) target).pointsInTalent(Talent.HELPER_TO_HERO) > 1){
+				regenAmount = 1f/Regeneration.getRegenDelay(target);
+				if (((Hero) target).pointsInTalent(Talent.HELPER_TO_HERO) > 2){
+					regenAmount *= 2f;
+				}
+			}
+			HP += regenAmount;
 		}
 		
 		return true;
@@ -114,6 +127,8 @@ public class PrismaticGuard extends Buff {
 	@Override
 	public void tintIcon(Image icon) {
 		icon.hardlight(1f, 1f, 2f);
+		if (target.buff(Talent.HelperToHeroReviveCooldown.class) != null)
+			icon.tint(0x000000, 0.5f);
 	}
 
 	@Override
@@ -128,6 +143,8 @@ public class PrismaticGuard extends Buff {
 	
 	@Override
 	public String desc() {
+		if (target.buff(Talent.HelperToHeroReviveCooldown.class) != null)
+			return Messages.get(this, "desc_recover", (int)HP, maxHP());
 		return Messages.get(this, "desc", (int)HP, maxHP());
 	}
 	

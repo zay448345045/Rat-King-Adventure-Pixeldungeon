@@ -26,6 +26,7 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.npcs.AbstractMirrorImage;
+import com.zrp200.rkpd2.actors.mobs.npcs.PrismaticImage;
 import com.zrp200.rkpd2.levels.Level;
 
 import java.util.ArrayList;
@@ -46,10 +47,15 @@ public class Ballistica {
 	public static final int STOP_CHARS = 2;     //ballistica will stop on first char hit
 	public static final int STOP_SOLID = 4;     //ballistica will stop on solid terrain
 	public static final int IGNORE_SOFT_SOLID = 8; //ballistica will ignore soft solid terrain, such as doors and webs
+	public static final int IGNORE_PRISGUARD = 16;
 
 	public static final int PROJECTILE =  	STOP_TARGET	| STOP_CHARS	| STOP_SOLID;
 
 	public static final int MAGIC_BOLT =    STOP_CHARS  | STOP_SOLID;
+
+	public static final int FRIENDLY_PROJECTILE =  	PROJECTILE | IGNORE_PRISGUARD;
+
+	public static final int FRIENDLY_MAGIC_BOLT =   MAGIC_BOLT | IGNORE_PRISGUARD;
 
 	public static final int WONT_STOP =     0;
 
@@ -74,7 +80,8 @@ public class Ballistica {
 				(params & STOP_TARGET) > 0,
 				(params & STOP_CHARS) > 0,
 				(params & STOP_SOLID) > 0,
-				(params & IGNORE_SOFT_SOLID) > 0);
+				(params & IGNORE_SOFT_SOLID) > 0,
+				(params & IGNORE_PRISGUARD) > 0);
 
 		this.path = b.path;
 		this.sourcePos = b.sourcePos;
@@ -92,7 +99,7 @@ public class Ballistica {
 		}
 	}
 
-	protected void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid ) {
+	protected void build( int from, int to, boolean stopTarget, boolean stopChars, boolean stopTerrain, boolean ignoreSoftSolid, boolean ignorePrisGuard ) {
 		int w = level.width();
 
 		int x0 = from % w;
@@ -156,8 +163,14 @@ public class Ballistica {
 				}
 			}
 			if (collisionPos == null && cell != sourcePos && stopChars && (Actor.findChar( cell ) != null)) {
-				if (!(Actor.findChar(cell) instanceof AbstractMirrorImage) || !Dungeon.hero.hasTalent(Talent.SPECTRE_ALLIES)) {
-					collide(cell);
+				if (ignorePrisGuard && Actor.findChar(cell) instanceof PrismaticImage && Dungeon.hero.hasTalent(Talent.HELPER_TO_HERO)){
+					if (cell == to && stopTarget) {
+						collide(cell);
+					}
+				} else {
+					if (!(Actor.findChar(cell) instanceof AbstractMirrorImage) || !Dungeon.hero.hasTalent(Talent.SPECTRE_ALLIES)) {
+						collide(cell);
+					}
 				}
 			}
 			if (collisionPos == null && cell == to && stopTarget){

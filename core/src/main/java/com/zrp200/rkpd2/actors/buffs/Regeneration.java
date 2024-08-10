@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.actors.buffs;
 
 import com.zrp200.rkpd2.Dungeon;
+import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -56,25 +57,7 @@ public class Regeneration extends Buff {
 				}
 			}
 
-			RegenerationBuff regenBuff = Dungeon.hero.buff( RegenerationBuff.class);
-
-			float delay = REGENERATION_DELAY;
-			if (regenBuff != null && target.buff(MagicImmune.class) == null) {
-				if (regenBuff.isCursed()) {
-					delay *= 1.5f;
-				} else {
-					//15% boost at +0, scaling to a 500% boost at +10
-					delay -= 1.33f + regenBuff.itemLevel()*0.667f;
-					delay /= RingOfEnergy.artifactChargeMultiplier(target);
-				}
-			}
-			if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
-				delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.35f;
-			}
-			if (!Dungeon.hero.heroClass.is(HeroClass.WARRIOR) && Dungeon.hero.hasTalent(Talent.WILLPOWER_OF_INJURED)){
-				float boost = 0.5f * ((Hero) target).pointsInTalent(Talent.WILLPOWER_OF_INJURED);
-				delay /= 1f + boost * Math.max(1f, ((float) (target.HT - target.HP) / target.HT)*1.1f);
-			}
+			float delay = getRegenDelay(target);
 			spend( delay );
 			
 		} else {
@@ -85,7 +68,29 @@ public class Regeneration extends Buff {
 		
 		return true;
 	}
-	
+
+	public static float getRegenDelay(Char target) {
+		RegenerationBuff regenBuff = target.buff( RegenerationBuff.class);
+		float delay = REGENERATION_DELAY;
+		if (regenBuff != null && target.buff(MagicImmune.class) == null) {
+			if (regenBuff.isCursed()) {
+				delay *= 1.5f;
+			} else {
+				//15% boost at +0, scaling to a 500% boost at +10
+				delay -= 1.33f + regenBuff.itemLevel()*0.667f;
+				delay /= RingOfEnergy.artifactChargeMultiplier(target);
+			}
+		}
+		if (Dungeon.hero.hasTalent(Talent.NATURE_AID_2) && Dungeon.level.map[Dungeon.hero.pos] == Terrain.FURROWED_GRASS){
+			delay *= 1 - Dungeon.hero.pointsInTalent(Talent.NATURE_AID_2)*0.35f;
+		}
+		if (!Dungeon.hero.heroClass.is(HeroClass.WARRIOR) && Dungeon.hero.hasTalent(Talent.WILLPOWER_OF_INJURED)){
+			float boost = 0.5f * ((Hero) target).pointsInTalent(Talent.WILLPOWER_OF_INJURED);
+			delay /= 1f + boost * Math.max(1f, ((float) (target.HT - target.HP) / target.HT)*1.1f);
+		}
+		return delay;
+	}
+
 	public int regencap(){
 		return target.HT;
 	}

@@ -316,7 +316,7 @@ public class MagicMissile extends Emitter {
 		} else {
 			aim = new Ballistica(pos, pos + 1, Ballistica.WONT_STOP);
 		}
-		ConeAOE aoe = new ConeAOE(aim, range, 360, Ballistica.PROJECTILE);
+		ConeAOE aoe = new ConeAOE(aim, range, 360, Ballistica.FRIENDLY_PROJECTILE);
 		if (sprite.visible) {
 			for (Ballistica ray : aoe.rays) {
 				((MagicMissile) sprite.parent.recycle(MagicMissile.class)).reset(
