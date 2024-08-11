@@ -32,19 +32,24 @@ import com.zrp200.rkpd2.Assets;
 import com.zrp200.rkpd2.Dungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.SmokeScreen;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.Talent;
 import com.zrp200.rkpd2.actors.mobs.Ghoul;
-import com.zrp200.rkpd2.actors.mobs.Mob;
 import com.zrp200.rkpd2.actors.mobs.RipperDemon;
 import com.zrp200.rkpd2.actors.mobs.Wraith;
 import com.zrp200.rkpd2.actors.mobs.YogDzewa;
 import com.zrp200.rkpd2.effects.Speck;
 import com.zrp200.rkpd2.items.rings.RingOfForce;
+import com.zrp200.rkpd2.items.spells.AquaBlast;
+import com.zrp200.rkpd2.items.stones.StoneOfClairvoyance;
 import com.zrp200.rkpd2.items.wands.WandOfBlastWave;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
+import com.zrp200.rkpd2.levels.Level;
 import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.levels.features.Door;
+import com.zrp200.rkpd2.levels.traps.GeyserTrap;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.scenes.CellSelector;
@@ -71,6 +76,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 	public float energy;
 	public int cooldown;
+	private float incHeal = 1, incShield = 1;
 
 	private static final float MAX_COOLDOWN = 5;
 
@@ -85,6 +91,21 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			icon.hardlight(0.33f, 0.33f, 1f);
 		} else {
 			icon.resetColor();
+		}
+		if (MonkEnergy.isFeelingEmpowered(Dungeon.level.feeling)){
+			if (Dungeon.level.feeling != Level.Feeling.NONE){
+				int color = 0x000000;
+				switch (Dungeon.level.feeling){
+					case DARK: color = 0xFF5500; break;
+					case GRASS: color = 0x00E500; break;
+					case LARGE: color = 0xFFC61A; break;
+					case CHASM: color = 0xAB00FF; break;
+					case WATER: color = 0xB2E9FF; break;
+					case SECRETS: color = 0x00A0FF; break;
+					case TRAPS: color = 0xFF2A00; break;
+				}
+				icon.tint(color, 0.5f);
+			}
 		}
 	}
 
@@ -110,6 +131,19 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			BuffIndicator.refreshHero();
 		}
 
+		if (MonkEnergy.isFeelingEmpowered(Level.Feeling.WATER) && Dungeon.level.water[target.pos]){
+			Barrier barrier = Buff.affect(target, Barrier.class);
+			if (barrier.shielding() < target.HT / 10) {
+				incShield += 1/2f;
+			}
+			if (incShield >= 1) {
+				incShield = 0;
+				barrier.incShield(1);
+			} else {
+				barrier.incShield(0); //resets barrier decay
+			}
+		}
+
 		spend(TICK);
 		return true;
 	}
@@ -120,17 +154,26 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		if (cooldown > 0){
 			desc += "\n\n" + Messages.get(this, "desc_cooldown", cooldown);
 		}
+		if (hero.hasTalent(Talent.ATTUNEXPLORATION) && Dungeon.level.feeling != Level.Feeling.NONE){
+			desc += "\n\n" + Messages.get(this, "desc_" + Dungeon.level.feeling.name());
+		}
 		return desc;
 	}
 
 	public static String ENERGY = "energy";
 	public static String COOLDOWN = "cooldown";
+	//for water feeling
+	private static final String
+			BARRIER_INC = "barrier_inc",
+			HEAL_INC = "incHeal";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(ENERGY, energy);
 		bundle.put(COOLDOWN, cooldown);
+		bundle.put( BARRIER_INC, incShield );
+		bundle.put( HEAL_INC, incHeal );
 	}
 
 	@Override
@@ -138,6 +181,8 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		super.restoreFromBundle(bundle);
 		energy = bundle.getFloat(ENERGY);
 		cooldown = bundle.getInt(COOLDOWN);
+		incShield = bundle.getFloat( BARRIER_INC );
+		incHeal = bundle.getFloat( HEAL_INC );
 
 		ActionIndicator.setAction(this);
 	}
@@ -147,7 +192,7 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		return energy > 0 && cooldown < 1;
 	}
 
-	public void gainEnergy(Mob enemy ){
+	public void gainEnergy(Char enemy ){
 		if (target == null) return;
 
 		if (!Regeneration.regenOn()){
@@ -163,10 +208,11 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 		else if (enemy instanceof RipperDemon)                  energyGain = 0.5f;
 		else if (enemy instanceof YogDzewa.Larva)               energyGain = 0.5f;
 		else if (enemy instanceof Wraith)                       energyGain = 0.5f;
+		else if (enemy instanceof Hero)							energyGain = 2.5f;
 		else                                                    energyGain = 1;
 
 		float enGainMulti = 1f;
-		if (target instanceof Hero) {
+		if (target instanceof Hero && !(enemy instanceof Hero)) {
 			Hero hero = (Hero) target;
 			if (hero.hasTalent(Talent.UNENCUMBERED_SPIRIT)) {
 				int points = hero.pointsInTalent(Talent.UNENCUMBERED_SPIRIT);
@@ -389,6 +435,9 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 				}
 
 				hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY);
+				if (MonkEnergy.isFeelingEmpowered(Level.Feeling.DARK)){
+					hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY);
+				}
 
 				if (enemy.isAlive()){
 					hero.sprite.attack(enemy.pos, () -> {
@@ -433,7 +482,8 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 			@Override
 			public void doAbility(Hero hero, Integer target) {
-				Buff.prolong(hero, FocusBuff.class, 30f);
+				float duration = MonkEnergy.isFeelingEmpowered(Level.Feeling.TRAPS) ? 10f : 30f;
+				Buff.prolong(hero, FocusBuff.class, duration);
 
 				if (Buff.affect(hero, MonkEnergy.class).abilitiesEmpowered(hero)){
 					hero.next();
@@ -538,6 +588,11 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 						hero.pos = target;
 						Dungeon.level.occupyCell(hero);
 						hero.next();
+						if (MonkEnergy.isFeelingEmpowered(Level.Feeling.CHASM)){
+							for (int cell : dash.path){
+								GameScene.add( Blob.seed( cell, 90, SmokeScreen.class ) );
+							}
+						}
 					}
 				});
 
@@ -547,29 +602,43 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 		public static class DragonKick extends TargetedMonkAbility {
 
+			public int min(){
+				return 3 * (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE) ? 2 : 1);
+			}
+
+			public int max(){
+				return 3*(hero.STR()-8) * (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE) ? 2 : 1);
+			}
+
 			@Override
 			public int energyCost() {
+				if (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE))
+					return 6;
 				return 4;
 			}
 
 			@Override
 			public int cooldown() {
+				if (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE))
+					return 10;
 				return 5;
 			}
 
 			@Override
 			public String desc() {
 				//3x hero unarmed damage
-				return Messages.get(this, "desc", 3, 3*(hero.STR()-8));
+				return Messages.get(this, "desc", min(), max());
 			}
 
 			@Override
 			public void doAbility(Char enemy, UnarmedAbilityTracker tracker, boolean empowered) {
 
 				int oldPos = enemy.pos;
-				if (hero.attack(enemy, empowered ? 4.5f : 3f, 0, Char.INFINITE_ACCURACY)){
+				if (hero.attack(enemy, (empowered ? 4.5f : 3f) * (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE) ? 2 : 1), 0, Char.INFINITE_ACCURACY)){
 					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 				}
+
+				int knockPower = Math.round(6 * (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE) ? 1.5f : 1f));
 
 				if (oldPos == enemy.pos){
 					//trace a ballistica to our target (which will also extend past them
@@ -577,10 +646,10 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 					//trim it to just be the part that goes past them
 					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
 					//knock them back along that ballistica
-					WandOfBlastWave.throwChar(enemy, trajectory, 6, true, false, hero);
+					WandOfBlastWave.throwChar(enemy, trajectory, knockPower, true, false, hero);
 
 					if (trajectory.dist > 0 && enemy.isActive()) {
-						Buff.affect(enemy, Paralysis.class, Math.min( 6, trajectory.dist));
+						Buff.affect(enemy, Paralysis.class, Math.min( knockPower, trajectory.dist));
 					}
 				}
 				Invisibility.dispel();
@@ -598,10 +667,10 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 							//trim it to just be the part that goes past them
 							trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
 							//knock them back along that ballistica
-							WandOfBlastWave.throwChar(ch, trajectory, 6, true, false, hero);
+							WandOfBlastWave.throwChar(ch, trajectory, knockPower, true, false, hero);
 
 							if (trajectory.dist > 0 && enemy.isActive()) {
-								Buff.affect(ch, Paralysis.class, Math.min( 6, trajectory.dist));
+								Buff.affect(ch, Paralysis.class, Math.min( knockPower, trajectory.dist));
 							}
 						}
 					}
@@ -638,9 +707,12 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 				//we process this as 5x wait actions instead of one 5 tick action to prevent
 				// effects like time freeze from eating the whole action duration
-				for (int i = 0; i < 5; i++) hero.spendConstant(Actor.TICK);
+				int meditateTime = 5;
+				if (MonkEnergy.isFeelingEmpowered(Level.Feeling.SECRETS))
+					meditateTime = 1;
+				for (int i = 0; i < meditateTime; i++) hero.spendConstant(Actor.TICK);
 
-				if (Buff.affect(hero, MonkEnergy.class).abilitiesEmpowered(hero)){
+				if (Buff.affect(hero, MonkEnergy.class).abilitiesEmpowered(hero) && !MonkEnergy.isFeelingEmpowered(Level.Feeling.SECRETS)){
 					int toHeal = Math.round((hero.HT - hero.HP)/5f);
 					if (toHeal > 0) {
 						Buff.affect(hero, Healing.class).setHeal(toHeal, 0, 1);
@@ -656,9 +728,20 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 
 					@Override
 					protected boolean act() {
-						Buff.affect(hero, Recharging.class, 8f);
-						Buff.affect(hero, ArtifactRecharge.class).prolong(8f).ignoreHornOfPlenty = false;
+						if (MonkEnergy.isFeelingEmpowered(Level.Feeling.SECRETS)){
+							Buff.affect(hero, MagicalSight.class, 2f);
+							StoneOfClairvoyance.doClairvoyanceEffect(hero.pos, 12);
+						} else {
+							Buff.affect(hero, Recharging.class, 8f);
+							Buff.affect(hero, ArtifactRecharge.class).prolong(8f).ignoreHornOfPlenty = false;
+						}
 						Actor.remove(this);
+						if (MonkEnergy.isFeelingEmpowered(Level.Feeling.WATER)){
+							GeyserTrap geyser = new GeyserTrap();
+							geyser.pos = hero.pos;
+							geyser.source = new AquaBlast();
+							geyser.activate();
+						}
 						return true;
 					}
 				}, hero.cooldown()-1);
@@ -675,5 +758,12 @@ public class MonkEnergy extends Buff implements ActionIndicator.Action {
 			};
 		}
 
+	}
+
+	public static boolean isFeelingEmpowered(Level.Feeling feeling){
+		if (!hero.hasTalent(Talent.ATTUNEXPLORATION))
+			return false;
+
+		return Dungeon.level != null && Dungeon.level.feeling == feeling;
 	}
 }

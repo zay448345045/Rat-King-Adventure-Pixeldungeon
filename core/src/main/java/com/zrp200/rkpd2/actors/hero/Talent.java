@@ -50,6 +50,7 @@ import com.zrp200.rkpd2.actors.buffs.Haste;
 import com.zrp200.rkpd2.actors.buffs.Hunger;
 import com.zrp200.rkpd2.actors.buffs.Invisibility;
 import com.zrp200.rkpd2.actors.buffs.LostInventory;
+import com.zrp200.rkpd2.actors.buffs.MonkEnergy;
 import com.zrp200.rkpd2.actors.buffs.PhysicalEmpower;
 import com.zrp200.rkpd2.actors.buffs.Preparation;
 import com.zrp200.rkpd2.actors.buffs.Recharging;
@@ -310,7 +311,18 @@ public enum Talent {
 
 	// RKA other replacements
 	PROTEIN_INFUSION(imageAt(5, 10)), SCOUTS_BARRIER(imageAt(5, 11)), LIKE_A_BULLET(imageAt(16, 11), 3), POINTY_BLACK(imageAt(17, 11), 3),
-	INDISCRIMINATE_RAGE(imageAt(16, 8), 3), BATTLE_TENDENCY(imageAt(17, 8), 3);
+	INDISCRIMINATE_RAGE(imageAt(16, 8), 3), BATTLE_TENDENCY(imageAt(17, 8), 3), ATTUNEXPLORATION(159, 3){
+		@Override
+		public String desc(boolean metamorphed) {
+			String desc = super.desc(metamorphed) + "\n";
+			for (Level.Feeling feeling: Level.Feeling.values()){
+				if (feeling != Level.Feeling.NONE){
+					desc += "\n" + Messages.get(MonkEnergy.class, "desc_" + feeling.name());
+				}
+			}
+			return desc;
+		}
+	};
 
 	protected String[] aliases = new String[0];
 
@@ -1610,7 +1622,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, SECONDARY_CHARGE, TWIN_UPGRADES, COMBINED_LETHALITY, ELITE_DEXTERITY, HELPER_TO_HERO);
 				break;
 			case MONK:
-				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY/*, MONK_6TH_ABILITY*/);
+				Collections.addAll(tierTalents, UNENCUMBERED_SPIRIT, MONASTIC_VIGOR, COMBINED_ENERGY/*, MONK_6TH_ABILITY*/, ATTUNEXPLORATION);
 				break;
 			case KING: // this should be *lovely*
 				Collections.addAll(tierTalents, RK_BERSERKER, RK_BATTLEMAGE, RK_ASSASSIN, RK_SNIPER, RK_GLADIATOR, RK_WARLOCK, RK_FREERUNNER, RK_WARDEN); break;

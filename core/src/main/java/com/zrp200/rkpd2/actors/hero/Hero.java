@@ -114,6 +114,7 @@ import com.zrp200.rkpd2.effects.particles.GodfireParticle;
 import com.zrp200.rkpd2.items.Ankh;
 import com.zrp200.rkpd2.items.BrokenSeal;
 import com.zrp200.rkpd2.items.Dewdrop;
+import com.zrp200.rkpd2.items.DuelistGrass;
 import com.zrp200.rkpd2.items.EquipableItem;
 import com.zrp200.rkpd2.items.Heap;
 import com.zrp200.rkpd2.items.Heap.Type;
@@ -763,6 +764,11 @@ public class Hero extends Char {
 			accuracy *= 1.25f;
 		}
 
+		if (buff(MonkEnergy.MonkAbility.Focus.FocusBuff.class) != null &&
+			MonkEnergy.isFeelingEmpowered(Level.Feeling.TRAPS)){
+			accuracy *= 1.4f;
+		}
+
 		if (hasTalent(Talent.HEROIC_ADAPTABILITY)){
 			float boost = 0f;
 			for (int i : PathFinder.NEIGHBOURS8){
@@ -861,6 +867,16 @@ public class Hero extends Char {
 			buff(MonkEnergy.MonkAbility.Focus.FocusActivation.class).detach();
 			if (sprite != null && sprite.visible) {
 				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1, Random.Float(0.96f, 1.05f));
+			}
+			if (MonkEnergy.isFeelingEmpowered(Level.Feeling.GRASS)){
+				Item grass = new DuelistGrass();
+				if (grass.doPickUp(this, pos)) {
+					spend(-1.0f); //casting the spell already takes a turn
+					GLog.i( Messages.capitalize(Messages.get(this, "you_now_have", grass.name())) );
+				} else {
+					GLog.w(Messages.get(grass, "cant_grab"));
+					Dungeon.level.drop(grass, pos).sprite.drop();
+				}
 			}
 			return Messages.get(Monk.class, "parried");
 		}
@@ -2886,6 +2902,10 @@ public class Hero extends Char {
 								} else if (oldValue == Terrain.SECRET_DOOR){
 									talisman.charge(10);
 								}
+							}
+
+							if (pointsInTalent(Talent.ATTUNEXPLORATION) > 2){
+								Buff.affect(this, MonkEnergy.class).gainEnergy(this);
 							}
 						}
 					}

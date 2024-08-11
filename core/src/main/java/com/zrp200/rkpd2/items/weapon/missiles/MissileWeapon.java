@@ -22,6 +22,7 @@
 package com.zrp200.rkpd2.items.weapon.missiles;
 
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 import com.zrp200.rkpd2.Dungeon;
@@ -33,6 +34,7 @@ import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.ChampionEnemy;
 import com.zrp200.rkpd2.actors.buffs.MagicImmune;
 import com.zrp200.rkpd2.actors.buffs.Momentum;
+import com.zrp200.rkpd2.actors.buffs.MonkEnergy;
 import com.zrp200.rkpd2.actors.buffs.PinCushion;
 import com.zrp200.rkpd2.actors.buffs.RevealedArea;
 import com.zrp200.rkpd2.actors.buffs.Roots;
@@ -56,6 +58,8 @@ import com.zrp200.rkpd2.items.weapon.melee.MagesStaff;
 import com.zrp200.rkpd2.items.weapon.melee.MeleeWeapon;
 import com.zrp200.rkpd2.items.weapon.melee.RunicBlade;
 import com.zrp200.rkpd2.items.weapon.missiles.darts.Dart;
+import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.levels.Terrain;
 import com.zrp200.rkpd2.mechanics.Ballistica;
 import com.zrp200.rkpd2.messages.Messages;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
@@ -121,6 +125,14 @@ abstract public class MissileWeapon extends Weapon {
 			lvl = parent.buffedLvl();
 		} else {
 			lvl = super.buffedLvl();
+		}
+		if (MonkEnergy.isFeelingEmpowered(Level.Feeling.CHASM)){
+			float cells = 0;
+			for (int i : PathFinder.NEIGHBOURS8){
+				if (Dungeon.level.map[Dungeon.hero.pos+i] == Terrain.CHASM)
+					cells += 0.5f;
+			}
+			lvl += (int) Math.ceil(cells);
 		}
 		return lvl +
 				(Dungeon.hero.buff(Talent.AutoReloadBuff.class) != null && !(this instanceof SpiritBow.SpiritArrow) ? 1 : 0);

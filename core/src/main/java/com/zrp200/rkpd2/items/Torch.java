@@ -23,11 +23,17 @@ package com.zrp200.rkpd2.items;
 
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.PathFinder;
 import com.zrp200.rkpd2.Assets;
+import com.zrp200.rkpd2.actors.blobs.Blob;
+import com.zrp200.rkpd2.actors.blobs.GodSlayerFire;
 import com.zrp200.rkpd2.actors.buffs.Buff;
 import com.zrp200.rkpd2.actors.buffs.Light;
+import com.zrp200.rkpd2.actors.buffs.MonkEnergy;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.effects.particles.FlameParticle;
+import com.zrp200.rkpd2.levels.Level;
+import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.sprites.ItemSpriteSheet;
 
 import java.util.ArrayList;
@@ -75,7 +81,20 @@ public class Torch extends Item {
 			
 		}
 	}
-	
+
+	@Override
+	protected void onThrow(int cell) {
+		if (MonkEnergy.isFeelingEmpowered(Level.Feeling.DARK)){
+			for (int i : PathFinder.NEIGHBOURS4){
+				GameScene.add(Blob.seed(cell + i, 2, GodSlayerFire.class));
+			}
+			GameScene.add(Blob.seed(cell, 3, GodSlayerFire.class));
+			Sample.INSTANCE.play( Assets.Sounds.BURNING );
+		} else {
+			super.onThrow(cell);
+		}
+	}
+
 	@Override
 	public boolean isUpgradable() {
 		return false;

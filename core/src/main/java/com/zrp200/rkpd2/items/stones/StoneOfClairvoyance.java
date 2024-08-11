@@ -41,10 +41,14 @@ public class StoneOfClairvoyance extends Runestone {
 	
 	@Override
 	protected void activate(final int cell) {
+		doClairvoyanceEffect(cell, DIST);
+	}
+
+	public static void doClairvoyanceEffect(int cell, int distance) {
 		Point c = Dungeon.level.cellToPoint(cell);
-		
-		int[] rounding = ShadowCaster.rounding[DIST];
-		
+
+		int[] rounding = ShadowCaster.rounding[distance];
+
 		int left, right;
 		int curr;
 		boolean noticed = false;
@@ -62,30 +66,28 @@ public class StoneOfClairvoyance extends Runestone {
 			left = Math.max(0, left);
 			for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
-				GameScene.effectOverFog( new CheckedCell( curr, cell ) );
+				GameScene.effectOverFog( new CheckedCell( curr, cell) );
 				Dungeon.level.mapped[curr] = true;
-				
+
 				if (Dungeon.level.secret[curr]) {
 					Dungeon.level.discover(curr);
-					
+
 					if (Dungeon.level.heroFOV[curr]) {
 						GameScene.discoverTile(curr, Dungeon.level.map[curr]);
 						ScrollOfMagicMapping.discover(curr);
 						noticed = true;
 					}
 				}
-				
+
 			}
 		}
-		
+
 		if (noticed) {
 			Sample.INSTANCE.play( Assets.Sounds.SECRET );
 		}
-		
+
 		Sample.INSTANCE.play( Assets.Sounds.TELEPORT );
 		GameScene.updateFog();
-		
-		
 	}
-	
+
 }

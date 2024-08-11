@@ -27,6 +27,7 @@ import com.zrp200.rkpd2.ShatteredPixelDungeon;
 import com.zrp200.rkpd2.actors.Actor;
 import com.zrp200.rkpd2.actors.Char;
 import com.zrp200.rkpd2.actors.buffs.Buff;
+import com.zrp200.rkpd2.actors.buffs.MonkEnergy;
 import com.zrp200.rkpd2.actors.hero.Hero;
 import com.zrp200.rkpd2.actors.hero.HeroClass;
 import com.zrp200.rkpd2.actors.hero.Talent;
@@ -88,7 +89,12 @@ public class HighGrass {
 				Level.set(pos, Terrain.FURROWED_GRASS);
 				freezeTrample = true;
 			} else {
-				Level.set(pos, Terrain.GRASS);
+				if (ch instanceof Hero && MonkEnergy.isFeelingEmpowered(Level.Feeling.GRASS)){
+					Level.set(pos, Terrain.FURROWED_GRASS);
+					freezeTrample = true;
+				} else {
+					Level.set(pos, Terrain.GRASS);
+				}
 			}
 			
 			int naturalismLevel = 0;

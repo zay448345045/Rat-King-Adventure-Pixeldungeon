@@ -75,12 +75,14 @@ import com.zrp200.rkpd2.effects.particles.ElmoParticle;
 import com.zrp200.rkpd2.effects.particles.LeafParticle;
 import com.zrp200.rkpd2.effects.particles.ShadowParticle;
 import com.zrp200.rkpd2.items.Generator;
+import com.zrp200.rkpd2.items.Gold;
 import com.zrp200.rkpd2.items.Item;
 import com.zrp200.rkpd2.items.artifacts.MasterThievesArmband;
 import com.zrp200.rkpd2.items.artifacts.TimekeepersHourglass;
 import com.zrp200.rkpd2.items.rings.Ring;
 import com.zrp200.rkpd2.items.rings.RingOfWealth;
 import com.zrp200.rkpd2.items.spells.CurseInfusion;
+import com.zrp200.rkpd2.items.spells.ReclaimTrap;
 import com.zrp200.rkpd2.items.spells.SummonElemental;
 import com.zrp200.rkpd2.items.stones.StoneOfAggression;
 import com.zrp200.rkpd2.items.weapon.SpiritBow;
@@ -1016,6 +1018,17 @@ public abstract class Mob extends Char {
 			Talent.onFoodEaten(hero, 0, null);
 		}
 
+		if (MonkEnergy.isFeelingEmpowered(Level.Feeling.LARGE)){
+			Item money = new Gold().random();
+			money.quantity(money.quantity()/10);
+            Dungeon.level.drop(money, pos).sprite.drop();
+        }
+
+		if (MonkEnergy.isFeelingEmpowered(Level.Feeling.TRAPS) && Random.Float() < 0.125f){
+			ReclaimTrap trap = new ReclaimTrap();
+			trap.storedTrap = Random.element(Dungeon.level.traps.valueList()).getClass();
+			Dungeon.level.drop(trap, pos).sprite.drop();
+		}
 	}
 	
 	protected Object loot = null;
@@ -1120,6 +1133,7 @@ public abstract class Mob extends Char {
 				if (enemy instanceof Hero || enemy instanceof SpiritHawk.HawkAlly){
 					int points = hero.pointsInTalent(false, Talent.SILENT_STEPS,Talent.PURSUIT);
 					if (enemy instanceof SpiritHawk.HawkAlly) points = hero.pointsInTalent(Talent.BEAK_OF_POWER);
+					if (MonkEnergy.isFeelingEmpowered(Level.Feeling.SECRETS)) points += 1;
 					if (points > 0 && Dungeon.level.distance(pos, enemy.pos) >= 4 - points) {
 						enemyStealth = Float.POSITIVE_INFINITY;
 					}
