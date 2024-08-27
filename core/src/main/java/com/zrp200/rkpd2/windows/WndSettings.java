@@ -21,6 +21,8 @@
 
 package com.zrp200.rkpd2.windows;
 
+import java.util.Locale;
+
 import com.watabou.input.ControllerHandler;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
