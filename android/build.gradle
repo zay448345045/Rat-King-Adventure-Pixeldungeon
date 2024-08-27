@@ -55,7 +55,7 @@ signingConfigs {
                 releaseImplementation project(':services:updates:githubUpdates')
                 releaseImplementation project(':services:news:shatteredNews')
             }
-            signingConfig signingConfigs.release
+     //       signingConfig signingConfigs.release
         }
     }
 
