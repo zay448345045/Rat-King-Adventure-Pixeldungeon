@@ -2,7 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'com.zrp200.rkpd2.android'
-/*    signingConfigs {
+/*    
+signingConfigs {
         release {
             storeFile file('C:\\Users\\Zrp200\\Zrp200.jks')
             storePassword 'palkia'
