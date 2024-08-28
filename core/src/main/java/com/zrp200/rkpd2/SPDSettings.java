@@ -31,6 +31,9 @@ import com.zrp200.rkpd2.messages.Languages;
 import com.zrp200.rkpd2.scenes.GameScene;
 import com.zrp200.rkpd2.scenes.PixelScene;
 
+import java.util.Locale
+
+
 public class SPDSettings extends GameSettings {
 	
 	//Version info
