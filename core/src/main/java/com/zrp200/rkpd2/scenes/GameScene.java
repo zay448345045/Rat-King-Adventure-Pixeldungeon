@@ -253,12 +253,13 @@ public class GameScene extends PixelScene {
 					break;
 				}
 			}
-		} else if(debug != null) {
+		} 
+		/*else if(debug != null) {
 			// attempt to remove scroll of debug automatically.
 			debug.detachAll(Dungeon.hero.belongings.backpack);
 			Dungeon.quickslot.clearItem(debug);
 		}
-
+*/
 		Dungeon.level.playLevelMusic();
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
