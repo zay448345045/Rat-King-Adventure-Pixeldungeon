@@ -70,7 +70,7 @@ abstract public class Variable<T> {
                 }
             }
 
-            @Override public String prompt() { return "Choose a location to target"; }
+            @Override public String prompt() { return "Choose a location to target选择一个目标位置"; }
         });
     }
 
