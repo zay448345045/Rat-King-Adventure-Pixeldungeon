@@ -1,3 +1,5 @@
+[![Total Downloads](https://img.shields.io/github/downloads/zay448345045/Rat-King-Adventure-Pixeldungeon/total?style=for-the-badge&color=2ea44f&logo=github)](https://github.com/zay448345045/Rat-King-Adventure-Pixeldungeon/releases)
+https://github.com/zay448345045/Rat-King-Adventure-Pixeldungeon
 # Rat King Adventure
 
 ![image](https://imgur.com/8Wx4a38.png)
